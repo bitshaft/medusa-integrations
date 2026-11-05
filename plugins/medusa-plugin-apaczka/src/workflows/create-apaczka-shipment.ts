@@ -1,4 +1,4 @@
-import { emitEventStep, updateFulfillmentWorkflow } from "@medusajs/medusa/core-flows"
+import { acquireLockStep, emitEventStep, releaseLockStep, updateFulfillmentWorkflow } from "@medusajs/medusa/core-flows"
 import { createWorkflow, transform, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 
 import type { ApaczkaAddress } from "../lib/apaczka"
@@ -35,6 +35,10 @@ export const createApaczkaShipmentWorkflowId = "apaczka-create-shipment"
 export const createApaczkaShipmentWorkflow = createWorkflow(
   createApaczkaShipmentWorkflowId,
   (input: CreateApaczkaShipmentWorkflowInput) => {
+    // One shipment per fulfillment, even if the button is clicked twice.
+    const lockKey = transform({ input }, ({ input }) => `apaczka:shipment:${input.fulfillment_id}`)
+    acquireLockStep({ key: lockKey, timeout: 5, ttl: 120 })
+
     const context = loadShipmentContextStep({ fulfillment_id: input.fulfillment_id })
 
     const created = createApaczkaOrderStep({
@@ -74,6 +78,7 @@ export const createApaczkaShipmentWorkflow = createWorkflow(
       is_return: shipment.is_return,
     }))
     emitEventStep({ eventName: ApaczkaEvents.SHIPMENT_CREATED, data: eventData })
+    releaseLockStep({ key: lockKey })
 
     return new WorkflowResponse(shipment)
   }

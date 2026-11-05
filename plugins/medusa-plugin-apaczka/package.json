@@ -57,7 +57,7 @@
     "dev": "medusa plugin:develop",
     "lint": "medusa lint",
     "typecheck": "tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p src/admin/tsconfig.json && tsc --noEmit -p tsconfig.storefront.json",
-    "test": "jest",
+    "test": "jest --selectProjects unit",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
     "test:coverage": "jest --selectProjects unit --coverage",
@@ -65,7 +65,9 @@
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:all": "jest --selectProjects unit integration",
+    "test:sandbox": "jest --selectProjects sandbox"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

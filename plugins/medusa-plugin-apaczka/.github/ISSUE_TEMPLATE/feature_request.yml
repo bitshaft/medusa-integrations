@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest something the plugin should do
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The plugin covers what the Apaczka API v2 offers. If your idea needs an Apaczka feature, link the relevant page of https://api-docs.apaczka.pl.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help?
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: For example a `transformOrder` hook or a custom subscriber.

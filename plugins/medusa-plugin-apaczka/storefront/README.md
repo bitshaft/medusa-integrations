@@ -11,12 +11,12 @@ backend peer dependencies, and copying lets you restyle the component freely.
 
 ## What's inside
 
-| File | Use it for |
-|---|---|
-| `point-picker.tsx` | `<PointPicker>`: search box, OpenStreetMap map and list. |
-| `use-point-search.ts` | `usePointSearch()`: headless, debounced search for your own UI. |
-| `client.ts` | `searchPoints`, `getPoint`, `requiresPoint`, `shippingMethodData`, `getApaczkaOptionData`. |
-| `types.ts` | `ApaczkaPoint`, `ApaczkaOptionData`, `ApaczkaStoreConfig`. |
+| File                  | Use it for                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| `point-picker.tsx`    | `<PointPicker>`: search box, OpenStreetMap map and list.                                   |
+| `use-point-search.ts` | `usePointSearch()`: headless, debounced search for your own UI.                            |
+| `client.ts`           | `searchPoints`, `getPoint`, `requiresPoint`, `shippingMethodData`, `getApaczkaOptionData`. |
+| `types.ts`            | `ApaczkaPoint`, `ApaczkaOptionData`, `ApaczkaStoreConfig`.                                 |
 
 ## Install (Next.js Starter Storefront)
 
@@ -37,19 +37,20 @@ backend peer dependencies, and copying lets you restyle the component freely.
 
 import { useState } from "react"
 import { sdk } from "@lib/config"
-import {
-  PointPicker,
-  requiresPoint,
-  shippingMethodData,
-  type ApaczkaPoint,
-} from "@modules/checkout/components/apaczka"
+import { PointPicker, requiresPoint, shippingMethodData, type ApaczkaPoint } from "@modules/checkout/components/apaczka"
 
 const apaczka = {
   // Reuse the storefront's JS SDK: auth, publishable key and base URL come for free.
   fetcher: (path: string, query: Record<string, string>) => sdk.client.fetch(path, { query }),
 }
 
-export function ApaczkaShipping({ cart, option }: { cart: HttpTypes.StoreCart; option: HttpTypes.StoreCartShippingOption }) {
+export function ApaczkaShipping({
+  cart,
+  option,
+}: {
+  cart: HttpTypes.StoreCart
+  option: HttpTypes.StoreCartShippingOption
+}) {
   const [point, setPoint] = useState<ApaczkaPoint | null>(null)
 
   if (!requiresPoint(option)) {
@@ -117,18 +118,18 @@ For a fully custom UI, use `usePointSearch()` and render your own list or map.
 
 ## Props
 
-| Prop | Default | |
-|---|---|---|
-| `config` | — | `{ fetcher }` or `{ baseUrl, publishableKey }` |
-| `shippingOption` / `pointsType` | — | Where the point type comes from |
-| `value` | — | Selected point ID |
-| `onChange` | — | Called with the chosen `ApaczkaPoint` |
-| `initialQuery` | `""` | Prefill, e.g. the postal code |
-| `countryCode` | `"pl"` | |
-| `cod` | option's COD flag | Only COD-capable points |
-| `locale` | `"pl"` | `"pl"` or `"en"`; override strings with `labels` |
-| `showMap` | `true` | `false` gives a list-only picker without Leaflet |
-| `height` | `420` | Height of the map and list area (px) |
-| `limit` | `50` | Max points per search |
-| `tileUrl`, `tileAttribution` | OpenStreetMap | Map tiles |
-| `injectLeafletCss` | `true` | Load Leaflet's CSS from unpkg |
+| Prop                            | Default           |                                                  |
+| ------------------------------- | ----------------- | ------------------------------------------------ |
+| `config`                        | —                 | `{ fetcher }` or `{ baseUrl, publishableKey }`   |
+| `shippingOption` / `pointsType` | —                 | Where the point type comes from                  |
+| `value`                         | —                 | Selected point ID                                |
+| `onChange`                      | —                 | Called with the chosen `ApaczkaPoint`            |
+| `initialQuery`                  | `""`              | Prefill, e.g. the postal code                    |
+| `countryCode`                   | `"pl"`            |                                                  |
+| `cod`                           | option's COD flag | Only COD-capable points                          |
+| `locale`                        | `"pl"`            | `"pl"` or `"en"`; override strings with `labels` |
+| `showMap`                       | `true`            | `false` gives a list-only picker without Leaflet |
+| `height`                        | `420`             | Height of the map and list area (px)             |
+| `limit`                         | `50`              | Max points per search                            |
+| `tileUrl`, `tileAttribution`    | OpenStreetMap     | Map tiles                                        |
+| `injectLeafletCss`              | `true`            | Load Leaflet's CSS from unpkg                    |

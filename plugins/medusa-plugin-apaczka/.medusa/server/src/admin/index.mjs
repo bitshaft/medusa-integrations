@@ -313,17 +313,38 @@ const CreateShipmentModal = ({ fulfillmentId, orderId, open, onOpenChange }) => 
           ] }),
           form.pickup_type === "COURIER" && /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-y-2", children: [
             /* @__PURE__ */ jsx(Label, { size: "small", weight: "plus", children: t("apaczka.create.pickupDate") }),
-            /* @__PURE__ */ jsx(Input, { type: "date", value: form.pickup_date, onChange: (e) => update({ pickup_date: e.target.value }) }),
+            /* @__PURE__ */ jsx(
+              Input,
+              {
+                type: "date",
+                value: form.pickup_date,
+                onChange: (e) => update({ pickup_date: e.target.value })
+              }
+            ),
             pickupHours.isSuccess && !pickupHours.data.days.length && /* @__PURE__ */ jsx(Text, { size: "xsmall", className: "text-ui-fg-subtle", children: t("apaczka.create.noPickupDays") })
           ] }),
           form.pickup_type === "COURIER" && /* @__PURE__ */ jsxs(Fragment, { children: [
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-y-2", children: [
               /* @__PURE__ */ jsx(Label, { size: "small", children: t("apaczka.create.hoursFrom") }),
-              /* @__PURE__ */ jsx(Input, { type: "time", value: form.hours_from, onChange: (e) => update({ hours_from: e.target.value }) })
+              /* @__PURE__ */ jsx(
+                Input,
+                {
+                  type: "time",
+                  value: form.hours_from,
+                  onChange: (e) => update({ hours_from: e.target.value })
+                }
+              )
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-y-2", children: [
               /* @__PURE__ */ jsx(Label, { size: "small", children: t("apaczka.create.hoursTo") }),
-              /* @__PURE__ */ jsx(Input, { type: "time", value: form.hours_to, onChange: (e) => update({ hours_to: e.target.value }) })
+              /* @__PURE__ */ jsx(
+                Input,
+                {
+                  type: "time",
+                  value: form.hours_to,
+                  onChange: (e) => update({ hours_to: e.target.value })
+                }
+              )
             ] })
           ] })
         ] }),
@@ -444,7 +465,12 @@ const TrackingTimeline = ({ events }) => {
   }
   return /* @__PURE__ */ jsx("ol", { className: "flex flex-col gap-y-3", children: events.map((event, index) => /* @__PURE__ */ jsxs("li", { className: "grid grid-cols-[12px_1fr] gap-x-3", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center", children: [
-      /* @__PURE__ */ jsx("span", { className: clx("mt-1.5 size-2 rounded-full", DOT_COLORS[STATUS_COLORS[event.status]] ?? DOT_COLORS.grey) }),
+      /* @__PURE__ */ jsx(
+        "span",
+        {
+          className: clx("mt-1.5 size-2 rounded-full", DOT_COLORS[STATUS_COLORS[event.status]] ?? DOT_COLORS.grey)
+        }
+      ),
       index < events.length - 1 && /* @__PURE__ */ jsx("span", { className: "bg-ui-border-base mt-1 w-px flex-1" })
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col pb-1", children: [
@@ -508,10 +534,19 @@ const ShipmentCard = ({ shipment, orderId }) => {
         !isPending && /* @__PURE__ */ jsxs(DropdownMenu, { children: [
           /* @__PURE__ */ jsx(DropdownMenu.Trigger, { asChild: true, children: /* @__PURE__ */ jsx(IconButton, { size: "small", variant: "transparent", children: /* @__PURE__ */ jsx(EllipsisHorizontal, {}) }) }),
           /* @__PURE__ */ jsxs(DropdownMenu.Content, { align: "end", children: [
-            shipment.tracking_url && /* @__PURE__ */ jsx(DropdownMenu.Item, { asChild: true, children: /* @__PURE__ */ jsxs("a", { href: shipment.tracking_url, target: "_blank", rel: "noreferrer", className: "flex items-center gap-x-2", children: [
-              /* @__PURE__ */ jsx(ArrowUpRightOnBox, { className: "text-ui-fg-subtle" }),
-              t("apaczka.actions.track")
-            ] }) }),
+            shipment.tracking_url && /* @__PURE__ */ jsx(DropdownMenu.Item, { asChild: true, children: /* @__PURE__ */ jsxs(
+              "a",
+              {
+                href: shipment.tracking_url,
+                target: "_blank",
+                rel: "noreferrer",
+                className: "flex items-center gap-x-2",
+                children: [
+                  /* @__PURE__ */ jsx(ArrowUpRightOnBox, { className: "text-ui-fg-subtle" }),
+                  t("apaczka.actions.track")
+                ]
+              }
+            ) }),
             /* @__PURE__ */ jsxs(DropdownMenu.Item, { className: "flex items-center gap-x-2", onClick: refresh, disabled: sync.isPending, children: [
               /* @__PURE__ */ jsx(ArrowPath, { className: "text-ui-fg-subtle" }),
               t("apaczka.actions.refresh")

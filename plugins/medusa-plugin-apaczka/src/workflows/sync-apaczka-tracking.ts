@@ -1,4 +1,9 @@
-import { createOrderShipmentWorkflow, markOrderFulfillmentAsDeliveredWorkflow } from "@medusajs/medusa/core-flows"
+import {
+  acquireLockStep,
+  createOrderShipmentWorkflow,
+  markOrderFulfillmentAsDeliveredWorkflow,
+  releaseLockStep,
+} from "@medusajs/medusa/core-flows"
 import { createWorkflow, transform, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 
 import { ShipmentStatus } from "../lib/apaczka/statuses"
@@ -32,6 +37,10 @@ const STATUS_EVENTS: Partial<Record<ShipmentStatus, string>> = {
 export const syncApaczkaTrackingWorkflow = createWorkflow(
   syncApaczkaTrackingWorkflowId,
   (input: SyncApaczkaTrackingWorkflowInput) => {
+    // A webhook and the polling job may arrive at the same time.
+    const lockKey = transform({ input }, ({ input }) => `apaczka:tracking:${input.shipment_id}`)
+    acquireLockStep({ key: lockKey, timeout: 10, ttl: 120 })
+
     const result = applyTrackingEventsStep(input)
 
     when("apaczka-mark-shipped", result, (r) => r.mark_shipped).then(() => {
@@ -68,6 +77,8 @@ export const syncApaczkaTrackingWorkflow = createWorkflow(
       })
       emitEventsStep(events)
     })
+
+    releaseLockStep({ key: lockKey })
 
     return new WorkflowResponse(result)
   }
