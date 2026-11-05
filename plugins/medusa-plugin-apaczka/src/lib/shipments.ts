@@ -79,6 +79,7 @@ export async function createShipment(input: {
     cod_amount: payload.cod?.amount,
     declared_value: payload.shipment_value,
     created_at: new Date().toISOString(),
+    sender_postal_code: payload.address.sender.postal_code,
   }
 
   return { state, labels: labelsFor(state), order, payload }

@@ -16,7 +16,7 @@ import type { AdminCreateShipment } from "../../../../../validators"
  */
 export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
-  const options = apaczka.getOptions()
+  const options = await apaczka.getOptions()
   const context = await loadShipmentContext(req.scope, req.params.id)
   const overrides = req.validatedBody.overrides ?? {}
   const serviceId = overrides.service_id ?? context.option.service_id
@@ -53,7 +53,7 @@ export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaR
     orderId: context.order_id ?? undefined,
   })
 
-  const valuation = await apaczka.getClient().valuateOrder(payload)
+  const valuation = await (await apaczka.getClient()).valuateOrder(payload)
   const quote = valuation.price_table?.[String(serviceId)]
   if (!quote) {
     throw new MedusaError(
@@ -80,6 +80,7 @@ export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaR
       declared_value: payload.shipment_value ? payload.shipment_value / 100 : 0,
       point_id: payload.address.receiver.foreign_address_id ?? null,
     },
+    sender_postal_code: payload.address.sender.postal_code,
     option: context.option,
   })
 }

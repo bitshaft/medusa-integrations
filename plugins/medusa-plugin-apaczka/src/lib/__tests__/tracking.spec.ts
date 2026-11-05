@@ -72,7 +72,12 @@ describe("event normalization", () => {
 
   it("converts polling events and keeps the carrier status", () => {
     const [event] = eventsFromPolling([
-      { status: "PICKUP", status_original: "Nadana", description: "Przesyłka nadana", updated_at: "2026-07-20T16:02:00+00:00" },
+      {
+        status: "PICKUP",
+        status_original: "Nadana",
+        description: "Przesyłka nadana",
+        updated_at: "2026-07-20T16:02:00+00:00",
+      },
     ])
     expect(event).toMatchObject({ source: "polling", status: ShipmentStatus.POSTED, raw_status: "PICKUP (Nadana)" })
   })

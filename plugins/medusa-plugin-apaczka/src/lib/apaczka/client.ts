@@ -1,10 +1,4 @@
-import {
-  ApaczkaApiError,
-  ApaczkaError,
-  ApaczkaNetworkError,
-  ApaczkaResponseError,
-  ApaczkaTimeoutError,
-} from "./errors"
+import { ApaczkaApiError, ApaczkaError, ApaczkaNetworkError, ApaczkaResponseError, ApaczkaTimeoutError } from "./errors"
 import { signRequest } from "./signing"
 import type {
   ApaczkaBatchPickupPayload,
@@ -104,9 +98,7 @@ export class ApaczkaClient {
     this.appId = options.appId
     this.appSecret = options.appSecret
     this.environment = options.baseUrl ? "custom" : (options.environment ?? "production")
-    this.baseUrl = normalizeBaseUrl(
-      options.baseUrl ?? APACZKA_BASE_URLS[options.environment ?? "production"]
-    )
+    this.baseUrl = normalizeBaseUrl(options.baseUrl ?? APACZKA_BASE_URLS[options.environment ?? "production"])
     this.timeoutMs = options.timeoutMs ?? 15_000
     this.maxRetries = Math.max(0, options.maxRetries ?? 2)
     this.retryBaseDelayMs = options.retryBaseDelayMs ?? 300
@@ -130,11 +122,7 @@ export class ApaczkaClient {
   }
 
   /** Parcel points (lockers, PUDO) of one type, e.g. `INPOST`. */
-  async getPoints(
-    type: string,
-    payload: ApaczkaPointsPayload = {},
-    signal?: AbortSignal
-  ): Promise<ApaczkaPoint[]> {
+  async getPoints(type: string, payload: ApaczkaPointsPayload = {}, signal?: AbortSignal): Promise<ApaczkaPoint[]> {
     const response = await this.call<ApaczkaPointsResponse>(
       `points/${encodeURIComponent(type)}/`,
       { country_code: "PL", subtype: "", ...payload },
@@ -178,10 +166,7 @@ export class ApaczkaClient {
   }
 
   /** Paginated order list (the API allows at most 25 per page). */
-  async listOrders(
-    payload: ApaczkaOrdersListPayload = {},
-    signal?: AbortSignal
-  ): Promise<ApaczkaOrderSummary[]> {
+  async listOrders(payload: ApaczkaOrdersListPayload = {}, signal?: AbortSignal): Promise<ApaczkaOrderSummary[]> {
     const response = await this.call<{ orders: ApaczkaOrderSummary[] }>(
       "orders/",
       { page: payload.page ?? 1, limit: Math.min(payload.limit ?? 25, 25) },
@@ -211,11 +196,7 @@ export class ApaczkaClient {
 
   /** Collective hand-over (turn-in) confirmation for several orders, base64 PDF. */
   getTurnIn(orderIds: Array<number | string>, signal?: AbortSignal): Promise<ApaczkaTurnIn> {
-    return this.call(
-      "turn_in/",
-      { order_ids: orderIds.map(Number) },
-      { idempotent: true, signal }
-    )
+    return this.call("turn_in/", { order_ids: orderIds.map(Number) }, { idempotent: true, signal })
   }
 
   /* ---------------------------------------------------------------------- */
@@ -227,11 +208,7 @@ export class ApaczkaClient {
     payload: ApaczkaPickupHoursPayload,
     signal?: AbortSignal
   ): Promise<{ postal_code: string; days: ApaczkaPickupHoursDay[] }> {
-    const response = await this.call<ApaczkaPickupHours>(
-      "pickup_hours/",
-      payload,
-      { idempotent: true, signal }
-    )
+    const response = await this.call<ApaczkaPickupHours>("pickup_hours/", payload, { idempotent: true, signal })
     return { postal_code: response.postal_code, days: toArray(response.hours) }
   }
 
@@ -345,9 +322,7 @@ export class ApaczkaClient {
     }
 
     const text = await httpResponse.text()
-    this.logger?.debug?.(
-      `[apaczka] POST ${route} -> HTTP ${httpResponse.status} in ${this.now() - startedAt} ms`
-    )
+    this.logger?.debug?.(`[apaczka] POST ${route} -> HTTP ${httpResponse.status} in ${this.now() - startedAt} ms`)
 
     let body: ApaczkaEnvelope<T>
     try {

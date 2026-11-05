@@ -14,7 +14,7 @@ export default async function apaczkaRefreshServices(container: MedusaContainer)
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
 
   try {
-    const structure = await apaczka.getCatalog().getServiceStructure({ refresh: true })
+    const structure = await (await apaczka.getCatalog()).getServiceStructure({ refresh: true })
     logger.info(`[apaczka] Service structure refreshed: ${listServices(structure).length} services`)
   } catch (error) {
     logger.warn(`[apaczka] Could not refresh the service structure: ${(error as Error).message}`)

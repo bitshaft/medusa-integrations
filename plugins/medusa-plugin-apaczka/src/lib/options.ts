@@ -1,11 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { z } from "@medusajs/framework/zod"
 
-import type {
-  ApaczkaNotificationSettings,
-  ApaczkaOrderInput,
-  ApaczkaParcel,
-} from "./apaczka"
+import type { ApaczkaNotificationSettings, ApaczkaOrderInput, ApaczkaParcel } from "./apaczka"
 import type { ParcelContext } from "./parcels"
 
 /* ------------------------------------------------------------------------ */
@@ -78,8 +74,14 @@ const pickupSchema = z.object({
   /** `SELF` — you drop parcels off. `COURIER` — a courier collects them. */
   type: z.enum(["SELF", "COURIER"]).default("SELF"),
   /** Preferred courier window, `HH:MM`. */
-  hoursFrom: z.string().regex(/^\d{2}:\d{2}$/).default("09:00"),
-  hoursTo: z.string().regex(/^\d{2}:\d{2}$/).default("16:00"),
+  hoursFrom: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .default("09:00"),
+  hoursTo: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .default("16:00"),
   /** Use the first available pickup day at least this many days ahead. */
   minDaysAhead: z.number().int().nonnegative().default(0),
 })
@@ -199,8 +201,14 @@ export const pluginOptionsSchema = z.object({
     .default({ polling: true, markShipped: true, markDelivered: true }),
 
   /* Caching --------------------------------------------------------------- */
-  serviceStructureTtlMinutes: z.number().positive().default(24 * 60),
-  pointsTtlMinutes: z.number().positive().default(12 * 60),
+  serviceStructureTtlMinutes: z
+    .number()
+    .positive()
+    .default(24 * 60),
+  pointsTtlMinutes: z
+    .number()
+    .positive()
+    .default(12 * 60),
   /** Supplier → `points/{type}/` type, for suppliers whose code differs. */
   pointTypes: z.record(z.string(), z.string()).default({}),
 
@@ -208,9 +216,10 @@ export const pluginOptionsSchema = z.object({
   /** Replace the built-in parcel builder. */
   buildParcels: fn<(context: ParcelContext) => ApaczkaParcel[]>().optional(),
   /** Last-chance edit of the payload before it is priced or sent. */
-  transformOrder: fn<
-    (order: ApaczkaOrderInput, context: TransformOrderContext) => ApaczkaOrderInput | Promise<ApaczkaOrderInput>
-  >().optional(),
+  transformOrder:
+    fn<
+      (order: ApaczkaOrderInput, context: TransformOrderContext) => ApaczkaOrderInput | Promise<ApaczkaOrderInput>
+    >().optional(),
 })
 
 export type ApaczkaPluginOptionsInput = z.input<typeof pluginOptionsSchema>

@@ -49,7 +49,7 @@ export const applyTrackingEventsStep = createStep(
   async (input: ApplyTrackingEventsInput, { container }) => {
     const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
     const query = container.resolve(ContainerRegistrationKeys.QUERY)
-    const options = apaczka.getOptions()
+    const options = await apaczka.getOptions()
 
     const shipment = await apaczka.retrieveApaczkaShipment(input.shipment_id).catch(() => null)
     if (!shipment) {

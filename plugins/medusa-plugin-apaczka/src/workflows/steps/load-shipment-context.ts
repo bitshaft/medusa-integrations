@@ -44,10 +44,7 @@ export const loadShipmentContextStepId = "apaczka-load-shipment-context"
  * fulfillment: the service, the warehouse (with its full address), the
  * customer, the items and the order total.
  */
-export async function loadShipmentContext(
-  container: MedusaContainer,
-  fulfillmentId: string
-): Promise<ShipmentContext> {
+export async function loadShipmentContext(container: MedusaContainer, fulfillmentId: string): Promise<ShipmentContext> {
   const input = { fulfillment_id: fulfillmentId }
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
@@ -82,7 +79,9 @@ export async function loadShipmentContext(
   const returnRecord = (fulfillment as { return?: { id: string; order_id: string } | null }).return ?? null
   const orderId = (fulfillment as { order?: { id: string } | null }).order?.id ?? returnRecord?.order_id ?? null
 
-  const fromOption = parseFulfillmentOption((fulfillment as { shipping_option?: { data?: unknown } }).shipping_option?.data)
+  const fromOption = parseFulfillmentOption(
+    (fulfillment as { shipping_option?: { data?: unknown } }).shipping_option?.data
+  )
   const fromData = parseFulfillmentOption((data as Record<string, unknown>)[OPTION_KEY])
   const baseOption = fromData ?? fromOption
   if (!baseOption) {

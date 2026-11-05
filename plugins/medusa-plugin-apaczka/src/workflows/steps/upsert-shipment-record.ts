@@ -29,7 +29,10 @@ export const upsertShipmentRecordStep = createStep(
     const [existing] = await apaczka.listApaczkaShipments({ fulfillment_id: input.fulfillment_id })
     if (existing) {
       const updated = (await apaczka.updateApaczkaShipments({ id: existing.id, ...values })) as ShipmentRecord
-      return new StepResponse<ShipmentRecord, Compensation>(updated, { created: false, previous: existing as unknown as ShipmentRecord })
+      return new StepResponse<ShipmentRecord, Compensation>(updated, {
+        created: false,
+        previous: existing as unknown as ShipmentRecord,
+      })
     }
 
     const created = (await apaczka.createApaczkaShipments(values)) as ShipmentRecord
@@ -44,8 +47,10 @@ export const upsertShipmentRecordStep = createStep(
       await apaczka.deleteApaczkaShipments(compensation.id)
       return
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { events, created_at, updated_at, deleted_at, ...previous } = compensation.previous as unknown as Record<string, unknown>
+    const { events, created_at, updated_at, deleted_at, ...previous } = compensation.previous as unknown as Record<
+      string,
+      unknown
+    >
     await apaczka.updateApaczkaShipments(previous as never)
   }
 )
@@ -74,5 +79,6 @@ export function toRecord(input: UpsertShipmentRecordInput) {
     pickup_type: input.pickup?.type ?? null,
     pickup_date: input.pickup?.date ?? null,
     error: state.error ?? null,
+    metadata: state.sender_postal_code ? { sender_postal_code: state.sender_postal_code } : null,
   } as const
 }

@@ -10,11 +10,11 @@ import { resolveApaczka } from "../../../utils"
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
-  const structure = await apaczka.getCatalog().getServiceStructure({ refresh: req.query.refresh === "true" })
+  const structure = await (await apaczka.getCatalog()).getServiceStructure({ refresh: req.query.refresh === "true" })
 
   res.json({
     services: buildFulfillmentOptions(structure, {
-      ...apaczka.getOptions(),
+      ...(await apaczka.getOptions()),
       offerCodVariants: false,
       offerReturnVariants: false,
     }),

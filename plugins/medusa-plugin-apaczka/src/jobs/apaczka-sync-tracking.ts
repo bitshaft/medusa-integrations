@@ -24,7 +24,7 @@ export default async function apaczkaSyncTracking(container: MedusaContainer) {
   const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
 
-  if (!apaczka.getOptions().tracking.polling) {
+  if (!(await apaczka.getOptions()).tracking.polling) {
     return
   }
 
@@ -58,7 +58,8 @@ export default async function apaczkaSyncTracking(container: MedusaContainer) {
           }
         } catch (error) {
           failed++
-          const message = error instanceof ApaczkaApiError ? `${error.message} (status ${error.status})` : (error as Error).message
+          const message =
+            error instanceof ApaczkaApiError ? `${error.message} (status ${error.status})` : (error as Error).message
           logger.warn(`[apaczka] Tracking poll failed for shipment ${shipment.id}: ${message}`)
         }
       }

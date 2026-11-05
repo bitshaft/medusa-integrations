@@ -247,7 +247,11 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
     const option = this.optionForFulfillment(data, order, fulfillment.shipping_option_id ?? undefined)
 
     if (!option) {
-      return this.pending(shippingData, undefined, "Shipping method has no Apaczka service; create the shipment from the order page.")
+      return this.pending(
+        shippingData,
+        undefined,
+        "Shipping method has no Apaczka service; create the shipment from the order page."
+      )
     }
     if (extra.defer || this.options_.shipmentCreation === "manual") {
       return this.pending(shippingData, option)
@@ -354,17 +358,12 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
 
   // Medusa's base class types these as `Promise<never[]>` / `Promise<void>`; the
   // interface (IFulfillmentProvider) allows `any`.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getFulfillmentDocuments(data: Record<string, unknown>): Promise<any> {
     return this.documentsFor(data)
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getShipmentDocuments(data: Record<string, unknown>): Promise<any> {
     return this.documentsFor(data)
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getReturnDocuments(data: Record<string, unknown>): Promise<any> {
     return this.documentsFor(data)
   }
@@ -373,7 +372,6 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
    * Returns a document as `{ content (base64), content_type, file_name }`.
    * `documentType`: `label` (or `waybill`) and `dispatch_code`.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async retrieveDocuments(fulfillmentData: Record<string, unknown>, documentType: string): Promise<any> {
     const state = readFulfillmentData(fulfillmentData).apaczka
     if (!state?.order_id) {
@@ -417,8 +415,9 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
     if (direct) {
       return direct
     }
-    const methods = ((order as { shipping_methods?: Array<{ shipping_option_id?: string; data?: Record<string, unknown> }> })
-      ?.shipping_methods ?? [])
+    const methods =
+      (order as { shipping_methods?: Array<{ shipping_option_id?: string; data?: Record<string, unknown> }> })
+        ?.shipping_methods ?? []
     const method = methods.find((m) => m.shipping_option_id === shippingOptionId) ?? methods[0]
     return parseFulfillmentOption(method?.data?.[OPTION_KEY])
   }
@@ -617,7 +616,6 @@ function stripId<T extends { id?: unknown }>(value: T | null | undefined): Omit<
   if (!value) {
     return null
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...rest } = value
   return rest
 }

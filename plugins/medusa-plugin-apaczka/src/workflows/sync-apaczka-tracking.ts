@@ -64,10 +64,7 @@ export const syncApaczkaTrackingWorkflow = createWorkflow(
           is_return: result.is_return,
         }
         const specific = STATUS_EVENTS[result.status]
-        return [
-          { name: ApaczkaEvents.STATUS_CHANGED, data },
-          ...(specific ? [{ name: specific, data }] : []),
-        ]
+        return [{ name: ApaczkaEvents.STATUS_CHANGED, data }, ...(specific ? [{ name: specific, data }] : [])]
       })
       emitEventsStep(events)
     })

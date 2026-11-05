@@ -17,7 +17,7 @@ export async function POST(req: MedusaRequest<AdminTurnIn>, res: MedusaResponse)
     throw new MedusaError(MedusaError.Types.INVALID_DATA, "None of the selected shipments exist in Apaczka yet")
   }
 
-  const { turn_in } = await apaczka.getClient().getTurnIn(orderIds)
+  const { turn_in } = await (await apaczka.getClient()).getTurnIn(orderIds)
   sendDocument(res, {
     base64: turn_in,
     contentType: "application/pdf",

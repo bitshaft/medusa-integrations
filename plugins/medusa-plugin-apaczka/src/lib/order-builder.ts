@@ -58,7 +58,8 @@ export async function buildOrderPayload(input: BuildOrderInput): Promise<Apaczka
   }
 
   const content = renderTemplate(overrides.content ?? options.contentTemplate, input)
-  const comment = overrides.comment ?? (options.commentTemplate ? renderTemplate(options.commentTemplate, input) : undefined)
+  const comment =
+    overrides.comment ?? (options.commentTemplate ? renderTemplate(options.commentTemplate, input) : undefined)
 
   const parcels: ApaczkaParcel[] = overrides.parcels?.length
     ? overrides.parcels.map((parcel) => ({
@@ -152,7 +153,10 @@ function declaredValue(options: ApaczkaPluginOptions, itemsValue?: number): numb
 }
 
 /** Replaces `{display_id}`, `{order_id}` and `{items}` placeholders. */
-export function renderTemplate(template: string, input: Pick<BuildOrderInput, "displayId" | "orderId" | "items">): string {
+export function renderTemplate(
+  template: string,
+  input: Pick<BuildOrderInput, "displayId" | "orderId" | "items">
+): string {
   const items = input.items
     .map((item) => (item.title ? `${item.quantity}× ${item.title}` : ""))
     .filter(Boolean)

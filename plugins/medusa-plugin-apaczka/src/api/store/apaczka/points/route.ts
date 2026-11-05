@@ -13,18 +13,18 @@ import type { StorePointsQuery } from "../../../validators"
  */
 export async function GET(req: MedusaRequest<unknown, StorePointsQuery>, res: MedusaResponse) {
   const query = req.validatedQuery as StorePointsQuery
-  const points = await resolveApaczka(req)
-    .getCatalog()
-    .searchPoints({
-      type: query.type,
-      countryCode: query.country_code,
-      query: query.q,
-      latitude: query.lat,
-      longitude: query.lng,
-      cod: query.cod,
-      sending: query.sending,
-      limit: query.limit,
-    })
+  const points = await (
+    await resolveApaczka(req).getCatalog()
+  ).searchPoints({
+    type: query.type,
+    countryCode: query.country_code,
+    query: query.q,
+    latitude: query.lat,
+    longitude: query.lng,
+    cod: query.cod,
+    sending: query.sending,
+    limit: query.limit,
+  })
 
   res.setHeader("Cache-Control", "public, max-age=300")
   res.json({ points: points.map(toPublicPoint), count: points.length })

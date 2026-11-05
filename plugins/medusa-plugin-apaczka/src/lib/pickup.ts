@@ -22,8 +22,7 @@ export async function resolvePickup(input: {
   now?: Date
 }): Promise<ApaczkaOrderPickup> {
   const { option, pickup } = input
-  const wantsCourier =
-    option.pickup_courier === 2 || (option.pickup_courier === 1 && pickup.type === "COURIER")
+  const wantsCourier = option.pickup_courier === 2 || (option.pickup_courier === 1 && pickup.type === "COURIER")
 
   if (!wantsCourier || option.origin === "point") {
     return { type: "SELF" }

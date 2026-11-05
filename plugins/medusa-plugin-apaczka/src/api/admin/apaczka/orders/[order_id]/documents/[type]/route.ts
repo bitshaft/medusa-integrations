@@ -27,7 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     throw new MedusaError(MedusaError.Types.NOT_FOUND, `No shipment with Apaczka order ${orderId} in this store`)
   }
 
-  const client = apaczka.getClient()
+  const client = await apaczka.getClient()
 
   if (type === "dispatch_code") {
     const result = await client.getDispatchCode(orderId)

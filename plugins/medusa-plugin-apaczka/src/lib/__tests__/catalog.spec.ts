@@ -2,7 +2,13 @@ import { ApaczkaClient, type ApaczkaPoint } from "../apaczka"
 import { ApaczkaCatalog } from "../catalog"
 import { APP_ID, APP_SECRET, serviceStructure } from "./fixtures"
 
-const point = (id: string, city: string, lat: number, lng: number, extra: Partial<ApaczkaPoint> = {}): ApaczkaPoint => ({
+const point = (
+  id: string,
+  city: string,
+  lat: number,
+  lng: number,
+  extra: Partial<ApaczkaPoint> = {}
+): ApaczkaPoint => ({
   type: "INPOST",
   subtype: "parcel_locker",
   name: id,

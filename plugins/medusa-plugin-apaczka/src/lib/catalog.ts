@@ -136,9 +136,7 @@ export class ApaczkaCatalog {
   async findPoint(type: string, pointId: string, countryCode = "PL"): Promise<ApaczkaPoint | undefined> {
     const id = pointId.trim().toUpperCase()
     const points = await this.getPoints(type, countryCode)
-    return points.find(
-      (point) => point.foreign_address_id?.toUpperCase() === id || point.name?.toUpperCase() === id
-    )
+    return points.find((point) => point.foreign_address_id?.toUpperCase() === id || point.name?.toUpperCase() === id)
   }
 
   async searchPoints(query: PointSearchQuery): Promise<PointWithDistance[]> {
@@ -199,11 +197,7 @@ export class ApaczkaCatalog {
 
 /** Lowercase and strip Polish diacritics so "Łódź" matches "lodz". */
 function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/ł/g, "l")
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+  return value.toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "")
 }
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {

@@ -54,6 +54,8 @@ export type ApaczkaFulfillmentState = {
   cod_amount?: number
   declared_value?: number
   created_at?: string
+  /** Needed to look up courier pickup days later. */
+  sender_postal_code?: string
   error?: string
 }
 
@@ -72,9 +74,7 @@ export type ShipmentOverrides = {
     package_type?: string
     non_standard?: boolean
   }>
-  pickup?:
-    | { type: "SELF" }
-    | { type: "COURIER"; date: string; hours_from: string; hours_to: string }
+  pickup?: { type: "SELF" } | { type: "COURIER"; date: string; hours_from: string; hours_to: string }
   /** COD amount in major units; `0` disables COD. */
   cod_amount?: number
   /** Declared value in PLN; `0` disables insurance. */

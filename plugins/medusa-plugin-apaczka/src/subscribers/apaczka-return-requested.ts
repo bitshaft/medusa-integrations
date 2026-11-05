@@ -26,20 +26,21 @@ export default async function apaczkaReturnRequested({ event, container }: Subsc
     fields: ["id", "fulfillments.id", "fulfillments.provider_id", "fulfillments.data", "fulfillments.canceled_at"],
   })
 
-  const fulfillments = ((returns[0]?.fulfillments ?? []) as Array<{
-    id: string
-    provider_id: string | null
-    data: unknown
-    canceled_at: Date | null
-  } | null>).filter(
-    (f): f is NonNullable<typeof f> =>
-      Boolean(f) && !f!.canceled_at && Boolean(f!.provider_id?.startsWith("apaczka_"))
+  const fulfillments = (
+    (returns[0]?.fulfillments ?? []) as Array<{
+      id: string
+      provider_id: string | null
+      data: unknown
+      canceled_at: Date | null
+    } | null>
+  ).filter(
+    (f): f is NonNullable<typeof f> => Boolean(f) && !f!.canceled_at && Boolean(f!.provider_id?.startsWith("apaczka_"))
   )
 
   for (const fulfillment of fulfillments) {
     const state = readFulfillmentData(fulfillment.data).apaczka
     try {
-      if (apaczka.getOptions().shipmentCreation === "auto" && state?.state === "pending") {
+      if ((await apaczka.getOptions()).shipmentCreation === "auto" && state?.state === "pending") {
         await createApaczkaShipmentWorkflow(container).run({ input: { fulfillment_id: fulfillment.id } })
       } else {
         await syncApaczkaShipmentRecordWorkflow(container).run({ input: { fulfillment_id: fulfillment.id } })

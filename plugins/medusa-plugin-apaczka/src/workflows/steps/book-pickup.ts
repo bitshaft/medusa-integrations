@@ -41,9 +41,7 @@ export const bookPickupStep = createStep(
       throw new MedusaError(MedusaError.Types.NOT_FOUND, `Shipments not found: ${missing.join(", ")}`)
     }
 
-    const invalid = shipments.filter(
-      (s) => !s.apaczka_order_id || TERMINAL_STATUSES.has(s.status as ShipmentStatus)
-    )
+    const invalid = shipments.filter((s) => !s.apaczka_order_id || TERMINAL_STATUSES.has(s.status as ShipmentStatus))
     if (invalid.length) {
       throw new MedusaError(
         MedusaError.Types.NOT_ALLOWED,
@@ -54,7 +52,7 @@ export const bookPickupStep = createStep(
     }
 
     const window = { date: input.date, hour_from: input.hour_from, hour_to: input.hour_to }
-    const client = apaczka.getClient()
+    const client = await apaczka.getClient()
     const result =
       shipments.length === 1
         ? await client.orderPickup(shipments[0].apaczka_order_id!, window)

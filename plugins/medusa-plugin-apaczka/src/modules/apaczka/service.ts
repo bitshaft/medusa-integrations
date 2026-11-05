@@ -36,7 +36,6 @@ export default class ApaczkaModuleService extends MedusaService({
   protected readonly catalog_: ApaczkaCatalog
 
   constructor(container: InjectedDependencies, options: Record<string, unknown>) {
-    // eslint-disable-next-line prefer-rest-params
     super(...arguments)
     this.logger_ = container.logger
     this.options_ = resolveOptions(options)
@@ -57,15 +56,15 @@ export default class ApaczkaModuleService extends MedusaService({
     })
   }
 
-  getClient(): ApaczkaClient {
+  async getClient(): Promise<ApaczkaClient> {
     return this.client_
   }
 
-  getCatalog(): ApaczkaCatalog {
+  async getCatalog(): Promise<ApaczkaCatalog> {
     return this.catalog_
   }
 
-  getOptions(): ApaczkaPluginOptions {
+  async getOptions(): Promise<ApaczkaPluginOptions> {
     return this.options_
   }
 

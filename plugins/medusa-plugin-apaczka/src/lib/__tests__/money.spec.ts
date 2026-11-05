@@ -39,7 +39,11 @@ describe("money", () => {
       expect(priceForCustomer({ quote, currencyCode: "pln", pricing: pricing({ roundUpTo: 1 }) })).toBe(13)
       expect(priceForCustomer({ quote, currencyCode: "pln", pricing: pricing({ roundUpTo: 0.5 }) })).toBe(12.5)
       expect(
-        priceForCustomer({ quote: { price: 0, price_gross: 1200 }, currencyCode: "pln", pricing: pricing({ roundUpTo: 1 }) })
+        priceForCustomer({
+          quote: { price: 0, price_gross: 1200 },
+          currencyCode: "pln",
+          pricing: pricing({ roundUpTo: 1 }),
+        })
       ).toBe(12)
     })
 
@@ -54,9 +58,9 @@ describe("money", () => {
     })
 
     it("converts with configured exchange rates", () => {
-      expect(
-        priceForCustomer({ quote, currencyCode: "EUR", pricing: pricing({ exchangeRates: { eur: 0.25 } }) })
-      ).toBe(3.08)
+      expect(priceForCustomer({ quote, currencyCode: "EUR", pricing: pricing({ exchangeRates: { eur: 0.25 } }) })).toBe(
+        3.08
+      )
     })
   })
 

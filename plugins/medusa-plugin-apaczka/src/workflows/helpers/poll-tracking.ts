@@ -16,7 +16,7 @@ export async function pollShipmentTracking(container: MedusaContainer, shipmentI
   const shipment = await apaczka.retrieveApaczkaShipment(shipmentId)
 
   const events = shipment.waybill_number
-    ? eventsFromPolling((await apaczka.getClient().getTracking(shipment.waybill_number)).data)
+    ? eventsFromPolling((await (await apaczka.getClient()).getTracking(shipment.waybill_number)).data)
     : []
 
   const { result } = await syncApaczkaTrackingWorkflow(container).run({

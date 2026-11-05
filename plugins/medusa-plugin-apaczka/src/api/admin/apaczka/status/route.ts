@@ -12,12 +12,12 @@ import { resolveApaczka } from "../../../utils"
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
-  const options = apaczka.getOptions()
-  const client = apaczka.getClient()
+  const options = await apaczka.getOptions()
+  const client = await apaczka.getClient()
 
   let connection: { ok: boolean; services?: number; error?: string; authentication_error?: boolean }
   try {
-    const structure = await apaczka.getCatalog().getServiceStructure({ refresh: req.query.refresh === "true" })
+    const structure = await (await apaczka.getCatalog()).getServiceStructure({ refresh: req.query.refresh === "true" })
     connection = { ok: true, services: listServices(structure).length }
   } catch (error) {
     connection = {
@@ -44,9 +44,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       sender_locations: Object.keys(options.senderByLocation),
     },
     tracking: {
-      webhook_url: options.webhooks.backendUrl
-        ? options.webhooks.backendUrl.replace(/\/+$/, "") + WEBHOOK_PATH
-        : null,
+      webhook_url: options.webhooks.backendUrl ? options.webhooks.backendUrl.replace(/\/+$/, "") + WEBHOOK_PATH : null,
       polling: options.tracking.polling,
       mark_shipped: options.tracking.markShipped,
       mark_delivered: options.tracking.markDelivered,

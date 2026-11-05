@@ -18,7 +18,9 @@ describe("resolvePickup", () => {
   afterEach(() => jest.restoreAllMocks())
 
   it("uses SELF unless a courier is wanted or required", async () => {
-    await expect(resolvePickup({ client, option: byId("apaczka-21"), serviceId: 21, senderPostalCode: "00-001", pickup, now })).resolves.toEqual({
+    await expect(
+      resolvePickup({ client, option: byId("apaczka-21"), serviceId: 21, senderPostalCode: "00-001", pickup, now })
+    ).resolves.toEqual({
       type: "SELF",
     })
   })
@@ -55,7 +57,14 @@ describe("resolvePickup", () => {
 
   it("never books a courier for services without courier pickup", async () => {
     await expect(
-      resolvePickup({ client, option: byId("apaczka-41"), serviceId: 41, senderPostalCode: "00-001", pickup: { ...pickup, type: "COURIER" }, now })
+      resolvePickup({
+        client,
+        option: byId("apaczka-41"),
+        serviceId: 41,
+        senderPostalCode: "00-001",
+        pickup: { ...pickup, type: "COURIER" },
+        now,
+      })
     ).resolves.toEqual({ type: "SELF" })
   })
 

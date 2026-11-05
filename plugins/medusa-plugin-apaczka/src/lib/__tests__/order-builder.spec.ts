@@ -66,12 +66,17 @@ describe("buildOrderPayload", () => {
   })
 
   it("does not require a point just to price", async () => {
-    await expect(buildOrderPayload(input({ option: option("apaczka-41"), purpose: "valuation" }))).resolves.toBeDefined()
+    await expect(
+      buildOrderPayload(input({ option: option("apaczka-41"), purpose: "valuation" }))
+    ).resolves.toBeDefined()
   })
 
   it("adds COD in grosze and declares at least the COD value", async () => {
     const order = await buildOrderPayload(
-      input({ option: option("apaczka-21-cod"), options: options({ cod: { bankAccount: "PL61 1090 1014 0000 0712 1981 2874" } }) })
+      input({
+        option: option("apaczka-21-cod"),
+        options: options({ cod: { bankAccount: "PL61 1090 1014 0000 0712 1981 2874" } }),
+      })
     )
     expect(order.cod).toEqual({ amount: 12000, bankaccount: "PL61109010140000071219812874" })
     expect(order.shipment_value).toBe(12000)
@@ -99,7 +104,9 @@ describe("buildOrderPayload", () => {
           webhooks: { backendUrl: "https://api.shop.pl/" },
           defaultOptions: { "31": 1 },
           services: { "21": { options: { "19": true } } },
-          notifications: { new: { isReceiverEmail: true, isReceiverSms: false, isSenderEmail: false, isSenderSms: false } },
+          notifications: {
+            new: { isReceiverEmail: true, isReceiverSms: false, isSenderEmail: false, isSenderSms: false },
+          },
         }),
       })
     )
@@ -130,7 +137,10 @@ describe("buildOrderPayload", () => {
     const transformOrder = jest.fn((order) => ({ ...order, comment: "custom" }))
     const order = await buildOrderPayload(input({ options: options({ buildParcels, transformOrder }) }))
     expect(buildParcels).toHaveBeenCalledWith(expect.objectContaining({ serviceId: 21 }))
-    expect(transformOrder).toHaveBeenCalledWith(expect.any(Object), expect.objectContaining({ purpose: "shipment", isReturn: false }))
+    expect(transformOrder).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ purpose: "shipment", isReturn: false })
+    )
     expect(order.comment).toBe("custom")
     expect(order.shipment[0].weight).toBe(9)
   })

@@ -28,7 +28,7 @@ export const createApaczkaOrderStep = createStep(
   async (input: CreateApaczkaOrderStepInput, { container }) => {
     const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
-    const options = apaczka.getOptions()
+    const options = await apaczka.getOptions()
     const { context } = input
 
     if (context.canceled) {
@@ -60,7 +60,7 @@ export const createApaczkaOrderStep = createStep(
     const itemsValue = context.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
 
     const created = await createShipment({
-      client: apaczka.getClient(),
+      client: await apaczka.getClient(),
       logger,
       build: {
         options,
@@ -97,7 +97,7 @@ export const createApaczkaOrderStep = createStep(
     const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     try {
-      await apaczka.getClient().cancelOrder(apaczkaOrderId)
+      await (await apaczka.getClient()).cancelOrder(apaczkaOrderId)
       logger.warn(`[apaczka] Rolled back: canceled Apaczka order ${apaczkaOrderId}`)
     } catch (error) {
       logger.error(

@@ -1,4 +1,11 @@
-import { createStep, createWorkflow, StepResponse, transform, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
+import {
+  createStep,
+  createWorkflow,
+  StepResponse,
+  transform,
+  when,
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 import { ShipmentStatus } from "../lib/apaczka/statuses"
@@ -18,8 +25,10 @@ type FulfillmentSnapshot = {
   existed: boolean
 }
 
+export const readFulfillmentStateStepId = "apaczka-read-fulfillment-state"
+
 const readFulfillmentStep = createStep(
-  "apaczka-read-fulfillment-state",
+  readFulfillmentStateStepId,
   async (input: SyncApaczkaShipmentRecordInput, { container }) => {
     const query = container.resolve(ContainerRegistrationKeys.QUERY)
     const {
@@ -36,7 +45,8 @@ const readFulfillmentStep = createStep(
       fulfillment_id: input.fulfillment_id,
       order_id: (fulfillment as { order?: { id: string } | null } | undefined)?.order?.id ?? ret?.order_id ?? null,
       return_id: ret?.id ?? null,
-      state: state && fulfillment?.canceled_at ? { ...state, state: "canceled", status: ShipmentStatus.CANCELED } : state,
+      state:
+        state && fulfillment?.canceled_at ? { ...state, state: "canceled", status: ShipmentStatus.CANCELED } : state,
       canceled: Boolean(fulfillment?.canceled_at),
       existed: Boolean((fulfillment as { apaczka_shipment?: { id: string } | null } | undefined)?.apaczka_shipment?.id),
     }

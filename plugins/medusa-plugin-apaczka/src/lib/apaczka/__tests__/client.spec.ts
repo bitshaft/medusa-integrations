@@ -64,7 +64,9 @@ describe("ApaczkaClient", () => {
 
   it("throws ApaczkaApiError when the envelope status is not 200", async () => {
     const { fetch } = mockFetch(apiError(400, "Invalid signature"))
-    const error = await client(fetch).getServiceStructure().catch((e) => e)
+    const error = await client(fetch)
+      .getServiceStructure()
+      .catch((e) => e)
     expect(error).toBeInstanceOf(ApaczkaApiError)
     expect(error.status).toBe(400)
     expect(error.message).toBe("Invalid signature")
@@ -79,7 +81,11 @@ describe("ApaczkaClient", () => {
   })
 
   it("retries read calls on network errors and HTTP 5xx", async () => {
-    const { fetch } = mockFetch(new TypeError("socket hang up"), { status: 502, body: "<html>Bad gateway</html>" }, ok({ services: [] }))
+    const { fetch } = mockFetch(
+      new TypeError("socket hang up"),
+      { status: 502, body: "<html>Bad gateway</html>" },
+      ok({ services: [] })
+    )
     await expect(client(fetch).getServiceStructure()).resolves.toEqual({ services: [] })
     expect(fetch).toHaveBeenCalledTimes(3)
   })
@@ -93,8 +99,14 @@ describe("ApaczkaClient", () => {
   it.each([
     ["sendOrder", (c: ApaczkaClient) => c.sendOrder({} as never)],
     ["cancelOrder", (c: ApaczkaClient) => c.cancelOrder(1)],
-    ["orderPickup", (c: ApaczkaClient) => c.orderPickup(1, { date: "2026-01-01", hour_from: "09:00", hour_to: "12:00" })],
-    ["batchPickup", (c: ApaczkaClient) => c.batchPickup({ order_ids: [1], date: "2026-01-01", hour_from: "09:00", hour_to: "12:00" })],
+    [
+      "orderPickup",
+      (c: ApaczkaClient) => c.orderPickup(1, { date: "2026-01-01", hour_from: "09:00", hour_to: "12:00" }),
+    ],
+    [
+      "batchPickup",
+      (c: ApaczkaClient) => c.batchPickup({ order_ids: [1], date: "2026-01-01", hour_from: "09:00", hour_to: "12:00" }),
+    ],
   ])("never retries %s (not idempotent)", async (_name, call) => {
     const { fetch } = mockFetch(new TypeError("timeout-ish"), ok({}))
     await expect(call(client(fetch))).rejects.toBeInstanceOf(ApaczkaNetworkError)

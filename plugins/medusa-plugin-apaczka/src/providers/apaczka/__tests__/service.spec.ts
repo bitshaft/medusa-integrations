@@ -9,7 +9,13 @@ const logger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest
 const location = {
   id: "sloc_1",
   name: "Magazyn",
-  address: { address_1: "Magazynowa 1", city: "Warszawa", postal_code: "00-001", country_code: "pl", phone: "221112233" },
+  address: {
+    address_1: "Magazynowa 1",
+    city: "Warszawa",
+    postal_code: "00-001",
+    country_code: "pl",
+    phone: "221112233",
+  },
 }
 
 const shippingAddress = {
@@ -23,12 +29,15 @@ const shippingAddress = {
 }
 
 function createProvider(options: Record<string, unknown> = {}) {
-  return new ApaczkaFulfillmentProviderService({ logger: logger as never }, {
-    appId: APP_ID,
-    appSecret: APP_SECRET,
-    sender: { email: "shop@example.com", contactPerson: "Jan" },
-    ...options,
-  })
+  return new ApaczkaFulfillmentProviderService(
+    { logger: logger as never },
+    {
+      appId: APP_ID,
+      appSecret: APP_SECRET,
+      sender: { email: "shop@example.com", contactPerson: "Jan" },
+      ...options,
+    }
+  )
 }
 
 async function optionFor(provider: ApaczkaFulfillmentProviderService, id: string) {
@@ -80,7 +89,14 @@ describe("ApaczkaFulfillmentProviderService", () => {
           subtype: "parcel_locker",
           name: "WAW01M",
           foreign_address_id: "WAW01M",
-          address: { line1: "Marszałkowska 1", postal_code: "00-624", city: "Warszawa", country_code: "PL", latitude: "52", longitude: "21" },
+          address: {
+            line1: "Marszałkowska 1",
+            postal_code: "00-624",
+            city: "Warszawa",
+            country_code: "PL",
+            latitude: "52",
+            longitude: "21",
+          },
         },
       ])
       const provider = createProvider()
@@ -113,7 +129,9 @@ describe("ApaczkaFulfillmentProviderService", () => {
       const provider = createProvider()
       const option = await optionFor(provider, "apaczka-41")
       const cod = await optionFor(provider, "apaczka-41-cod")
-      await expect(provider.validateFulfillmentData(option, { point_id: "MISSING" }, {} as never)).rejects.toThrow("not found")
+      await expect(provider.validateFulfillmentData(option, { point_id: "MISSING" }, {} as never)).rejects.toThrow(
+        "not found"
+      )
       await expect(provider.validateFulfillmentData(cod, { point_id: "NOCOD" }, {} as never)).rejects.toThrow(
         "cash on delivery"
       )
@@ -123,7 +141,9 @@ describe("ApaczkaFulfillmentProviderService", () => {
       jest.spyOn(ApaczkaClient.prototype, "getPoints").mockRejectedValue(new Error("timeout"))
       const provider = createProvider()
       const option = await optionFor(provider, "apaczka-41")
-      await expect(provider.validateFulfillmentData(option, { point_id: "WAW01M" }, {} as never)).resolves.toMatchObject({
+      await expect(
+        provider.validateFulfillmentData(option, { point_id: "WAW01M" }, {} as never)
+      ).resolves.toMatchObject({
         point_id: "WAW01M",
       })
     })
@@ -220,15 +240,22 @@ describe("ApaczkaFulfillmentProviderService", () => {
         shipments_count: 1,
         supplier: "DPD",
       })
-      jest.spyOn(ApaczkaClient.prototype, "getOrder").mockResolvedValue({ price: "9.92", price_gross: "12.20" } as never)
+      jest
+        .spyOn(ApaczkaClient.prototype, "getOrder")
+        .mockResolvedValue({ price: "9.92", price_gross: "12.20" } as never)
       const provider = createProvider()
       const data = await shippingData(provider)
 
-      const result = await provider.createFulfillment(data, items, order as never, {
-        id: "ful_1",
-        location_id: "sloc_1",
-        delivery_address: shippingAddress,
-      } as never)
+      const result = await provider.createFulfillment(
+        data,
+        items,
+        order as never,
+        {
+          id: "ful_1",
+          location_id: "sloc_1",
+          delivery_address: shippingAddress,
+        } as never
+      )
 
       expect(send).toHaveBeenCalledTimes(1)
       expect(send.mock.calls[0][0]).toMatchObject({
@@ -237,7 +264,11 @@ describe("ApaczkaFulfillmentProviderService", () => {
         address: { sender: { line1: "Magazynowa 1" }, receiver: { email: "anna@example.com" } },
       })
       expect(result.labels).toEqual([
-        { tracking_number: "W123", tracking_url: "https://track/W123", label_url: "/admin/apaczka/orders/555/documents/waybill" },
+        {
+          tracking_number: "W123",
+          tracking_url: "https://track/W123",
+          label_url: "/admin/apaczka/orders/555/documents/waybill",
+        },
       ])
       expect(result.data.apaczka).toMatchObject({
         state: "created",
@@ -251,10 +282,15 @@ describe("ApaczkaFulfillmentProviderService", () => {
     it("defers in manual mode", async () => {
       const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
       const provider = createProvider({ shipmentCreation: "manual" })
-      const result = await provider.createFulfillment(await shippingData(provider), items, order as never, {
-        location_id: "sloc_1",
-        delivery_address: shippingAddress,
-      } as never)
+      const result = await provider.createFulfillment(
+        await shippingData(provider),
+        items,
+        order as never,
+        {
+          location_id: "sloc_1",
+          delivery_address: shippingAddress,
+        } as never
+      )
       expect(send).not.toHaveBeenCalled()
       expect(result).toMatchObject({ labels: [], data: { apaczka: { state: "pending", service_id: 21 } } })
     })
@@ -263,10 +299,15 @@ describe("ApaczkaFulfillmentProviderService", () => {
       const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
       const provider = createProvider()
       const data = await shippingData(provider)
-      const result = await provider.createFulfillment(data, items, order as never, {
-        location_id: "sloc_other",
-        delivery_address: shippingAddress,
-      } as never)
+      const result = await provider.createFulfillment(
+        data,
+        items,
+        order as never,
+        {
+          location_id: "sloc_other",
+          delivery_address: shippingAddress,
+        } as never
+      )
       expect(send).not.toHaveBeenCalled()
       expect(result.data.apaczka).toMatchObject({ state: "pending", error: expect.stringContaining("Sender address") })
     })
@@ -277,10 +318,15 @@ describe("ApaczkaFulfillmentProviderService", () => {
         .mockRejectedValue(new ApaczkaApiError(422, "Nieprawidłowy kod pocztowy", "order_send/"))
       const provider = createProvider()
       await expect(
-        provider.createFulfillment(await shippingData(provider), items, order as never, {
-          location_id: "sloc_1",
-          delivery_address: shippingAddress,
-        } as never)
+        provider.createFulfillment(
+          await shippingData(provider),
+          items,
+          order as never,
+          {
+            location_id: "sloc_1",
+            delivery_address: shippingAddress,
+          } as never
+        )
       ).rejects.toThrow("Apaczka rejected the shipment: Nieprawidłowy kod pocztowy")
     })
   })
@@ -294,10 +340,12 @@ describe("ApaczkaFulfillmentProviderService", () => {
     })
 
     it("explains why a shipped parcel cannot be canceled", async () => {
-      jest.spyOn(ApaczkaClient.prototype, "cancelOrder").mockRejectedValue(new ApaczkaApiError(400, "Order in transit", "cancel_order/555/"))
-      await expect(createProvider().cancelFulfillment({ apaczka: { state: "created", order_id: 555 } })).rejects.toThrow(
-        "cannot be canceled"
-      )
+      jest
+        .spyOn(ApaczkaClient.prototype, "cancelOrder")
+        .mockRejectedValue(new ApaczkaApiError(400, "Order in transit", "cancel_order/555/"))
+      await expect(
+        createProvider().cancelFulfillment({ apaczka: { state: "created", order_id: 555 } })
+      ).rejects.toThrow("cannot be canceled")
     })
 
     it("does nothing for pending shipments", async () => {

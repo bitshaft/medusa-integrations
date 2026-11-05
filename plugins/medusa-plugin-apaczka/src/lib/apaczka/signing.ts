@@ -40,10 +40,7 @@ export function signRequest(input: {
   const expires = String(input.expires ?? nowSeconds + ttl)
   const request = JSON.stringify(input.payload ?? {})
 
-  const signature = hmacHex(
-    input.appSecret,
-    `${input.appId}:${input.route}:${request}:${expires}`
-  )
+  const signature = hmacHex(input.appSecret, `${input.appId}:${input.route}:${request}:${expires}`)
 
   return { app_id: input.appId, request, expires, signature }
 }

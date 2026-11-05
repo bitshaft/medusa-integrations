@@ -68,7 +68,13 @@ describe("addresses", () => {
     const location = {
       id: "sloc_1",
       name: "Magazyn Warszawa",
-      address: { address_1: "Magazynowa 1", city: "Warszawa", postal_code: "00001", country_code: "pl", phone: "221234567" },
+      address: {
+        address_1: "Magazynowa 1",
+        city: "Warszawa",
+        postal_code: "00001",
+        country_code: "pl",
+        phone: "221234567",
+      },
     }
 
     it("merges overrides > location > defaults", () => {
@@ -92,7 +98,8 @@ describe("addresses", () => {
 
     it("prefers the location company over its name", () => {
       expect(
-        warehouseAddress({ location: { ...location, address: { ...location.address, company: "ACME" } }, defaults: {} }).name
+        warehouseAddress({ location: { ...location, address: { ...location.address, company: "ACME" } }, defaults: {} })
+          .name
       ).toBe("ACME")
     })
 

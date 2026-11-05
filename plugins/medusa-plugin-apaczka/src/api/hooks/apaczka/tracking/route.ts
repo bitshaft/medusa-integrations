@@ -20,7 +20,7 @@ import { resolveApaczka } from "../../../utils"
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
   const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
-  const options = apaczka.getOptions()
+  const options = await apaczka.getOptions()
 
   const rawBody = (req as MedusaRequest & { rawBody?: Buffer }).rawBody ?? JSON.stringify(req.body ?? {})
 

@@ -22,16 +22,19 @@
   "ts-node": {
     "swc": true
   },
-  "include": [
-    "**/*",
-    ".medusa/types/*"
-  ],
+  "include": ["**/*", ".medusa/types/*"],
   "exclude": [
     "node_modules",
     ".medusa/server",
     ".medusa/admin",
     "src/admin",
+    "storefront",
     ".cache",
-    "eslint.config.*"
+    "dist",
+    "coverage",
+    "eslint.config.*",
+    "jest.config.js",
+    "**/__tests__/**",
+    "integration-tests"
   ]
 }
