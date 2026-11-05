@@ -84,12 +84,27 @@ const pickupSchema = z.object({
   minDaysAhead: z.number().int().nonnegative().default(0),
 })
 
+/**
+ * Same fields, all optional and without defaults. (`.partial()` keeps
+ * defaults in zod 4, which would make every override reset the global
+ * value it doesn't mention.)
+ */
+function overrideOf<T extends z.ZodRawShape>(schema: z.ZodObject<T>) {
+  const shape = Object.fromEntries(
+    Object.entries(schema.shape).map(([key, field]) => {
+      const inner = field instanceof z.ZodDefault ? field.unwrap() : field
+      return [key, (inner as z.ZodType).optional()]
+    })
+  )
+  return z.object(shape) as unknown as z.ZodType<Partial<z.output<z.ZodObject<T>>>>
+}
+
 const serviceOverrideSchema = z.object({
   /** Shown in the admin when creating shipping options. */
   name: z.string().optional(),
-  pricing: pricingSchema.partial().optional(),
-  parcel: parcelSchema.partial().optional(),
-  pickup: pickupSchema.partial().optional(),
+  pricing: overrideOf(pricingSchema).optional(),
+  parcel: overrideOf(parcelSchema).optional(),
+  pickup: overrideOf(pickupSchema).optional(),
   /** Apaczka additional services (option ID → value) for this service. */
   options: z.record(z.string(), z.union([z.number(), z.string(), z.boolean()])).optional(),
 })
