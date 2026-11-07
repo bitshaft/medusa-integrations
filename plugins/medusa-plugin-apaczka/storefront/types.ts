@@ -13,7 +13,10 @@ export type ApaczkaPoint = {
   }
   latitude: number | null
   longitude: number | null
+  /** Short summary, e.g. `24/7` or `pon–pt 08:00–20:00`. */
   open_hours: string | null
+  /** Per-day hours: `mon`…`sun` → `[from, to][]`. */
+  open_hours_detail: Record<string, Array<[string, string]>> | null
   description: string | null
   image_url: string | null
   /** Accepts cash on delivery. */

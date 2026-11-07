@@ -9,14 +9,14 @@ import { options, serviceStructure } from "./fixtures"
 describe("fulfillment options", () => {
   it("builds standard, COD and return variants", () => {
     const result = buildFulfillmentOptions(serviceStructure, options())
-    // Sorted by supplier and name: "DPD Europe" < "DPD Kurier" < "INPOST Paczkomat".
+    // Sorted by supplier and name: "DPD DPD Kurier" < "DPD DPD Max" < "INPOST InPost Paczkomat".
     expect(result.map((o) => o.id)).toEqual([
-      "apaczka-22",
-      "apaczka-22-cod",
-      "apaczka-22-return",
       "apaczka-21",
       "apaczka-21-cod",
       "apaczka-21-return",
+      "apaczka-22",
+      "apaczka-22-cod",
+      "apaczka-22-return",
       "apaczka-41",
       "apaczka-41-cod",
     ])
@@ -54,6 +54,11 @@ describe("fulfillment options", () => {
     expect(result).toEqual([expect.objectContaining({ id: "apaczka-41", name: "Paczkomat InPost 24/7" })])
   })
 
+  it("marks international services that share a domestic name", () => {
+    const international = buildFulfillmentOptions(serviceStructure, options()).find((o) => o.id === "apaczka-22")!
+    expect(international.name).toBe("DPD Max (international)")
+  })
+
   it("parses stored option data and rejects foreign data", () => {
     const [option] = buildFulfillmentOptions(serviceStructure, options())
     expect(parseFulfillmentOption(JSON.parse(JSON.stringify(option)))).toEqual(option)
@@ -67,6 +72,12 @@ describe("fulfillment options", () => {
     expect(resolvePointsType("POCZTA POLSKA", {}, ["POCZTA"])).toBe("POCZTA")
     expect(resolvePointsType("ORLEN", { ORLEN: "PWR" }, [])).toBe("PWR")
     expect(resolvePointsType("GLS", {}, [])).toBe("GLS")
+    // Real suppliers from production service_structure
+    const real = ["UPS", "INPOST", "POCZTA", "DHL_PARCEL", "DPD", "PWR", "CBL", "PACKETA", "DHL_INT", "GLS"]
+    expect(resolvePointsType("PP_PACKETA", {}, real)).toBe("PACKETA")
+    expect(resolvePointsType("DHL", {}, real)).toBe("DHL_PARCEL")
+    expect(resolvePointsType("PWR", {}, real)).toBe("PWR")
+    expect(resolvePointsType("DHL_INT", {}, real)).toBe("DHL_INT")
     expect(resolvePointsType("", {}, [])).toBeUndefined()
   })
 

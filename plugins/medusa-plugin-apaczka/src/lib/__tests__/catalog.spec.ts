@@ -1,5 +1,6 @@
 import { ApaczkaClient, type ApaczkaPoint } from "../apaczka"
 import { ApaczkaCatalog } from "../catalog"
+import { summarizeOpenHours, toPublicPoint } from "../points"
 import { APP_ID, APP_SECRET, serviceStructure } from "./fixtures"
 
 const point = (
@@ -111,5 +112,63 @@ describe("ApaczkaCatalog", () => {
     await catalog.getPoints("inpost", "pl")
     await catalog.getPoints("INPOST", "CZ")
     expect(getPoints).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe("toPublicPoint", () => {
+  // Shape taken from a real production `points/INPOST/` response.
+  const real = {
+    type: "INPOST",
+    subtype: "parcel_locker",
+    name: "Przy sklepie Lewiatan",
+    foreign_address_id: "ADA01M",
+    address: {
+      line1: "Kościuszki 27",
+      line2: null as unknown as string,
+      postal_code: "21-412",
+      city: "Adamów",
+      country_code: "PL",
+      longitude: "22.26405000",
+      latitude: "51.73834000",
+    },
+    image_url: null as unknown as string,
+    open_hours: Object.fromEntries(
+      ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((d) => [d, [["00:00", "23:59"]]])
+    ),
+    option_cod: true,
+    option_send: true,
+    option_deliver: true,
+    additional_info: "",
+    distance: 0,
+  }
+
+  it("maps a real InPost point", () => {
+    expect(toPublicPoint(real)).toMatchObject({
+      id: "ADA01M",
+      name: "Przy sklepie Lewiatan",
+      address: { line1: "Kościuszki 27", city: "Adamów" },
+      latitude: 51.73834,
+      longitude: 22.26405,
+      open_hours: "24/7",
+      image_url: null,
+      cod: true,
+    })
+    expect(toPublicPoint(real).address).not.toHaveProperty("line2")
+  })
+
+  it("summarizes weekly opening hours", () => {
+    expect(
+      summarizeOpenHours({
+        mon: [["08:00", "20:00"]],
+        tue: [["08:00", "20:00"]],
+        wed: [["08:00", "20:00"]],
+        thu: [["08:00", "20:00"]],
+        fri: [["08:00", "20:00"]],
+        sat: [["09:00", "14:00"]],
+        sun: [],
+      })
+    ).toBe("pon–pt 08:00–20:00, sob 09:00–14:00")
+    expect(summarizeOpenHours("pn-pt 9-17")).toBe("pn-pt 9-17")
+    expect(summarizeOpenHours(null)).toBeNull()
   })
 })

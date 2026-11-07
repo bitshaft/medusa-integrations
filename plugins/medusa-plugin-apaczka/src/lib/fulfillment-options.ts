@@ -96,7 +96,9 @@ export function describeService(
     flag("door_to_door") !== 1 &&
     flag("door_to_point") !== 1
   const supplier = String(service.supplier ?? "").trim()
-  const displayName = options.services[String(serviceId)]?.name ?? `${supplier} ${service.name}`.trim()
+  const domestic = service.domestic === undefined ? true : flag("domestic") === 1
+  const displayName =
+    options.services[String(serviceId)]?.name ?? defaultName(String(service.name ?? ""), supplier, domestic)
 
   return {
     id: fulfillmentOptionId(serviceId, "standard"),
@@ -110,7 +112,7 @@ export function describeService(
     // A service that can do both is treated as door delivery; point
     // delivery is chosen per order by sending a `point_id`.
     destination: toPoint && !toDoor ? "point" : "door",
-    domestic: service.domestic === undefined ? true : flag("domestic") === 1,
+    domestic,
     pickup_courier: clampFlag(flag("pickup_courier")),
     points_type: resolvePointsType(supplier, options.pointTypes, pointTypes),
   }
@@ -118,8 +120,9 @@ export function describeService(
 
 /**
  * Maps a supplier to its `points/{type}/` code: explicit option first, then
- * an exact match in the account's `points_type` list, then a prefix match,
- * then the supplier code itself.
+ * an exact match in the account's `points_type` list, then a type the
+ * supplier code contains (`PP_PACKETA` → `PACKETA`), then a prefix match
+ * (`DHL` → `DHL_PARCEL`), then the supplier code itself.
  */
 export function resolvePointsType(
   supplier: string,
@@ -137,6 +140,10 @@ export function resolvePointsType(
   const exact = available.find((type) => type.toUpperCase() === upper)
   if (exact) {
     return exact
+  }
+  const contained = available.find((type) => upper.includes(type.toUpperCase()))
+  if (contained) {
+    return contained
   }
   const firstWord = upper.split(/[\s_-]+/)[0]
   const prefix = available.find((type) => type.toUpperCase().startsWith(firstWord))
@@ -167,6 +174,19 @@ export function parseFulfillmentOption(data: unknown): ApaczkaFulfillmentOption 
     pickup_courier: clampFlag(Number(candidate.pickup_courier ?? 1)),
     points_type: candidate.points_type,
   }
+}
+
+/**
+ * Apaczka service names already include the carrier ("DPD Kurier", "InPost
+ * Paczkomat"). Some names repeat for domestic and international variants, so
+ * those get a suffix.
+ */
+function defaultName(name: string, supplier: string, domestic: boolean): string {
+  const base = name.trim() || supplier
+  if (domestic || /zagranic|europ|international|int/i.test(base)) {
+    return base
+  }
+  return `${base} (international)`
 }
 
 function clampFlag(value: number): 0 | 1 | 2 {

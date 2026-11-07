@@ -49,7 +49,7 @@ export const serviceStructure: ApaczkaServiceStructure = {
   services: {
     "0": {
       service_id: "21",
-      name: "Kurier",
+      name: "DPD Kurier",
       supplier: "DPD",
       domestic: "1",
       pickup_courier: "1",
@@ -60,7 +60,7 @@ export const serviceStructure: ApaczkaServiceStructure = {
     },
     "1": {
       service_id: "41",
-      name: "Paczkomat",
+      name: "InPost Paczkomat",
       supplier: "INPOST",
       domestic: "1",
       pickup_courier: "0",
@@ -71,7 +71,7 @@ export const serviceStructure: ApaczkaServiceStructure = {
     },
     "2": {
       service_id: "22",
-      name: "Europe",
+      name: "DPD Max",
       supplier: "DPD",
       domestic: "0",
       pickup_courier: "2",

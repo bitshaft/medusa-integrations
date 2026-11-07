@@ -148,7 +148,7 @@ export function PointPicker(props: PointPickerProps) {
         fillColor: isSelected ? "var(--apaczka-accent, #e6007e)" : "#ffffff",
         fillOpacity: 1,
       })
-        .bindTooltip(`${point.name} · ${point.address.line1}, ${point.address.city}`)
+        .bindTooltip(`${point.id} · ${point.address.line1}, ${point.address.city}`)
         .on("click", () => onChangeRef.current(point))
         .addTo(layer)
     }
@@ -219,9 +219,10 @@ export function PointPicker(props: PointPickerProps) {
               >
                 <div style={{ minWidth: 0 }}>
                   <div style={styles.itemTitle}>
-                    {point.name}
+                    {point.id}
                     {point.cod && <span style={styles.tag}>{labels.cod}</span>}
                   </div>
+                  {point.name && point.name !== point.id && <div style={styles.itemText}>{point.name}</div>}
                   <div style={styles.itemText}>
                     {point.address.line1}, {point.address.postal_code} {point.address.city}
                   </div>
