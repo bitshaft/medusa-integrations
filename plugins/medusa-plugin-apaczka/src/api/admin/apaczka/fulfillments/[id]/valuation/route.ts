@@ -5,7 +5,7 @@ import { customerAddress, warehouseAddress } from "../../../../../../lib/address
 import { buildOrderPayload } from "../../../../../../lib/order-builder"
 import { buildParcels } from "../../../../../../lib/parcels"
 import { optionsForService } from "../../../../../../lib/options"
-import { loadShipmentContext } from "../../../../../../workflows/steps/load-shipment-context"
+import { codAmountForContext, loadShipmentContext } from "../../../../../../workflows/steps/load-shipment-context"
 import { resolveApaczka } from "../../../../../utils"
 import type { AdminCreateShipment } from "../../../../../validators"
 
@@ -47,7 +47,10 @@ export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaR
     ),
     items,
     itemsValue,
-    codAmount: context.order_total || itemsValue,
+    codAmount:
+      context.option.cod && !context.option.is_return
+        ? codAmountForContext(context, options.pricing.exchangeRates)
+        : undefined,
     overrides,
     displayId: context.display_id ?? undefined,
     orderId: context.order_id ?? undefined,

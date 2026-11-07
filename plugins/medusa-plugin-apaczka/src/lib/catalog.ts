@@ -1,3 +1,5 @@
+import { MedusaError } from "@medusajs/framework/utils"
+
 import {
   ApaczkaClient,
   type ApaczkaLogger,
@@ -47,6 +49,13 @@ export class ApaczkaCatalog {
     private readonly config: {
       serviceStructureTtlMs: number
       pointsTtlMs: number
+      /**
+       * Countries points may be fetched for (ISO alpha-2). The store API is
+       * public, so anything else is rejected before it reaches Apaczka.
+       */
+      pointCountries?: string[]
+      /** How many type/country point lists to keep in memory. Default 12. */
+      maxPointLists?: number
       logger?: ApaczkaLogger
       now?: () => number
     }
@@ -100,10 +109,42 @@ export class ApaczkaCatalog {
     return toArray(structure.points_type as Record<string, string> | string[] | undefined).map(String)
   }
 
+  /**
+   * Rejects point types the account does not have and countries that are not
+   * allowed, so public callers can't make the server call Apaczka with
+   * made-up values or fill memory with lists nobody needs.
+   */
+  async assertPointQuery(type: string, countryCode: string): Promise<{ type: string; countryCode: string }> {
+    const normalizedType = type.trim().toUpperCase()
+    const normalizedCountry = countryCode.trim().toUpperCase()
+
+    const allowedCountries = (this.config.pointCountries ?? ["PL"]).map((c) => c.toUpperCase())
+    if (!/^[A-Z]{2}$/.test(normalizedCountry) || !allowedCountries.includes(normalizedCountry)) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `Parcel points are not available for country "${countryCode}". Allowed: ${allowedCountries.join(", ")}.`
+      )
+    }
+
+    const types = (await this.getPointTypes()).map((t) => t.toUpperCase())
+    if (!types.includes(normalizedType)) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `Unknown parcel point type "${type}". Available: ${types.join(", ") || "none"}.`
+      )
+    }
+
+    return { type: normalizedType, countryCode: normalizedCountry }
+  }
+
   async getPoints(type: string, countryCode = "PL"): Promise<ApaczkaPoint[]> {
-    const key = `${type.toUpperCase()}:${countryCode.toUpperCase()}`
+    const query = await this.assertPointQuery(type, countryCode)
+    const key = `${query.type}:${query.countryCode}`
     const cached = this.points.get(key)
     if (cached && cached.expiresAt > this.now()) {
+      // Refresh recency for the size-capped cache.
+      this.points.delete(key)
+      this.points.set(key, cached)
       return cached.value
     }
 
@@ -113,9 +154,14 @@ export class ApaczkaCatalog {
     }
 
     const request = this.client
-      .getPoints(type.toUpperCase(), { country_code: countryCode.toUpperCase() })
+      .getPoints(query.type, { country_code: query.countryCode })
       .then((value) => {
+        this.points.delete(key)
         this.points.set(key, { value, expiresAt: this.now() + this.config.pointsTtlMs })
+        const max = this.config.maxPointLists ?? 12
+        while (this.points.size > max) {
+          this.points.delete(this.points.keys().next().value as string)
+        }
         return value
       })
       .catch((error) => {

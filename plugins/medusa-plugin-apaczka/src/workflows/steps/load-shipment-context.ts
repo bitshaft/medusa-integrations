@@ -5,6 +5,9 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import type { MedusaAddressLike, StockLocationLike } from "../../lib/addresses"
 import { type ApaczkaFulfillmentData, readFulfillmentData } from "../../lib/data"
 import { type ApaczkaFulfillmentOption, parseFulfillmentOption } from "../../lib/fulfillment-options"
+import { codShareForShipment } from "../../lib/cod"
+import { APACZKA_MODULE } from "../../modules/apaczka"
+import type ApaczkaModuleService from "../../modules/apaczka/service"
 
 export type ShipmentContextItem = {
   line_item_id: string | null
@@ -33,6 +36,31 @@ export type ShipmentContext = {
   items: ShipmentContextItem[]
   canceled: boolean
   shipped: boolean
+  /** What cash on delivery for this shipment is based on. */
+  cod: {
+    order_total: number
+    paid_total: number
+    currency_code: string
+    shipment_items_value: number
+    order_items_value: number
+    is_last_shipment: boolean
+    /** COD already set on the order's other active shipments, PLN. */
+    already_scheduled_pln: number
+  }
+}
+
+/** Cash on delivery this shipment should collect, in PLN. */
+export function codAmountForContext(context: ShipmentContext, exchangeRates: Record<string, number>): number {
+  return codShareForShipment({
+    orderTotal: context.cod.order_total,
+    paidTotal: context.cod.paid_total,
+    currencyCode: context.cod.currency_code,
+    exchangeRates,
+    shipmentItemsValue: context.cod.shipment_items_value,
+    orderItemsValue: context.cod.order_items_value,
+    isLastShipment: context.cod.is_last_shipment,
+    alreadyScheduledPln: context.cod.already_scheduled_pln,
+  })
 }
 
 const OPTION_KEY = "apaczka_option"
@@ -112,10 +140,15 @@ export async function loadShipmentContext(container: MedusaContainer, fulfillmen
               "display_id",
               "email",
               "total",
+              "currency_code",
+              "summary.*",
               "shipping_address.*",
               "items.id",
               "items.title",
               "items.unit_price",
+              "items.quantity",
+              "items.requires_shipping",
+              "items.detail.fulfilled_quantity",
               "items.variant.weight",
               "items.variant.length",
               "items.variant.width",
@@ -143,6 +176,34 @@ export async function loadShipmentContext(container: MedusaContainer, fulfillmen
     }
   })
 
+  // Cash on delivery inputs: what is still owed, and what other shipments
+  // of this order already collect.
+  const shippable = [...orderItems.values()].filter((item) => item.requires_shipping !== false)
+  const orderItemsValue = shippable.reduce(
+    (sum, item) => sum + Number(item.unit_price ?? 0) * Number(item.quantity ?? 0),
+    0
+  )
+  const isLastShipment = shippable.every(
+    (item) =>
+      Number((item.detail as { fulfilled_quantity?: number } | undefined)?.fulfilled_quantity ?? 0) >=
+      Number(item.quantity ?? 0)
+  )
+  const summary = (order?.summary ?? {}) as { paid_total?: number | string; refunded_total?: number | string }
+  const paidTotal = Number(summary.paid_total ?? 0) - Number(summary.refunded_total ?? 0)
+
+  let alreadyScheduledPln = 0
+  if (orderId && !option.is_return) {
+    const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
+    const others = await apaczka.listApaczkaShipments(
+      { order_id: orderId, is_return: false },
+      { select: ["fulfillment_id", "status", "cod_amount"] }
+    )
+    alreadyScheduledPln =
+      others
+        .filter((s) => s.fulfillment_id !== fulfillment.id && s.status !== "canceled")
+        .reduce((sum, s) => sum + Number(s.cod_amount ?? 0), 0) / 100
+  }
+
   const shippingAddress = (order?.shipping_address as MedusaAddressLike | null | undefined) ?? null
   const deliveryAddress = (fulfillment.delivery_address as MedusaAddressLike | null) ?? null
 
@@ -163,6 +224,15 @@ export async function loadShipmentContext(container: MedusaContainer, fulfillmen
     items,
     canceled: Boolean(fulfillment.canceled_at),
     shipped: Boolean(fulfillment.shipped_at),
+    cod: {
+      order_total: Number(order?.total ?? 0),
+      paid_total: Number.isFinite(paidTotal) ? Math.max(0, paidTotal) : 0,
+      currency_code: String(order?.currency_code ?? "pln"),
+      shipment_items_value: items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0),
+      order_items_value: orderItemsValue,
+      is_last_shipment: isLastShipment,
+      already_scheduled_pln: alreadyScheduledPln,
+    },
   }
 
   return context

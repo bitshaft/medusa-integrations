@@ -52,6 +52,7 @@ export default class ApaczkaModuleService extends MedusaService({
     this.catalog_ = new ApaczkaCatalog(this.client_, {
       serviceStructureTtlMs: this.options_.serviceStructureTtlMinutes * 60_000,
       pointsTtlMs: this.options_.pointsTtlMinutes * 60_000,
+      pointCountries: this.options_.pointCountries,
       logger: container.logger,
     })
   }
@@ -71,6 +72,10 @@ export default class ApaczkaModuleService extends MedusaService({
   /**
    * Stores tracking events that are not stored yet and returns only the new
    * ones. Safe to call repeatedly with overlapping data.
+   *
+   * Webhooks and polling report the same change in different vocabularies,
+   * so an event is also skipped when the other source already recorded the
+   * same status within a few minutes (see `selectNewEvents`).
    */
   async recordTrackingEvents(shipmentId: string, events: TrackingEventInput[]) {
     if (!events.length) {
@@ -83,19 +88,19 @@ export default class ApaczkaModuleService extends MedusaService({
     }))
 
     const existing = await this.listApaczkaTrackingEvents(
-      { shipment_id: shipmentId, fingerprint: withFingerprint.map((e) => e.fingerprint) },
-      { select: ["fingerprint"] }
+      { shipment_id: shipmentId },
+      { select: ["fingerprint", "source", "status", "occurred_at"] }
     )
-    const known = new Set(existing.map((e) => e.fingerprint))
 
-    const seen = new Set<string>()
-    const fresh = withFingerprint.filter((event) => {
-      if (known.has(event.fingerprint) || seen.has(event.fingerprint)) {
-        return false
-      }
-      seen.add(event.fingerprint)
-      return true
-    })
+    const fresh = selectNewEvents(
+      withFingerprint,
+      existing.map((e) => ({
+        fingerprint: e.fingerprint,
+        source: e.source,
+        status: e.status as ShipmentStatus,
+        occurred_at: new Date(e.occurred_at),
+      }))
+    )
 
     if (!fresh.length) {
       return []
@@ -114,6 +119,42 @@ export default class ApaczkaModuleService extends MedusaService({
       }))
     )
   }
+}
+
+/** Events from different sources within this window are the same change. */
+export const CROSS_SOURCE_WINDOW_MS = 15 * 60_000
+
+type EventKey = Pick<TrackingEventInput, "source" | "status" | "occurred_at"> & { fingerprint: string }
+
+/**
+ * Returns the candidates worth storing: not already stored (by fingerprint),
+ * not repeated within the batch, and not a copy of an event the *other*
+ * source already reported (same status, within `CROSS_SOURCE_WINDOW_MS`).
+ */
+export function selectNewEvents<T extends EventKey>(candidates: T[], existing: EventKey[]): T[] {
+  const accepted: EventKey[] = [...existing]
+  const fingerprints = new Set(existing.map((e) => e.fingerprint))
+  const result: T[] = []
+
+  for (const event of candidates) {
+    if (fingerprints.has(event.fingerprint)) {
+      continue
+    }
+    const mirrored = accepted.some(
+      (other) =>
+        other.source !== event.source &&
+        other.status === event.status &&
+        Math.abs(other.occurred_at.getTime() - event.occurred_at.getTime()) <= CROSS_SOURCE_WINDOW_MS
+    )
+    if (mirrored) {
+      continue
+    }
+    fingerprints.add(event.fingerprint)
+    accepted.push(event)
+    result.push(event)
+  }
+
+  return result
 }
 
 function fingerprint(event: TrackingEventInput): string {

@@ -139,9 +139,15 @@ point validated          (auto or from admin)          status changes           
   order page. That lets them check the price and adjust parcels, pickup, COD
   or the point first.
 - **Sender address.** Built from the stock location's address, merged with
-  `sender` (global defaults) and `senderByLocation` (per location). If the
-  provider can't resolve a full sender, the shipment waits in the order panel
-  with the reason shown.
+  `sender` (global defaults) and `senderByLocation` (per location).
+- **Cash on delivery.** Each parcel collects only what is still unpaid. Split
+  orders are divided across parcels so the total is never collected twice.
+- **What runs where.** Medusa's fulfillment provider can't see payments,
+  other shipments of the order or the full stock location. So COD shipments,
+  and shipments whose sender needs the stock location's address, are created
+  by the plugin a moment after the fulfillment, through the same workflow as
+  the order panel. If Apaczka rejects one, the reason shows in the order
+  panel with a button to retry.
 - **Returns.** Return shipping options work like outbound ones. The return
   label is created right after the return is requested (or by hand in manual
   mode).

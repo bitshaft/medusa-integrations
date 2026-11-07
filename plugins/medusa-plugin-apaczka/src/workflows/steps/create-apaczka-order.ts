@@ -8,7 +8,7 @@ import type { ShipmentOverrides } from "../../lib/data"
 import { type CreatedShipment, createShipment } from "../../lib/shipments"
 import { APACZKA_MODULE } from "../../modules/apaczka"
 import type ApaczkaModuleService from "../../modules/apaczka/service"
-import type { ShipmentContext } from "./load-shipment-context"
+import { codAmountForContext, type ShipmentContext } from "./load-shipment-context"
 
 export type CreateApaczkaOrderStepInput = {
   context: ShipmentContext
@@ -76,7 +76,10 @@ export const createApaczkaOrderStep = createStep(
           height: item.variant?.height,
         })),
         itemsValue,
-        codAmount: context.order_total || itemsValue,
+        codAmount:
+          context.option.cod && !context.option.is_return
+            ? codAmountForContext(context, options.pricing.exchangeRates)
+            : undefined,
         overrides: input.overrides,
         displayId: context.display_id ?? undefined,
         orderId: context.order_id ?? undefined,

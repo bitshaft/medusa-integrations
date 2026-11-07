@@ -99,8 +99,13 @@ pickup always use `SELF`. The date is the first available day from Apaczka's
 | `insurance.mode`    | `"none"` | `order_total`: declare the fulfilled items' value; `fixed`: use `insurance.amount` |
 | `insurance.amount`  | —        | PLN, for `fixed`                                                                   |
 
-COD options collect the order total. The declared value is always at least
-the COD amount.
+COD shipments collect only what the customer still owes (the order total
+minus payments), converted to PLN with `pricing.exchangeRates` for other
+currencies. When an order ships in several parcels, each one collects a
+share proportional to its items' value, and the last one collects the rest,
+so the parcels add up exactly to what is owed. Staff can change the amount
+when creating a shipment by hand. The declared value is always at least the
+COD amount.
 
 ## Per-service overrides (`services`)
 
@@ -130,11 +135,12 @@ global options.
 
 ## Caching
 
-| Option                       | Default |                                                                    |
-| ---------------------------- | ------- | ------------------------------------------------------------------ |
-| `serviceStructureTtlMinutes` | `1440`  | Service list cache (also refreshed by a daily job)                 |
-| `pointsTtlMinutes`           | `720`   | Parcel point list cache, per type and country                      |
-| `pointTypes`                 | `{}`    | Supplier → `points/{type}/` code, for suppliers whose code differs |
+| Option                       | Default  |                                                                                                                                                                            |
+| ---------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `serviceStructureTtlMinutes` | `1440`   | Service list cache (also refreshed by a daily job)                                                                                                                         |
+| `pointsTtlMinutes`           | `720`    | Parcel point list cache, per type and country                                                                                                                              |
+| `pointTypes`                 | `{}`     | Supplier → `points/{type}/` code, for suppliers whose code differs                                                                                                         |
+| `pointCountries`             | `["PL"]` | Countries the store API returns points for. Add e.g. `"CZ"` for Packeta. Other countries, and point types your account doesn't have, are rejected before reaching Apaczka. |
 
 ## Code hooks
 

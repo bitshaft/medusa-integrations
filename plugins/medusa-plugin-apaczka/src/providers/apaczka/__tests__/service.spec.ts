@@ -295,7 +295,24 @@ describe("ApaczkaFulfillmentProviderService", () => {
       expect(result).toMatchObject({ labels: [], data: { apaczka: { state: "pending", service_id: 21 } } })
     })
 
-    it("defers with a reason when the sender address is unknown", async () => {
+    it("hands COD shipments to the workflow so the amount reflects what is unpaid", async () => {
+      const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
+      const provider = createProvider({ cod: { bankAccount: "PL61109010140000071219812874" } })
+      const data = await shippingData(provider, "apaczka-21-cod")
+      const result = await provider.createFulfillment(
+        data,
+        items,
+        order as never,
+        {
+          location_id: "sloc_1",
+          delivery_address: shippingAddress,
+        } as never
+      )
+      expect(send).not.toHaveBeenCalled()
+      expect(result.data.apaczka).toMatchObject({ state: "pending", cod: true, auto_create: true })
+    })
+
+    it("hands the shipment to the workflow when the sender address is unknown", async () => {
       const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
       const provider = createProvider()
       const data = await shippingData(provider)
@@ -309,7 +326,7 @@ describe("ApaczkaFulfillmentProviderService", () => {
         } as never
       )
       expect(send).not.toHaveBeenCalled()
-      expect(result.data.apaczka).toMatchObject({ state: "pending", error: expect.stringContaining("Sender address") })
+      expect(result.data.apaczka).toMatchObject({ state: "pending", auto_create: true })
     })
 
     it("surfaces Apaczka validation errors", async () => {

@@ -54,6 +54,11 @@ export type ApaczkaFulfillmentState = {
   cod_amount?: number
   declared_value?: number
   created_at?: string
+  /**
+   * Set when the provider deferred creation to the plugin's subscriber
+   * (COD amounts, sender address), which creates it immediately after.
+   */
+  auto_create?: boolean
   /** Needed to look up courier pickup days later. */
   sender_postal_code?: string
   error?: string

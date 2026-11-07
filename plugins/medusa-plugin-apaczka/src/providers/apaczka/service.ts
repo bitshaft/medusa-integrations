@@ -28,7 +28,7 @@ import {
   buildFulfillmentOptions,
   parseFulfillmentOption,
 } from "../../lib/fulfillment-options"
-import { priceForCustomer } from "../../lib/money"
+import { exchangeRate, priceForCustomer } from "../../lib/money"
 import { buildOrderPayload } from "../../lib/order-builder"
 import { type ApaczkaPluginOptions, optionsForService, resolveOptions } from "../../lib/options"
 import type { ParcelItem } from "../../lib/parcels"
@@ -98,6 +98,7 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
     this.catalog_ = new ApaczkaCatalog(this.client_, {
       serviceStructureTtlMs: this.options_.serviceStructureTtlMinutes * 60_000,
       pointsTtlMs: this.options_.pointsTtlMinutes * 60_000,
+      pointCountries: this.options_.pointCountries,
       logger,
     })
   }
@@ -201,8 +202,9 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
         warehouse,
         customer: { ...customer, name: customer.name || "Klient" },
         items: items.map(toParcelItem),
-        itemsValue: cartSubtotal(items),
-        codAmount: option.cod ? cartSubtotal(items) : undefined,
+        // Apaczka works in PLN; convert the cart's value for COD and insurance.
+        itemsValue: cartSubtotal(items) / exchangeRate(currencyCode, pricing.exchangeRates),
+        codAmount: option.cod ? cartSubtotal(items) / exchangeRate(currencyCode, pricing.exchangeRates) : undefined,
         cartId: context.id,
       })
 
@@ -257,12 +259,18 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
       return this.pending(shippingData, option)
     }
 
+    // The provider cannot see payments, other shipments of the order or the
+    // stock location's full address. For COD (the amount depends on what is
+    // still unpaid) and when the sender can't be resolved here, the plugin's
+    // fulfillment subscriber creates the shipment right after, through the
+    // workflow, which has that context.
+    if (option.cod && !option.is_return && extra.overrides?.cod_amount === undefined) {
+      return this.pending(shippingData, option, undefined, { autoCreate: true })
+    }
+
     const warehouse = extra.sender ?? this.senderForFulfillment(shippingData, fulfillment.location_id ?? undefined)
     if (!warehouse || missingAddressFields(warehouse).length) {
-      const reason =
-        "Sender address could not be resolved for this stock location. Create the shipment from the order page."
-      this.logger_.warn(`[apaczka] ${reason} (fulfillment ${fulfillment.id ?? "new"})`)
-      return this.pending(shippingData, option, reason)
+      return this.pending(shippingData, option, undefined, { autoCreate: true })
     }
 
     const customer = customerAddress(
@@ -297,7 +305,6 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
           customer,
           items: parcelItems,
           itemsValue,
-          codAmount: Number(order?.total ?? itemsValue),
           overrides: extra.overrides,
           displayId: (order as { display_id?: number } | undefined)?.display_id,
           orderId: order?.id,
@@ -451,7 +458,8 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
   private pending(
     data: ApaczkaShippingMethodData,
     option: ApaczkaFulfillmentOption | undefined,
-    error?: string
+    error?: string,
+    flags: { autoCreate?: boolean } = {}
   ): CreateFulfillmentResult {
     const state: ApaczkaFulfillmentState = {
       state: "pending",
@@ -464,6 +472,7 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
       point_id: data.point_id,
       label_format: this.options_.labelFormat,
       ...(error ? { error } : {}),
+      ...(flags.autoCreate ? { auto_create: true } : {}),
     }
     return { data: { ...data, ...(option ? { [OPTION_KEY]: option } : {}), apaczka: state }, labels: [] }
   }

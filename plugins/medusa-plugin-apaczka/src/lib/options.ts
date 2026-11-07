@@ -209,6 +209,11 @@ export const pluginOptionsSchema = z.object({
     .number()
     .positive()
     .default(12 * 60),
+  /**
+   * Countries whose parcel points the store API may return (ISO alpha-2).
+   * Add e.g. "CZ" for Packeta or international InPost points.
+   */
+  pointCountries: z.array(z.string().length(2)).min(1).default(["PL"]),
   /** Supplier → `points/{type}/` type, for suppliers whose code differs. */
   pointTypes: z.record(z.string(), z.string()).default({}),
 

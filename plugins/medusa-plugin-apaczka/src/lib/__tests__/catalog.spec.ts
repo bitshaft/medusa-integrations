@@ -39,6 +39,8 @@ function setup() {
   const catalog = new ApaczkaCatalog(client, {
     serviceStructureTtlMs: 1000,
     pointsTtlMs: 1000,
+    pointCountries: ["PL", "CZ"],
+    maxPointLists: 2,
     logger: { warn: jest.fn() },
     now: () => now,
   })
@@ -104,6 +106,29 @@ describe("ApaczkaCatalog", () => {
     const { catalog } = setup()
     const result = await catalog.searchPoints({ type: "INPOST", cod: true })
     expect(result.map((p) => p.foreign_address_id)).not.toContain("LOD01M")
+  })
+
+  it("rejects point types the account does not have", async () => {
+    const { catalog, getPoints } = setup()
+    await expect(catalog.searchPoints({ type: "MADE_UP" })).rejects.toThrow('Unknown parcel point type "MADE_UP"')
+    expect(getPoints).not.toHaveBeenCalled()
+  })
+
+  it("rejects countries that are not allowed", async () => {
+    const { catalog, getPoints } = setup()
+    await expect(catalog.getPoints("INPOST", "DE")).rejects.toThrow("not available for country")
+    await expect(catalog.getPoints("INPOST", "P1")).rejects.toThrow("not available for country")
+    expect(getPoints).not.toHaveBeenCalled()
+  })
+
+  it("keeps at most maxPointLists lists in memory", async () => {
+    const { catalog, getPoints } = setup()
+    await catalog.getPoints("INPOST", "PL")
+    await catalog.getPoints("DPD", "PL")
+    await catalog.getPoints("POCZTA", "PL") // evicts INPOST:PL
+    await catalog.getPoints("DPD", "PL") // still cached
+    await catalog.getPoints("INPOST", "PL") // fetched again
+    expect(getPoints).toHaveBeenCalledTimes(4)
   })
 
   it("caches points per type and country", async () => {
