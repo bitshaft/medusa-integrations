@@ -1,11 +1,11 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { readFulfillmentData } from "../lib/data"
+import { readFulfillmentData } from "../lib/apaczka/data"
 import { APACZKA_MODULE } from "../modules/apaczka"
 import type ApaczkaModuleService from "../modules/apaczka/service"
-import { createApaczkaShipmentWorkflow } from "../workflows/create-apaczka-shipment"
-import { syncApaczkaShipmentRecordWorkflow } from "../workflows/sync-apaczka-shipment-record"
+import { createApaczkaShipmentWorkflow } from "../workflows/apaczka/create-apaczka-shipment"
+import { syncApaczkaShipmentRecordWorkflow } from "../workflows/apaczka/sync-apaczka-shipment-record"
 
 type Payload = { order_id: string; return_id: string }
 
@@ -19,6 +19,10 @@ export default async function apaczkaReturnRequested({ event, container }: Subsc
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
+
+  if (!(await apaczka.isEnabled())) {
+    return
+  }
 
   const { data: returns } = await query.graph({
     entity: "return",

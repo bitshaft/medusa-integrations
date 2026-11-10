@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # One entry per plugin: each has its own package-lock.json.
+  - package-ecosystem: npm
+    directory: /plugins/medusa-plugin-apaczka
+    schedule:
+      interval: weekly
+    groups:
+      medusa:
+        patterns: ["@medusajs/*"]
+      dev-tooling:
+        dependency-type: development
+        exclude-patterns: ["@medusajs/*"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(apaczka)"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

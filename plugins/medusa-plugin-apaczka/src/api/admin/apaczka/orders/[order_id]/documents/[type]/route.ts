@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { resolveApaczka, sendDocument } from "../../../../../../utils"
+import { resolveApaczka, sendDocument } from "../../../../../../../lib/apaczka/api/utils"
 
 const TYPES = ["waybill", "dispatch_code"] as const
 

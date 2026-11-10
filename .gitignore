@@ -1,0 +1,34 @@
+# Dependencies (each plugin has its own node_modules)
+node_modules/
+
+# Build output (published to npm, never committed)
+.medusa/
+dist/
+build/
+*.tsbuildinfo
+.cache/
+*.tgz
+
+# Tests
+coverage/
+.smoke/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.template
+!.env.example
+*.pem
+*.key
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs and dumps
+*.log
+npm-debug.log*
+medusa-db.sql
+uploads/

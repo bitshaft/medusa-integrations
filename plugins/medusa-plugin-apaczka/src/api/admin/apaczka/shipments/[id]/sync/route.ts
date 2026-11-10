@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { pollShipmentTracking } from "../../../../../../workflows/helpers/poll-tracking"
-import { resolveApaczka } from "../../../../../utils"
+import { pollShipmentTracking } from "../../../../../../workflows/apaczka/helpers/poll-tracking"
+import { resolveApaczka } from "../../../../../../lib/apaczka/api/utils"
 
 /** `POST /admin/apaczka/shipments/:id/sync` — fetch tracking from Apaczka now. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {

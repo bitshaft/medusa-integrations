@@ -7,46 +7,60 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@bitshaft/medusa-plugin-apaczka"><img alt="npm" src="https://img.shields.io/npm/v/@bitshaft/medusa-plugin-apaczka"></a>
-  <a href="https://github.com/bitshaft/medusa-plugin-apaczka/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/bitshaft/medusa-plugin-apaczka/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/bitshaft/medusa-integrations/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/bitshaft/medusa-integrations/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Medusa" src="https://img.shields.io/badge/medusa-%E2%89%A52.22-7c3aed">
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
 <p align="center">
-  <a href="#install">Install</a> ·
-  <a href="./docs/configuration.md">Configuration</a> ·
-  <a href="#how-it-works">How it works</a> ·
-  <a href="./storefront/README.md">Storefront</a> ·
-  <a href="./docs/README.pl.md">Po polsku</a>
+  <a href="#installation">Installation</a> ·
+  <a href="#configuration">Configuration</a> ·
+  <a href="./docs/configuration.md">All options</a> ·
+  <a href="#what-it-does">What it does</a> ·
+  <a href="#testing-against-the-apaczka-sandbox">Sandbox</a> ·
+  <a href="./storefront/README.md">Storefront</a>
 </p>
 
 ---
-
-## Features
-
-- **Every service on your account.** Read from Apaczka, never hardcoded, and refreshed daily. Each service is available as a standard, cash-on-delivery and return shipping option.
-- **Live rates or flat rates** per shipping option, with markups, rounding, free-shipping thresholds, per-service overrides and a fallback price so checkout keeps working if Apaczka is down.
-- **Parcel lockers and pickup points.** Point validation at checkout (including COD support at the point) and a map-and-list point picker for the storefront.
-- **Labels automatically or by hand.** PDF or ZPL for thermal printers. In manual mode staff can adjust parcels, service, pickup, COD, insurance and the point before creating the shipment.
-- **Courier pickups** for one shipment or many (batch), using Apaczka's available pickup days.
-- **Return labels** created as soon as a return is requested.
-- **Tracking** by signed webhooks with polling as a backup. Fulfillments are marked shipped and delivered in Medusa, and events are emitted for your own notifications.
-- **Admin panel** on the order page plus a settings page with a connection check, in Polish and English.
-- **Multi-warehouse.** The sender address comes from each stock location, with per-location overrides.
-- **Built to be safe.** HMAC request signing, webhook signature verification against the raw request body, no retries on order creation (so no duplicate orders), every workflow step undone on failure, money handled as integers.
 
 ## Requirements
 
 - Medusa **2.22** or newer, Node.js 20.19+ or 22.12+
 - An Apaczka.pl account with WebAPI access (Apaczka panel → **Settings → API**)
 
-## Install
+## Installation
 
 ```bash
 npm install @bitshaft/medusa-plugin-apaczka
 ```
 
-### 1. Register the plugin and the fulfillment provider
+The package has no runtime dependencies of its own. It uses the Medusa
+packages your app already has (`@medusajs/framework`, `@medusajs/medusa`,
+the admin SDK, UI and icons, `@medusajs/js-sdk` and `@tanstack/react-query`)
+as peer dependencies.
+
+Register it ([Configuration](#configuration)) and run the migrations:
+
+```bash
+npx medusa db:migrate
+```
+
+### Trying a local build
+
+To test unreleased changes in an app before publishing:
+
+```bash
+# in plugins/medusa-plugin-apaczka
+npm run build
+npx medusa plugin:publish          # publishes to the local package registry
+
+# in your Medusa app
+npx medusa plugin:add @bitshaft/medusa-plugin-apaczka
+```
+
+`npm run dev` (`medusa plugin:develop`) rebuilds and republishes on every change.
+
+## Configuration
 
 The plugin (shipment records, admin UI, webhooks, jobs) and the fulfillment
 provider (rates, labels) share one options object:
@@ -58,13 +72,13 @@ import { defineConfig, loadEnv } from "@medusajs/framework/utils"
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
 const apaczka = {
-  appId: process.env.APACZKA_APP_ID!,
-  appSecret: process.env.APACZKA_APP_SECRET!,
+  appId: process.env.APACZKA_APP_ID,
+  appSecret: process.env.APACZKA_APP_SECRET,
   environment: (process.env.APACZKA_ENV as "production" | "sandbox") ?? "production",
   sender: {
     // Medusa stock locations have no e-mail or contact person; set them here.
-    contactPerson: "Jan Kowalski",
-    email: "magazyn@twojsklep.pl",
+    contactPerson: "Jane Doe",
+    email: "warehouse@example.com",
   },
   webhooks: { backendUrl: process.env.MEDUSA_BACKEND_URL },
 }
@@ -87,33 +101,44 @@ export default defineConfig({
 })
 ```
 
-```bash
-# .env
-APACZKA_APP_ID=...
-APACZKA_APP_SECRET=...
-APACZKA_ENV=sandbox            # switch to production when ready
-MEDUSA_BACKEND_URL=https://api.twojsklep.pl
-```
+If `appId` or `appSecret` is missing, or an option is invalid, Medusa still
+starts. The plugin stays disabled, logs one line (`[apaczka] Disabled: …`)
+and shows the reason on **Settings → Apaczka**. Nothing is sent to Apaczka
+until you fix the options and restart.
 
-### 2. Run the migrations
+Every option is described in [docs/configuration.md](./docs/configuration.md):
+pricing, parcels, pickups, COD, insurance, notifications, tracking, caching
+and code hooks.
 
-```bash
-npx medusa db:migrate
-```
+### Environment variables
 
-### 3. Create shipping options
+The plugin reads only its options. These are the variables the example above
+maps into them; copy [.env.template](./.env.template) to start.
+
+| Variable                     | Used for              |                                                                                  |
+| ---------------------------- | --------------------- | -------------------------------------------------------------------------------- |
+| `APACZKA_APP_ID`             | `appId`               | Apaczka panel → Settings → API                                                   |
+| `APACZKA_APP_SECRET`         | `appSecret`           | Keep it out of git. Used only to sign requests and verify webhooks, never logged |
+| `APACZKA_ENV`                | `environment`         | `sandbox` or `production`. Sandbox and production credentials are different      |
+| `MEDUSA_BACKEND_URL`         | `webhooks.backendUrl` | Public URL of your backend, for push tracking                                    |
+| `APACZKA_SANDBOX_APP_ID`     | sandbox tests only    | See [Testing against the Apaczka sandbox](#testing-against-the-apaczka-sandbox)  |
+| `APACZKA_SANDBOX_APP_SECRET` | sandbox tests only    |                                                                                  |
+| `APACZKA_SANDBOX_WRITE`      | sandbox tests only    | `true` also creates and cancels a real sandbox order                             |
+
+### Create shipping options
 
 1. In the admin, open **Settings → Locations**, pick a location and enable the
    **apaczka** fulfillment provider.
 2. In a shipping zone, click **Create option**, choose the **apaczka** provider
-   and pick a service, such as "INPOST Paczkomat" or "DPD Kurier — COD".
+   and pick a service, such as "InPost Paczkomat" or "DPD Kurier — COD"
+   (service names come from your Apaczka account).
 3. Choose a **Fixed** price or **Calculated** (a live Apaczka quote, with your
    pricing rules applied).
 
 **Settings → Apaczka** shows whether the connection works and which services
 your account has.
 
-### 4. Add the point picker to your storefront
+### Add the point picker to your storefront
 
 For locker and pickup-point services, the customer has to choose a point. Copy
 the [storefront kit](./storefront/README.md) into your storefront and send the
@@ -122,6 +147,35 @@ point with the shipping method:
 ```ts
 await sdk.store.cart.addShippingMethod(cart.id, { option_id, data: { point_id: "WAW01M" } })
 ```
+
+## What it does
+
+- **Every service on your account.** Read from Apaczka, never hardcoded, and refreshed daily. Each service is available as a standard, cash-on-delivery and return shipping option.
+- **Live rates or flat rates** per shipping option, with markups, rounding, free-shipping thresholds, per-service overrides and a fallback price so checkout keeps working if Apaczka is down.
+- **Parcel lockers and pickup points.** Point validation at checkout (including COD support at the point) and a map-and-list point picker for the storefront.
+- **Labels automatically or by hand.** PDF or ZPL for thermal printers. In manual mode staff can adjust parcels, service, pickup, COD, insurance and the point before creating the shipment.
+- **Courier pickups** for one shipment or many (batch), using the pickup days Apaczka offers.
+- **Return labels** created as soon as a return is requested.
+- **Tracking** by signed webhooks with polling as a backup. Fulfillments are marked shipped and delivered in Medusa, and events are emitted for your own notifications.
+- **Admin panel** on the order page plus a settings page with a connection check, in Polish and English.
+- **Multi-warehouse.** The sender address comes from each stock location, with per-location overrides.
+- **Built to be safe.** HMAC request signing, webhook signature verification against the raw request body, no retries on order creation (so no duplicate orders), every workflow step undone on failure, money handled as integers, and secrets masked in logs and never returned by the admin API.
+
+## What it does not do
+
+- **No customer notifications of its own.** The plugin emits events
+  (`apaczka.shipment.*`) and can turn on Apaczka's own e-mail/SMS
+  notifications. Sending your own e-mails or texts is up to your subscribers.
+- **Nothing the Apaczka API does not offer.** No invoices or billing, no
+  claims handling, no address book sync. Those stay in the Apaczka panel.
+- **One Apaczka account per Medusa instance.** Each stock location can have
+  its own sender address, but all shipments go through the same account.
+- **No live currency conversion.** Apaczka prices in PLN. For other cart
+  currencies you set fixed rates (`pricing.exchangeRates`) or use flat-rate
+  options.
+- **No storefront code in the npm package.** The point picker is copy-in
+  source in [storefront/](./storefront/README.md), so your storefront does not
+  pull in Medusa's backend packages.
 
 ## How it works
 
@@ -247,16 +301,29 @@ adjusts the shipment.
 | `GET /admin/apaczka/pickup-hours?postal_code=&service_id=` | Available courier pickup days                              |
 | `POST /admin/apaczka/pickups`                              | Book a courier pickup                                      |
 
-## Testing against the sandbox
+## Testing against the Apaczka sandbox
 
 Use `environment: "sandbox"` with sandbox credentials while developing.
 Production orders are real orders with real couriers and invoices.
 
-```bash
-APACZKA_SANDBOX_APP_ID=... APACZKA_SANDBOX_APP_SECRET=... npm run test:sandbox
-# also create and cancel a real sandbox order:
-APACZKA_SANDBOX_WRITE=true ... npm run test:sandbox
-```
+1. Ask Apaczka support for sandbox access. The sandbox host
+   (`panel-sandbox.apaczka.pl`) may only accept requests from allowlisted IP
+   addresses. If requests time out, check that first.
+2. Create API credentials in the sandbox panel. They differ from production.
+3. Run the read-only checks (signing, service structure, valuation, points):
+
+   ```bash
+   APACZKA_SANDBOX_APP_ID=... APACZKA_SANDBOX_APP_SECRET=... npm run test:sandbox
+   ```
+
+4. Optionally, also create and cancel a real sandbox order:
+
+   ```bash
+   APACZKA_SANDBOX_WRITE=true APACZKA_SANDBOX_APP_ID=... APACZKA_SANDBOX_APP_SECRET=... npm run test:sandbox
+   ```
+
+5. To try the whole flow, point a Medusa app at the sandbox
+   (`APACZKA_ENV=sandbox`), create a fulfillment and check the order panel.
 
 Sandbox limitations (from Apaczka): `tracking/` and `dispatch_code/` are not
 available, `points/` may time out, the service list is smaller and its IDs
@@ -274,19 +341,22 @@ on the account by Apaczka support.
 | COD orders are rejected                                   | Set `cod.bankAccount` (IBAN) or `cod.bankAccountId`.                                                                                            |
 | Courier booking fails                                     | Ask Apaczka support to enable "pickup via API" on your account.                                                                                 |
 | No tracking updates                                       | Check the webhook URL on the settings page. Polling also needs the shipment to have a tracking number.                                          |
+| Log says `[apaczka] Disabled: …`                          | Options are missing or invalid. The line names the fields; fix them and restart.                                                                |
 
-## Contributing
+## Development
 
-Issues and pull requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md).
-Report security issues privately ([SECURITY.md](./SECURITY.md)).
+See [docs/development.md](./docs/development.md) for the code layout,
+conventions and tests, and the [repository guide](https://github.com/bitshaft/medusa-integrations/blob/main/CONTRIBUTING.md) for
+the shared tooling.
 
 ## License
 
-[MIT](./LICENSE) © [bitshaft](https://bitshaft.pl)
+[MIT](./LICENSE) © [Bitshaft](https://bitshaft.pl)
 
-Built and maintained by **[bitshaft](https://bitshaft.pl)**, a Medusa and e-commerce
+Built and maintained by **[Bitshaft](https://bitshaft.pl)**, a Medusa and e-commerce
 engineering studio. Need help with an implementation or a custom integration?
 [Get in touch](https://bitshaft.pl).
 
 <sub>Apaczka and Apaczka.pl are trademarks of Alsendo sp. z o.o. This plugin is an
-independent integration built on the public Apaczka WebAPI v2.</sub>
+independent integration built on the public Apaczka WebAPI v2. See
+[TRADEMARKS.md](https://github.com/bitshaft/medusa-integrations/blob/main/TRADEMARKS.md).</sub>

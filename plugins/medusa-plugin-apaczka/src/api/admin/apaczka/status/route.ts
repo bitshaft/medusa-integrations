@@ -1,17 +1,24 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { ApaczkaApiError, listServices } from "../../../../lib/apaczka"
-import { WEBHOOK_PATH } from "../../../../lib/order-builder"
-import { packageVersion } from "../../../../lib/version"
-import { resolveApaczka } from "../../../utils"
+import { ApaczkaApiError, listServices } from "../../../../lib/apaczka/client"
+import { WEBHOOK_PATH } from "../../../../lib/apaczka/order-builder"
+import { maskIdentifier } from "../../../../lib/apaczka/kit/secrets"
+import { packageVersion } from "../../../../lib/apaczka/version"
+import { resolveApaczka } from "../../../../lib/apaczka/api/utils"
 
 /**
  * `GET /admin/apaczka/status` — connection check for the settings page:
  * environment, whether the credentials work, how many services the account
- * has and how tracking is set up. Never returns secrets.
+ * has and how tracking is set up. Never returns secrets. When the plugin is
+ * disabled (missing or invalid options) it returns only the reason.
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
+
+  if (!(await apaczka.isEnabled())) {
+    return res.json({ enabled: false, disabled_reason: await apaczka.getDisabledReason(), version: packageVersion() })
+  }
+
   const options = await apaczka.getOptions()
   const client = await apaczka.getClient()
 
@@ -28,10 +35,11 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   }
 
   res.json({
+    enabled: true,
     version: packageVersion(),
     environment: client.environment,
     base_url: client.baseUrl,
-    app_id: mask(options.appId),
+    app_id: maskIdentifier(options.appId),
     connection,
     settings: {
       shipment_creation: options.shipmentCreation,
@@ -50,8 +58,4 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       mark_delivered: options.tracking.markDelivered,
     },
   })
-}
-
-function mask(value: string): string {
-  return value.length <= 8 ? "••••" : `${value.slice(0, 4)}••••${value.slice(-4)}`
 }

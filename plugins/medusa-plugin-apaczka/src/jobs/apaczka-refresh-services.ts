@@ -1,7 +1,7 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { listServices } from "../lib/apaczka"
+import { listServices } from "../lib/apaczka/client"
 import { APACZKA_MODULE } from "../modules/apaczka"
 import type ApaczkaModuleService from "../modules/apaczka/service"
 
@@ -12,6 +12,10 @@ import type ApaczkaModuleService from "../modules/apaczka/service"
 export default async function apaczkaRefreshServices(container: MedusaContainer) {
   const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+
+  if (!(await apaczka.isEnabled())) {
+    return
+  }
 
   try {
     const structure = await (await apaczka.getCatalog()).getServiceStructure({ refresh: true })

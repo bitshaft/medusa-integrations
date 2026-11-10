@@ -1,8 +1,8 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { toArray } from "../../../../lib/apaczka"
-import { buildFulfillmentOptions } from "../../../../lib/fulfillment-options"
-import { resolveApaczka } from "../../../utils"
+import { toArray } from "../../../../lib/apaczka/client"
+import { buildFulfillmentOptions } from "../../../../lib/apaczka/fulfillment-options"
+import { resolveApaczka } from "../../../../lib/apaczka/api/utils"
 
 /**
  * `GET /admin/apaczka/services` — the account's services (as shipping

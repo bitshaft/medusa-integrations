@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { createApaczkaShipmentWorkflow } from "../../../../../../workflows/create-apaczka-shipment"
-import type { AdminCreateShipment } from "../../../../../validators"
+import { createApaczkaShipmentWorkflow } from "../../../../../../workflows/apaczka/create-apaczka-shipment"
+import type { AdminCreateShipment } from "../../../../../../lib/apaczka/api/validators"
 
 /**
  * `POST /admin/apaczka/fulfillments/:id/shipment` — create the Apaczka order

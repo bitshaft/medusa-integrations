@@ -1,6 +1,6 @@
 import { model } from "@medusajs/framework/utils"
 
-import { ShipmentStatus } from "../../../lib/apaczka/statuses"
+import { ShipmentStatus } from "../../../lib/apaczka/client/statuses"
 import { ApaczkaShipment } from "./shipment"
 
 /**

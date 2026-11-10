@@ -1,6 +1,6 @@
-import { ApaczkaClient, listServices, type ApaczkaOrderInput } from "../../src/lib/apaczka"
-import { buildFulfillmentOptions } from "../../src/lib/fulfillment-options"
-import { resolveOptions } from "../../src/lib/options"
+import { ApaczkaClient, listServices, type ApaczkaOrderInput } from "../../src/lib/apaczka/client"
+import { buildFulfillmentOptions } from "../../src/lib/apaczka/fulfillment-options"
+import { resolveOptions } from "../../src/lib/apaczka/options"
 
 /**
  * Smoke tests against the real Apaczka sandbox. Skipped unless credentials

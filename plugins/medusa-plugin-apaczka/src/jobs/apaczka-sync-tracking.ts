@@ -1,11 +1,11 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { ApaczkaApiError } from "../lib/apaczka"
-import { ShipmentStatus, TERMINAL_STATUSES } from "../lib/apaczka/statuses"
+import { ApaczkaApiError } from "../lib/apaczka/client"
+import { ShipmentStatus, TERMINAL_STATUSES } from "../lib/apaczka/client/statuses"
 import { APACZKA_MODULE } from "../modules/apaczka"
 import type ApaczkaModuleService from "../modules/apaczka/service"
-import { pollShipmentTracking } from "../workflows/helpers/poll-tracking"
+import { pollShipmentTracking } from "../workflows/apaczka/helpers/poll-tracking"
 
 const BATCH_SIZE = 200
 const CONCURRENCY = 4
@@ -23,6 +23,10 @@ const MAX_AGE_MS = 60 * 24 * 60 * 60_000
 export default async function apaczkaSyncTracking(container: MedusaContainer) {
   const apaczka = container.resolve<ApaczkaModuleService>(APACZKA_MODULE)
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+
+  if (!(await apaczka.isEnabled())) {
+    return
+  }
 
   if (!(await apaczka.getOptions()).tracking.polling) {
     return

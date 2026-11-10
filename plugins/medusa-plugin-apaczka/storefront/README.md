@@ -72,11 +72,14 @@ export function ApaczkaShipping({
       value={point?.id}
       onChange={choose}
       initialQuery={cart.shipping_address?.postal_code ?? ""}
-      locale="pl"
+      labels={pickerLabels}
     />
   )
 }
 ```
+
+`pickerLabels` is optional: an object of type `PointPickerLabels` with your
+own strings, for example a translation from your storefront's i18n setup.
 
 Without the JS SDK, pass the backend URL and publishable key instead:
 
@@ -127,7 +130,8 @@ For a fully custom UI, use `usePointSearch()` and render your own list or map.
 | `initialQuery`                  | `""`              | Prefill, e.g. the postal code                    |
 | `countryCode`                   | `"pl"`            |                                                  |
 | `cod`                           | option's COD flag | Only COD-capable points                          |
-| `locale`                        | `"pl"`            | `"pl"` or `"en"`; override strings with `labels` |
+| `locale`                        | `"en"`            | Built-in strings are English                     |
+| `labels`                        | —                 | Your own strings, e.g. a translation             |
 | `showMap`                       | `true`            | `false` gives a list-only picker without Leaflet |
 | `height`                        | `420`             | Height of the map and list area (px)             |
 | `limit`                         | `50`              | Max points per search                            |

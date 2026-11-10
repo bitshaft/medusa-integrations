@@ -1,8 +1,8 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { resolveApaczka, sendDocument } from "../../../utils"
-import type { AdminTurnIn } from "../../../validators"
+import { resolveApaczka, sendDocument } from "../../../../lib/apaczka/api/utils"
+import type { AdminTurnIn } from "../../../../lib/apaczka/api/validators"
 
 /**
  * `POST /admin/apaczka/turn-in` — collective hand-over (turn-in) confirmation

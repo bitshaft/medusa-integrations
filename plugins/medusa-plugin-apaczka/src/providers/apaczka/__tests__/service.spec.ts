@@ -1,14 +1,14 @@
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { ApaczkaApiError, ApaczkaClient } from "../../../lib/apaczka"
-import { APP_ID, APP_SECRET, serviceStructure } from "../../../lib/__tests__/fixtures"
+import { ApaczkaApiError, ApaczkaClient } from "../../../lib/apaczka/client"
+import { APP_ID, APP_SECRET, serviceStructure } from "../../../lib/apaczka/__tests__/fixtures"
 import { ApaczkaFulfillmentProviderService } from "../service"
 
 const logger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() }
 
 const location = {
   id: "sloc_1",
-  name: "Magazyn",
+  name: "Warehouse",
   address: {
     address_1: "Magazynowa 1",
     city: "Warszawa",
@@ -51,9 +51,20 @@ describe("ApaczkaFulfillmentProviderService", () => {
     jest.spyOn(ApaczkaClient.prototype, "getServiceStructure").mockResolvedValue(serviceStructure)
   })
 
-  it("validates options at construction", () => {
-    expect(() => ApaczkaFulfillmentProviderService.validateOptions({})).toThrow(MedusaError)
-    expect(() => createProvider({ labelFormat: "gif" })).toThrow("labelFormat")
+  it("stays disabled instead of failing startup when options are missing or invalid", async () => {
+    expect(() => ApaczkaFulfillmentProviderService.validateOptions({})).not.toThrow()
+
+    const missing = new ApaczkaFulfillmentProviderService({ logger: logger as never }, {})
+    await expect(missing.getFulfillmentOptions()).resolves.toEqual([])
+    await expect(missing.cancelFulfillment({ apaczka: { state: "created", order_id: "123" } })).rejects.toThrow(
+      "plugin is disabled"
+    )
+
+    const invalid = createProvider({ labelFormat: "gif" })
+    await expect(invalid.getFulfillmentOptions()).resolves.toEqual([])
+    await expect(invalid.cancelFulfillment({ apaczka: { state: "created", order_id: "123" } })).rejects.toThrow(
+      "labelFormat"
+    )
   })
 
   it("lists services as fulfillment options", async () => {
@@ -332,7 +343,7 @@ describe("ApaczkaFulfillmentProviderService", () => {
     it("surfaces Apaczka validation errors", async () => {
       jest
         .spyOn(ApaczkaClient.prototype, "sendOrder")
-        .mockRejectedValue(new ApaczkaApiError(422, "Nieprawidłowy kod pocztowy", "order_send/"))
+        .mockRejectedValue(new ApaczkaApiError(422, "Invalid postal code", "order_send/"))
       const provider = createProvider()
       await expect(
         provider.createFulfillment(
@@ -344,7 +355,7 @@ describe("ApaczkaFulfillmentProviderService", () => {
             delivery_address: shippingAddress,
           } as never
         )
-      ).rejects.toThrow("Apaczka rejected the shipment: Nieprawidłowy kod pocztowy")
+      ).rejects.toThrow("Apaczka rejected the shipment: Invalid postal code")
     })
   })
 

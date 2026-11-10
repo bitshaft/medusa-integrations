@@ -1,9 +1,9 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { toPublicPoint } from "../../../../../../lib/points"
-import { resolveApaczka } from "../../../../../utils"
-import type { StorePointQuery } from "../../../../../validators"
+import { toPublicPoint } from "../../../../../../lib/apaczka/points"
+import { resolveApaczka } from "../../../../../../lib/apaczka/api/utils"
+import type { StorePointQuery } from "../../../../../../lib/apaczka/api/validators"
 
 /** `GET /store/apaczka/points/INPOST/WAW01M` — one point, e.g. to show the saved choice. */
 export async function GET(req: MedusaRequest<unknown, StorePointQuery>, res: MedusaResponse) {

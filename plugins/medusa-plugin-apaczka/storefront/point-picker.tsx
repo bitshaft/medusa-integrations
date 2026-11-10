@@ -7,18 +7,8 @@ import { getApaczkaOptionData } from "./client"
 import type { ApaczkaPoint, ApaczkaStoreConfig } from "./types"
 import { usePointSearch } from "./use-point-search"
 
+/** Default (English) strings. Pass `labels` to translate them. */
 const LABELS = {
-  pl: {
-    search: "Miasto, kod pocztowy lub ulica",
-    locate: "Moja lokalizacja",
-    loading: "Szukamy punktów…",
-    empty: "Brak punktów dla tego wyszukiwania.",
-    error: "Nie udało się wczytać punktów. Spróbuj ponownie.",
-    select: "Wybierz",
-    selected: "Wybrany",
-    cod: "Pobranie",
-    km: "km",
-  },
   en: {
     search: "City, postal code or street",
     locate: "Use my location",
@@ -82,7 +72,7 @@ export function PointPicker(props: PointPickerProps) {
     onChange,
     initialQuery = "",
     countryCode = "pl",
-    locale = "pl",
+    locale = "en",
     showMap = true,
     height = 420,
     limit = 50,

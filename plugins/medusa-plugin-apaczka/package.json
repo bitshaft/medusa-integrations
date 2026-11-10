@@ -2,23 +2,24 @@
   "name": "@bitshaft/medusa-plugin-apaczka",
   "version": "0.1.0",
   "description": "Apaczka.pl shipping for Medusa v2: 20+ Polish and international carriers, parcel lockers and pickup points, live rates, labels, COD, courier pickups, returns and webhook tracking.",
-  "author": "bitshaft (https://bitshaft.pl)",
+  "author": "Bitshaft (https://bitshaft.pl)",
   "license": "MIT",
-  "homepage": "https://github.com/bitshaft/medusa-plugin-apaczka#readme",
+  "homepage": "https://github.com/bitshaft/medusa-integrations/tree/main/plugins/medusa-plugin-apaczka#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitshaft/medusa-plugin-apaczka.git"
+    "url": "git+https://github.com/bitshaft/medusa-integrations.git",
+    "directory": "plugins/medusa-plugin-apaczka"
   },
   "bugs": {
-    "url": "https://github.com/bitshaft/medusa-plugin-apaczka/issues"
+    "url": "https://github.com/bitshaft/medusa-integrations/issues"
   },
   "keywords": [
-    "medusa",
     "medusa-v2",
+    "medusa-plugin-integration",
+    "medusa-plugin-shipping",
+    "medusa",
     "medusa-plugin",
     "medusa-plugin-fulfillment",
-    "medusa-plugin-shipping",
-    "medusa-plugin-integration",
     "apaczka",
     "alsendo",
     "shipping",
@@ -35,13 +36,15 @@
   ],
   "files": [
     ".medusa/server",
+    "!**/*.map",
+    "!**/__tests__",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./workflows": "./.medusa/server/src/workflows/index.js",
+    "./workflows": "./.medusa/server/src/workflows/apaczka/index.js",
     "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
@@ -53,24 +56,21 @@
     }
   },
   "scripts": {
-    "build": "medusa plugin:build",
+    "build": "medusa plugin:build && node scripts/kit/strip-source-maps.mjs",
     "dev": "medusa plugin:develop",
+    "publish:local": "medusa plugin:publish",
     "lint": "medusa lint",
     "typecheck": "tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p src/admin/tsconfig.json && tsc --noEmit -p tsconfig.storefront.json",
     "test": "jest --selectProjects unit",
-    "test:unit": "jest --selectProjects unit",
+    "check": "npm run typecheck && npm test",
     "test:integration": "jest --selectProjects integration",
+    "test:sandbox": "jest --selectProjects sandbox",
     "test:coverage": "jest --selectProjects unit --coverage",
-    "changeset": "changeset",
-    "release": "npm run build && changeset publish",
-    "prepublishOnly": "npm run build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:all": "jest --selectProjects unit integration",
-    "test:sandbox": "jest --selectProjects sandbox"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@changesets/cli": "^3.0.3",
     "@medusajs/admin-sdk": "2.22.3",
     "@medusajs/cli": "2.22.3",
     "@medusajs/eslint-plugin": "2.22.3",
@@ -98,24 +98,16 @@
     "react-dom": "^18.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
-    "vite": "^7.3.6",
-    "yalc": "^1.0.0-pre.53"
+    "vite": "^7.3.6"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "^2.22.0",
-    "@medusajs/cli": "^2.22.0",
     "@medusajs/framework": "^2.22.0",
+    "@medusajs/medusa": "^2.22.0",
+    "@medusajs/admin-sdk": "^2.22.0",
+    "@medusajs/ui": "^4.2.0",
     "@medusajs/icons": "^2.22.0",
     "@medusajs/js-sdk": "^2.22.0",
-    "@medusajs/medusa": "^2.22.0",
-    "@medusajs/test-utils": "^2.22.0",
-    "@medusajs/ui": "^4.2.0",
     "@tanstack/react-query": "^5.64.0"
-  },
-  "peerDependenciesMeta": {
-    "@medusajs/test-utils": {
-      "optional": true
-    }
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

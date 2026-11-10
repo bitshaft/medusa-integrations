@@ -2,10 +2,10 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { ApaczkaWebhookError, verifyPushTrackingWebhook } from "../../../../lib/apaczka"
-import { eventsFromWebhook } from "../../../../lib/tracking"
-import { syncApaczkaTrackingWorkflow } from "../../../../workflows/sync-apaczka-tracking"
-import { resolveApaczka } from "../../../utils"
+import { ApaczkaWebhookError, verifyPushTrackingWebhook } from "../../../../lib/apaczka/client"
+import { eventsFromWebhook } from "../../../../lib/apaczka/tracking"
+import { syncApaczkaTrackingWorkflow } from "../../../../workflows/apaczka/sync-apaczka-tracking"
+import { resolveApaczka } from "../../../../lib/apaczka/api/utils"
 
 /**
  * Receives Apaczka push-tracking notifications.
@@ -15,11 +15,17 @@ import { resolveApaczka } from "../../../utils"
  * - Apaczka redelivers until it gets HTTP 200, and holds back the next
  *   status until then, so known-but-irrelevant notifications (unknown order,
  *   empty status list) are acknowledged with 200. Processing is idempotent.
- * - Unexpected failures return 500 so the notification is retried.
+ * - Unexpected failures return 500, and a disabled plugin returns 503, so
+ *   the notification is retried.
  */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const apaczka = resolveApaczka(req)
   const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+
+  if (!(await apaczka.isEnabled())) {
+    // 503 so Apaczka redelivers once the plugin is configured.
+    return res.status(503).json({ message: "The Apaczka plugin is not configured" })
+  }
   const options = await apaczka.getOptions()
 
   const rawBody = (req as MedusaRequest & { rawBody?: Buffer }).rawBody ?? JSON.stringify(req.body ?? {})

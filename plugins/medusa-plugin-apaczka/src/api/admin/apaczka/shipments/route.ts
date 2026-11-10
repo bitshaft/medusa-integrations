@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { resolveApaczka } from "../../../utils"
-import type { AdminShipmentsQuery } from "../../../validators"
+import { resolveApaczka } from "../../../../lib/apaczka/api/utils"
+import type { AdminShipmentsQuery } from "../../../../lib/apaczka/api/validators"
 
 /** `GET /admin/apaczka/shipments?order_id=order_123` — shipments with their tracking history. */
 export async function GET(req: MedusaRequest<unknown, AdminShipmentsQuery>, res: MedusaResponse) {

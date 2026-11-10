@@ -1,0 +1,76 @@
+name: Publish
+
+# Publishes one plugin when a tag "<plugin-folder>@<version>" is pushed,
+# e.g. medusa-plugin-apaczka@0.1.0. Uses npm trusted publishing (OIDC) with
+# provenance: there is no npm token in the repository secrets. Configure the
+# trusted publisher once per package on npmjs.com (see CONTRIBUTING.md).
+
+on:
+  push:
+    tags:
+      - "medusa-plugin-*@*"
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for npm trusted publishing and provenance
+
+concurrency:
+  group: publish-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Trusted publishing needs npm 11.5.1 or newer
+        run: npm install -g npm@^11.5.1 && npm --version
+
+      - name: Resolve the plugin from the tag
+        id: target
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PLUGIN="${TAG%@*}"
+          VERSION="${TAG##*@}"
+          if [ -z "$PLUGIN" ] || [ -z "$VERSION" ] || [ "$PLUGIN" = "$TAG" ]; then
+            echo "::error::Tag must look like <plugin-folder>@<version>, got $TAG"; exit 1
+          fi
+          if [ ! -f "plugins/$PLUGIN/package.json" ]; then
+            echo "::error::No plugin folder plugins/$PLUGIN"; exit 1
+          fi
+          PKG_VERSION=$(node -p "require('./plugins/$PLUGIN/package.json').version")
+          if [ "$PKG_VERSION" != "$VERSION" ]; then
+            echo "::error::Tag version $VERSION does not match plugins/$PLUGIN/package.json ($PKG_VERSION)"; exit 1
+          fi
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::The tagged commit is not on main"; exit 1
+          fi
+          echo "dir=plugins/$PLUGIN" >> "$GITHUB_OUTPUT"
+
+      - name: Repo rules and secrets
+        run: npm run check:repo
+
+      - name: Install
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm ci
+
+      - name: Typecheck and unit tests
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm run check
+
+      - name: Build
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm run build
+
+      - name: Publish with provenance
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm publish --provenance --access public

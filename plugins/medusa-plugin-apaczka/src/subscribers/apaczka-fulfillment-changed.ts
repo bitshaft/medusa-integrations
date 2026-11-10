@@ -3,8 +3,8 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 import { APACZKA_MODULE } from "../modules/apaczka"
 import type ApaczkaModuleService from "../modules/apaczka/service"
-import { createApaczkaShipmentWorkflow } from "../workflows/create-apaczka-shipment"
-import { syncApaczkaShipmentRecordWorkflow } from "../workflows/sync-apaczka-shipment-record"
+import { createApaczkaShipmentWorkflow } from "../workflows/apaczka/create-apaczka-shipment"
+import { syncApaczkaShipmentRecordWorkflow } from "../workflows/apaczka/sync-apaczka-shipment-record"
 
 type Payload = { order_id: string; fulfillment_id: string }
 
@@ -18,6 +18,10 @@ type Payload = { order_id: string; fulfillment_id: string }
 export default async function apaczkaFulfillmentChanged({ event, container }: SubscriberArgs<Payload>) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const fulfillmentId = event.data.fulfillment_id
+
+  if (!(await container.resolve<ApaczkaModuleService>(APACZKA_MODULE).isEnabled())) {
+    return
+  }
 
   let record: { id: string; status: string } | undefined
   let autoCreate = false

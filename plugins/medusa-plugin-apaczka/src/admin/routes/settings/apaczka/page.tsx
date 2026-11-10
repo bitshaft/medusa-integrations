@@ -4,14 +4,14 @@ import { Badge, Button, Container, Copy, Heading, Skeleton, StatusBadge, Table, 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { useApaczkaServices, useApaczkaStatus } from "../../../lib/api"
+import { useApaczkaServices, useApaczkaStatus } from "../../../lib/apaczka/api"
 
 const ApaczkaSettingsPage = () => {
   const { t } = useTranslation()
   const [refresh, setRefresh] = useState(false)
   const status = useApaczkaStatus(refresh)
-  const services = useApaczkaServices()
   const s = status.data
+  const services = useApaczkaServices(s?.enabled === true)
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -37,6 +37,23 @@ const ApaczkaSettingsPage = () => {
           <div className="px-6 py-4">
             <Skeleton className="h-24 w-full" />
           </div>
+        ) : !s.enabled ? (
+          <Section title={t("apaczka.settings.connection")}>
+            <Row label={t("apaczka.settings.connection")}>
+              <StatusBadge color="orange">{t("apaczka.settings.disabled")}</StatusBadge>
+            </Row>
+            <div className="py-2">
+              <Text size="small" className="text-ui-fg-error">
+                {s.disabled_reason}
+              </Text>
+              <Text size="small" className="text-ui-fg-subtle mt-1">
+                {t("apaczka.settings.disabledHint")}
+              </Text>
+            </div>
+            <Row label={t("apaczka.settings.version")}>
+              <Text size="small">{s.version}</Text>
+            </Row>
+          </Section>
         ) : (
           <>
             <Section title={t("apaczka.settings.connection")}>

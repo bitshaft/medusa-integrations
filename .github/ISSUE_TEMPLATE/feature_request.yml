@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest something a plugin should do, or a new integration
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Plugins cover what the provider's API offers. If your idea needs a provider feature, link the relevant page of its API docs.
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin
+      description: The package name, or the service you'd like an integration for.
+      placeholder: "@bitshaft/medusa-plugin-apaczka"
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help?
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: For example a code hook in the plugin options or a custom subscriber.

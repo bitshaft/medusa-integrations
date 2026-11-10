@@ -4,4 +4,4 @@ coverage
 dist
 package-lock.json
 CHANGELOG.md
-.changeset
+

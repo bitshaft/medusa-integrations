@@ -1,0 +1,7 @@
+node_modules
+.medusa
+coverage
+.smoke
+package-lock.json
+CHANGELOG.md
+plugins

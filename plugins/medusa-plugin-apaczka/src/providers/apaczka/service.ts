@@ -12,9 +12,14 @@ import type {
 } from "@medusajs/framework/types"
 import { AbstractFulfillmentProviderService, MedusaError } from "@medusajs/framework/utils"
 
-import { ApaczkaApiError, ApaczkaClient, ApaczkaError, type ApaczkaAddress } from "../../lib/apaczka"
-import { assertCompleteAddress, customerAddress, missingAddressFields, warehouseAddress } from "../../lib/addresses"
-import { ApaczkaCatalog } from "../../lib/catalog"
+import { ApaczkaApiError, ApaczkaClient, ApaczkaError, type ApaczkaAddress } from "../../lib/apaczka/client"
+import {
+  assertCompleteAddress,
+  customerAddress,
+  missingAddressFields,
+  warehouseAddress,
+} from "../../lib/apaczka/addresses"
+import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
 import {
   type ApaczkaFulfillmentData,
   type ApaczkaFulfillmentState,
@@ -22,20 +27,23 @@ import {
   type ApaczkaShippingMethodData,
   readFulfillmentData,
   type ShipmentOverrides,
-} from "../../lib/data"
+} from "../../lib/apaczka/data"
 import {
   type ApaczkaFulfillmentOption,
   buildFulfillmentOptions,
   parseFulfillmentOption,
-} from "../../lib/fulfillment-options"
-import { exchangeRate, priceForCustomer } from "../../lib/money"
-import { buildOrderPayload } from "../../lib/order-builder"
-import { type ApaczkaPluginOptions, optionsForService, resolveOptions } from "../../lib/options"
-import type { ParcelItem } from "../../lib/parcels"
-import { createShipment, labelsFor } from "../../lib/shipments"
-import { userAgent } from "../../lib/version"
+} from "../../lib/apaczka/fulfillment-options"
+import { exchangeRate, priceForCustomer } from "../../lib/apaczka/money"
+import { buildOrderPayload } from "../../lib/apaczka/order-builder"
+import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
+import { type ApaczkaPluginOptions, optionsForService, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
+import type { ParcelItem } from "../../lib/apaczka/parcels"
+import { createShipment, labelsFor } from "../../lib/apaczka/shipments"
+import { userAgent } from "../../lib/apaczka/version"
 
 type InjectedDependencies = { logger: Logger }
+
+type EnabledState = { options: ApaczkaPluginOptions; client: ApaczkaClient; catalog: ApaczkaCatalog }
 
 /** Accepted under `additional_data.apaczka` when creating a fulfillment. */
 export type ApaczkaAdditionalData = {
@@ -72,42 +80,70 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
   static identifier = "apaczka"
 
   protected readonly logger_: Logger
-  protected readonly options_: ApaczkaPluginOptions
-  protected readonly client_: ApaczkaClient
-  protected readonly catalog_: ApaczkaCatalog
+  private readonly state_: EnabledState | { disabled: string }
   private readonly quotes_ = new Map<string, { at: number; value: Promise<{ price: number; price_gross: number }> }>()
 
-  static validateOptions(options: Record<string, unknown>): void {
-    resolveOptions(options)
-  }
+  /**
+   * Never throws: missing or invalid options disable the plugin (one log
+   * line) instead of stopping Medusa.
+   */
+  static validateOptions(_options: Record<string, unknown>): void {}
 
   constructor({ logger }: InjectedDependencies, options: Record<string, unknown>) {
     super()
     this.logger_ = logger
-    this.options_ = resolveOptions(options)
-    this.client_ = new ApaczkaClient({
-      appId: this.options_.appId,
-      appSecret: this.options_.appSecret,
-      environment: this.options_.environment,
-      baseUrl: this.options_.baseUrl,
-      timeoutMs: this.options_.timeoutMs,
-      maxRetries: this.options_.maxRetries,
+
+    const parsed = parseOptions(options)
+    if (!parsed.enabled) {
+      logPluginDisabled(logger, PLUGIN_NAME, parsed.reason)
+      this.state_ = { disabled: parsed.reason }
+      return
+    }
+
+    const client = new ApaczkaClient({
+      appId: parsed.options.appId,
+      appSecret: parsed.options.appSecret,
+      environment: parsed.options.environment,
+      baseUrl: parsed.options.baseUrl,
+      timeoutMs: parsed.options.timeoutMs,
+      maxRetries: parsed.options.maxRetries,
       userAgent: userAgent(),
       logger,
     })
-    this.catalog_ = new ApaczkaCatalog(this.client_, {
-      serviceStructureTtlMs: this.options_.serviceStructureTtlMinutes * 60_000,
-      pointsTtlMs: this.options_.pointsTtlMinutes * 60_000,
-      pointCountries: this.options_.pointCountries,
+    const catalog = new ApaczkaCatalog(client, {
+      serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
+      pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,
+      pointCountries: parsed.options.pointCountries,
       logger,
     })
+    this.state_ = { options: parsed.options, client, catalog }
   }
 
-  /* ---------------------------------------------------------------------- */
-  /* Shipping options (admin)                                                */
-  /* ---------------------------------------------------------------------- */
+  /* Throw a clear "plugin is disabled" error from any operation that needs Apaczka. */
+  protected get options_(): ApaczkaPluginOptions {
+    return this.enabled_().options
+  }
+
+  protected get client_(): ApaczkaClient {
+    return this.enabled_().client
+  }
+
+  protected get catalog_(): ApaczkaCatalog {
+    return this.enabled_().catalog
+  }
+
+  private enabled_(): EnabledState {
+    if ("disabled" in this.state_) {
+      throw pluginDisabledError(PLUGIN_NAME, this.state_.disabled)
+    }
+    return this.state_
+  }
 
   async getFulfillmentOptions(): Promise<FulfillmentOption[]> {
+    if ("disabled" in this.state_) {
+      // Lets the admin open the provider's option list without an error.
+      return []
+    }
     try {
       const structure = await this.catalog_.getServiceStructure()
       return buildFulfillmentOptions(structure, this.options_)

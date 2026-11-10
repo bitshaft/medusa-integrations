@@ -1,0 +1,20 @@
+{
+  "name": "medusa-integrations",
+  "private": true,
+  "description": "Independent Medusa v2 plugins by Bitshaft. Each folder in plugins/ is its own npm package.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "install:all": "node scripts/run-all.mjs npm install",
+    "ci:all": "node scripts/run-all.mjs npm ci",
+    "check": "node scripts/run-all.mjs npm run check",
+    "build": "node scripts/run-all.mjs npm run build",
+    "kit:sync": "node scripts/kit-sync.mjs",
+    "check:repo": "node scripts/check-repo.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "vendor": "node scripts/vendor-into-app.mjs"
+  }
+}

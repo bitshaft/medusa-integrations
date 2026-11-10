@@ -1,13 +1,16 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { customerAddress, warehouseAddress } from "../../../../../../lib/addresses"
-import { buildOrderPayload } from "../../../../../../lib/order-builder"
-import { buildParcels } from "../../../../../../lib/parcels"
-import { optionsForService } from "../../../../../../lib/options"
-import { codAmountForContext, loadShipmentContext } from "../../../../../../workflows/steps/load-shipment-context"
-import { resolveApaczka } from "../../../../../utils"
-import type { AdminCreateShipment } from "../../../../../validators"
+import { customerAddress, warehouseAddress } from "../../../../../../lib/apaczka/addresses"
+import { buildOrderPayload } from "../../../../../../lib/apaczka/order-builder"
+import { buildParcels } from "../../../../../../lib/apaczka/parcels"
+import { optionsForService } from "../../../../../../lib/apaczka/options"
+import {
+  codAmountForContext,
+  loadShipmentContext,
+} from "../../../../../../workflows/apaczka/steps/load-shipment-context"
+import { resolveApaczka } from "../../../../../../lib/apaczka/api/utils"
+import type { AdminCreateShipment } from "../../../../../../lib/apaczka/api/validators"
 
 /**
  * `POST /admin/apaczka/fulfillments/:id/valuation` — price the shipment with

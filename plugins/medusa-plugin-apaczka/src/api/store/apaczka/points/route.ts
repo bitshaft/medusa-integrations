@@ -1,8 +1,8 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { toPublicPoint } from "../../../../lib/points"
-import { resolveApaczka } from "../../../utils"
-import type { StorePointsQuery } from "../../../validators"
+import { toPublicPoint } from "../../../../lib/apaczka/points"
+import { resolveApaczka } from "../../../../lib/apaczka/api/utils"
+import type { StorePointsQuery } from "../../../../lib/apaczka/api/validators"
 
 /**
  * `GET /store/apaczka/points?type=INPOST&q=warszawa&lat=52.23&lng=21.01`

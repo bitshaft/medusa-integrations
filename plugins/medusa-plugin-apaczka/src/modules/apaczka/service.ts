@@ -3,15 +3,18 @@ import { createHash } from "node:crypto"
 import type { Logger } from "@medusajs/framework/types"
 import { MedusaService } from "@medusajs/framework/utils"
 
-import { ApaczkaClient } from "../../lib/apaczka"
-import type { ShipmentStatus } from "../../lib/apaczka/statuses"
-import { ApaczkaCatalog } from "../../lib/catalog"
-import { type ApaczkaPluginOptions, resolveOptions } from "../../lib/options"
-import { userAgent } from "../../lib/version"
+import { ApaczkaClient } from "../../lib/apaczka/client"
+import type { ShipmentStatus } from "../../lib/apaczka/client/statuses"
+import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
+import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
+import { type ApaczkaPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
+import { userAgent } from "../../lib/apaczka/version"
 import { ApaczkaShipment } from "./models/shipment"
 import { ApaczkaTrackingEvent } from "./models/tracking-event"
 
 type InjectedDependencies = { logger: Logger }
+
+type EnabledState = { options: ApaczkaPluginOptions; client: ApaczkaClient; catalog: ApaczkaCatalog }
 
 export type TrackingEventInput = {
   source: "webhook" | "polling" | "system"
@@ -31,42 +34,66 @@ export default class ApaczkaModuleService extends MedusaService({
   ApaczkaTrackingEvent,
 }) {
   protected readonly logger_: Logger
-  protected readonly options_: ApaczkaPluginOptions
-  protected readonly client_: ApaczkaClient
-  protected readonly catalog_: ApaczkaCatalog
+  private readonly state_: EnabledState | { disabled: string }
 
   constructor(container: InjectedDependencies, options: Record<string, unknown>) {
     super(...arguments)
     this.logger_ = container.logger
-    this.options_ = resolveOptions(options)
-    this.client_ = new ApaczkaClient({
-      appId: this.options_.appId,
-      appSecret: this.options_.appSecret,
-      environment: this.options_.environment,
-      baseUrl: this.options_.baseUrl,
-      timeoutMs: this.options_.timeoutMs,
-      maxRetries: this.options_.maxRetries,
+
+    const parsed = parseOptions(options)
+    if (!parsed.enabled) {
+      // Never block Medusa's startup over plugin configuration.
+      logPluginDisabled(container.logger, PLUGIN_NAME, parsed.reason)
+      this.state_ = { disabled: parsed.reason }
+      return
+    }
+
+    const client = new ApaczkaClient({
+      appId: parsed.options.appId,
+      appSecret: parsed.options.appSecret,
+      environment: parsed.options.environment,
+      baseUrl: parsed.options.baseUrl,
+      timeoutMs: parsed.options.timeoutMs,
+      maxRetries: parsed.options.maxRetries,
       userAgent: userAgent(),
       logger: container.logger,
     })
-    this.catalog_ = new ApaczkaCatalog(this.client_, {
-      serviceStructureTtlMs: this.options_.serviceStructureTtlMinutes * 60_000,
-      pointsTtlMs: this.options_.pointsTtlMinutes * 60_000,
-      pointCountries: this.options_.pointCountries,
+    const catalog = new ApaczkaCatalog(client, {
+      serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
+      pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,
+      pointCountries: parsed.options.pointCountries,
       logger: container.logger,
     })
+    this.state_ = { options: parsed.options, client, catalog }
+  }
+
+  /** False when options are missing or invalid; see `getDisabledReason`. */
+  async isEnabled(): Promise<boolean> {
+    return !("disabled" in this.state_)
+  }
+
+  /** Why the plugin is disabled (safe to show: never contains option values). */
+  async getDisabledReason(): Promise<string | null> {
+    return "disabled" in this.state_ ? this.state_.disabled : null
   }
 
   async getClient(): Promise<ApaczkaClient> {
-    return this.client_
+    return this.enabled_().client
   }
 
   async getCatalog(): Promise<ApaczkaCatalog> {
-    return this.catalog_
+    return this.enabled_().catalog
   }
 
   async getOptions(): Promise<ApaczkaPluginOptions> {
-    return this.options_
+    return this.enabled_().options
+  }
+
+  private enabled_(): EnabledState {
+    if ("disabled" in this.state_) {
+      throw pluginDisabledError(PLUGIN_NAME, this.state_.disabled)
+    }
+    return this.state_
   }
 
   /**
