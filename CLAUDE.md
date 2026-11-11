@@ -83,21 +83,22 @@ scripts/                        repo tooling (Node built-ins only, no dependenci
 
 ## Naming conventions
 
-| Thing                | Convention                                                  | Apaczka example                        |
-| -------------------- | ----------------------------------------------------------- | -------------------------------------- |
-| Folder               | `plugins/medusa-plugin-<name>`                              | `plugins/medusa-plugin-apaczka`        |
-| npm package          | `@bitshaft/medusa-plugin-<name>`                            | `@bitshaft/medusa-plugin-apaczka`      |
-| Namespace            | `<name>` (kebab-case)                                       | `apaczka`                              |
-| Module               | `src/modules/<ns>`, registered as `"<ns>"`                  | `APACZKA_MODULE = "apaczka"`           |
-| Provider             | `src/providers/<ns>`, `static identifier = "<ns>"`          | `apaczka`                              |
-| Data models          | PascalCase with the plugin prefix                           | `ApaczkaShipment`                      |
-| Workflows / steps    | `<verb>-<ns>-<thing>` / `<ns>-<step>`                       | `create-apaczka-shipment`              |
-| Jobs, subscribers    | file `<ns>-<what>.ts`, `name` / `subscriberId` the same     | `apaczka-sync-tracking`                |
-| Events               | `<ns>.<entity>.<action>`                                    | `apaczka.shipment.delivered`           |
-| API routes           | `/admin/<ns>/…`, `/store/<ns>/…`, `/hooks/<ns>/…`           | `/hooks/apaczka/tracking`              |
-| Admin widget / route | `widgets/<ns>-<zone>.tsx` / `routes/settings/<ns>/page.tsx` | `apaczka-order-shipments.tsx`          |
-| Log lines            | prefix `[<ns>]`                                             | `[apaczka] Disabled: missing option …` |
-| Git tag (release)    | `<folder>@<version>`                                        | `medusa-plugin-apaczka@0.1.0`          |
+| Thing                | Convention                                                  | Apaczka example                          |
+| -------------------- | ----------------------------------------------------------- | ---------------------------------------- |
+| Folder               | `plugins/medusa-plugin-<name>`                              | `plugins/medusa-plugin-apaczka`          |
+| npm package          | `@bitshaft/medusa-plugin-<name>`                            | `@bitshaft/medusa-plugin-apaczka`        |
+| Namespace            | `<name>` (kebab-case)                                       | `apaczka`                                |
+| Module               | `src/modules/<ns>`, registered as `"<ns>"`                  | `APACZKA_MODULE = "apaczka"`             |
+|                      | (dashes become underscores: Medusa rejects them)            | `WHITELIST_VAT_MODULE = "whitelist_vat"` |
+| Provider             | `src/providers/<ns>`, `static identifier = "<ns>"`          | `apaczka`                                |
+| Data models          | PascalCase with the plugin prefix                           | `ApaczkaShipment`                        |
+| Workflows / steps    | `<verb>-<ns>-<thing>` / `<ns>-<step>`                       | `create-apaczka-shipment`                |
+| Jobs, subscribers    | file `<ns>-<what>.ts`, `name` / `subscriberId` the same     | `apaczka-sync-tracking`                  |
+| Events               | `<ns>.<entity>.<action>`                                    | `apaczka.shipment.delivered`             |
+| API routes           | `/admin/<ns>/…`, `/store/<ns>/…`, `/hooks/<ns>/…`           | `/hooks/apaczka/tracking`                |
+| Admin widget / route | `widgets/<ns>-<zone>.tsx` / `routes/settings/<ns>/page.tsx` | `apaczka-order-shipments.tsx`            |
+| Log lines            | prefix `[<ns>]`                                             | `[apaczka] Disabled: missing option …`   |
+| Git tag (release)    | `<folder>@<version>`                                        | `medusa-plugin-apaczka@0.1.0`            |
 
 ## Quality rules
 

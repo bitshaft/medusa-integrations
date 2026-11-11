@@ -1,0 +1,196 @@
+{
+  "whitelist-vat": {
+    "title": "Biała lista VAT",
+    "description": "Weryfikacja kontrahentów: polski NIP na białej liście i w GUS, numery VAT UE w VIES.",
+    "loadError": "Nie udało się wczytać danych.",
+    "refresh": "Odśwież",
+    "disabled": {
+      "title": "Wtyczka jest wyłączona",
+      "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
+    },
+    "tabs": {
+      "overview": "Przegląd",
+      "lookup": "Sprawdź numer",
+      "settings": "Ustawienia"
+    },
+    "status": {
+      "active": "Czynny podatnik VAT",
+      "exempt": "Zwolniony z VAT",
+      "unregistered": "Niezarejestrowany w VAT",
+      "inactive": "Działalność zakończona",
+      "valid": "Aktywny VAT UE",
+      "invalid": "Błędny",
+      "not_found": "Nie znaleziono",
+      "unverified": "Nie udało się sprawdzić"
+    },
+    "statusHint": {
+      "active": "Zarejestrowany jako czynny podatnik VAT na białej liście.",
+      "exempt": "Figuruje na białej liście jako zwolniony z VAT.",
+      "unregistered": "Firma istnieje, ale nie jest zarejestrowanym podatnikiem VAT.",
+      "inactive": "Według GUS ta firma zakończyła działalność.",
+      "valid": "VIES potwierdza ten numer VAT UE.",
+      "invalid": "Numer ma błędny format lub cyfrę kontrolną albo VIES go nie potwierdza.",
+      "not_found": "Rejestry odpowiedziały i żaden nie zna tego numeru.",
+      "unverified": "Nie udało się zapytać żadnego rejestru. To nic nie mówi o numerze; spróbuj później."
+    },
+    "outcome": {
+      "active": "Czynny",
+      "exempt": "Zwolniony",
+      "unregistered": "Niezarejestrowany",
+      "valid": "Aktywny",
+      "invalid": "Nieaktywny",
+      "found": "Znaleziono",
+      "inactive": "Zakończona",
+      "not_found": "Nie znaleziono",
+      "unavailable": "Niedostępny"
+    },
+    "source": {
+      "mf": "Biała lista (MF)",
+      "gus": "GUS (REGON)",
+      "vies": "VIES",
+      "local": "Kontrola formatu"
+    },
+    "problem": {
+      "empty": "Wpisz numer.",
+      "unknown_country": "Prefiks kraju nie należy do państwa członkowskiego UE.",
+      "format": "To nie jest poprawny numer dla tego kraju.",
+      "checksum": "Błędna cyfra kontrolna: w numerze NIP jest prawdopodobnie literówka."
+    },
+    "stale": "Nieaktualny",
+    "staleHint": "Ta odpowiedź jest starsza niż czas ważności. Sprawdź ponownie, aby mieć aktualną.",
+    "fromCache": "Użyta ponownie",
+    "fromCacheHint": "Bez nowego zapytania: dla tego rekordu użyto niedawnej odpowiedzi.",
+    "tiles": {
+      "all": "Kontrahenci",
+      "active": "Czynni podatnicy VAT",
+      "exempt": "Zwolnieni i UE",
+      "problem": "Wymagają uwagi",
+      "stale": "Nieaktualni",
+      "quota": "Zapytania do białej listy dziś"
+    },
+    "subjects": {
+      "title": "Kontrahenci",
+      "subtitle": "Ostatnia odpowiedź dla każdego numeru sprawdzonego w tym sklepie.",
+      "search": "NIP, nazwa, adres",
+      "empty": "Brak kontrahentów. Pojawią się tutaj po sprawdzeniu numeru kupującego.",
+      "emptyFiltered": "Nic nie pasuje do tego filtra.",
+      "number": "Numer",
+      "name": "Kontrahent",
+      "status": "Status",
+      "accounts": "Konta",
+      "checked": "Sprawdzony",
+      "never": "Nigdy",
+      "recheck": "Sprawdź ponownie",
+      "rechecked": "Sprawdzono {{number}}: {{status}}.",
+      "recheckFailed": "Nie udało się sprawdzić {{number}}: {{error}}",
+      "customer": "Otwórz klienta",
+      "filters": {
+        "all": "Wszyscy",
+        "active": "Czynni",
+        "exempt": "Zwolnieni i UE",
+        "problem": "Wymagają uwagi",
+        "stale": "Nieaktualni"
+      }
+    },
+    "history": {
+      "title": "Historia weryfikacji",
+      "subtitle": "Każda odpowiedź każdego rejestru, od najnowszej.",
+      "empty": "Brak weryfikacji.",
+      "when": "Kiedy",
+      "number": "Numer",
+      "source": "Rejestr",
+      "outcome": "Odpowiedź",
+      "proof": "Identyfikator z rejestru",
+      "order": "Zamówienie"
+    },
+    "paging": {
+      "previous": "Poprzednie",
+      "next": "Następne",
+      "range": "{{from}}–{{to}} z {{count}}"
+    },
+    "lookup": {
+      "title": "Sprawdź kontrahenta",
+      "subtitle": "Sprawdź polski NIP lub numer VAT UE. Numery bez prefiksu są traktowane jako polskie.",
+      "placeholder": "5260250274 lub DE123456789",
+      "submit": "Sprawdź",
+      "force": "Zapytaj rejestry, nawet jeśli jest zapisana niedawna odpowiedź",
+      "failed": "Sprawdzenie nie powiodło się: {{error}}",
+      "registers": "Odpowiedzi rejestrów",
+      "noRegisters": "Nie zapytano żadnego rejestru.",
+      "company": "Kontrahent",
+      "name": "Nazwa",
+      "address": "Adres",
+      "regon": "REGON",
+      "krs": "KRS",
+      "legalForm": "Forma prawna",
+      "legalForms": {
+        "legal_entity": "Osoba prawna",
+        "sole_proprietorship": "Jednoosobowa działalność gospodarcza"
+      },
+      "registeredAt": "Rejestracja VAT",
+      "bankAccounts": "Rachunki na białej liście",
+      "noBankAccounts": "Brak rachunków."
+    },
+    "bank": {
+      "title": "Sprawdź rachunek bankowy",
+      "subtitle": "Zapytaj białą listę, czy rachunek jest dziś przypisany do NIP-u, na przykład przed zapłatą dostawcy.",
+      "nip": "NIP",
+      "account": "Numer rachunku (26 cyfr)",
+      "submit": "Sprawdź rachunek",
+      "assigned": "Tak: ten rachunek jest przypisany do tego NIP-u.",
+      "notAssigned": "Nie: ten rachunek nie jest przypisany do tego NIP-u.",
+      "invalid_nip": "To nie jest poprawny NIP.",
+      "invalid_account": "To nie jest poprawny polski numer rachunku.",
+      "unavailable": "Nie udało się zapytać białej listy: {{error}}",
+      "proof": "Identyfikator z rejestru: {{id}}"
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "subtitle": "Opcje w użyciu, tylko do odczytu. Ustawia się je w medusa-config.ts.",
+      "registers": "Rejestry",
+      "on": "Włączony",
+      "off": "Wyłączony",
+      "environment": "Środowisko",
+      "mfHint": "Nie wymaga klucza. Ministerstwo pozwala na około 100 zapytań dziennie.",
+      "mfQuota": "Wykorzystano dziś {{used}} z {{limit}} zapytań",
+      "gusHint": "Zna każdą firmę, nie tylko podatników VAT. Bez limitu dziennego.",
+      "gusOff": "Ustaw gus.apiKey, aby z niego korzystać. Klucz jest wydawany bezpłatnie na api.stat.gov.pl.",
+      "gusKey": "Klucz",
+      "viesHint": "Potwierdza numery VAT UE. Nie wymaga klucza.",
+      "viesRequester": "Numer pytającego",
+      "viesNoRequester": "Ustaw vies.requesterVatNumber na własny numer VAT UE, aby otrzymywać numer konsultacji jako dowód.",
+      "options": "Opcje",
+      "cacheTtl": "Ważność odpowiedzi",
+      "hours": "{{count}} h",
+      "timeout": "Limit czasu rejestru",
+      "seconds": "{{count}} s",
+      "defaultCountry": "Kraj domyślny",
+      "taxIdKeys": "Klucze metadanych z numerem",
+      "verifyOnOrder": "Sprawdzaj przy złożeniu zamówienia",
+      "rejectOnCompletion": "Odrzucaj koszyki przy finalizacji",
+      "rejectStatuses": "Odrzucane statusy",
+      "storeRoute": "Sprawdzanie numeru w sklepie",
+      "storeLimit": "{{count}} sprawdzeń na odwiedzającego na minutę",
+      "version": "Wersja"
+    },
+    "record": {
+      "title": "Weryfikacja numeru podatkowego",
+      "noTaxId": "Brak numeru podatkowego w tym rekordzie.",
+      "noTaxIdHint": "Wtyczka szuka go w metadanych pod kluczami: {{keys}}.",
+      "verify": "Sprawdź teraz",
+      "verifyAgain": "Sprawdź ponownie",
+      "notVerified": "Jeszcze nie sprawdzono.",
+      "done": "Sprawdzono: {{status}}.",
+      "failed": "Nie udało się sprawdzić: {{error}}",
+      "foundIn": {
+        "billing_address": "Z adresu rozliczeniowego",
+        "shipping_address": "Z adresu dostawy",
+        "metadata": "Z metadanych zamówienia",
+        "customer": "Z metadanych klienta"
+      },
+      "history": "Odpowiedzi zapisane dla tego rekordu",
+      "noHistory": "Nic jeszcze nie zapisano.",
+      "openPanel": "Otwórz białą listę"
+    }
+  }
+}

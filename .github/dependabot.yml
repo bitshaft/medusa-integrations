@@ -29,6 +29,20 @@ updates:
     commit-message:
       prefix: "chore(emails)"
 
+  - package-ecosystem: npm
+    directory: /plugins/medusa-plugin-whitelist-vat
+    schedule:
+      interval: weekly
+    groups:
+      medusa:
+        patterns: ["@medusajs/*"]
+      dev-tooling:
+        dependency-type: development
+        exclude-patterns: ["@medusajs/*"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(whitelist-vat)"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

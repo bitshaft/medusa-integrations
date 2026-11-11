@@ -1,0 +1,196 @@
+{
+  "whitelist-vat": {
+    "title": "VAT white list",
+    "description": "Verify business buyers: Polish NIP on the white list and in GUS, EU VAT numbers in VIES.",
+    "loadError": "Could not load the data.",
+    "refresh": "Refresh",
+    "disabled": {
+      "title": "The plugin is disabled",
+      "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
+    },
+    "tabs": {
+      "overview": "Overview",
+      "lookup": "Lookup",
+      "settings": "Settings"
+    },
+    "status": {
+      "active": "Active VAT payer",
+      "exempt": "VAT exempt",
+      "unregistered": "Not a VAT payer",
+      "inactive": "Business closed",
+      "valid": "Valid EU VAT",
+      "invalid": "Invalid",
+      "not_found": "Not found",
+      "unverified": "Could not verify"
+    },
+    "statusHint": {
+      "active": "Registered as an active VAT payer on the white list.",
+      "exempt": "On the white list as exempt from VAT.",
+      "unregistered": "The business exists but is not a registered VAT payer.",
+      "inactive": "GUS reports that this business has ended its activity.",
+      "valid": "VIES confirms this EU VAT number.",
+      "invalid": "The number has a wrong format or check digit, or VIES does not confirm it.",
+      "not_found": "The registers answered and none of them knows this number.",
+      "unverified": "No register could be asked. This says nothing about the number; try again later."
+    },
+    "outcome": {
+      "active": "Active",
+      "exempt": "Exempt",
+      "unregistered": "Not registered",
+      "valid": "Valid",
+      "invalid": "Invalid",
+      "found": "Found",
+      "inactive": "Closed",
+      "not_found": "Not found",
+      "unavailable": "Unavailable"
+    },
+    "source": {
+      "mf": "White list (MF)",
+      "gus": "GUS (REGON)",
+      "vies": "VIES",
+      "local": "Format check"
+    },
+    "problem": {
+      "empty": "Enter a tax ID.",
+      "unknown_country": "The country prefix is not an EU member state.",
+      "format": "This is not a valid number for that country.",
+      "checksum": "The check digit is wrong: there is probably a typo in the NIP."
+    },
+    "stale": "Stale",
+    "staleHint": "This answer is older than the cache time. Check again for a current one.",
+    "fromCache": "Reused",
+    "fromCacheHint": "No new request: a recent answer was reused for this record.",
+    "tiles": {
+      "all": "Businesses",
+      "active": "Active VAT payers",
+      "exempt": "Exempt and EU",
+      "problem": "Need attention",
+      "stale": "Stale",
+      "quota": "White list requests today"
+    },
+    "subjects": {
+      "title": "Businesses",
+      "subtitle": "The latest answer for every tax ID verified in this store.",
+      "search": "NIP, name, address",
+      "empty": "No businesses yet. They appear here when a buyer's tax ID is verified.",
+      "emptyFiltered": "Nothing matches this filter.",
+      "number": "Tax ID",
+      "name": "Business",
+      "status": "Status",
+      "accounts": "Accounts",
+      "checked": "Checked",
+      "never": "Never",
+      "recheck": "Check again",
+      "rechecked": "{{number}} checked: {{status}}.",
+      "recheckFailed": "Could not check {{number}}: {{error}}",
+      "customer": "Open customer",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "exempt": "Exempt and EU",
+        "problem": "Need attention",
+        "stale": "Stale"
+      }
+    },
+    "history": {
+      "title": "Verification history",
+      "subtitle": "Every answer of every register, newest first.",
+      "empty": "No verifications yet.",
+      "when": "When",
+      "number": "Tax ID",
+      "source": "Register",
+      "outcome": "Answer",
+      "proof": "Register's ID",
+      "order": "Order"
+    },
+    "paging": {
+      "previous": "Previous",
+      "next": "Next",
+      "range": "{{from}}–{{to}} of {{count}}"
+    },
+    "lookup": {
+      "title": "Look up a business",
+      "subtitle": "Check a Polish NIP or an EU VAT number. Numbers without a prefix are read as Polish.",
+      "placeholder": "5260250274 or DE123456789",
+      "submit": "Verify",
+      "force": "Ask the registers even if a recent answer is stored",
+      "failed": "The lookup failed: {{error}}",
+      "registers": "What the registers said",
+      "noRegisters": "No register was asked.",
+      "company": "Business",
+      "name": "Name",
+      "address": "Address",
+      "regon": "REGON",
+      "krs": "KRS",
+      "legalForm": "Legal form",
+      "legalForms": {
+        "legal_entity": "Legal entity",
+        "sole_proprietorship": "Sole proprietorship"
+      },
+      "registeredAt": "VAT registration",
+      "bankAccounts": "Bank accounts on the white list",
+      "noBankAccounts": "None listed."
+    },
+    "bank": {
+      "title": "Check a bank account",
+      "subtitle": "Ask the white list whether an account belongs to a NIP today, for example before paying a supplier.",
+      "nip": "NIP",
+      "account": "Account number (26 digits)",
+      "submit": "Check account",
+      "assigned": "Yes: this account is registered for the NIP.",
+      "notAssigned": "No: this account is not registered for the NIP.",
+      "invalid_nip": "This is not a valid NIP.",
+      "invalid_account": "This is not a valid Polish account number.",
+      "unavailable": "The white list could not be asked: {{error}}",
+      "proof": "Register's ID: {{id}}"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "The options in use, read-only. They are set in medusa-config.ts.",
+      "registers": "Registers",
+      "on": "On",
+      "off": "Off",
+      "environment": "Environment",
+      "mfHint": "No key needed. The ministry allows about 100 requests a day.",
+      "mfQuota": "{{used}} of {{limit}} requests used today",
+      "gusHint": "Knows every business, not only VAT payers. No daily limit.",
+      "gusOff": "Set gus.apiKey to use it. Keys are issued free of charge at api.stat.gov.pl.",
+      "gusKey": "Key",
+      "viesHint": "Confirms EU VAT numbers. No key needed.",
+      "viesRequester": "Requester number",
+      "viesNoRequester": "Set vies.requesterVatNumber to your own EU VAT number to get a consultation number as proof.",
+      "options": "Options",
+      "cacheTtl": "Answer reused for",
+      "hours": "{{count}} h",
+      "timeout": "Register timeout",
+      "seconds": "{{count}} s",
+      "defaultCountry": "Default country",
+      "taxIdKeys": "Tax ID metadata keys",
+      "verifyOnOrder": "Verify when an order is placed",
+      "rejectOnCompletion": "Reject carts at checkout",
+      "rejectStatuses": "Rejected verdicts",
+      "storeRoute": "Storefront lookup route",
+      "storeLimit": "{{count}} lookups per visitor a minute",
+      "version": "Version"
+    },
+    "record": {
+      "title": "Tax ID verification",
+      "noTaxId": "No tax ID on this record.",
+      "noTaxIdHint": "The plugin looks for it in metadata under: {{keys}}.",
+      "verify": "Verify now",
+      "verifyAgain": "Verify again",
+      "notVerified": "Not verified yet.",
+      "done": "Verified: {{status}}.",
+      "failed": "Could not verify: {{error}}",
+      "foundIn": {
+        "billing_address": "From the billing address",
+        "shipping_address": "From the shipping address",
+        "metadata": "From the order's metadata",
+        "customer": "From the customer's metadata"
+      },
+      "history": "Answers recorded for this record",
+      "noHistory": "Nothing recorded yet.",
+      "openPanel": "Open the white list"
+    }
+  }
+}
