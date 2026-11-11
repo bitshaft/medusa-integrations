@@ -4,11 +4,12 @@ Independent [Medusa v2](https://medusajs.com) plugins for services used by
 stores in Poland and the rest of Europe. Each plugin is its own npm package
 with its own version, changelog and release.
 
-| Plugin                                                            | Package                                                                                                        | Category     |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------ |
-| [Apaczka.pl](./plugins/medusa-plugin-apaczka/README.md)           | [`@bitshaft/medusa-plugin-apaczka`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-apaczka)             | Shipping     |
-| [Emails](./plugins/medusa-plugin-emails/README.md)                | [`@bitshaft/medusa-plugin-emails`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-emails)               | Notification |
-| [VAT white list](./plugins/medusa-plugin-whitelist-vat/README.md) | [`@bitshaft/medusa-plugin-whitelist-vat`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-whitelist-vat) | Tax          |
+| Plugin                                                            | Package                                                                                                        | Category      |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------- |
+| [Apaczka.pl](./plugins/medusa-plugin-apaczka/README.md)           | [`@bitshaft/medusa-plugin-apaczka`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-apaczka)             | Shipping      |
+| [Emails](./plugins/medusa-plugin-emails/README.md)                | [`@bitshaft/medusa-plugin-emails`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-emails)               | Notification  |
+| [VAT white list](./plugins/medusa-plugin-whitelist-vat/README.md) | [`@bitshaft/medusa-plugin-whitelist-vat`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-whitelist-vat) | Tax           |
+| [Back in stock](./plugins/medusa-plugin-back-in-stock/README.md)  | [`@bitshaft/medusa-plugin-back-in-stock`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-back-in-stock) | Store feature |
 
 ## Using a plugin
 

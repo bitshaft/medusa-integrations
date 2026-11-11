@@ -43,6 +43,20 @@ updates:
     commit-message:
       prefix: "chore(whitelist-vat)"
 
+  - package-ecosystem: npm
+    directory: /plugins/medusa-plugin-back-in-stock
+    schedule:
+      interval: weekly
+    groups:
+      medusa:
+        patterns: ["@medusajs/*"]
+      dev-tooling:
+        dependency-type: development
+        exclude-patterns: ["@medusajs/*"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(back-in-stock)"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

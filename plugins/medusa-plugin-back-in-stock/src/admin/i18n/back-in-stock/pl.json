@@ -1,0 +1,184 @@
+{
+  "back-in-stock": {
+    "title": "Powiadomienia o dostępności",
+    "description": "Klienci proszą o powiadomienie, gdy wyprzedany wariant wróci; dostają e-mail, gdy jest znowu dostępny.",
+    "loadError": "Nie udało się wczytać danych.",
+    "refresh": "Odśwież",
+    "disabled": {
+      "title": "Wtyczka jest wyłączona",
+      "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
+    },
+    "demoMode": "Tryb demo: e-maile są renderowane i zapisywane w logach, nic nie jest wysyłane.",
+    "tabs": {
+      "wanted": "Najbardziej oczekiwane",
+      "subscriptions": "Zapisy",
+      "history": "Historia wysyłek",
+      "settings": "Ustawienia"
+    },
+    "tiles": {
+      "active": "Oczekujący",
+      "pending": "Niepotwierdzeni",
+      "ended": "Zakończone",
+      "pending_checks": "Zaplanowane sprawdzenia stanu"
+    },
+    "status": {
+      "pending": "Czeka na potwierdzenie",
+      "active": "Oczekuje",
+      "purchased": "Kupione",
+      "unsubscribed": "Wypisany",
+      "expired": "Wygasłe"
+    },
+    "notificationStatus": {
+      "pending": "W trakcie",
+      "sent": "Wysłany",
+      "demo": "Demo",
+      "skipped": "Pominięty",
+      "failed": "Błąd"
+    },
+    "kind": {
+      "restock": "Znowu dostępny",
+      "confirm": "Potwierdzenie"
+    },
+    "reason": {
+      "stock": "Na stanie",
+      "untracked": "Bez śledzenia stanu",
+      "backorder": "Dozwolona sprzedaż bez stanu",
+      "no_inventory_item": "Brak pozycji magazynowej",
+      "missing": "Wariant usunięty"
+    },
+    "problem": {
+      "no_inventory_item": "Stan jest śledzony, ale nie ma powiązanej pozycji magazynowej: wariant nigdy nie wróci do sprzedaży. Powiąż pozycję magazynową albo wyłącz „Zarządzaj stanem”.",
+      "missing": "Ten wariant już nie istnieje."
+    },
+    "demo": "Demo",
+    "anonymized": "Dane osobowe usunięte",
+    "all": "Wszystkie",
+    "wanted": {
+      "title": "Najbardziej oczekiwane",
+      "subtitle": "Warianty według liczby oczekujących osób, osobno dla każdego kanału sprzedaży.",
+      "empty": "Nikt jeszcze na nic nie czeka.",
+      "variant": "Wariant",
+      "channel": "Kanał sprzedaży",
+      "waiting": "Oczekujący",
+      "pending": "Niepotwierdzeni",
+      "notified": "Wysłane e-maile",
+      "stock": "Stan teraz",
+      "available": "Dostępne: {{count}}",
+      "outOfStock": "Brak na stanie",
+      "simulate": "Symuluj dostawę",
+      "simulated": "Zasymulowano: wyrenderowano e-maile demo: {{count}}.",
+      "simulateFailed": "Nie udało się zasymulować: {{error}}"
+    },
+    "subscriptions": {
+      "title": "Zapisy",
+      "subtitle": "Wszystkie zapisy, od najnowszych, z liczbą otrzymanych e-maili.",
+      "search": "Szukaj e-maila",
+      "empty": "Brak pasujących zapisów.",
+      "email": "E-mail",
+      "variant": "Wariant",
+      "status": "Status",
+      "notifications": "E-maile",
+      "lastNotified": "Ostatni e-mail",
+      "created": "Zapisano",
+      "never": "—",
+      "end": "Wypisz",
+      "endConfirmTitle": "Wypisać tę osobę?",
+      "endConfirmText": "{{email}} nie dostanie już wiadomości o produkcie {{product}}.",
+      "ended": "Wypisano.",
+      "endFailed": "Nie udało się wypisać: {{error}}",
+      "demoOnly": "Tylko demo",
+      "realOnly": "Tylko prawdziwe"
+    },
+    "history": {
+      "title": "Historia wysyłek",
+      "subtitle": "Wszystkie e-maile, od najnowszych.",
+      "empty": "Brak e-maili.",
+      "when": "Kiedy",
+      "email": "Odbiorca",
+      "variant": "Wariant",
+      "kind": "E-mail",
+      "status": "Status",
+      "via": {
+        "emails": "Wtyczka E-maile",
+        "notification": "Wbudowany szablon",
+        "demo": "Demo"
+      }
+    },
+    "paging": {
+      "previous": "Poprzednie",
+      "next": "Następne",
+      "range": "{{from}}–{{to}} z {{count}}"
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "subtitle": "Zmiany tutaj zastępują wartości z medusa-config.ts.",
+      "minQuantity": "Liczba sztuk oznaczająca powrót do sprzedaży",
+      "minQuantityHint": "Wariant wraca, gdy w kanale sprzedaży jest dostępne co najmniej tyle sztuk.",
+      "delayMinutes": "Opóźnienie przed wysyłką (minuty)",
+      "delayMinutesHint": "Po zmianie stanu wtyczka czeka tyle czasu i sprawdza ponownie, więc szybko poprawiona pomyłka niczego nie wyśle.",
+      "minGapHours": "Minimalny odstęp między e-mailami (godziny)",
+      "minGapHoursHint": "Ten sam zapis nie dostanie kolejnego e-maila w tym czasie.",
+      "maxNotifications": "Maksymalna liczba e-maili na zapis",
+      "maxNotificationsHint": "Po tylu e-mailach zapis nie dostaje kolejnych.",
+      "doubleOptIn": "Proś o potwierdzenie e-mailem (double opt-in)",
+      "doubleOptInHint": "Zapis zaczyna działać dopiero po kliknięciu linku w e-mailu potwierdzającym.",
+      "retention": "Przechowywanie danych",
+      "unconfirmedDays": "Usuń niepotwierdzone po (dniach)",
+      "endedDays": "Usuń e-mail z zakończonych zapisów po (dniach)",
+      "activeDays": "Wygaś aktywne zapisy po (dniach)",
+      "consent": "Treść zgody",
+      "consentHint": "Wyświetlana przy formularzu. Musi mówić, że e-maile przychodzą aż do zakupu lub wypisania się. Puste pole oznacza treść domyślną.",
+      "save": "Zapisz",
+      "saved": "Ustawienia zapisane.",
+      "saveFailed": "Nie udało się zapisać: {{error}}",
+      "changed": "Zmienione",
+      "reset": "Przywróć domyślne",
+      "resetTitle": "Przywrócić ustawienia domyślne?",
+      "resetText": "Wszystkie ustawienia wrócą do wartości z medusa-config.ts. Zapisy klientów pozostaną bez zmian.",
+      "resetDone": "Przywrócono ustawienia domyślne.",
+      "cancel": "Anuluj"
+    },
+    "sending": {
+      "title": "Wysyłka",
+      "restock": "E-maile o dostępności",
+      "confirm": "E-maile potwierdzające",
+      "emails": "Przez wtyczkę E-maile (edytowalna treść, historia wysyłek)",
+      "notification": "Wbudowany szablon przez moduł powiadomień",
+      "demo": "Tryb demo: tylko renderowanie i logi",
+      "emailsHint": "Aby wysyłać przez wtyczkę E-maile, dodaj backInStockEmailTemplate do jej opcji templates.",
+      "links": "Linki",
+      "backendUrl": "Adres backendu",
+      "storefrontUrl": "Adres sklepu",
+      "productUrl": "Link do produktu",
+      "confirmUrl": "Strona potwierdzenia",
+      "unsubscribeUrl": "Strona wypisania",
+      "builtInPage": "Wbudowana strona",
+      "notSet": "Nie ustawiono",
+      "version": "Wersja"
+    },
+    "demoTools": {
+      "title": "Demo",
+      "subtitle": "Przykładowe zapisy z Twojego katalogu. Ich e-maile są tylko renderowane i zapisywane w logach, nigdy wysyłane.",
+      "emails": "Adresy (jeden w wierszu)",
+      "count": "Warianty",
+      "seed": "Utwórz przykładowe zapisy",
+      "seeded": "Utworzono zapisy demo: {{count}}.",
+      "seedFailed": "Nie udało się ich utworzyć: {{error}}",
+      "delete": "Usuń dane demo",
+      "deleteTitle": "Usunąć wszystkie dane demo?",
+      "deleteText": "Wszystkie zapisy demo i ich historia zostaną usunięte. Prawdziwe zapisy pozostaną bez zmian.",
+      "deleted": "Usunięto zapisy demo: {{count}}.",
+      "existing": "Zapisy demo: {{count}}",
+      "hint": "Następnie użyj „Symuluj dostawę” w zakładce Najbardziej oczekiwane z filtrem Demo."
+    },
+    "widget": {
+      "title": "Powiadomienia o dostępności",
+      "subtitle": "Osoby czekające na każdy wariant",
+      "empty": "Nikt nie czeka na ten produkt.",
+      "waiting": "Oczekujący: {{count}}",
+      "pending": "Niepotwierdzeni: {{count}}",
+      "lastNotified": "Ostatni e-mail {{date}}",
+      "open": "Otwórz powiadomienia o dostępności"
+    }
+  }
+}

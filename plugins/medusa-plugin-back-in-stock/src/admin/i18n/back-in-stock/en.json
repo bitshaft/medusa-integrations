@@ -1,0 +1,184 @@
+{
+  "back-in-stock": {
+    "title": "Back in stock",
+    "description": "Customers ask to be told when a sold-out variant returns; they get an email when it is in stock again.",
+    "loadError": "Could not load the data.",
+    "refresh": "Refresh",
+    "disabled": {
+      "title": "The plugin is disabled",
+      "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
+    },
+    "demoMode": "Demo mode: emails are rendered and logged, nothing is sent.",
+    "tabs": {
+      "wanted": "Most wanted",
+      "subscriptions": "Subscriptions",
+      "history": "Sent history",
+      "settings": "Settings"
+    },
+    "tiles": {
+      "active": "Waiting",
+      "pending": "Awaiting confirmation",
+      "ended": "Ended",
+      "pending_checks": "Stock checks scheduled"
+    },
+    "status": {
+      "pending": "Awaiting confirmation",
+      "active": "Waiting",
+      "purchased": "Purchased",
+      "unsubscribed": "Unsubscribed",
+      "expired": "Expired"
+    },
+    "notificationStatus": {
+      "pending": "Sending",
+      "sent": "Sent",
+      "demo": "Demo",
+      "skipped": "Skipped",
+      "failed": "Failed"
+    },
+    "kind": {
+      "restock": "Back in stock",
+      "confirm": "Confirmation"
+    },
+    "reason": {
+      "stock": "In stock",
+      "untracked": "Not stock-managed",
+      "backorder": "Backorders allowed",
+      "no_inventory_item": "No inventory item",
+      "missing": "Variant deleted"
+    },
+    "problem": {
+      "no_inventory_item": "Stock-managed but no inventory item is linked: it can never come back in stock. Link an inventory item or turn off \"Manage inventory\".",
+      "missing": "The variant no longer exists."
+    },
+    "demo": "Demo",
+    "anonymized": "Personal data removed",
+    "all": "All",
+    "wanted": {
+      "title": "Most wanted",
+      "subtitle": "Variants ranked by the people waiting for them, per sales channel.",
+      "empty": "Nobody is waiting for anything yet.",
+      "variant": "Variant",
+      "channel": "Sales channel",
+      "waiting": "Waiting",
+      "pending": "Unconfirmed",
+      "notified": "Emails sent",
+      "stock": "Stock now",
+      "available": "{{count}} available",
+      "outOfStock": "Out of stock",
+      "simulate": "Simulate restock",
+      "simulated": "Simulated: {{count}} demo email(s) rendered.",
+      "simulateFailed": "Could not simulate: {{error}}"
+    },
+    "subscriptions": {
+      "title": "Subscriptions",
+      "subtitle": "Every request, newest first, with the emails it received.",
+      "search": "Search email",
+      "empty": "No subscriptions match.",
+      "email": "Email",
+      "variant": "Variant",
+      "status": "Status",
+      "notifications": "Emails",
+      "lastNotified": "Last email",
+      "created": "Subscribed",
+      "never": "—",
+      "end": "Unsubscribe",
+      "endConfirmTitle": "Unsubscribe this person?",
+      "endConfirmText": "{{email}} will get no more emails about {{product}}.",
+      "ended": "Unsubscribed.",
+      "endFailed": "Could not unsubscribe: {{error}}",
+      "demoOnly": "Demo only",
+      "realOnly": "Real only"
+    },
+    "history": {
+      "title": "Sent history",
+      "subtitle": "Every email, newest first.",
+      "empty": "No emails yet.",
+      "when": "When",
+      "email": "Recipient",
+      "variant": "Variant",
+      "kind": "Email",
+      "status": "Status",
+      "via": {
+        "emails": "Emails plugin",
+        "notification": "Built-in template",
+        "demo": "Demo"
+      }
+    },
+    "paging": {
+      "previous": "Previous",
+      "next": "Next",
+      "range": "{{from}}–{{to}} of {{count}}"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Changes here override the values from medusa-config.ts.",
+      "minQuantity": "Units that count as back in stock",
+      "minQuantityHint": "A variant is back when at least this many units are available in the sales channel.",
+      "delayMinutes": "Delay before sending (minutes)",
+      "delayMinutesHint": "After a stock change the plugin waits this long and checks again, so a quickly corrected mistake sends nothing.",
+      "minGapHours": "Minimum gap between emails (hours)",
+      "minGapHoursHint": "The same subscription is not emailed again within this time.",
+      "maxNotifications": "Maximum emails per subscription",
+      "maxNotificationsHint": "After this many emails a subscription gets no more.",
+      "doubleOptIn": "Ask for confirmation by email (double opt-in)",
+      "doubleOptInHint": "Subscriptions start only after the customer clicks the link in a confirmation email.",
+      "retention": "Data retention",
+      "unconfirmedDays": "Delete unconfirmed after (days)",
+      "endedDays": "Remove email from ended subscriptions after (days)",
+      "activeDays": "Expire active subscriptions after (days)",
+      "consent": "Consent text",
+      "consentHint": "Shown next to the form. It must say that emails continue until purchase or unsubscribe. Empty uses the default.",
+      "save": "Save",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save: {{error}}",
+      "changed": "Changed",
+      "reset": "Restore defaults",
+      "resetTitle": "Restore the default settings?",
+      "resetText": "Every setting goes back to the value from medusa-config.ts. Subscriptions are not affected.",
+      "resetDone": "Defaults restored.",
+      "cancel": "Cancel"
+    },
+    "sending": {
+      "title": "Sending",
+      "restock": "Back-in-stock emails",
+      "confirm": "Confirmation emails",
+      "emails": "Through the Emails plugin (editable text, send log)",
+      "notification": "Built-in template through the notification module",
+      "demo": "Demo mode: rendered and logged only",
+      "emailsHint": "To send through the Emails plugin, spread backInStockEmailTemplate into its templates option.",
+      "links": "Links",
+      "backendUrl": "Backend URL",
+      "storefrontUrl": "Storefront URL",
+      "productUrl": "Product link",
+      "confirmUrl": "Confirm page",
+      "unsubscribeUrl": "Unsubscribe page",
+      "builtInPage": "Built-in page",
+      "notSet": "Not set",
+      "version": "Version"
+    },
+    "demoTools": {
+      "title": "Demo",
+      "subtitle": "Sample subscriptions from your own catalog. Their emails are only rendered and logged, never sent.",
+      "emails": "Addresses (one per line)",
+      "count": "Variants",
+      "seed": "Create sample subscriptions",
+      "seeded": "{{count}} demo subscription(s) created.",
+      "seedFailed": "Could not create them: {{error}}",
+      "delete": "Delete demo data",
+      "deleteTitle": "Delete all demo data?",
+      "deleteText": "Every demo subscription and its history is deleted. Real subscriptions are not touched.",
+      "deleted": "{{count}} demo subscription(s) deleted.",
+      "existing": "{{count}} demo subscription(s)",
+      "hint": "Then use \"Simulate restock\" on the Most wanted tab with the Demo filter."
+    },
+    "widget": {
+      "title": "Back in stock",
+      "subtitle": "People waiting for each variant",
+      "empty": "Nobody is waiting for this product.",
+      "waiting": "{{count}} waiting",
+      "pending": "{{count}} unconfirmed",
+      "lastNotified": "Last email {{date}}",
+      "open": "Open back-in-stock"
+    }
+  }
+}
