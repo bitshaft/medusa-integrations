@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest", "node"]
+  },
+  "include": ["src/**/*", "integration-tests/**/*", ".medusa/types/*"],
+  "exclude": ["node_modules", ".medusa/server", "src/admin"]
+}

@@ -4,9 +4,10 @@ Independent [Medusa v2](https://medusajs.com) plugins for services used by
 stores in Poland and the rest of Europe. Each plugin is its own npm package
 with its own version, changelog and release.
 
-| Plugin                                                  | Package                                                                                            | Category |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------- |
-| [Apaczka.pl](./plugins/medusa-plugin-apaczka/README.md) | [`@bitshaft/medusa-plugin-apaczka`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-apaczka) | Shipping |
+| Plugin                                                  | Package                                                                                            | Category     |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------ |
+| [Apaczka.pl](./plugins/medusa-plugin-apaczka/README.md) | [`@bitshaft/medusa-plugin-apaczka`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-apaczka) | Shipping     |
+| [Emails](./plugins/medusa-plugin-emails/README.md)      | [`@bitshaft/medusa-plugin-emails`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-emails)   | Notification |
 
 ## Using a plugin
 

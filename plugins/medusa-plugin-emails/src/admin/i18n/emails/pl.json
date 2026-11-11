@@ -1,0 +1,214 @@
+{
+  "emails": {
+    "title": "E-maile",
+    "description": "Wiadomości transakcyjne dla klientów i powiadomienia dla zespołu sklepu.",
+    "loadError": "Nie udało się wczytać ustawień e-maili.",
+    "status": {
+      "title": "Status",
+      "state": "Wysyłka",
+      "enabled": "Włączona",
+      "disabled": "Wyłączona",
+      "disabledHint": "Ustaw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie, aby ją włączyć.",
+      "demo": "Tryb demo",
+      "demoHint": "E-maile są renderowane i zapisywane w historii, ale nic nie jest wysyłane. Ustaw „demo: false” w opcjach wtyczki, aby wysyłać naprawdę.",
+      "sender": "Nadawca",
+      "replyTo": "Adres odpowiedzi",
+      "defaultLanguage": "Język domyślny",
+      "version": "Wersja",
+      "storefrontMissing": "Opcja storefrontUrl nie jest ustawiona: przyciski prowadzące do sklepu są ukryte, a e-maile z resetem hasła nie są wysyłane.",
+      "adminMissing": "Opcja adminUrl nie jest ustawiona: e-maile dla zespołu nie mają przycisku „Otwórz w panelu”."
+    },
+    "locale": {
+      "en": "Angielski",
+      "pl": "Polski"
+    },
+    "audience": {
+      "customer": "Zamówienia",
+      "account": "Konto klienta",
+      "team": "Zespół sklepu"
+    },
+    "types": {
+      "order-confirmation": { "name": "Potwierdzenie zamówienia", "description": "Po złożeniu zamówienia." },
+      "payment-received": { "name": "Płatność otrzymana", "description": "Po zaksięgowaniu płatności." },
+      "order-shipped": {
+        "name": "Zamówienie wysłane",
+        "description": "Po oznaczeniu realizacji jako wysłanej, z linkiem do śledzenia."
+      },
+      "order-delivered": {
+        "name": "Zamówienie dostarczone",
+        "description": "Po oznaczeniu realizacji jako dostarczonej."
+      },
+      "order-canceled": { "name": "Zamówienie anulowane", "description": "Po anulowaniu zamówienia." },
+      "refund-issued": { "name": "Zwrot środków", "description": "Po zwrocie płatności." },
+      "return-requested": { "name": "Zgłoszenie zwrotu", "description": "Po zarejestrowaniu zwrotu." },
+      "return-accepted": { "name": "Zwrot przyjęty", "description": "Po przyjęciu zwróconych produktów." },
+      "welcome": { "name": "Powitanie", "description": "Po założeniu konta przez klienta." },
+      "email-verification": {
+        "name": "Potwierdzenie adresu e-mail",
+        "description": "Gdy Medusa prosi klienta o potwierdzenie adresu e-mail."
+      },
+      "password-reset": { "name": "Reset hasła", "description": "Gdy ktoś prosi o zresetowanie hasła." },
+      "team-new-order": {
+        "name": "Powiadomienie o nowym zamówieniu",
+        "description": "Do zespołu sklepu po złożeniu zamówienia."
+      },
+      "team-low-stock": {
+        "name": "Powiadomienie o niskim stanie",
+        "description": "Do zespołu sklepu, gdy stan produktu spadnie do progu niskiego stanu."
+      },
+      "team-payment-failed": {
+        "name": "Powiadomienie o nieudanej płatności",
+        "description": "Do zespołu sklepu, gdy integracja płatności zgłosi nieudaną płatność."
+      },
+      "common": {
+        "name": "Teksty wspólne",
+        "description": "Powitanie, podpis, etykiety tabel i stopka każdego e-maila."
+      }
+    },
+    "list": {
+      "edit": "Edytuj",
+      "edited": "Zmieniony tekst",
+      "custom": "Własny",
+      "noRecipients": "Brak odbiorców",
+      "toggleError": "Nie udało się zmienić ustawienia.",
+      "sharedTitle": "Teksty wspólne",
+      "sharedDescription": "Powitanie, podpis, etykiety tabel i stopka używane w każdym e-mailu."
+    },
+    "general": {
+      "title": "Zespół sklepu",
+      "description": "Kto dostaje powiadomienia i kiedy stan magazynowy jest niski.",
+      "recipients": "Odbiorcy powiadomień",
+      "recipientsHint": "Jeden adres w wierszu lub adresy oddzielone przecinkami.",
+      "recipientsInvalid": "To nie są adresy e-mail: {{addresses}}",
+      "threshold": "Próg niskiego stanu",
+      "thresholdHint": "Powiadom, gdy dostępna ilość produktu jest równa tej wartości lub mniejsza.",
+      "save": "Zapisz",
+      "saved": "Ustawienia zapisane.",
+      "saveError": "Nie udało się zapisać ustawień.",
+      "usingDefault": "Wartość domyślna z opcji wtyczki",
+      "restoreDefault": "Użyj domyślnej"
+    },
+    "editor": {
+      "back": "Wszystkie e-maile",
+      "enabled": "Wysyłaj ten e-mail",
+      "language": "Język",
+      "text": "Tekst",
+      "textHint": "Puste pola używają tekstu domyślnego.",
+      "variables": "Zmienne",
+      "variablesHint": "Przy wysyłce są zastępowane prawdziwymi wartościami.",
+      "anyVariables": "Ten szablon przyjmuje każdą zmienną, którą dostarczają jego dane.",
+      "save": "Zapisz",
+      "saved": "Tekst zapisany.",
+      "saveError": "Nie udało się zapisać tekstu.",
+      "discard": "Odrzuć zmiany",
+      "unsaved": "Niezapisane zmiany",
+      "fieldEdited": "Zmienione",
+      "restoreField": "Przywróć domyślny",
+      "recipients": "Odbiorcy tego powiadomienia",
+      "recipientsHint": "Zostaw puste, aby użyć ogólnych odbiorców zespołu sklepu.",
+      "recipientsSave": "Zapisz odbiorców",
+      "preview": "Podgląd",
+      "previewOrder": "Zamówienie",
+      "previewLatest": "Najnowsze zamówienie",
+      "previewSample": "Brak zamówień: podgląd pokazuje przykładowe zamówienie.",
+      "previewUnsaved": "Podgląd pokazuje niezapisane zmiany.",
+      "previewError": "Nie udało się wyrenderować podglądu.",
+      "subject": "Temat",
+      "to": "Do",
+      "notFound": "Taki typ e-maila nie istnieje."
+    },
+    "test": {
+      "title": "Wyślij test",
+      "hint": "Wysyła zapisaną wersję na dowolny adres, z oznaczeniem [Test] w temacie.",
+      "placeholder": "ty@example.com",
+      "send": "Wyślij test",
+      "sent": "Testowy e-mail wysłany na {{to}}.",
+      "demo": "Tryb demo: test został wyrenderowany i zapisany, ale nie wysłany.",
+      "failed": "Nie udało się wysłać testu: {{error}}"
+    },
+    "reset": {
+      "copy": "Przywróć tekst domyślny",
+      "copyTitle": "Przywrócić tekst domyślny?",
+      "copyDescription": "Cały zmieniony tekst e-maila „{{name}}” w obu językach zostanie zastąpiony domyślnym. Tej operacji nie można cofnąć.",
+      "all": "Przywróć wszystkie ustawienia domyślne",
+      "everything": "Zresetuj wszystko",
+      "everythingTitle": "Zresetować wszystkie ustawienia e-maili?",
+      "everythingDescription": "Wszystkie przełączniki, odbiorcy, próg niskiego stanu i cały zmieniony tekst wrócą do wartości domyślnych. Historia wysyłek zostanie zachowana. Tej operacji nie można cofnąć.",
+      "confirm": "Przywróć domyślne",
+      "cancel": "Anuluj",
+      "done": "Przywrócono ustawienia domyślne.",
+      "error": "Nie udało się przywrócić ustawień domyślnych."
+    },
+    "log": {
+      "title": "E-maile",
+      "subtitle": "E-maile wysłane w tej sprawie",
+      "allTitle": "Historia wysyłek",
+      "allSubtitle": "Każdy e-mail, który wtyczka wysłała lub próbowała wysłać.",
+      "open": "Historia wysyłek",
+      "empty": "Brak e-maili.",
+      "loadError": "Nie udało się wczytać e-maili.",
+      "search": "Szukaj odbiorców",
+      "email": "E-mail",
+      "recipient": "Odbiorca",
+      "status": "Status",
+      "date": "Data",
+      "statuses": {
+        "pending": "W trakcie",
+        "sent": "Wysłany",
+        "failed": "Błąd",
+        "demo": "Demo"
+      },
+      "allStatuses": "Wszystkie statusy",
+      "attempts": "Próby: {{count}}",
+      "nextRetry": "Następna próba: {{date}}",
+      "noRetry": "Bez automatycznego ponawiania",
+      "test": "Test",
+      "resent": "Ponowna wysyłka",
+      "resend": "Wyślij ponownie",
+      "resendDone": "E-mail wysłany ponownie na {{to}}.",
+      "resendDemo": "Tryb demo: e-mail został wyrenderowany i zapisany, ale nie wysłany.",
+      "resendFailed": "Nie udało się wysłać e-maila: {{error}}",
+      "notResendable": "Ten e-mail zawierał jednorazowy link lub kod i nie można go wysłać ponownie.",
+      "previous": "Poprzednie",
+      "next": "Następne",
+      "range": "{{from}}–{{to}} z {{count}}"
+    },
+    "copyKeys": {
+      "subject": "Temat",
+      "preview": "Tekst podglądu (widoczny obok tematu w skrzynce)",
+      "heading": "Nagłówek",
+      "body": "Treść",
+      "button": "Przycisk",
+      "footnote": "Uwaga pod przyciskiem",
+      "greeting": "Powitanie",
+      "greeting_anonymous": "Powitanie bez imienia",
+      "signoff": "Podpis",
+      "item": "Tabela: produkt",
+      "quantity": "Tabela: ilość",
+      "price": "Tabela: cena",
+      "subtotal": "Suma częściowa",
+      "shipping": "Dostawa",
+      "discount": "Rabat",
+      "tax": "Wiersz podatku",
+      "total": "Razem",
+      "order_number": "Numer zamówienia",
+      "order_date": "Data zamówienia",
+      "shipping_address": "Adres dostawy",
+      "billing_address": "Dane do faktury",
+      "shipping_method": "Sposób dostawy",
+      "tracking_number": "Numer przesyłki",
+      "amount": "Kwota",
+      "reason": "Powód",
+      "customer": "Klient",
+      "sku": "SKU",
+      "location": "Magazyn",
+      "available": "Dostępne",
+      "code_expires": "Ważność kodu weryfikacyjnego",
+      "terms": "Stopka: link do regulaminu",
+      "returns": "Stopka: link do zwrotów",
+      "privacy": "Stopka: link do polityki prywatności",
+      "contact": "Stopka: wiersz kontaktowy",
+      "team_footer": "Stopka e-maili dla zespołu"
+    }
+  }
+}

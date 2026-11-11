@@ -335,10 +335,18 @@ function printNextSteps() {
         `   - register the module in medusa-config.ts: { resolve: "./src/modules/${plugin.namespace}", options }`
       )
     }
-    if (existsSync(join(plugin.dir, "src/providers", plugin.namespace))) {
-      console.log(
-        `   - register the provider under its Medusa module: { resolve: "./src/providers/${plugin.namespace}", id: "${plugin.namespace}", options }`
-      )
+    // One provider at providers/<ns>, or several at providers/<ns>/<name>.
+    const providersDir = join(plugin.dir, "src/providers", plugin.namespace)
+    if (existsSync(providersDir)) {
+      const nested = existsSync(join(providersDir, "index.ts"))
+        ? []
+        : readdirSync(providersDir).filter((name) => existsSync(join(providersDir, name, "index.ts")))
+      for (const name of nested.length ? nested : [null]) {
+        const path = name ? `${plugin.namespace}/${name}` : plugin.namespace
+        console.log(
+          `   - register the provider under its Medusa module: { resolve: "./src/providers/${path}", id: "${name ?? plugin.namespace}", options }`
+        )
+      }
     }
     console.log("   - remove the npm package from plugins: [...] if it was installed before")
     if (missing.length) {

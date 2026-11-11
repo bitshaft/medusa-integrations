@@ -1,0 +1,7 @@
+.medusa
+node_modules
+coverage
+dist
+package-lock.json
+CHANGELOG.md
+
