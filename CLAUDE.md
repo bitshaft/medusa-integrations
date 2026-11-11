@@ -31,7 +31,10 @@ scripts/                        repo tooling (Node built-ins only, no dependenci
    - `keywords` include `medusa-v2`, `medusa-plugin-integration` and one
      category keyword, e.g. `medusa-plugin-shipping`, `medusa-plugin-payment`,
      `medusa-plugin-notification` (the full list is in
-     `scripts/check-repo.mjs`).
+     `scripts/check-repo.mjs`). Category keywords describe the third-party
+     service a plugin integrates with. A plugin that integrates with no
+     service sets `"bitshaft": { "integration": false }` and has the keywords
+     `medusa-plugin` and `medusa-v2` only.
    - `publishConfig: { "access": "public" }` (`provenance: true` is fine).
    - `license: "MIT"`, and a `LICENSE` file with `Copyright (c) 2026 Bitshaft`.
    - **Peer dependencies: everything the host Medusa app provides** for the

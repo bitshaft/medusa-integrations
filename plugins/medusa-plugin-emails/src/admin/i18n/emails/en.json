@@ -202,7 +202,8 @@
       "returns": "Footer: returns link",
       "privacy": "Footer: privacy link",
       "contact": "Footer: contact line",
-      "team_footer": "Footer of store team emails"
+      "team_footer": "Footer of store team emails",
+      "unsubscribe": "Footer: unsubscribe link"
     }
   }
 }

@@ -13,7 +13,14 @@ import { buildUrl, type EmailsPluginOptions, PLUGIN_NAME } from "./options"
 import { getDefinition } from "./registry"
 import { renderEmail, type RenderedEmail } from "./render"
 import { type EmailsSettings, isEmailAddress, teamRecipients } from "./settings"
-import type { AttachmentResolver, EmailAttachment, EmailLoader, EmailLoaderContext, LoadedEmail } from "./types"
+import type {
+  AttachmentResolver,
+  EmailAttachment,
+  EmailData,
+  EmailLoader,
+  EmailLoaderContext,
+  LoadedEmail,
+} from "./types"
 
 export type SendEmailInput = {
   /** A built-in email type or one registered in the `templates` option. */
@@ -236,10 +243,18 @@ export async function sendEmail(
       continue
     }
 
-    const delivery = await deliver(container, options, message, rendered, attachments, {
-      attempts: deferrable ? 1 : INLINE_ATTEMPTS,
-      sleep: dependencies.sleep ?? defaultSleep,
-    })
+    const delivery = await deliver(
+      container,
+      options,
+      message,
+      rendered,
+      attachments,
+      unsubscribeHeaders(loaded.data),
+      {
+        attempts: deferrable ? 1 : INLINE_ATTEMPTS,
+        sleep: dependencies.sleep ?? defaultSleep,
+      }
+    )
     const attempts = message.attempts + delivery.attempts
 
     if (delivery.ok) {
@@ -481,6 +496,7 @@ async function deliver(
   message: MessageRecord,
   rendered: RenderedEmail,
   attachments: EmailAttachment[],
+  headers: Record<string, string> | undefined,
   config: { attempts: number; sleep: (ms: number) => Promise<void> }
 ): Promise<Delivery> {
   const notifications = container.resolve(Modules.NOTIFICATION)
@@ -498,6 +514,7 @@ async function deliver(
           // The same key on every attempt, so a provider that supports
           // idempotency keys (Resend) can never deliver this email twice.
           idempotency_key: `emails-${message.id}`,
+          ...(headers ? { headers } : {}),
         },
         trigger_type: message.trigger_type,
         resource_type: message.resource_type,
@@ -533,6 +550,22 @@ async function emitMessageEvent(container: MedusaContainer, name: string, messag
 }
 
 /* Helpers ----------------------------------------------------------------- */
+
+/**
+ * `List-Unsubscribe` (and `List-Unsubscribe-Post` for one-click) when the
+ * email data has an unsubscribe URL. Providers that support custom headers
+ * (Resend, SMTP) pass them on; mail clients then show their own button.
+ */
+export function unsubscribeHeaders(data: EmailData): Record<string, string> | undefined {
+  const url = typeof data.unsubscribe_url === "string" ? data.unsubscribe_url : null
+  if (!url || !/^https?:\/\//i.test(url)) {
+    return undefined
+  }
+  return {
+    "List-Unsubscribe": `<${url}>`,
+    ...(data.unsubscribe_one_click === true ? { "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } : {}),
+  }
+}
 
 function skipped(reason: string): SendEmailResult {
   return { status: "skipped", reason, messages: [] }

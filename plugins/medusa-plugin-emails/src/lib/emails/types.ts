@@ -108,6 +108,16 @@ export type EmailData = {
   customer?: { first_name?: string | null; last_name?: string | null; email?: string | null }
   /** Where the main button leads (order page, tracking page, reset form, admin). */
   action_url?: string | null
+  /**
+   * Adds an "Unsubscribe" link to the footer and a `List-Unsubscribe` header,
+   * for emails people signed up for (e.g. back-in-stock alerts).
+   */
+  unsubscribe_url?: string | null
+  /**
+   * The unsubscribe URL accepts a POST without further confirmation, so mail
+   * clients may offer one-click unsubscribe (RFC 8058).
+   */
+  unsubscribe_one_click?: boolean
   payment?: { amount: number; currency_code: string }
   refund?: { amount: number; currency_code: string; note?: string | null }
   shipment?: { tracking: Array<{ number: string; url?: string | null }>; items: QuantityLine[] }

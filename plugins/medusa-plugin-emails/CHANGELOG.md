@@ -27,5 +27,7 @@ First release.
 - Demo mode that renders and logs emails without sending.
 - `send-emails-message` and `resend-emails-message` workflows and
   `emails.*` events.
+- An "Unsubscribe" footer link and `List-Unsubscribe` headers for emails whose
+  data has an `unsubscribe_url` (used by the back-in-stock plugin).
 - Missing or invalid options leave the plugin disabled with one log line
   instead of stopping Medusa.

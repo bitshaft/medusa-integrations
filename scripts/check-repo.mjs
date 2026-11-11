@@ -12,7 +12,12 @@ import { join } from "node:path"
 import { listPlugins, PLUGIN_PREFIX, readJson, ROOT, SCOPE, walk } from "./lib.mjs"
 
 const REQUIRED_KEYWORDS = ["medusa-v2", "medusa-plugin-integration"]
-/** A plugin must have at least one category keyword. */
+/**
+ * Plugins that talk to no third-party service set `"bitshaft": { "integration": false }`
+ * in package.json. They need only these keywords, and no category keyword.
+ */
+const NON_INTEGRATION_KEYWORDS = ["medusa-v2", "medusa-plugin"]
+/** An integration must have at least one category keyword. */
 const CATEGORY_KEYWORDS = [
   "medusa-plugin-shipping",
   "medusa-plugin-fulfillment",
@@ -90,13 +95,17 @@ for (const plugin of plugins) {
   }
 
   const keywords = pkg.keywords ?? []
-  for (const keyword of REQUIRED_KEYWORDS) {
+  const integration = pkg.bitshaft?.integration !== false
+  for (const keyword of integration ? REQUIRED_KEYWORDS : NON_INTEGRATION_KEYWORDS) {
     if (!keywords.includes(keyword)) {
       fail(where, `missing keyword "${keyword}"`)
     }
   }
-  if (!keywords.some((keyword) => CATEGORY_KEYWORDS.includes(keyword))) {
+  if (integration && !keywords.some((keyword) => CATEGORY_KEYWORDS.includes(keyword))) {
     fail(where, `needs a category keyword, one of: ${CATEGORY_KEYWORDS.join(", ")}`)
+  }
+  if (!integration && keywords.includes("medusa-plugin-integration")) {
+    fail(where, '"bitshaft.integration" is false, so the keyword "medusa-plugin-integration" must not be used')
   }
 
   if (pkg.publishConfig?.access !== "public") {

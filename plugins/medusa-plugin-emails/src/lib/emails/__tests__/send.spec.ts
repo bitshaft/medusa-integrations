@@ -1,6 +1,6 @@
 import { OUTCOME_UNKNOWN } from "../errors"
 import { EmailsEvents } from "../events"
-import { resendMessage, retryMessage, sendEmail } from "../send"
+import { resendMessage, retryMessage, sendEmail, unsubscribeHeaders } from "../send"
 import { copyKey, GENERAL_KEY, typeKey } from "../settings"
 import { BASE_OPTIONS, createTestContainer, rawOrder } from "./fixtures"
 
@@ -361,6 +361,35 @@ describe("sendEmail", () => {
       expect(result.status).toBe("sent")
       expect(test.createNotifications.mock.calls[0][0].attachments).toBeUndefined()
       expect(test.logger.warn.mock.calls[0][0]).toContain("invoice service down")
+    })
+  })
+
+  describe("unsubscribe headers", () => {
+    it("are set from the data's unsubscribe URL", async () => {
+      const test = createTestContainer()
+      await sendEmail(
+        test.container,
+        {
+          type: "welcome",
+          to: "anna@example.com",
+          prepared: {
+            data: { unsubscribe_url: "https://api.shop.test/hooks/x/unsubscribe/abc", unsubscribe_one_click: true },
+          },
+        },
+        deps
+      )
+      expect(test.createNotifications.mock.calls[0][0].provider_data.headers).toEqual({
+        "List-Unsubscribe": "<https://api.shop.test/hooks/x/unsubscribe/abc>",
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      })
+    })
+
+    it("are left out without an unsubscribe URL or for unsafe links", () => {
+      expect(unsubscribeHeaders({})).toBeUndefined()
+      expect(unsubscribeHeaders({ unsubscribe_url: "mailto:x@example.com" })).toBeUndefined()
+      expect(unsubscribeHeaders({ unsubscribe_url: "https://shop.test/u?t=1" })).toEqual({
+        "List-Unsubscribe": "<https://shop.test/u?t=1>",
+      })
     })
   })
 

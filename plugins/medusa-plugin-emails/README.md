@@ -389,6 +389,13 @@ const { result } = await sendEmailsMessageWorkflow(container).run({
 resent. Pass `sensitive: true` when it holds a secret, and it will not be
 stored. `resendEmailsMessageWorkflow` resends an email from the log by ID.
 
+For emails people signed up for, put `unsubscribe_url` in `data`: the
+footer then shows an "Unsubscribe" link and the email gets a
+`List-Unsubscribe` header (passed on by the Resend and SMTP providers). Add
+`unsubscribe_one_click: true` when that URL unsubscribes on a POST without
+further confirmation, for mail clients' one-click unsubscribe (RFC 8058).
+The [back-in-stock plugin](../medusa-plugin-back-in-stock/README.md) uses this.
+
 The plugin emits `emails.message.sent` and `emails.message.failed` with
 `{ id, type, recipient, order_id, customer_id }`, and listens to
 `emails.payment.failed` ([above](#failed-payment-alerts)).

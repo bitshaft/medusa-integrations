@@ -83,6 +83,28 @@ describe("renderEmail", () => {
     expect(rendered.subject).toBe("Witamy w Acme")
   })
 
+  it("shows an unsubscribe link only when the data has one", async () => {
+    const withLink = await renderEmail({
+      options: options(),
+      type: "welcome",
+      locale: "pl",
+      data: { unsubscribe_url: "https://api.shop.test/hooks/x/unsubscribe/abc" },
+    })
+    expect(withLink.html).toContain('href="https://api.shop.test/hooks/x/unsubscribe/abc"')
+    expect(withLink.html).toContain("Wypisz się")
+
+    const withoutLink = await renderEmail({ options: options(), type: "welcome", locale: "en", data: {} })
+    expect(withoutLink.html).not.toContain("Unsubscribe")
+
+    const unsafe = await renderEmail({
+      options: options(),
+      type: "welcome",
+      locale: "en",
+      data: { unsubscribe_url: "javascript:alert(1)" },
+    })
+    expect(unsafe.html).not.toContain("javascript:")
+  })
+
   it("hides the button when there is no link", async () => {
     const withLink = await renderEmail({
       options: options(),

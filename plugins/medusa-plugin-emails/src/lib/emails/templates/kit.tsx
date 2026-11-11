@@ -95,8 +95,14 @@ export function EmailLayout({
   common,
   audience,
   preview,
+  unsubscribeUrl,
   children,
-}: Pick<EmailTemplateProps, "brand" | "locale" | "common" | "audience"> & { preview?: string; children: ReactNode }) {
+}: Pick<EmailTemplateProps, "brand" | "locale" | "common" | "audience"> & {
+  preview?: string
+  /** Shown as an "Unsubscribe" link in the footer (http and https links only). */
+  unsubscribeUrl?: string | null
+  children: ReactNode
+}) {
   const footerLinks = [
     { href: brand.links.terms, text: common.terms },
     { href: brand.links.returns, text: common.returns },
@@ -159,6 +165,13 @@ export function EmailLayout({
                 {company.length ? <Text style={small(brand)}>{company.join(" · ")}</Text> : null}
               </>
             )}
+            {unsubscribeUrl && /^https?:\/\//i.test(unsubscribeUrl) && common.unsubscribe ? (
+              <Text style={small(brand)}>
+                <Link href={unsubscribeUrl} style={{ color: brand.colors.muted, textDecoration: "underline" }}>
+                  {common.unsubscribe}
+                </Link>
+              </Text>
+            ) : null}
           </Section>
         </Container>
       </Body>
@@ -204,6 +217,7 @@ export function StandardEmail(props: EmailTemplateProps & { children?: ReactNode
       common={common}
       audience={audience}
       preview={copy.preview || copy.subject}
+      unsubscribeUrl={data.unsubscribe_url}
     >
       {copy.heading ? (
         <Heading as="h1" style={{ color: brand.colors.text, fontSize: "22px", lineHeight: "30px", margin: "0 0 20px" }}>

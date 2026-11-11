@@ -32,6 +32,7 @@ export const pl: CopyDictionary = {
     privacy: "Polityka prywatności",
     contact: "Masz pytania? Odpowiedz na tę wiadomość lub napisz na {{support_email}}.",
     team_footer: "To powiadomienie wysłał sklep {{store_name}}.",
+    unsubscribe: "Wypisz się",
   },
   "order-confirmation": {
     subject: "Potwierdzenie zamówienia nr {{order_number}}",
