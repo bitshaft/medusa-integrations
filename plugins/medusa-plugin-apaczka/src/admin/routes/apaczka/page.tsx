@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { SettingsPanel } from "../../components/apaczka/settings-panel"
 import { ShipmentsList } from "../../components/apaczka/shipments-list"
 import apaczkaLogo from "../../lib/apaczka/apaczka-logo.png"
+import { NAV_TILE_STYLE } from "../../lib/apaczka/kit/nav-icon"
 
 const TABS = ["shipments", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -54,19 +55,10 @@ const ApaczkaPage = () => {
   )
 }
 
-/** Sidebar icon: the Apaczka logo on a white tile, sized to the admin's 15×15 icon box. */
+/** Sidebar icon: the Apaczka logo on a white tile covering the whole sidebar square. */
 const ApaczkaNavIcon = () => (
-  <span
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      height: "100%",
-      backgroundColor: "#ffffff",
-    }}
-  >
-    <img src={apaczkaLogo} alt="" style={{ width: 11, height: 11, objectFit: "contain" }} />
+  <span style={{ ...NAV_TILE_STYLE, backgroundColor: "#ffffff" }}>
+    <img src={apaczkaLogo} alt="" style={{ width: 14, height: 14, objectFit: "contain" }} />
   </span>
 )
 
