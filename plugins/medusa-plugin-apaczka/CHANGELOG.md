@@ -16,6 +16,8 @@ First release.
   point picker.
 - Push tracking with signed webhooks, polling as a backup, and
   `apaczka.shipment.*` events.
-- Admin widget and settings page in Polish and English.
+- Apaczka page in the admin menu: all shipments with search, filters, labels,
+  batch courier pickups and hand-over protocols, plus a settings tab; and a
+  panel on the order page. In Polish and English.
 - Missing or invalid options leave the plugin disabled with one log line
   instead of stopping Medusa.

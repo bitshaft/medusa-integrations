@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { sdk } from "./kit/sdk"
+import { backendUrl, sdk } from "./kit/sdk"
 
 /* Types (mirroring the admin API responses) ------------------------------- */
 
@@ -56,6 +56,16 @@ export type Shipment = {
   metadata: { sender_postal_code?: string } | null
   created_at: string
   events: TrackingEvent[]
+  /** The order's number, for links; only on the shipments list. */
+  order_display_id?: number | null
+}
+
+export type ShipmentsFilter = {
+  q?: string
+  status?: string
+  is_return?: "true" | "false"
+  limit: number
+  offset: number
 }
 
 export type ServiceOption = {
@@ -144,7 +154,9 @@ export type PickupDay = { date: string; services: unknown }
 
 export const apaczkaKeys = {
   all: ["apaczka"] as const,
+  allShipments: ["apaczka", "shipments"] as const,
   shipments: (orderId: string) => ["apaczka", "shipments", orderId] as const,
+  shipmentList: (filter: ShipmentsFilter) => ["apaczka", "shipments", "list", filter] as const,
   status: ["apaczka", "status"] as const,
   services: ["apaczka", "services"] as const,
   pickupHours: (postalCode: string, serviceId: number) => ["apaczka", "pickup-hours", postalCode, serviceId] as const,
@@ -160,6 +172,44 @@ export function useOrderShipments(orderId: string) {
         query: { order_id: orderId, limit: 50 },
       }),
   })
+}
+
+/** Every shipment in the store, newest first, for the Apaczka page. */
+export function useShipments(filter: ShipmentsFilter) {
+  return useQuery({
+    queryKey: apaczkaKeys.shipmentList(filter),
+    queryFn: () =>
+      sdk.client.fetch<{ shipments: Shipment[]; count: number; limit: number; offset: number }>(
+        "/admin/apaczka/shipments",
+        { query: Object.fromEntries(Object.entries(filter).filter(([, value]) => value !== undefined && value !== "")) }
+      ),
+    placeholderData: (previous) => previous,
+  })
+}
+
+/**
+ * Downloads the hand-over (turn-in) confirmation PDF for the given
+ * shipments; the courier signs it at pickup.
+ */
+export async function downloadTurnIn(shipmentIds: string[]): Promise<void> {
+  const response = await fetch(backendUrl("/admin/apaczka/turn-in"), {
+    method: "POST",
+    credentials: "include",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ shipment_ids: shipmentIds }),
+  })
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as { message?: string } | null
+    throw new Error(body?.message ?? response.statusText)
+  }
+  const blob = await response.blob()
+  const name = /filename="?([^";]+)"?/.exec(response.headers.get("content-disposition") ?? "")?.[1]
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = name ?? "apaczka-turn-in.pdf"
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 10_000)
 }
 
 export function useApaczkaStatus(refresh = false) {
@@ -206,7 +256,7 @@ export function useValuation(fulfillmentId: string) {
   })
 }
 
-export function useCreateShipment(fulfillmentId: string, orderId: string) {
+export function useCreateShipment(fulfillmentId: string) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (overrides: ShipmentOverrides | undefined) =>
@@ -214,20 +264,20 @@ export function useCreateShipment(fulfillmentId: string, orderId: string) {
         method: "POST",
         body: { overrides },
       }),
-    onSuccess: () => invalidateOrder(queryClient, orderId),
+    onSuccess: () => invalidateShipments(queryClient),
   })
 }
 
-export function useSyncShipment(orderId: string) {
+export function useSyncShipment() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (shipmentId: string) =>
       sdk.client.fetch<{ shipment: Shipment }>(`/admin/apaczka/shipments/${shipmentId}/sync`, { method: "POST" }),
-    onSuccess: () => invalidateOrder(queryClient, orderId),
+    onSuccess: () => invalidateShipments(queryClient),
   })
 }
 
-export function useBookPickup(orderId: string) {
+export function useBookPickup() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (body: { shipment_ids: string[]; date: string; hour_from: string; hour_to: string }) =>
@@ -235,7 +285,7 @@ export function useBookPickup(orderId: string) {
         method: "POST",
         body,
       }),
-    onSuccess: () => invalidateOrder(queryClient, orderId),
+    onSuccess: () => invalidateShipments(queryClient),
   })
 }
 
@@ -245,8 +295,9 @@ export async function fetchDispatchCode(apaczkaOrderId: string) {
   )
 }
 
-function invalidateOrder(queryClient: ReturnType<typeof useQueryClient>, orderId: string) {
-  queryClient.invalidateQueries({ queryKey: apaczkaKeys.shipments(orderId) })
+function invalidateShipments(queryClient: ReturnType<typeof useQueryClient>) {
+  // The order's shipments and every shipments list on the Apaczka page.
+  queryClient.invalidateQueries({ queryKey: apaczkaKeys.allShipments })
   // Refresh Medusa's own order view (fulfillment status, labels).
   queryClient.invalidateQueries({ queryKey: ["orders"] })
 }

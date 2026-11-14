@@ -22,6 +22,7 @@ import { Settings } from "../../components/coupons/settings"
 import { CouponWizard } from "../../components/coupons/wizard"
 import { type CouponView, exportUrl, useSettings } from "../../lib/coupons/api"
 import { adminLocale } from "../../lib/coupons/draft"
+import { navIcon } from "../../lib/coupons/kit/nav-icon"
 
 type Tab = "panel" | "guide" | "settings"
 type WizardState = { mode: "coupon" | "batch"; coupon: CouponView | null } | null
@@ -146,7 +147,7 @@ const CouponsPage = () => {
 export const config = defineRouteConfig({
   label: "coupons.title",
   translationNs: "translation",
-  icon: ReceiptPercent,
+  icon: navIcon(ReceiptPercent, "#db2777"),
 })
 
 export default CouponsPage

@@ -11,6 +11,7 @@ import { Guide } from "../../components/loyalty/guide"
 import { Rewards } from "../../components/loyalty/rewards"
 import { Settings } from "../../components/loyalty/settings"
 import { useSettings } from "../../lib/loyalty/api"
+import { navIcon } from "../../lib/loyalty/kit/nav-icon"
 
 type Tab = "panel" | "rewards" | "customers" | "settings" | "guide"
 
@@ -105,7 +106,7 @@ const LoyaltyPage = () => {
 export const config = defineRouteConfig({
   label: "loyalty.title",
   translationNs: "translation",
-  icon: Star,
+  icon: navIcon(Star, "#d97706"),
 })
 
 export default LoyaltyPage

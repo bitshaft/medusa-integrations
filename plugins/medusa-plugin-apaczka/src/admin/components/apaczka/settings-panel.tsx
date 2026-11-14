@@ -1,12 +1,11 @@
-import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { TruckFast } from "@medusajs/icons"
 import { Badge, Button, Container, Copy, Heading, Skeleton, StatusBadge, Table, Text } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { useApaczkaServices, useApaczkaStatus } from "../../../lib/apaczka/api"
+import { useApaczkaServices, useApaczkaStatus } from "../../lib/apaczka/api"
 
-const ApaczkaSettingsPage = () => {
+/** The Settings tab: connection, configuration from plugin options, tracking and services. */
+export const SettingsPanel = () => {
   const { t } = useTranslation()
   const [refresh, setRefresh] = useState(false)
   const status = useApaczkaStatus(refresh)
@@ -236,10 +235,3 @@ const OnOff = ({ value }: { value: boolean }) => {
     </StatusBadge>
   )
 }
-
-export const config = defineRouteConfig({
-  label: "Apaczka",
-  icon: TruckFast,
-})
-
-export default ApaczkaSettingsPage

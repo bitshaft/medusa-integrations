@@ -9,6 +9,7 @@ import { Lookup } from "../../components/whitelist-vat/lookup"
 import { Overview } from "../../components/whitelist-vat/overview"
 import { Settings } from "../../components/whitelist-vat/settings"
 import { useWhitelistVatStatus } from "../../lib/whitelist-vat/api"
+import { navIcon } from "../../lib/whitelist-vat/kit/nav-icon"
 
 const TABS = ["overview", "lookup", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -94,7 +95,7 @@ const WhitelistVatPage = () => {
 
 export const config = defineRouteConfig({
   label: "VAT white list",
-  icon: ShieldCheck,
+  icon: navIcon(ShieldCheck, "#16a34a"),
 })
 
 export default WhitelistVatPage

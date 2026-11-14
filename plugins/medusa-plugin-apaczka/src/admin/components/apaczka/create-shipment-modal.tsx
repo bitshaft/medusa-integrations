@@ -15,7 +15,6 @@ import { errorMessage, formatGrosze } from "../../lib/apaczka/format"
 
 type Props = {
   fulfillmentId: string
-  orderId: string
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -36,11 +35,11 @@ type FormState = {
 
 const EMPTY_PARCEL: ParcelInput = { weight: 1, length: 30, width: 20, height: 10 }
 
-export const CreateShipmentModal = ({ fulfillmentId, orderId, open, onOpenChange }: Props) => {
+export const CreateShipmentModal = ({ fulfillmentId, open, onOpenChange }: Props) => {
   const { t, i18n } = useTranslation()
   const services = useApaczkaServices()
   const valuation = useValuation(fulfillmentId)
-  const create = useCreateShipment(fulfillmentId, orderId)
+  const create = useCreateShipment(fulfillmentId)
   const [form, setForm] = useState<FormState | null>(null)
 
   // Load defaults and a first quote when the modal opens.

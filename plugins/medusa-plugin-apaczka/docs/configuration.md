@@ -4,7 +4,7 @@ Pass the same options object to the plugin and to the fulfillment provider
 (see the [README](../README.md#install)). Options are validated at startup.
 A mistake never stops Medusa: the plugin stays disabled and logs one line,
 `[apaczka] Disabled: <reason>`, naming every missing or invalid field. The
-reason also shows on **Settings → Apaczka** in the admin.
+reason also shows on the **Apaczka** page in the admin (Settings tab).
 
 Money in options is in **major units**: PLN for Apaczka amounts, or your
 store currency for markups. Apaczka itself works in grosze, and the plugin
@@ -47,7 +47,7 @@ Medusa stock locations have no e-mail or contact person, so set at least
 | `offerReturnVariants` | `boolean`                 | `true`                  | Add a "— return" option for door-delivery services                                                                                                                                                |
 | `contentTemplate`     | `string`                  | `"Order #{display_id}"` | Placeholders: `{display_id}`, `{order_id}`, `{items}`                                                                                                                                             |
 | `commentTemplate`     | `string`                  | —                       | Same placeholders                                                                                                                                                                                 |
-| `defaultOptions`      | `Record<optionId, value>` | `{}`                    | Apaczka additional services for every order (IDs from Settings → Apaczka / `service_structure`)                                                                                                   |
+| `defaultOptions`      | `Record<optionId, value>` | `{}`                    | Apaczka additional services for every order (IDs from the Apaczka page → Settings / `service_structure`)                                                                                          |
 | `notifications`       | object                    | —                       | Apaczka's own e-mail/SMS notifications, e.g. `{ new: { isReceiverEmail: true, isReceiverSms: false, isSenderEmail: false, isSenderSms: false } }`. Keys: `new`, `sent`, `exception`, `delivered`. |
 
 ## Parcels (`parcel`)

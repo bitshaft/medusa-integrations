@@ -80,7 +80,8 @@
     },
     "pickup": {
       "title": "Book a courier pickup",
-      "description": "The courier collects the parcel from the sender address in the chosen window."
+      "description": "The courier collects the parcel from the sender address in the chosen window.",
+      "descriptionMany": "One courier will collect {{count}} shipments from the sender address in the chosen time window."
     },
     "history": {
       "empty": "No tracking events yet.",
@@ -136,6 +137,57 @@
       "point": "Point",
       "domestic": "Domestic",
       "international": "International"
+    },
+    "page": {
+      "title": "Apaczka",
+      "subtitle": "Shipments, courier pickups and integration settings",
+      "tabs": {
+        "shipments": "Shipments",
+        "settings": "Settings"
+      }
+    },
+    "list": {
+      "search": "Search by waybill, Apaczka or order number",
+      "reload": "Reload",
+      "statusFilter": {
+        "all": "All statuses",
+        "active": "On the way",
+        "pending": "Not created",
+        "attention": "Needs attention",
+        "delivered": "Delivered",
+        "closed": "Returned or canceled"
+      },
+      "typeFilter": {
+        "all": "All shipments",
+        "shipments": "Outgoing",
+        "returns": "Returns"
+      },
+      "columns": {
+        "order": "Order",
+        "shipment": "Shipment",
+        "status": "Status",
+        "created": "Created"
+      },
+      "empty": "No Apaczka shipments yet. They appear here when you fulfill orders with an Apaczka shipping option.",
+      "emptyFiltered": "No shipments match these filters.",
+      "selected": "Selected: {{count}}",
+      "clear": "Clear",
+      "selectPage": "Select all on this page",
+      "selectOne": "Select shipment",
+      "bookPickup": "Book courier ({{count}})",
+      "turnIn": "Hand-over protocol",
+      "mixedPickup": "One courier pickup needs shipments with the same service and sender; select matching ones.",
+      "details": "Details",
+      "detailTitle": "Shipment",
+      "detailTitleOrder": "Shipment for order #{{order}}",
+      "openOrder": "Open order",
+      "pagination": {
+        "of": "of",
+        "results": "results",
+        "pages": "pages",
+        "prev": "Previous",
+        "next": "Next"
+      }
     }
   }
 }

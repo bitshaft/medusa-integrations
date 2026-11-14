@@ -6,17 +6,19 @@ import { type Shipment, useBookPickup, usePickupHours } from "../../lib/apaczka/
 import { errorMessage } from "../../lib/apaczka/format"
 
 type Props = {
-  shipment: Shipment
-  orderId: string
+  /** One shipment, or several from the same sender and service (one courier). */
+  shipments: Shipment[]
   open: boolean
   onOpenChange: (open: boolean) => void
+  onBooked?: () => void
 }
 
-export const PickupDrawer = ({ shipment, orderId, open, onOpenChange }: Props) => {
+export const PickupDrawer = ({ shipments, open, onOpenChange, onBooked }: Props) => {
   const { t } = useTranslation()
-  const postalCode = shipment.metadata?.sender_postal_code
-  const hours = usePickupHours(open ? postalCode : undefined, shipment.service_id)
-  const book = useBookPickup(orderId)
+  const first = shipments[0]
+  const postalCode = first?.metadata?.sender_postal_code
+  const hours = usePickupHours(open ? postalCode : undefined, first?.service_id)
+  const book = useBookPickup()
 
   const [date, setDate] = useState("")
   const [hourFrom, setHourFrom] = useState("09:00")
@@ -31,11 +33,12 @@ export const PickupDrawer = ({ shipment, orderId, open, onOpenChange }: Props) =
 
   const submit = () =>
     book.mutate(
-      { shipment_ids: [shipment.id], date, hour_from: hourFrom, hour_to: hourTo },
+      { shipment_ids: shipments.map((s) => s.id), date, hour_from: hourFrom, hour_to: hourTo },
       {
         onSuccess: () => {
           toast.success(t("apaczka.toast.pickupBooked"))
           onOpenChange(false)
+          onBooked?.()
         },
         onError: (error) => toast.error(errorMessage(error)),
       }
@@ -46,7 +49,11 @@ export const PickupDrawer = ({ shipment, orderId, open, onOpenChange }: Props) =
       <Drawer.Content>
         <Drawer.Header>
           <Drawer.Title>{t("apaczka.pickup.title")}</Drawer.Title>
-          <Drawer.Description>{t("apaczka.pickup.description")}</Drawer.Description>
+          <Drawer.Description>
+            {shipments.length > 1
+              ? t("apaczka.pickup.descriptionMany", { count: shipments.length })
+              : t("apaczka.pickup.description")}
+          </Drawer.Description>
         </Drawer.Header>
         <Drawer.Body className="flex flex-col gap-y-4">
           <div className="flex flex-col gap-y-2">
@@ -92,7 +99,7 @@ export const PickupDrawer = ({ shipment, orderId, open, onOpenChange }: Props) =
               {t("apaczka.actions.cancel")}
             </Button>
           </Drawer.Close>
-          <Button size="small" onClick={submit} isLoading={book.isPending} disabled={!date}>
+          <Button size="small" onClick={submit} isLoading={book.isPending} disabled={!date || !shipments.length}>
             {t("apaczka.actions.book")}
           </Button>
         </Drawer.Footer>

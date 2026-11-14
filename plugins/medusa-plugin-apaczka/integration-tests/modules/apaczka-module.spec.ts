@@ -52,6 +52,33 @@ moduleIntegrationTestRunner<ApaczkaModuleService>({
         const [found] = await service.listApaczkaShipments({ apaczka_order_id: "555" })
         expect(found.fulfillment_id).toBe("ful_2")
       })
+
+      it("searches the shipments list the way the admin page does", async () => {
+        await service.createApaczkaShipments([
+          { fulfillment_id: "ful_s1", service_id: 21, waybill_number: "6200012345678", order_id: "order_a" },
+          { fulfillment_id: "ful_s2", service_id: 21, apaczka_order_id: "9123", order_id: "order_b", is_return: true },
+          { fulfillment_id: "ful_s3", service_id: 21, waybill_number: "X_100%", order_id: "order_c" },
+        ])
+        const search = (q: string, extra: Record<string, unknown> = {}) =>
+          service
+            .listApaczkaShipments({
+              $or: [
+                { waybill_number: { $ilike: `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%` } },
+                { apaczka_order_id: { $ilike: `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%` } },
+                { order_id: q },
+              ],
+              ...extra,
+            })
+            .then((rows) => rows.map((r) => r.fulfillment_id).sort())
+
+        expect(await search("12345")).toEqual(["ful_s1"])
+        expect(await search("912")).toEqual(["ful_s2"])
+        expect(await search("order_c")).toEqual(["ful_s3"])
+        // LIKE wildcards in the query are literal.
+        expect(await search("_")).toEqual(["ful_s3"])
+        expect(await search("%")).toEqual(["ful_s3"])
+        expect(await search("912", { is_return: false })).toEqual([])
+      })
     })
 
     describe("recordTrackingEvents", () => {

@@ -64,7 +64,7 @@ const OrderApaczkaShipments = ({ data: order }: DetailWidgetProps<AdminOrder>) =
       )}
 
       {shipments.map((shipment) => (
-        <ShipmentCard key={shipment.id} shipment={shipment} orderId={order.id} />
+        <ShipmentCard key={shipment.id} shipment={shipment} />
       ))}
     </Container>
   )

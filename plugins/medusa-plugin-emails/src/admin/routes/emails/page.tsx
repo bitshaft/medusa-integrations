@@ -32,6 +32,7 @@ import {
   useUpdateEmailType,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { navIcon } from "../../lib/emails/kit/nav-icon"
 
 const AUDIENCES: EmailAudience[] = ["customer", "account", "team"]
 
@@ -378,27 +379,9 @@ const Note = ({ children }: { children: ReactNode }) => (
   </Text>
 )
 
-/** Sidebar icon: a white envelope on a small blue tile. */
-const EmailsSidebarIcon = () => (
-  <span
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: 20,
-      height: 20,
-      borderRadius: 4,
-      backgroundColor: "#2563eb",
-      color: "#ffffff",
-    }}
-  >
-    <Envelope style={{ width: 14, height: 14 }} />
-  </span>
-)
-
 export const config = defineRouteConfig({
   label: "Emails",
-  icon: EmailsSidebarIcon,
+  icon: navIcon(Envelope, "#2563eb"),
 })
 
 export default EmailsSettingsPage

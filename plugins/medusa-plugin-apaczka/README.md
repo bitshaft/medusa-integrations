@@ -103,7 +103,7 @@ export default defineConfig({
 
 If `appId` or `appSecret` is missing, or an option is invalid, Medusa still
 starts. The plugin stays disabled, logs one line (`[apaczka] Disabled: …`)
-and shows the reason on **Settings → Apaczka**. Nothing is sent to Apaczka
+and shows the reason on the **Apaczka** page in the admin menu (Settings tab). Nothing is sent to Apaczka
 until you fix the options and restart.
 
 Every option is described in [docs/configuration.md](./docs/configuration.md):
@@ -135,8 +135,8 @@ maps into them; copy [.env.template](./.env.template) to start.
 3. Choose a **Fixed** price or **Calculated** (a live Apaczka quote, with your
    pricing rules applied).
 
-**Settings → Apaczka** shows whether the connection works and which services
-your account has.
+The **Settings** tab of the **Apaczka** page shows whether the connection
+works and which services your account has.
 
 ### Add the point picker to your storefront
 
@@ -157,7 +157,7 @@ await sdk.store.cart.addShippingMethod(cart.id, { option_id, data: { point_id: "
 - **Courier pickups** for one shipment or many (batch), using the pickup days Apaczka offers.
 - **Return labels** created as soon as a return is requested.
 - **Tracking** by signed webhooks with polling as a backup. Fulfillments are marked shipped and delivered in Medusa, and events are emitted for your own notifications.
-- **Admin panel** on the order page plus a settings page with a connection check, in Polish and English.
+- **Apaczka page in the admin menu** with every shipment in one list: search by waybill, Apaczka or order number, filters by status and returns, labels, tracking refresh, a courier pickup or a hand-over protocol for several shipments at once, and a Settings tab with a connection check. Plus a panel on each order page. In Polish and English.
 - **Multi-warehouse.** The sender address comes from each stock location, with per-location overrides.
 - **Built to be safe.** HMAC request signing, webhook signature verification against the raw request body, no retries on order creation (so no duplicate orders), every workflow step undone on failure, money handled as integers, and secrets masked in logs and never returned by the admin API.
 
@@ -291,7 +291,7 @@ adjusts the shipment.
 | `POST /hooks/apaczka/tracking`                             | Apaczka push tracking (signed)                             |
 | `GET /admin/apaczka/status`                                | Connection check and configuration summary                 |
 | `GET /admin/apaczka/services`                              | Services, additional options and package types             |
-| `GET /admin/apaczka/shipments?order_id=`                   | Shipments with tracking history                            |
+| `GET /admin/apaczka/shipments?order_id=&q=&status=`        | Shipments with tracking history and order numbers          |
 | `POST /admin/apaczka/fulfillments/:id/valuation`           | Price a shipment before creating it                        |
 | `POST /admin/apaczka/fulfillments/:id/shipment`            | Create the shipment (with overrides)                       |
 | `POST /admin/apaczka/shipments/:id/sync`                   | Refresh tracking now                                       |

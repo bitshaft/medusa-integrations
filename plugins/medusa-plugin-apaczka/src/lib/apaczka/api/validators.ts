@@ -32,6 +32,9 @@ export const AdminShipmentsQuery = z.object({
   order_id: z.string().optional(),
   fulfillment_id: z.string().optional(),
   status: z.string().optional(),
+  /** Searches waybill numbers, Apaczka order IDs and Medusa order IDs. */
+  q: z.string().trim().min(1).max(100).optional(),
+  is_return: z.enum(["true", "false"]).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   offset: z.coerce.number().int().min(0).default(0),
 })

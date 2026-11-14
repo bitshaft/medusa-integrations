@@ -10,6 +10,7 @@ import { Settings } from "../../components/back-in-stock/settings"
 import { Subscriptions } from "../../components/back-in-stock/subscriptions"
 import { Wanted } from "../../components/back-in-stock/wanted"
 import { useBackInStockStatus } from "../../lib/back-in-stock/api"
+import { navIcon } from "../../lib/back-in-stock/kit/nav-icon"
 
 const TABS = ["wanted", "subscriptions", "history", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -113,7 +114,7 @@ const BackInStockPage = () => {
 
 export const config = defineRouteConfig({
   label: "Back in stock",
-  icon: BellAlert,
+  icon: navIcon(BellAlert, "#7c3aed"),
 })
 
 export default BackInStockPage

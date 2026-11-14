@@ -14,12 +14,11 @@ const FINISHED = new Set(["delivered", "returned", "canceled"])
 
 type Props = {
   shipment: Shipment
-  orderId: string
 }
 
-export const ShipmentCard = ({ shipment, orderId }: Props) => {
+export const ShipmentCard = ({ shipment }: Props) => {
   const { t, i18n } = useTranslation()
-  const sync = useSyncShipment(orderId)
+  const sync = useSyncShipment()
   const [showHistory, setShowHistory] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [pickupOpen, setPickupOpen] = useState(false)
@@ -164,15 +163,8 @@ export const ShipmentCard = ({ shipment, orderId }: Props) => {
         </div>
       )}
 
-      <CreateShipmentModal
-        fulfillmentId={shipment.fulfillment_id}
-        orderId={orderId}
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
-      {!isPending && (
-        <PickupDrawer shipment={shipment} orderId={orderId} open={pickupOpen} onOpenChange={setPickupOpen} />
-      )}
+      <CreateShipmentModal fulfillmentId={shipment.fulfillment_id} open={createOpen} onOpenChange={setCreateOpen} />
+      {!isPending && <PickupDrawer shipments={[shipment]} open={pickupOpen} onOpenChange={setPickupOpen} />}
     </div>
   )
 }

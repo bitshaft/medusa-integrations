@@ -80,7 +80,8 @@
     },
     "pickup": {
       "title": "Zamów kuriera",
-      "description": "Kurier odbierze paczkę spod adresu nadawcy w wybranym przedziale godzin."
+      "description": "Kurier odbierze paczkę spod adresu nadawcy w wybranym przedziale godzin.",
+      "descriptionMany": "Jeden kurier odbierze zaznaczone przesyłki ({{count}}) spod adresu nadawcy w wybranym przedziale godzin."
     },
     "history": {
       "empty": "Brak zdarzeń śledzenia.",
@@ -136,6 +137,57 @@
       "point": "Punkt",
       "domestic": "Krajowa",
       "international": "Zagraniczna"
+    },
+    "page": {
+      "title": "Apaczka",
+      "subtitle": "Przesyłki, zamawianie kuriera i ustawienia integracji",
+      "tabs": {
+        "shipments": "Przesyłki",
+        "settings": "Ustawienia"
+      }
+    },
+    "list": {
+      "search": "Szukaj po numerze przesyłki, Apaczki lub zamówienia",
+      "reload": "Odśwież",
+      "statusFilter": {
+        "all": "Wszystkie statusy",
+        "active": "W drodze",
+        "pending": "Nieutworzone",
+        "attention": "Wymagają uwagi",
+        "delivered": "Doręczone",
+        "closed": "Zwrócone lub anulowane"
+      },
+      "typeFilter": {
+        "all": "Wszystkie przesyłki",
+        "shipments": "Wychodzące",
+        "returns": "Zwroty"
+      },
+      "columns": {
+        "order": "Zamówienie",
+        "shipment": "Przesyłka",
+        "status": "Status",
+        "created": "Utworzono"
+      },
+      "empty": "Nie ma jeszcze przesyłek Apaczka. Pojawią się tutaj po realizacji zamówień z opcją dostawy Apaczka.",
+      "emptyFiltered": "Żadna przesyłka nie pasuje do tych filtrów.",
+      "selected": "Zaznaczono: {{count}}",
+      "clear": "Wyczyść",
+      "selectPage": "Zaznacz wszystkie na tej stronie",
+      "selectOne": "Zaznacz przesyłkę",
+      "bookPickup": "Zamów kuriera ({{count}})",
+      "turnIn": "Protokół przekazania",
+      "mixedPickup": "Jeden kurier może odebrać tylko przesyłki z tą samą usługą i tym samym nadawcą; zaznacz pasujące.",
+      "details": "Szczegóły",
+      "detailTitle": "Przesyłka",
+      "detailTitleOrder": "Przesyłka do zamówienia #{{order}}",
+      "openOrder": "Otwórz zamówienie",
+      "pagination": {
+        "of": "z",
+        "results": "wyników",
+        "pages": "stron",
+        "prev": "Poprzednia",
+        "next": "Następna"
+      }
     }
   }
 }
