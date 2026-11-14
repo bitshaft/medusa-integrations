@@ -18,10 +18,6 @@
       "storefrontMissing": "The storefrontUrl option is not set: buttons that lead to the store are hidden and password reset emails are not sent.",
       "adminMissing": "The adminUrl option is not set: store team emails have no \"Open in admin\" button."
     },
-    "locale": {
-      "en": "English",
-      "pl": "Polish"
-    },
     "audience": {
       "customer": "Orders",
       "account": "Customer account",
@@ -63,11 +59,17 @@
     "list": {
       "edit": "Edit",
       "edited": "Text edited",
+      "missingTranslations": "Missing translations",
       "custom": "Custom",
       "noRecipients": "No recipients",
       "toggleError": "Could not change the setting.",
       "sharedTitle": "Shared texts",
       "sharedDescription": "Greeting, sign-off, table labels and footer used by every email."
+    },
+    "translations": {
+      "title": "Emails",
+      "text": "Email translations are in the Emails tab, with a preview in every language.",
+      "open": "Go to emails"
     },
     "general": {
       "title": "Store team",
@@ -87,8 +89,12 @@
       "back": "All emails",
       "enabled": "Send this email",
       "language": "Language",
+      "languageOriginal": "{{language}} (original)",
+      "missing": "{{count}} missing",
+      "noLanguages": "Add languages in <link>Settings → Store</link> to translate emails.",
       "text": "Text",
       "textHint": "Empty fields use the default text.",
+      "textHintTranslation": "Empty fields are sent in the original language ({{language}}).",
       "variables": "Variables",
       "variablesHint": "These are replaced with real values when the email is sent.",
       "anyVariables": "This template accepts any variable its data provides.",
@@ -99,6 +105,7 @@
       "unsaved": "Unsaved changes",
       "fieldEdited": "Edited",
       "restoreField": "Restore default",
+      "useOriginal": "Use original text",
       "recipients": "Recipients of this alert",
       "recipientsHint": "Leave empty to use the general store team recipients.",
       "recipientsSave": "Save recipients",

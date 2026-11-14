@@ -3,7 +3,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { loadProducts } from "../catalog"
 import { COPY, interpolate } from "../copy"
 import { HOOKS_PATH } from "../links"
-import { fillUrl, type Locale, normalizeLocale } from "../options"
+import { fillUrl, type Locale, localeCode, normalizeLocale } from "../options"
 import { productLabel, renderPage } from "../render"
 import { resolveBackInStock } from "../runtime"
 import { confirmByToken, type TokenActionResult, unsubscribeByToken } from "../subscriptions"
@@ -42,7 +42,11 @@ export async function handleLinkPage(req: MedusaRequest, res: MedusaResponse, ac
   if (method === "GET") {
     const template = options.urls[action]
     if (template && isWellFormedToken(token)) {
-      const url = fillUrl(template, { storefrontUrl: options.storefrontUrl, token, locale })
+      const url = fillUrl(template, {
+        storefrontUrl: options.storefrontUrl,
+        token,
+        locale: localeCode(found?.subscription.locale, options.defaultLocale),
+      })
       if (url) {
         return res.redirect(302, url)
       }

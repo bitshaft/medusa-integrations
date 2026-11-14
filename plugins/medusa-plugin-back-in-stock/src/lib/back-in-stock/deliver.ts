@@ -106,7 +106,7 @@ export async function deliverEmail(
         input: {
           type,
           to: input.to,
-          locale: view.locale,
+          locale: view.locale_code,
           data: {
             email: input.to,
             product_title: view.product_title,

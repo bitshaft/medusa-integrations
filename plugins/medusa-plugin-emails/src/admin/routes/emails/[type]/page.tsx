@@ -8,14 +8,13 @@ import {
   Select,
   Skeleton,
   Switch,
-  Tabs,
   Text,
   Textarea,
   toast,
   usePrompt,
 } from "@medusajs/ui"
 import { useEffect, useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { Link, useParams } from "react-router-dom"
 
 import { formatRecipients, parseRecipients } from "../../../components/emails/recipients"
@@ -24,7 +23,6 @@ import {
   type EmailLocale,
   type EmailTypeDetail,
   useEmailPreview,
-  useEmailsStatus,
   useEmailType,
   useRecentOrders,
   useResetEmailType,
@@ -32,8 +30,8 @@ import {
   useUpdateEmailType,
 } from "../../../lib/emails/api"
 import { errorMessage } from "../../../lib/emails/kit/format"
+import { languageName } from "../../../lib/emails/languages"
 
-const LOCALES: EmailLocale[] = ["en", "pl"]
 const COMMON = "common"
 const LATEST = "latest"
 
@@ -41,11 +39,20 @@ type Draft = Record<EmailLocale, Record<string, string>>
 
 const toDraft = (detail: EmailTypeDetail): Draft =>
   Object.fromEntries(
-    LOCALES.map((locale) => [
+    detail.locales.map((locale) => [
       locale,
       Object.fromEntries(detail.fields.map(({ key }) => [key, detail.copy[locale]?.[key]?.value ?? ""])),
     ])
   ) as Draft
+
+/** Fields of a translation that would be sent in the base language, as the draft stands. */
+const countMissing = (detail: EmailTypeDetail, draft: Draft, locale: EmailLocale) =>
+  locale === detail.base_locale
+    ? 0
+    : detail.fields.filter(({ key }) => {
+        const field = detail.copy[locale]?.[key]
+        return !draft[locale]?.[key]?.trim() && !field?.default.trim() && Boolean(field?.original.trim())
+      }).length
 
 function useDebounced<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = useState(value)
@@ -60,11 +67,10 @@ function useDebounced<T>(value: T, delay: number): T {
 const EmailTypePage = () => {
   const { t } = useTranslation()
   const { type = "" } = useParams()
-  const status = useEmailsStatus()
   const query = useEmailType(type)
   const detail = query.data?.email_type
 
-  if (query.isLoading || status.isLoading) {
+  if (query.isLoading) {
     return (
       <Container className="p-6">
         <Skeleton className="h-48 w-full" />
@@ -85,35 +91,28 @@ const EmailTypePage = () => {
       </Container>
     )
   }
-  const defaultLocale = status.data?.enabled ? status.data.default_locale : "en"
   // Remount when the server copy changes, so the draft starts from what is saved.
-  return <Editor key={`${type}:${query.dataUpdatedAt}`} type={type} detail={detail} defaultLocale={defaultLocale} />
+  return <Editor key={`${type}:${query.dataUpdatedAt}`} type={type} detail={detail} />
 }
 
-const Editor = ({
-  type,
-  detail,
-  defaultLocale,
-}: {
-  type: string
-  detail: EmailTypeDetail
-  defaultLocale: EmailLocale
-}) => {
-  const { t } = useTranslation()
+const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => {
+  const { t, i18n } = useTranslation()
   const prompt = usePrompt()
   const isCommon = type === COMMON
   const summary = "audience" in detail ? detail : null
   const name = t(`emails.types.${type}.name`, { defaultValue: type })
+  const languageLabel = (code: EmailLocale) => languageName(code, detail.locales, i18n.language)
 
   const saved = useMemo(() => toDraft(detail), [detail])
   const [draft, setDraft] = useState<Draft>(saved)
-  const [locale, setLocale] = useState<EmailLocale>(defaultLocale)
+  const [locale, setLocale] = useState<EmailLocale>(detail.base_locale)
   const [orderId, setOrderId] = useState<string>(LATEST)
+  const isOriginal = locale === detail.base_locale
 
   const update = useUpdateEmailType(type)
   const reset = useResetEmailType(type)
 
-  const dirty = LOCALES.some((l) => detail.fields.some(({ key }) => draft[l][key] !== saved[l][key]))
+  const dirty = detail.locales.some((l) => detail.fields.some(({ key }) => draft[l][key] !== saved[l][key]))
   const debouncedDraft = useDebounced(draft, 500)
   const preview = useEmailPreview(
     type,
@@ -201,25 +200,46 @@ const Editor = ({
             <div>
               <Heading level="h2">{t("emails.editor.text")}</Heading>
               <Text size="small" className="text-ui-fg-subtle">
-                {dirty ? t("emails.editor.unsaved") : t("emails.editor.textHint")}
+                {dirty
+                  ? t("emails.editor.unsaved")
+                  : isOriginal
+                    ? t("emails.editor.textHint")
+                    : t("emails.editor.textHintTranslation", { language: languageLabel(detail.base_locale) })}
               </Text>
             </div>
-            <Tabs value={locale} onValueChange={(value) => setLocale(value as EmailLocale)}>
-              <Tabs.List>
-                {LOCALES.map((l) => (
-                  <Tabs.Trigger key={l} value={l}>
-                    {t(`emails.locale.${l}`)}
-                  </Tabs.Trigger>
-                ))}
-              </Tabs.List>
-            </Tabs>
+            <LanguagePicker
+              detail={detail}
+              locale={locale}
+              onChange={setLocale}
+              label={languageLabel}
+              missing={(code) => countMissing(detail, draft, code)}
+            />
           </div>
+          {detail.translation_enabled && detail.locales.length < 2 && (
+            <div className="px-6 py-3">
+              <Text size="small" className="text-ui-fg-subtle">
+                <Trans
+                  i18nKey="emails.editor.noLanguages"
+                  components={{
+                    link: (
+                      <Link
+                        to="/settings/store"
+                        className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                      />
+                    ),
+                  }}
+                />
+              </Text>
+            </div>
+          )}
 
           <div className="flex flex-col gap-y-4 px-6 py-4">
             {detail.fields.map(({ key, multiline }) => {
               const field = detail.copy[locale]?.[key]
               const value = draft[locale][key] ?? ""
               const isDefault = value === (field?.default ?? "") || value.trim() === ""
+              // A language without text of its own shows the original it falls back to.
+              const placeholder = field?.default || field?.original
               const id = `emails-copy-${locale}-${key}`
               return (
                 <div key={`${locale}:${key}`} className="flex flex-col gap-y-1">
@@ -231,7 +251,7 @@ const Editor = ({
                       <div className="flex items-center gap-x-2">
                         <Badge size="2xsmall">{t("emails.editor.fieldEdited")}</Badge>
                         <Button size="small" variant="transparent" onClick={() => setField(key, field?.default ?? "")}>
-                          {t("emails.editor.restoreField")}
+                          {field?.default ? t("emails.editor.restoreField") : t("emails.editor.useOriginal")}
                         </Button>
                       </div>
                     )}
@@ -242,7 +262,7 @@ const Editor = ({
                       rows={5}
                       maxLength={2000}
                       value={value}
-                      placeholder={field?.default}
+                      placeholder={placeholder}
                       onChange={(event) => setField(key, event.target.value)}
                     />
                   ) : (
@@ -250,7 +270,7 @@ const Editor = ({
                       id={id}
                       maxLength={2000}
                       value={value}
-                      placeholder={field?.default}
+                      placeholder={placeholder}
                       onChange={(event) => setField(key, event.target.value)}
                     />
                   )}
@@ -307,7 +327,7 @@ const Editor = ({
                       ? t("emails.editor.previewUnsaved")
                       : preview.data && !preview.data.preview.order
                         ? t("emails.editor.previewSample")
-                        : t(`emails.locale.${locale}`)}
+                        : languageLabel(locale)}
                   </Text>
                 </div>
                 {(orders.data?.orders.length ?? 0) > 0 && (
@@ -370,6 +390,57 @@ const Editor = ({
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+/**
+ * The language being edited: a select of the store's languages (the original
+ * first, the others with what they still miss), or just the language's name
+ * when there is only one.
+ */
+const LanguagePicker = ({
+  detail,
+  locale,
+  onChange,
+  label,
+  missing,
+}: {
+  detail: EmailTypeDetail
+  locale: EmailLocale
+  onChange: (locale: EmailLocale) => void
+  label: (code: EmailLocale) => string
+  missing: (code: EmailLocale) => number
+}) => {
+  const { t } = useTranslation()
+  const itemLabel = (code: EmailLocale) =>
+    code === detail.base_locale ? t("emails.editor.languageOriginal", { language: label(code) }) : label(code)
+
+  if (detail.locales.length < 2) {
+    return (
+      <Text size="small" className="text-ui-fg-subtle shrink-0">
+        {itemLabel(detail.base_locale)}
+      </Text>
+    )
+  }
+  return (
+    <div className="w-64 shrink-0">
+      <Select size="small" value={locale} onValueChange={onChange}>
+        <Select.Trigger aria-label={t("emails.editor.language")}>
+          <Select.Value />
+        </Select.Trigger>
+        <Select.Content>
+          {detail.locales.map((code) => {
+            const count = missing(code)
+            return (
+              <Select.Item key={code} value={code}>
+                {itemLabel(code)}
+                {count > 0 && <span className="text-ui-fg-subtle"> · {t("emails.editor.missing", { count })}</span>}
+              </Select.Item>
+            )
+          })}
+        </Select.Content>
+      </Select>
     </div>
   )
 }

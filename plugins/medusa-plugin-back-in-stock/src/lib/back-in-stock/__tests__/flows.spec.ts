@@ -177,7 +177,8 @@ describe("subscribe", () => {
     expect(result.subscription).toMatchObject({
       email: "anna@example.com",
       status: "active",
-      locale: "pl",
+      // Kept as the full code, so the emails plugin can match the store's language.
+      locale: "pl-PL",
       country_code: "pl",
       product_id: "prod_1",
       consent_text: expect.stringContaining("dopóki go nie kupisz"),

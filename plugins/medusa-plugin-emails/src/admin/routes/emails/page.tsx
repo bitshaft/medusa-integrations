@@ -32,12 +32,13 @@ import {
   useUpdateEmailType,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { languageName } from "../../lib/emails/languages"
 import { navIcon } from "../../lib/emails/kit/nav-icon"
 
 const AUDIENCES: EmailAudience[] = ["customer", "account", "team"]
 
 const EmailsSettingsPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const prompt = usePrompt()
   const status = useEmailsStatus()
   const s = status.data
@@ -135,7 +136,7 @@ const EmailsSettingsPage = () => {
               </Row>
             )}
             <Row label={t("emails.status.defaultLanguage")}>
-              <Text size="small">{t(`emails.locale.${s.default_locale}`)}</Text>
+              <Text size="small">{languageName(s.default_locale, s.locales, i18n.language)}</Text>
             </Row>
             <Row label={t("emails.status.version")}>
               <Text size="small">{s.version}</Text>
@@ -185,6 +186,9 @@ const EmailsSettingsPage = () => {
                     {t("emails.list.sharedTitle")}
                   </Text>
                   {types.data?.common_edited && <Badge size="2xsmall">{t("emails.list.edited")}</Badge>}
+                  {(types.data?.common_missing_translations ?? 0) > 0 && (
+                    <Badge size="2xsmall">{t("emails.list.missingTranslations")}</Badge>
+                  )}
                 </div>
                 <Text size="small" className="text-ui-fg-subtle">
                   {t("emails.list.sharedDescription")}
@@ -215,6 +219,7 @@ const TypeRow = ({ type, hasRecipients }: { type: EmailTypeSummary; hasRecipient
           </Text>
           {type.custom && <Badge size="2xsmall">{t("emails.list.custom")}</Badge>}
           {type.edited && <Badge size="2xsmall">{t("emails.list.edited")}</Badge>}
+          {type.missing_translations > 0 && <Badge size="2xsmall">{t("emails.list.missingTranslations")}</Badge>}
           {type.audience === "team" && type.enabled && !hasRecipients && (
             <Badge size="2xsmall" color="orange">
               {t("emails.list.noRecipients")}

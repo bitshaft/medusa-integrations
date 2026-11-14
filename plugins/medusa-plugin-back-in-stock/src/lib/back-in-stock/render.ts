@@ -4,7 +4,10 @@ import type { Locale } from "./options"
 /** What a back-in-stock or confirmation email shows. */
 export type EmailView = {
   kind: "restock" | "confirm"
+  /** Language of this plugin's own texts. */
   locale: Locale
+  /** The subscriber's language code (`de-DE`), passed on to the emails plugin. */
+  locale_code: string
   store_name: string
   product_title: string
   variant_title: string | null

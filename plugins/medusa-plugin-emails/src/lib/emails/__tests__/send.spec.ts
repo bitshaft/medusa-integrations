@@ -75,6 +75,80 @@ describe("sendEmail", () => {
     expect(forced.createNotifications.mock.calls[0][0].content.subject).toBe("Potwierdzenie zamówienia nr 1042")
   })
 
+  describe("store languages", () => {
+    const polishBase = {
+      ...BASE_OPTIONS,
+      defaultLocale: "pl-PL",
+      urls: { order: "{storefrontUrl}/{locale}/order/{order_id}/confirmed" },
+    }
+
+    it("sends in the base language when Medusa's Translation module is off", async () => {
+      const test = createTestContainer({ storeLocales: null, graph: { order: [rawOrder({ locale: "pl-PL" })] } })
+      await sendEmail(test.container, confirmation, deps)
+      expect(test.createNotifications.mock.calls[0][0].content.subject).toBe("Order #1042 confirmed")
+      expect(test.messages[0].locale).toBe("en")
+    })
+
+    it("uses the built-in text of the language for a store code like en-US", async () => {
+      const test = createTestContainer({
+        options: polishBase,
+        storeLocales: ["pl-PL", "en-US"],
+        graph: { order: [rawOrder({ locale: "en-US" })] },
+      })
+      await sendEmail(test.container, confirmation, deps)
+      const { content } = test.createNotifications.mock.calls[0][0]
+      expect(content.subject).toBe("Order #1042 confirmed")
+      // Links get the language as the storefront's path prefix, not the full code.
+      expect(content.html).toContain("https://shop.test/en/order/order_1/confirmed")
+      expect(test.messages[0].locale).toBe("en-US")
+    })
+
+    it("sends a translation the admin wrote, the rest in the base language", async () => {
+      const test = createTestContainer({
+        options: polishBase,
+        storeLocales: ["pl-PL", "en-US", "de-DE"],
+        graph: { order: [rawOrder({ locale: "de-DE" })] },
+        settings: [
+          {
+            key: copyKey("order-confirmation"),
+            value: { "de-DE": { subject: "Bestellung {{order_number}} bestätigt" } },
+          },
+        ],
+      })
+      await sendEmail(test.container, confirmation, deps)
+      const { content } = test.createNotifications.mock.calls[0][0]
+      expect(content.subject).toBe("Bestellung 1042 bestätigt")
+      // Not translated yet: the base language's text, formatted for the customer's language.
+      expect(content.text).toContain("Otrzymaliśmy Twoje zamówienie nr 1042")
+      expect(content.text).toContain("10. November 2026")
+      expect(content.html).toContain('lang="de-DE"')
+      expect(content.html).toContain("https://shop.test/de/order/order_1/confirmed")
+      expect(test.messages[0].locale).toBe("de-DE")
+    })
+
+    it("uses the base for a language the store does not have", async () => {
+      const test = createTestContainer({
+        options: polishBase,
+        storeLocales: ["pl-PL", "en-US"],
+        graph: { order: [rawOrder({ locale: "fr-FR", shipping_address: { country_code: "fr" } })] },
+      })
+      await sendEmail(test.container, confirmation, deps)
+      expect(test.createNotifications.mock.calls[0][0].content.subject).toBe("Potwierdzenie zamówienia nr 1042")
+      expect(test.messages[0].locale).toBe("pl-PL")
+    })
+
+    it("sends store team alerts in the base language", async () => {
+      const test = createTestContainer({
+        options: polishBase,
+        storeLocales: ["pl-PL", "en-US"],
+        graph: { order: [rawOrder({ locale: "en-US" })] },
+      })
+      await sendEmail(test.container, { type: "team-new-order", data: { order_id: "order_1" } }, deps)
+      expect(test.createNotifications.mock.calls[0][0].content.subject).toMatch(/^Nowe zamówienie nr 1042/)
+      expect(test.messages[0].locale).toBe("pl-PL")
+    })
+  })
+
   it("skips types that are switched off, unless forced", async () => {
     const test = createTestContainer({ settings: [{ key: typeKey("order-confirmation"), value: { enabled: false } }] })
     const skipped = await sendEmail(test.container, confirmation, deps)

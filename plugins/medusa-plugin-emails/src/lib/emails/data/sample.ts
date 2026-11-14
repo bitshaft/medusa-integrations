@@ -1,9 +1,9 @@
-import type { EmailLocale } from "../locales"
+import { type EmailLocale, languageOf } from "../locales"
 import type { EmailData, OrderView } from "../types"
 
 /** A made-up order for previews and test sends in stores that have no orders yet. */
 export function sampleOrder(locale: EmailLocale): OrderView {
-  const polish = locale === "pl"
+  const polish = languageOf(locale) === "pl"
   return {
     id: "order_sample",
     display_id: "1042",

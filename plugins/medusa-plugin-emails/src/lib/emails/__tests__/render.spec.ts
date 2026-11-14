@@ -1,5 +1,5 @@
 import { sampleData, sampleOrder } from "../data/sample"
-import { LOCALES } from "../locales"
+import { BUILT_IN_LANGUAGES } from "../locales"
 import { type EmailsPluginOptionsInput, pluginOptionsSchema } from "../options"
 import { listDefinitions } from "../registry"
 import { renderEmail } from "../render"
@@ -9,28 +9,27 @@ const options = (extra: Partial<EmailsPluginOptionsInput> = {}) =>
   pluginOptionsSchema.parse({ from: "Shop <orders@shop.test>", storefrontUrl: "https://shop.test", ...extra })
 
 describe("renderEmail", () => {
-  it.each(BUILT_IN_TYPES.flatMap((definition) => LOCALES.map((locale) => [definition.type, locale] as const)))(
-    "renders %s in %s without leftover placeholders",
-    async (type, locale) => {
-      const order = sampleOrder(locale)
-      const rendered = await renderEmail({
-        options: options(),
-        type,
-        locale,
-        data: sampleData(type, order, { action: "https://shop.test/action" }),
-        storeName: "Test Shop",
-      })
+  it.each(
+    BUILT_IN_TYPES.flatMap((definition) => BUILT_IN_LANGUAGES.map((locale) => [definition.type, locale] as const))
+  )("renders %s in %s without leftover placeholders", async (type, locale) => {
+    const order = sampleOrder(locale)
+    const rendered = await renderEmail({
+      options: options(),
+      type,
+      locale,
+      data: sampleData(type, order, { action: "https://shop.test/action" }),
+      storeName: "Test Shop",
+    })
 
-      expect(rendered.subject.length).toBeGreaterThan(3)
-      expect(rendered.html).toContain("<html")
-      expect(rendered.html).toContain(`lang="${locale}"`)
-      expect(rendered.text.length).toBeGreaterThan(20)
-      for (const part of [rendered.subject, rendered.html, rendered.text]) {
-        expect(part).not.toMatch(/\{\{.*?\}\}/)
-        expect(part).not.toContain("undefined")
-      }
+    expect(rendered.subject.length).toBeGreaterThan(3)
+    expect(rendered.html).toContain("<html")
+    expect(rendered.html).toContain(`lang="${locale}"`)
+    expect(rendered.text.length).toBeGreaterThan(20)
+    for (const part of [rendered.subject, rendered.html, rendered.text]) {
+      expect(part).not.toMatch(/\{\{.*?\}\}/)
+      expect(part).not.toContain("undefined")
     }
-  )
+  })
 
   it("uses the customer's language", async () => {
     const data = sampleData("order-confirmation", sampleOrder("pl"), {})

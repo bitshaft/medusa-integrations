@@ -5,7 +5,7 @@ import { classifyAvailability } from "../availability"
 import { COPY, DEFAULT_CONSENT } from "../copy"
 import { backInStockEmailTemplate } from "../emails-template"
 import { actionLink, productLink } from "../links"
-import { fillUrl, normalizeLocale, parseOptions, pluginOptionsSchema } from "../options"
+import { fillUrl, localeCode, normalizeLocale, parseOptions, pluginOptionsSchema } from "../options"
 import { productLabel, renderEmail, renderPage } from "../render"
 import { mergeSettings, parseSettingsUpdate } from "../settings"
 import { createToken, hashToken, isWellFormedToken } from "../tokens"
@@ -59,6 +59,31 @@ describe("options", () => {
     expect(fillUrl("{storefrontUrl}/products/{handle}", { storefrontUrl: undefined, handle: "x" })).toBeUndefined()
     expect(normalizeLocale("pl-PL", "en")).toBe("pl")
     expect(normalizeLocale("de", "en")).toBe("en")
+  })
+
+  it("keeps the subscriber's full language code and picks its own texts by language", () => {
+    expect(localeCode(" de_de ", "pl-PL")).toBe("de-DE")
+    expect(localeCode("not a tag", "pl-PL")).toBe("pl-PL")
+    expect(localeCode(undefined, "pl-PL")).toBe("pl-PL")
+    // Own texts exist in English and Polish only: other languages use the default's.
+    expect(normalizeLocale("en-US", "pl-PL")).toBe("en")
+    expect(normalizeLocale("de-DE", "pl-PL")).toBe("pl")
+    expect(normalizeLocale("de-DE", "fr-FR")).toBe("en")
+  })
+
+  it("accepts any language tag as the default, in canonical form", () => {
+    const base = { backendUrl: "https://api.shop.test" }
+    expect(pluginOptionsSchema.parse({ ...base, defaultLocale: "pl_pl" }).defaultLocale).toBe("pl-PL")
+    expect(parseOptions({ ...base, defaultLocale: "not a tag" }).enabled).toBe(false)
+  })
+
+  it("puts the language in {locale} and the full code in {locale_code}", () => {
+    expect(
+      fillUrl("{storefrontUrl}/{locale}/p?lang={locale_code}", { storefrontUrl: "https://shop.test", locale: "de-DE" })
+    ).toBe("https://shop.test/de/p?lang=de-DE")
+    expect(fillUrl("{storefrontUrl}/{locale}/p", { storefrontUrl: "https://shop.test", locale: "pl" })).toBe(
+      "https://shop.test/pl/p"
+    )
   })
 })
 
@@ -192,6 +217,7 @@ describe("copy and rendering", () => {
     const rendered = renderEmail({
       kind: "restock",
       locale: "en",
+      locale_code: "en",
       store_name: "Shop <script>",
       product_title: "Hoodie",
       variant_title: "M",
@@ -214,6 +240,7 @@ describe("copy and rendering", () => {
     const rendered = renderEmail({
       kind: "confirm",
       locale: "pl",
+      locale_code: "pl",
       store_name: "Sklep",
       product_title: "Bluza",
       variant_title: "Default variant",
@@ -251,6 +278,9 @@ describe("emails plugin template", () => {
       ])
       expect(template.audience).toBe("customer")
       expect(template.previewData("pl")).toMatchObject({ unsubscribe_url: expect.any(String) })
+      // The emails plugin passes store codes.
+      expect(template.previewData("pl-PL").product_title).toBe("Bluza z kapturem")
+      expect(template.previewData("de-DE").product_title).toBe("Hooded sweatshirt")
     }
   })
 })

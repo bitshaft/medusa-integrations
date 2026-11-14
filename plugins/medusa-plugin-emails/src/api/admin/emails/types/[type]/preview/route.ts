@@ -1,8 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { groupParam, parseCopy, resolveEnabled } from "../../../../../../lib/emails/api/utils"
+import { groupParam, localeParam, parseCopy, resolveEnabled } from "../../../../../../lib/emails/api/utils"
 import type { AdminPreviewTypeBody } from "../../../../../../lib/emails/api/validators"
-import { pickLocale } from "../../../../../../lib/emails/locales"
 import { buildPreview } from "../../../../../../lib/emails/preview"
 import { renderEmail } from "../../../../../../lib/emails/render"
 import { loadStoreName } from "../../../../../../lib/emails/send"
@@ -13,10 +12,10 @@ import { loadStoreName } from "../../../../../../lib/emails/send"
  * when there are none). Pass `copy` to see unsaved edits. Nothing is sent.
  */
 export async function POST(req: MedusaRequest<AdminPreviewTypeBody>, res: MedusaResponse) {
-  const { options, settings } = await resolveEnabled(req)
+  const { options, settings, languages } = await resolveEnabled(req)
   const type = groupParam(req, options)
   const body = req.validatedBody
-  const locale = pickLocale([body.locale], options.defaultLocale)
+  const locale = localeParam(body.locale, languages)
 
   const { loaded, order } = await buildPreview(req.scope, options, { type, locale, orderId: body.order_id })
   const rendered = await renderEmail({
@@ -25,7 +24,7 @@ export async function POST(req: MedusaRequest<AdminPreviewTypeBody>, res: Medusa
     locale,
     data: loaded.data,
     overrides: {
-      type: body.copy ? parseCopy(options, type, body.copy) : settings.types[type]?.copy,
+      type: body.copy ? parseCopy(options, type, body.copy, languages) : settings.types[type]?.copy,
       common: settings.common_copy,
     },
     storeName: await loadStoreName(req.scope),

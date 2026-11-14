@@ -4,7 +4,7 @@ import { MedusaError } from "@medusajs/framework/utils"
 import type { SubscriptionStatus } from "../../modules/back-in-stock/models/subscription"
 import { buildView, type EngineDependencies } from "./engine"
 import { BackInStockEvents } from "./events"
-import { normalizeLocale } from "./options"
+import { localeCode, normalizeLocale } from "./options"
 import { engineFor, resolveBackInStock } from "./runtime"
 import type { SubscriptionRecord } from "./types"
 
@@ -71,7 +71,8 @@ export async function subscribe(container: MedusaContainer, input: SubscribeInpu
   }
 
   const pair = { variant_id: input.variant_id, sales_channel_id: input.sales_channel_id }
-  const locale = normalizeLocale(input.locale, engine.options.defaultLocale)
+  // Kept as a full code (`de-DE`): the emails plugin picks the store language from it.
+  const locale = localeCode(input.locale, engine.options.defaultLocale)
   const existing = await findOpen(container, email, pair)
   if (existing) {
     // Someone may have lost the confirmation email: send it again.
@@ -92,7 +93,7 @@ export async function subscribe(container: MedusaContainer, input: SubscribeInpu
       country_code: input.country_code?.trim().toLowerCase() || null,
       status: settings.doubleOptIn ? "pending" : "active",
       confirmed_at: settings.doubleOptIn ? null : new Date(),
-      consent_text: settings.consent[locale],
+      consent_text: settings.consent[normalizeLocale(locale, engine.options.defaultLocale)],
       demo: input.demo === true,
     })) as unknown as SubscriptionRecord
   } catch (error) {

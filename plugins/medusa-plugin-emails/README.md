@@ -66,7 +66,7 @@ export default defineConfig({
       options: {
         from: "My Shop <orders@myshop.pl>",
         replyTo: "help@myshop.pl",
-        defaultLocale: "pl",
+        defaultLocale: "pl-PL", // the original language; use the store's code
         storefrontUrl: process.env.STOREFRONT_URL, // https://myshop.pl
         adminUrl: process.env.MEDUSA_ADMIN_URL, // https://api.myshop.pl/app
         brand: {
@@ -137,7 +137,7 @@ The names are yours to choose; the plugin only reads options. See
 | `from`                | required       | Sender: `orders@shop.pl` or `Shop <orders@shop.pl>`.                                          |
 | `replyTo`             |                | Reply-to address.                                                                             |
 | `demo`                | `false`        | [Demo mode](#demo-mode): render and log, send nothing.                                        |
-| `defaultLocale`       | `"en"`         | `"en"` or `"pl"`. Used when the customer's language is unknown, and for store team emails.    |
+| `defaultLocale`       | `"en"`         | Original language (BCP 47, `"pl-PL"`); see [Languages](#languages).                           |
 | `localeByCountry`     | `{ pl: "pl" }` | Language by shipping country, for orders without a locale.                                    |
 | `storefrontUrl`       |                | Without it, buttons that lead to the store are hidden and password reset emails are not sent. |
 | `adminUrl`            |                | Without it, store team emails have no "Open in admin" button.                                 |
@@ -153,11 +153,13 @@ The names are yours to choose; the plugin only reads options. See
 
 `brand.name` defaults to the store's name in Medusa. `brand.colors` takes
 `primary`, `primaryText`, `background`, `card`, `text`, `muted` and `border`
-as hex colors. `brand.footerText` is one string or `{ en, pl }`.
+as hex colors. `brand.footerText` is one string or one per language
+(`{ en: "…", "pl-PL": "…" }`), matched like the email text.
 
 **Links.** Each entry of `urls` is a template; placeholders in `{braces}`
-are URL-encoded. The defaults match the Medusa Next.js starter where it has
-a page:
+are URL-encoded. `{locale}` is the email's language as a storefront path
+prefix (`en` for `en-US`), `{locale_code}` the full code. The defaults match
+the Medusa Next.js starter where it has a page:
 
 | `urls` key           | Default                                                      | Placeholders                                                |
 | -------------------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
@@ -192,10 +194,30 @@ button is left out rather than pointing nowhere.
 | Low stock alert      | `team-low-stock`      | A scheduled check, to the store team                                      |
 | Failed payment alert | `team-payment-failed` | `emails.payment.failed`, to the store team                                |
 
-**Language.** Customer emails use, in order: the order's `locale`,
+### Languages
+
+The emails follow Medusa's Translation module:
+
+- **Translation module off:** every email is written and sent in
+  `defaultLocale`, the original language.
+- **Translation module on:** emails can be written in every language of the
+  store (Settings → Store), in the admin editor. The original language is
+  `defaultLocale`; set it to the store's code for it (`pl-PL`).
+
+English and Polish have built-in text, for any code in them (`en-US`,
+`en-GB`, `pl-PL`). Other languages start empty. Each field that is not
+translated is sent in the original language, so a half-translated email
+mixes the two until it is done. A base language without built-in text uses
+the English one.
+
+Customer emails pick the language from, in order: the order's `locale`,
 `order.metadata.locale`, `customer.metadata.locale`, the language mapped to
-the shipping country (`localeByCountry`), then `defaultLocale`. Store team
-emails use `defaultLocale`.
+the shipping country (`localeByCountry`). The first one the store has is
+used (the same code, else the same language), otherwise `defaultLocale`.
+Store team emails use `defaultLocale`.
+
+Text saved for a language the store no longer has is kept, unused, and
+comes back with the language.
 
 **Notifications turned off.** Fulfillments and returns created with "send
 notification" unchecked in the admin do not send emails.
@@ -279,9 +301,11 @@ resends work the same way.
   account and store team.
 - Store team recipients and the low stock threshold, with a way back to the
   defaults from the plugin options. Each alert can have its own recipients.
-- **Editor** per email: the text in Polish and English (subject, preview
+- **Editor** per email: the text in every store language, picked from a
+  select that shows what each translation still misses (subject, preview
   text, heading, body, button, note), the `{{variables}}` it may use, and a
-  **live preview** rendered with a real order from the store. Unsaved edits
+  **live preview** in the picked language, rendered with a real order from
+  the store. Unsaved edits
   show in the preview as you type. "Shared texts" holds the greeting,
   sign-off, table labels and footer of every email.
 - **Send a test** of any email to any address.
@@ -289,6 +313,10 @@ resends work the same way.
   confirm; "Reset everything" asks you to type `RESET`. The send log is
   never reset.
 - **Send log** with search by recipient and a status filter.
+- A "Missing translations" badge on emails a store language still misses.
+
+**Settings → Translations** gets a card pointing to the Emails page, where
+email texts are translated.
 
 **Order and customer pages** get a panel with the emails sent for that
 record and a **Resend** button. A resend is a new email with the order's
@@ -408,8 +436,8 @@ The plugin emits `emails.message.sent` and `emails.message.failed` with
   [custom type](#your-own-templates)).
 - No HTML or drag-and-drop editing in the admin: admins edit text; the
   layout is code.
-- No languages other than English and Polish in the built-in text. Custom
-  templates can carry their own, but the admin editor shows these two.
+- No built-in text in languages other than English and Polish. Other store
+  languages are translated in the admin (or carried by custom templates).
 - No delivery tracking (opens, bounces). The send log records what was
   handed to the provider.
 - It does not create verification codes; see
@@ -419,18 +447,18 @@ The plugin emits `emails.message.sent` and `emails.message.failed` with
 
 Admin routes, all under `/admin/emails` and behind admin authentication:
 
-| Route                       |                                                               |
-| --------------------------- | ------------------------------------------------------------- |
-| `GET /status`               | Enabled or the reason it is not, demo mode, sender.           |
-| `GET, POST /settings`       | Store team recipients and low stock threshold.                |
-| `GET /types`                | Email types with their toggles.                               |
-| `GET, POST /types/:type`    | One type: toggle, recipients, text. `:type` may be `common`.  |
-| `POST /types/:type/preview` | Render with a real order; nothing is sent.                    |
-| `POST /types/:type/test`    | Send a test to `{ to }`.                                      |
-| `POST /types/:type/reset`   | Restore defaults; needs `{ confirm: "<type>" }`.              |
-| `POST /reset`               | Restore all settings; needs `{ confirm: "RESET" }`.           |
-| `GET /messages`             | Send log; filter by `order_id`, `customer_id`, `status`, `q`. |
-| `POST /messages/:id/resend` | Resend an email from the log.                                 |
+| Route                         |                                                               |
+| ----------------------------- | ------------------------------------------------------------- |
+| `GET /status`                 | Enabled or the reason it is not, demo mode, sender.           |
+| `GET, POST /settings`         | Store team recipients and low stock threshold.                |
+| `GET /types`                  | Email types with their toggles.                               |
+| `GET, POST /types/:type`      | One type: toggle, recipients, text. `:type` may be `common`.  |
+| `POST /types/:type/preview`   | Render with a real order; nothing is sent.                    |
+| `POST /types/:type/send-test` | Send a test to `{ to }`.                                      |
+| `POST /types/:type/reset`     | Restore defaults; needs `{ confirm: "<type>" }`.              |
+| `POST /reset`                 | Restore all settings; needs `{ confirm: "RESET" }`.           |
+| `GET /messages`               | Send log; filter by `order_id`, `customer_id`, `status`, `q`. |
+| `POST /messages/:id/resend`   | Resend an email from the log.                                 |
 
 ## Testing
 
@@ -458,8 +486,11 @@ Admin routes, all under `/admin/emails` and behind admin authentication:
   users) is not set; the settings page says so.
 - **Store team alerts are not sent:** no recipients are set; the list shows
   a "No recipients" badge.
-- **Wrong language:** see how the [language](#emails) is picked; set
-  `localeByCountry` or store the locale on the order or customer.
+- **Wrong language:** see how the [language](#languages) is picked; check
+  that the language is in Settings → Store, set `localeByCountry`, or store
+  the locale on the order or customer.
+- **Only one language in the editor:** Medusa's Translation module is off,
+  or the store has no other languages (Settings → Store).
 
 ## Development
 

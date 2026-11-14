@@ -30,4 +30,8 @@ First release.
   settings, demo tools) and a product page widget, in Polish and English.
 - Store API, a copy-in storefront component, workflows and
   `back-in-stock.*` events.
+- Subscriptions keep the subscriber's full language code and pass it to
+  @bitshaft/medusa-plugin-emails, which picks the store language;
+  `defaultLocale` takes any BCP 47 code. The plugin's own pages and consent
+  texts stay in Polish and English.
 - Demo mode and demo data from the store's own catalog.

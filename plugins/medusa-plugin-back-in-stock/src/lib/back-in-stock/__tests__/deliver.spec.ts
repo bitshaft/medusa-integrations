@@ -25,6 +25,7 @@ const input: DeliveryInput = {
   view: {
     kind: "restock",
     locale: "pl",
+    locale_code: "pl-PL",
     store_name: "Sklep",
     product_title: "Bluza",
     variant_title: "M",
@@ -84,7 +85,8 @@ describe("deliverEmail", () => {
       input: {
         type: "back-in-stock",
         to: "anna@example.com",
-        locale: "pl",
+        // The subscriber's full code, for the emails plugin to match to the store's languages.
+        locale: "pl-PL",
         data: {
           email: "anna@example.com",
           product_title: "Bluza",

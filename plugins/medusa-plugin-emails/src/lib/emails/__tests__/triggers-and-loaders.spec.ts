@@ -73,7 +73,8 @@ describe("loaders", () => {
   const options = parsed.enabled ? parsed.options : (undefined as never)
   const run = (type: string, input: Record<string, unknown>, graph: Record<string, unknown[]>, locale?: string) => {
     const { container } = createTestContainer({ graph })
-    return BUILT_IN_LOADERS[type](input, loaderContext(container, options, locale))
+    const languages = { base: "en", locales: ["en", "pl"], translation: true }
+    return BUILT_IN_LOADERS[type](input, loaderContext(container, options, languages, locale))
   }
 
   it("builds the order view with totals that add up", async () => {

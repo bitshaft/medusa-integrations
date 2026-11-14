@@ -80,6 +80,12 @@ export type TestContainerConfig = {
   /** Behaviour of the notification module; resolves with an ID by default. */
   createNotifications?: jest.Mock
   storeName?: string | null
+  /**
+   * The store's languages (Settings → Store), with Medusa's Translation
+   * module installed. Defaults to `["pl"]` next to the `en` base, a
+   * two-language shop; `null` is a store without the Translation module.
+   */
+  storeLocales?: string[] | null
 }
 
 /**
@@ -89,6 +95,7 @@ export type TestContainerConfig = {
  */
 export function createTestContainer(config: TestContainerConfig = {}) {
   const parsed = parseOptions(config.options ?? BASE_OPTIONS)
+  const storeLocales = config.storeLocales === undefined ? ["pl"] : config.storeLocales
   const messages: MessageRecord[] = []
   const settingRows = [...(config.settings ?? [])]
   let sequence = 0
@@ -162,7 +169,12 @@ export function createTestContainer(config: TestContainerConfig = {}) {
   const query = {
     graph: jest.fn(async (args: GraphArgs) => {
       graphCalls.push(args)
-      const records = typeof graphSource === "function" ? graphSource(args) : (graphSource[args.entity] ?? [])
+      const records =
+        args.entity === "store" && storeLocales
+          ? [{ supported_locales: storeLocales.map((locale_code) => ({ locale_code })) }]
+          : typeof graphSource === "function"
+            ? graphSource(args)
+            : (graphSource[args.entity] ?? [])
       const id = args.filters?.id
       return {
         data: typeof id === "string" ? records.filter((record) => (record as { id?: string }).id === id) : records,
@@ -186,6 +198,7 @@ export function createTestContainer(config: TestContainerConfig = {}) {
     [Modules.NOTIFICATION]: { createNotifications },
     [Modules.EVENT_BUS]: eventBus,
     [Modules.STORE]: store,
+    ...(storeLocales ? { [Modules.TRANSLATION]: {} } : {}),
   }
   const container = {
     resolve: (key: string) => {
@@ -194,6 +207,7 @@ export function createTestContainer(config: TestContainerConfig = {}) {
       }
       return registrations[key]
     },
+    hasRegistration: (key: string) => key in registrations,
   } as unknown as MedusaContainer
 
   return { container, emails, messages, query, graphCalls, createNotifications, logger, eventBus, settingRows }

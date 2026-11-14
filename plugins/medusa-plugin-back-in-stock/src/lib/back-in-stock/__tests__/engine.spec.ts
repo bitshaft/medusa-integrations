@@ -64,7 +64,12 @@ describe("runCheck", () => {
         ),
       },
     })
-    expect(english.view).toMatchObject({ locale: "en", action_url: "https://shop.test/de/products/hoodie" })
+    expect(english.view).toMatchObject({
+      locale: "en",
+      locale_code: "en",
+      action_url: "https://shop.test/de/products/hoodie",
+    })
+    expect(polish.view.locale_code).toBe("pl")
     // Every email gets its own unsubscribe token.
     expect(new Set(engine.store.tokens.map((token) => token.token)).size).toBe(2)
 

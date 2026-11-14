@@ -1,7 +1,7 @@
 import { z } from "@medusajs/framework/zod"
 
 import { parsePluginOptions, type PluginOptionsResult } from "./kit/options"
-import { type EmailLocale, LOCALES } from "./locales"
+import { canonicalLocale, type EmailLocale, languageOf, localizedValue } from "./locales"
 import type { AttachmentResolver, Brand, CustomTemplateOption } from "./types"
 
 /** Name used in log lines and errors. */
@@ -12,10 +12,33 @@ export const PACKAGE_NAME = "@bitshaft/medusa-plugin-emails"
 /* Schema                                                                    */
 /* ------------------------------------------------------------------------ */
 
-const locale = z.enum(LOCALES)
+const LOCALE_HINT = 'Expected a language tag like "pl-PL" or "en"'
+/** A BCP 47 language tag, stored in canonical form (`pl_pl` → `pl-PL`). */
+const locale = z.string().transform((value, context) => {
+  const code = canonicalLocale(value)
+  if (!code) {
+    context.addIssue({ code: "custom", message: LOCALE_HINT })
+    return z.NEVER
+  }
+  return code
+})
 const color = z.string().regex(/^#[0-9a-fA-F]{3,8}$/, "Expected a hex color like #1f2937")
-/** One text for every language, or one per language. */
-const localized = z.union([z.string(), z.object({ en: z.string().optional(), pl: z.string().optional() })])
+/** One text for every language, or one per language code (`{ en: "…", "pl-PL": "…" }`). */
+const localized = z.union([
+  z.string(),
+  z.record(z.string(), z.string()).transform((values, context) => {
+    const result: Record<string, string> = {}
+    for (const [key, text] of Object.entries(values)) {
+      const code = canonicalLocale(key)
+      if (!code) {
+        context.addIssue({ code: "custom", path: [key], message: LOCALE_HINT })
+        return z.NEVER
+      }
+      result[code] = text
+    }
+    return result
+  }),
+])
 const emailAddress = z.string().email()
 /** `orders@shop.pl` or `Shop <orders@shop.pl>`. */
 const sender = z.string().regex(/^(?:[^<>@\s]+@[^<>@\s]+\.[^<>@\s]+|[^<>]+<[^<>@\s]+@[^<>@\s]+\.[^<>@\s]+>)$/, {
@@ -75,7 +98,9 @@ const brandSchema = z.object({
 
 /**
  * URL templates. Placeholders in `{braces}` are URL-encoded values:
- * `{storefrontUrl}`, `{adminUrl}`, `{locale}`, plus the ones listed per URL.
+ * `{storefrontUrl}`, `{adminUrl}`, `{locale}` (the language of the email as
+ * a storefront path prefix: `en` for `en-US`), `{locale_code}` (the full
+ * code, `en-US`), plus the ones listed per URL.
  */
 const urlsSchema = z.object({
   /** `{order_id}`, `{display_id}`, `{country_code}`, `{email}` */
@@ -106,7 +131,11 @@ export const pluginOptionsSchema = z.object({
   demo: z.boolean().default(false),
 
   /* Language -------------------------------------------------------------- */
-  /** Used when the customer's language is unknown, and for store team emails. */
+  /**
+   * The original language (BCP 47, e.g. `pl-PL`): texts are written in it,
+   * other languages fall back to it, and store team emails use it. Use the
+   * store's code for it when Medusa's Translation module is on.
+   */
   defaultLocale: locale.default("en"),
   /** Language by shipping country (ISO alpha-2), used when the order has no locale. */
   localeByCountry: z.record(z.string(), locale).default({ pl: "pl" }),
@@ -184,7 +213,10 @@ export function addressOf(senderValue: string): string {
 /** Brand settings for one language, with the store name filled in. */
 export function resolveBrand(options: EmailsPluginOptions, language: EmailLocale, storeName?: string | null): Brand {
   const { brand } = options
-  const footerText = typeof brand.footerText === "string" ? brand.footerText : brand.footerText?.[language]
+  const footerText =
+    typeof brand.footerText === "string"
+      ? brand.footerText
+      : (localizedValue(brand.footerText, language) ?? localizedValue(brand.footerText, options.defaultLocale))
   const name = brand.name ?? (storeName?.trim() || brand.company.name || "Store")
   return {
     name,
@@ -216,6 +248,9 @@ export function buildUrl(
     storefrontUrl: options.storefrontUrl?.replace(/\/+$/, ""),
     adminUrl: options.adminUrl?.replace(/\/+$/, ""),
   }
+  // Storefronts prefix paths with the language (`/en/…`), not the full code.
+  const code = typeof values.locale === "string" && values.locale ? values.locale : undefined
+  const all = code ? { ...values, locale: languageOf(code), locale_code: values.locale_code ?? code } : values
   let missing = false
   const url = template.replace(/\{([a-zA-Z_]+)\}/g, (_match, key: string) => {
     if (key in base) {
@@ -224,7 +259,7 @@ export function buildUrl(
       }
       return base[key] ?? ""
     }
-    const value = values[key]
+    const value = all[key]
     if (value === undefined || value === null || value === "") {
       missing = true
       return ""
