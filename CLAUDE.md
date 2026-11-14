@@ -119,7 +119,9 @@ scripts/                        repo tooling (Node built-ins only, no dependenci
   the plugin stays disabled and logs one line with `logPluginDisabled`
   (`[<ns>] Disabled: <reason>`). Routes answer with a clear "disabled"
   error, jobs and subscribers return quietly, provider option lists are
-  empty, and the admin settings page shows the reason.
+  empty, and the admin settings page shows the reason. A plugin that needs
+  no options at all sets `"bitshaft": { "requiresOptions": false }`; the
+  smoke test then expects it to start enabled, with no "Disabled" line.
 - **Admin UI in Polish and English.** Every string goes in both
   `src/admin/i18n/<ns>/en.json` and `pl.json`, under the `"<ns>"` key.
 - Errors say what is wrong and how to fix it.

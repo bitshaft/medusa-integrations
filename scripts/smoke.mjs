@@ -11,8 +11,9 @@
 //   node scripts/smoke.mjs [--only=<plugin-folder>] [--keep]
 //
 // The app is registered without plugin options on purpose: it must still
-// start, with the plugin disabled (see "Quality rules" in CLAUDE.md).
-import { spawn } from "node:child_process"
+// start, with the plugin disabled (see "Quality rules" in CLAUDE.md), unless
+// the plugin needs no options (`"bitshaft": { "requiresOptions": false }`).
+import { spawn, spawnSync } from "node:child_process"
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
@@ -137,6 +138,10 @@ for (const plugin of plugins) {
 
 // No plugin options on purpose: the plugin must load disabled, not crash.
 export default defineConfig({
+  // The admin bundle is compiled by \`medusa build\`; the boot check only
+  // needs the server (a production start would look for the admin build
+  // under .medusa/server, not in the app).
+  admin: { disable: process.env.SMOKE_BOOT === "true" },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     http: {
@@ -236,7 +241,9 @@ console.log("  loaded: " + results.join(", "))
       die(`${plugin.folder}: migrations failed`)
     }
     step(`${plugin.folder}: booting the app`)
-    await boot(app)
+    // A plugin that works without options (`"bitshaft": { "requiresOptions": false }`)
+    // must start enabled; every other one must start disabled with one notice.
+    await boot(app, pkg.bitshaft?.requiresOptions === false ? 0 : 1)
   } else {
     console.log("\n  DATABASE_URL not set: skipped migrations and boot.")
   }
@@ -260,13 +267,16 @@ function capture(command, commandArgs, options) {
   })
 }
 
-/** Starts the app, waits for /health, checks the plugin logged it is disabled, then stops it. */
-function boot(app) {
+/**
+ * Starts the app, waits for /health, checks how many "Disabled" notices the
+ * plugin logged (1 when it needs options, 0 when it runs without), then stops it.
+ */
+function boot(app, expectedDisabled) {
   const port = 9100 + Math.floor(Math.random() * 500)
   return new Promise((resolve, reject) => {
     const child = spawn("npx", ["medusa", "start"], {
       cwd: app,
-      env: { ...process.env, PORT: String(port), NODE_ENV: "production" },
+      env: { ...process.env, PORT: String(port), NODE_ENV: "production", SMOKE_BOOT: "true" },
       shell: process.platform === "win32",
     })
     let log = ""
@@ -276,12 +286,24 @@ function boot(app) {
     const deadline = Date.now() + 120_000
     const stop = (error) => {
       clearInterval(timer)
-      child.kill()
-      if (error) {
-        console.error(log.slice(-4000))
-        reject(error)
+      const finish = () => {
+        if (error) {
+          console.error(log.slice(-4000))
+          reject(error)
+        } else {
+          resolve()
+        }
+      }
+      if (child.exitCode !== null) {
+        return finish()
+      }
+      // Wait until the server is really gone, so the app folder can be removed.
+      child.once("close", finish)
+      if (process.platform === "win32") {
+        // With a shell, kill() only stops cmd.exe and leaves the server running.
+        spawnSync("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" })
       } else {
-        resolve()
+        child.kill()
       }
     }
     const timer = setInterval(async () => {
@@ -296,8 +318,8 @@ function boot(app) {
         if (response.ok) {
           const disabledLines = log.split("\n").filter((line) => /\] Disabled: /.test(line))
           console.log(`  /health OK on port ${port}; disabled-notice lines: ${disabledLines.length}`)
-          if (disabledLines.length !== 1) {
-            return stop(new Error(`expected exactly one "Disabled" log line, found ${disabledLines.length}`))
+          if (disabledLines.length !== expectedDisabled) {
+            return stop(new Error(`expected ${expectedDisabled} "Disabled" log line(s), found ${disabledLines.length}`))
           }
           stop()
         }
