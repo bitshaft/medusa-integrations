@@ -2,6 +2,7 @@ import type { MedusaContainer } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 
 import { type CheckOutcome, runCheck } from "./engine"
+import { localeCode, normalizeLocale } from "./options"
 import { engineFor, resolveBackInStock } from "./runtime"
 import type { SubscriptionRecord } from "./types"
 
@@ -59,10 +60,10 @@ export async function seedDemo(
           variant_id: variant.id,
           product_id: variant.product_id,
           sales_channel_id: channelId,
-          locale: input.locale ?? engine.options.defaultLocale,
+          locale: localeCode(input.locale, engine.options.defaultLocale),
           status: "active",
           confirmed_at: now,
-          consent_text: settings.consent[engine.options.defaultLocale],
+          consent_text: settings.consent[normalizeLocale(input.locale, engine.options.defaultLocale)],
           demo: true,
         })
         created++

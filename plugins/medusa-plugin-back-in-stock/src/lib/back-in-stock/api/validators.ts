@@ -63,7 +63,7 @@ export const AdminSeedDemo = z.object({
   emails: z.array(z.string().trim().email()).min(1).max(5),
   count: z.number().int().min(1).max(20).default(3),
   sales_channel_id: id.optional(),
-  locale: z.enum(["en", "pl"]).optional(),
+  locale: z.string().trim().min(2).max(35).optional(),
 })
 
 export const AdminSimulateRestock = z.object({

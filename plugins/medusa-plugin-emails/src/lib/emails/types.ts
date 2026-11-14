@@ -220,11 +220,13 @@ export type EmailLoaderContext = {
   /** Builds a URL from the `urls` option; undefined when it cannot be built. */
   url: (name: string, values?: Record<string, string | number | null | undefined>) => string | undefined
   /**
-   * Picks the language: the one the caller asked for, else the first
-   * supported candidate, else the one mapped to the country, else the default.
+   * Picks the language among the store's: the one the caller asked for, else
+   * the first candidate the store has (same code, else same language), else
+   * the one mapped to the country, else the base. Always the base when
+   * Medusa's Translation module is off.
    */
   locale: (candidates: unknown[], countryCode?: string | null) => EmailLocale
-  /** Language of store team emails and the fallback for everything else. */
+  /** The base language (or the one the caller asked for): store team emails use it. */
   defaultLocale: EmailLocale
 }
 
@@ -250,7 +252,11 @@ export type AttachmentResolver = (
 export type CustomTemplateOption = {
   /** Replaces the built-in component, or renders a new email type. */
   component?: EmailTemplate
-  /** Default text per language; admins can still edit it. Needs at least `subject` for a new type. */
+  /**
+   * Default text per language (`en`, `pl`, or full codes like `de-DE`),
+   * matched to the store's languages by code, else by language. Admins can
+   * still edit it. Needs at least `subject` for a new type.
+   */
   copy?: Partial<Record<EmailLocale, CopyGroup>>
   /** For new types. Default `customer`. */
   audience?: EmailAudience
@@ -260,6 +266,6 @@ export type CustomTemplateOption = {
   loadData?: (input: Record<string, unknown>, context: EmailLoaderContext) => LoadedEmail | Promise<LoadedEmail>
   /** State of the on/off toggle until an admin changes it. Default on. */
   enabled?: boolean
-  /** Example data for the admin preview and test sends of a new type. */
+  /** Example data for the admin preview and test sends of a new type; gets the store language code. */
   previewData?: EmailData | ((locale: EmailLocale) => EmailData)
 }

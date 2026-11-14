@@ -42,12 +42,14 @@ export async function renderEmail(input: RenderEmailInput): Promise<RenderedEmai
   const format = createFormatters(locale)
   const variables = withOptionalBlanks(buildVariables(data, brand, format))
 
+  const base = options.defaultLocale
   const copy = interpolateGroup(
-    resolveCopy(type, locale, { custom: customCopyFor(options, type), overrides: input.overrides?.type }),
+    resolveCopy(type, locale, { base, custom: customCopyFor(options, type), overrides: input.overrides?.type }),
     variables
   )
   const common = interpolateGroup(
     resolveCopy(COMMON_GROUP, locale, {
+      base,
       custom: customCopyFor(options, COMMON_GROUP),
       overrides: input.overrides?.common,
     }),

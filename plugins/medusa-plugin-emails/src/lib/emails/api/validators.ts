@@ -1,12 +1,12 @@
 import { z } from "@medusajs/framework/zod"
 
-import { LOCALES } from "../locales"
 import { MESSAGE_STATUSES } from "../../../modules/emails/models/message"
 
-const locale = z.enum(LOCALES)
+/** One of the store's languages (`pl-PL`); checked in the route, which knows them. */
+const locale = z.string().trim().min(1).max(35)
 const email = z.string().trim().email().max(254)
 const recipients = z.array(email).max(50)
-/** `{ en: { subject: "…" }, pl: { … } }`; checked against the type's fields in the route. */
+/** `{ "pl-PL": { subject: "…" }, "en-US": { … } }`; checked against the type's fields and languages in the route. */
 const copy = z.record(z.string(), z.record(z.string(), z.string()))
 
 export const AdminUpdateSettings = z.object({

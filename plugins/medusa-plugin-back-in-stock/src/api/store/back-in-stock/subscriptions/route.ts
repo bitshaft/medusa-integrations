@@ -8,7 +8,6 @@ import {
   storeSalesChannel,
 } from "../../../../lib/back-in-stock/api/utils"
 import type { StoreSubscribeBody } from "../../../../lib/back-in-stock/api/validators"
-import { normalizeLocale } from "../../../../lib/back-in-stock/options"
 import type { SubscriptionRecord } from "../../../../lib/back-in-stock/types"
 import { createBackInStockSubscriptionWorkflow } from "../../../../workflows/back-in-stock"
 
@@ -20,7 +19,8 @@ import { createBackInStockSubscriptionWorkflow } from "../../../../workflows/bac
  * opt-in the subscription stays `pending` until the emailed link is used.
  */
 export async function POST(req: MedusaRequest<StoreSubscribeBody>, res: MedusaResponse) {
-  const { options } = await resolveEnabled(req)
+  // Throws the "disabled" error when the plugin is not configured.
+  await resolveEnabled(req)
   const body = req.validatedBody
   const customer = customerId(req)
 
@@ -43,7 +43,8 @@ export async function POST(req: MedusaRequest<StoreSubscribeBody>, res: MedusaRe
       variant_id: body.variant_id,
       sales_channel_id: storeSalesChannel(req, body.sales_channel_id),
       customer_id: customer,
-      locale: normalizeLocale(body.locale ?? req.get("x-medusa-locale"), options.defaultLocale),
+      // The full code (`de-DE`); the subscription keeps it for the emails plugin.
+      locale: body.locale ?? req.get("x-medusa-locale") ?? null,
       country_code: body.country_code,
     },
   })

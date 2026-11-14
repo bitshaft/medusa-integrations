@@ -2,7 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
 import { resolveEmails } from "../../../../lib/emails/api/utils"
 import { readPackageVersion } from "../../../../lib/emails/kit/package-info"
-import { LOCALES } from "../../../../lib/emails/locales"
+import { loadLanguages } from "../../../../lib/emails/languages"
 import { addressOf, PACKAGE_NAME } from "../../../../lib/emails/options"
 import { loadStoreName } from "../../../../lib/emails/send"
 
@@ -20,6 +20,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   }
 
   const options = await emails.getOptions()
+  const languages = await loadLanguages(req.scope, options)
   res.json({
     enabled: true,
     version,
@@ -28,8 +29,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     from_address: addressOf(options.from),
     reply_to: options.replyTo ?? null,
     channel: options.channel,
-    default_locale: options.defaultLocale,
-    locales: LOCALES,
+    // The base language, then the store's other ones (only the base without the Translation module).
+    default_locale: languages.base,
+    locales: languages.locales,
+    translation_enabled: languages.translation,
     store_name: options.brand.name ?? (await loadStoreName(req.scope)) ?? null,
     storefront_url: options.storefrontUrl ?? null,
     admin_url: options.adminUrl ?? null,

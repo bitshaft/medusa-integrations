@@ -18,10 +18,6 @@
       "storefrontMissing": "Opcja storefrontUrl nie jest ustawiona: przyciski prowadzące do sklepu są ukryte, a e-maile z resetem hasła nie są wysyłane.",
       "adminMissing": "Opcja adminUrl nie jest ustawiona: e-maile dla zespołu nie mają przycisku „Otwórz w panelu”."
     },
-    "locale": {
-      "en": "Angielski",
-      "pl": "Polski"
-    },
     "audience": {
       "customer": "Zamówienia",
       "account": "Konto klienta",
@@ -69,11 +65,17 @@
     "list": {
       "edit": "Edytuj",
       "edited": "Zmieniony tekst",
+      "missingTranslations": "Brak tłumaczeń",
       "custom": "Własny",
       "noRecipients": "Brak odbiorców",
       "toggleError": "Nie udało się zmienić ustawienia.",
       "sharedTitle": "Teksty wspólne",
       "sharedDescription": "Powitanie, podpis, etykiety tabel i stopka używane w każdym e-mailu."
+    },
+    "translations": {
+      "title": "E-maile",
+      "text": "Tłumaczenia e-maili są w zakładce E-maile, z podglądem w każdym języku.",
+      "open": "Przejdź do e-maili"
     },
     "general": {
       "title": "Zespół sklepu",
@@ -93,8 +95,12 @@
       "back": "Wszystkie e-maile",
       "enabled": "Wysyłaj ten e-mail",
       "language": "Język",
+      "languageOriginal": "{{language}} (oryginał)",
+      "missing": "brak: {{count}}",
+      "noLanguages": "Dodaj języki w <link>Ustawienia → Sklep</link>, aby tłumaczyć e-maile.",
       "text": "Tekst",
       "textHint": "Puste pola używają tekstu domyślnego.",
+      "textHintTranslation": "Puste pola są wysyłane w języku oryginału ({{language}}).",
       "variables": "Zmienne",
       "variablesHint": "Przy wysyłce są zastępowane prawdziwymi wartościami.",
       "anyVariables": "Ten szablon przyjmuje każdą zmienną, którą dostarczają jego dane.",
@@ -105,6 +111,7 @@
       "unsaved": "Niezapisane zmiany",
       "fieldEdited": "Zmienione",
       "restoreField": "Przywróć domyślny",
+      "useOriginal": "Użyj tekstu oryginału",
       "recipients": "Odbiorcy tego powiadomienia",
       "recipientsHint": "Zostaw puste, aby użyć ogólnych odbiorców zespołu sklepu.",
       "recipientsSave": "Zapisz odbiorców",

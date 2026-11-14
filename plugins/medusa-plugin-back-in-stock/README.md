@@ -61,7 +61,7 @@ plugins: [
       // Public URL of the backend: the unsubscribe and confirm links in emails point at it.
       backendUrl: process.env.MEDUSA_BACKEND_URL, // https://api.myshop.pl
       storefrontUrl: process.env.STOREFRONT_URL, // https://myshop.pl
-      defaultLocale: "pl",
+      defaultLocale: "pl-PL", // same as the emails plugin's
       from: "My Shop <orders@myshop.pl>", // only without the emails plugin
     },
   },
@@ -84,7 +84,7 @@ page shows the same reason.
 | `from`                     | the provider's own                                 | Sender, when sending without the emails plugin.                                                       |
 | `channel`                  | `"email"`                                          | Notification channel, without the emails plugin.                                                      |
 | `emails`                   | `"auto"`                                           | `"off"` never sends through the emails plugin.                                                        |
-| `defaultLocale`            | `"en"`                                             | `"en"` or `"pl"`, for subscriptions without a language.                                               |
+| `defaultLocale`            | `"en"`                                             | Original language (BCP 47, `"pl-PL"`), for subscriptions without one.                                 |
 | `demo`                     | `false`                                            | [Demo mode](#demo-mode).                                                                              |
 | `store.rateLimitPerMinute` | `10`                                               | Store and link-page requests per visitor a minute.                                                    |
 | `settings.*`               | see [Settings](#settings)                          | Starting values; admins can change them.                                                              |
@@ -180,6 +180,12 @@ Back-in-stock emails then use its branding and layout, their text is
 editable in its admin (Settings → Emails), and every send appears in its
 send log. The plugins find each other at runtime; neither depends on the
 other. Without the template registered, the built-in template is used.
+
+Subscriptions keep the subscriber's language code as sent (`de-DE`), and
+the emails plugin matches it to the store's languages, so back-in-stock
+emails can be translated there like any other email. In URL templates
+`{locale}` is the language as a storefront path prefix (`de`) and
+`{locale_code}` the full code.
 
 ### Without it
 

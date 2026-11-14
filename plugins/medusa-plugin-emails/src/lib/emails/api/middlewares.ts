@@ -45,7 +45,7 @@ export const emailsMiddlewares: MiddlewareRoute[] = [
     middlewares: [validateAndTransformBody(AdminPreviewType)],
   },
   {
-    matcher: "/admin/emails/types/:type/test",
+    matcher: "/admin/emails/types/:type/send-test",
     method: ["POST"],
     middlewares: [validateAndTransformBody(AdminTestType)],
   },

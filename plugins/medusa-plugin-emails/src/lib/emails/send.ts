@@ -8,7 +8,8 @@ import { BUILT_IN_LOADERS } from "./data/loaders"
 import { describeError, isOutcomeUnknown } from "./errors"
 import { EmailsEvents } from "./events"
 import { maskEmail } from "./format"
-import { type EmailLocale, pickLocale } from "./locales"
+import { loadLanguages } from "./languages"
+import { type EmailLanguages, type EmailLocale, pickLocale } from "./locales"
 import { buildUrl, type EmailsPluginOptions, PLUGIN_NAME } from "./options"
 import { getDefinition } from "./registry"
 import { renderEmail, type RenderedEmail } from "./render"
@@ -137,13 +138,15 @@ export async function sendEmail(
     return giveUp(`the "${input.type}" email is switched off`)
   }
 
+  const languages = await loadLanguages(container, options)
   const loaderInput = input.data ?? {}
-  const loaded = input.prepared ?? (await load(container, options, input, loaderInput))
+  const loaded = input.prepared ?? (await load(container, options, languages, input, loaderInput))
   if (loaded.skip) {
     return giveUp(loaded.skip)
   }
 
-  const locale = pickLocale([input.locale, loaded.locale], options.defaultLocale)
+  // Without the Translation module (or for a language the store dropped) this is the base language.
+  const locale = pickLocale([input.locale, loaded.locale], languages)
   const recipients = resolveRecipients(input, loaded, settings, definition.audience)
   if (!recipients.length) {
     return giveUp(
@@ -366,19 +369,21 @@ const passThroughLoader: EmailLoader = async (input) => ({
   customer_id: typeof input.customer_id === "string" ? input.customer_id : null,
 })
 
+/** What loaders get: the container, links, and the language picked among the store's. */
 export function loaderContext(
   container: MedusaContainer,
   options: EmailsPluginOptions,
+  languages: EmailLanguages,
   requestedLocale?: string
 ): EmailLoaderContext {
   return {
     container,
-    defaultLocale: pickLocale([requestedLocale], options.defaultLocale),
+    defaultLocale: pickLocale([requestedLocale], languages),
     url: (name, values) => buildUrl(options, name, values),
     locale: (candidates, countryCode): EmailLocale =>
       pickLocale(
         [requestedLocale, ...candidates, countryCode ? options.localeByCountry[countryCode.toLowerCase()] : undefined],
-        options.defaultLocale
+        languages
       ),
   }
 }
@@ -386,11 +391,12 @@ export function loaderContext(
 async function load(
   container: MedusaContainer,
   options: EmailsPluginOptions,
+  languages: EmailLanguages,
   input: SendEmailInput,
   loaderInput: Record<string, unknown>
 ): Promise<LoadedEmail> {
   const loader = options.templates[input.type]?.loadData ?? BUILT_IN_LOADERS[input.type] ?? passThroughLoader
-  return loader(loaderInput, loaderContext(container, options, input.locale))
+  return loader(loaderInput, loaderContext(container, options, languages, input.locale))
 }
 
 function resolveRecipients(

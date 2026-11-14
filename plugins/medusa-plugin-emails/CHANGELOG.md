@@ -15,6 +15,11 @@ First release.
   payments.
 - React Email templates with branding from plugin options, the language
   picked from the customer's locale, and your own templates and email types.
+- Languages follow Medusa's Translation module: without it every email is in
+  `defaultLocale`; with it every store language can be translated in the
+  admin (a language select with missing counts), untranslated fields fall
+  back to the original language, and `defaultLocale` takes any BCP 47 code.
+  A card in Settings → Translations points to the editor.
 - Resend and SMTP notification providers; any other provider for the
   `email` channel works too.
 - Each email is sent once per event, logged, and retried on provider errors

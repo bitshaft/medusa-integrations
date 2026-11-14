@@ -1,9 +1,18 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { describeCopy, describeType, groupParam, parseCopy, resolveEnabled } from "../../../../../lib/emails/api/utils"
+import {
+  describeCopy,
+  describeType,
+  groupParam,
+  mergeHidden,
+  parseCopy,
+  resolveEnabled,
+  storedCopy,
+} from "../../../../../lib/emails/api/utils"
 import type { AdminUpdateTypeBody } from "../../../../../lib/emails/api/validators"
 import { COMMON_GROUP } from "../../../../../lib/emails/copy"
+import type { EmailLanguages } from "../../../../../lib/emails/locales"
 import type { EmailsPluginOptions } from "../../../../../lib/emails/options"
 import { getDefinition } from "../../../../../lib/emails/registry"
 import {
@@ -14,32 +23,33 @@ import {
   typeKey,
 } from "../../../../../lib/emails/settings"
 
-function describe(options: EmailsPluginOptions, settings: EmailsSettings, group: string) {
+function describe(options: EmailsPluginOptions, settings: EmailsSettings, group: string, languages: EmailLanguages) {
   return {
-    ...(group === COMMON_GROUP ? { type: COMMON_GROUP } : describeType(options, settings, group)),
-    ...describeCopy(options, settings, group),
+    ...(group === COMMON_GROUP ? { type: COMMON_GROUP } : describeType(options, settings, group, languages)),
+    ...describeCopy(options, settings, group, languages),
   }
 }
 
 /**
  * `GET /admin/emails/types/:type` — one email type with its text in every
- * language (current value and default per field) and the variables the
- * text may use. `:type` can be `common` for the labels all emails share.
+ * store language (current value, default and original text per field, and
+ * how many fields each language misses) and the variables the text may use. `:type` can be `common` for the labels all emails share.
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const { options, settings } = await resolveEnabled(req)
+  const { options, settings, languages } = await resolveEnabled(req)
   const group = groupParam(req, options, { allowCommon: true })
-  res.json({ email_type: describe(options, settings, group) })
+  res.json({ email_type: describe(options, settings, group, languages) })
 }
 
 /**
  * `POST /admin/emails/types/:type` — switches a type on or off, sets the
  * recipients of a store team alert, and saves edited text. `copy` replaces
- * the stored edits: fields left out or equal to the default go back to the
- * default text.
+ * the stored edits of the store's languages: fields left out or equal to the
+ * default go back to the default text. Edits of languages the store does not
+ * have (any more) are kept.
  */
 export async function POST(req: MedusaRequest<AdminUpdateTypeBody>, res: MedusaResponse) {
-  const { emails, options, settings } = await resolveEnabled(req)
+  const { emails, options, settings, languages } = await resolveEnabled(req)
   const group = groupParam(req, options, { allowCommon: true })
   const body = req.validatedBody
 
@@ -51,7 +61,8 @@ export async function POST(req: MedusaRequest<AdminUpdateTypeBody>, res: MedusaR
   }
 
   if (body.copy !== undefined) {
-    await emails.saveSetting(copyKey(group), parseCopy(options, group, body.copy))
+    const edits = parseCopy(options, group, body.copy, languages)
+    await emails.saveSetting(copyKey(group), mergeHidden(storedCopy(settings, group), edits, languages))
   }
 
   if (group !== COMMON_GROUP && (body.enabled !== undefined || body.recipients !== undefined)) {
@@ -81,5 +92,5 @@ export async function POST(req: MedusaRequest<AdminUpdateTypeBody>, res: MedusaR
     await emails.saveSetting(typeKey(group), next)
   }
 
-  res.json({ email_type: describe(options, await emails.getSettings(), group) })
+  res.json({ email_type: describe(options, await emails.getSettings(), group, languages) })
 }

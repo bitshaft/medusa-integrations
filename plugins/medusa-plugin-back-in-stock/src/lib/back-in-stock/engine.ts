@@ -4,7 +4,7 @@ import type { VariantAvailability } from "./availability"
 import type { DeliveryInput, DeliveryResult } from "./deliver"
 import { BackInStockEvents } from "./events"
 import { actionLink, type ProductInfo, productLink } from "./links"
-import { type BackInStockPluginOptions, normalizeLocale } from "./options"
+import { type BackInStockPluginOptions, localeCode, normalizeLocale } from "./options"
 import { type EmailView, productLabel } from "./render"
 import type { EffectiveSettings } from "./settings"
 import type { Pair, PendingCheckRecord, SubscriptionRecord, VariantStateRecord } from "./types"
@@ -257,21 +257,23 @@ export async function buildView(
   kind: "restock" | "confirm",
   confirmToken?: string
 ): Promise<{ view: EmailView; one_click: boolean }> {
-  const locale = normalizeLocale(subscription.locale, deps.options.defaultLocale)
+  const code = localeCode(subscription.locale, deps.options.defaultLocale)
+  const locale = normalizeLocale(code, deps.options.defaultLocale)
   const unsubscribe = actionLink(
     deps.options,
     "unsubscribe",
     await deps.store.issueToken(subscription.id, "unsubscribe"),
-    locale
+    code
   )
   const action =
     kind === "confirm" && confirmToken
-      ? (actionLink(deps.options, "confirm", confirmToken, locale)?.url ?? null)
-      : (productLink(deps.options, product, { country_code: subscription.country_code, locale }) ?? null)
+      ? (actionLink(deps.options, "confirm", confirmToken, code)?.url ?? null)
+      : (productLink(deps.options, product, { country_code: subscription.country_code, locale: code }) ?? null)
   return {
     view: {
       kind,
       locale,
+      locale_code: code,
       store_name: storeName,
       product_title: product.product_title,
       variant_title: product.variant_title,

@@ -4,7 +4,8 @@ import { sdk } from "./kit/sdk"
 
 /* Types (mirroring the admin API responses) ------------------------------- */
 
-export type EmailLocale = "en" | "pl"
+/** A store language code, e.g. `pl-PL`. */
+export type EmailLocale = string
 export type EmailAudience = "customer" | "account" | "team"
 
 export type EmailsStatus =
@@ -17,8 +18,11 @@ export type EmailsStatus =
       from_address: string
       reply_to: string | null
       channel: string
+      /** The original language; texts fall back to it. */
       default_locale: EmailLocale
+      /** The base first, then the store's other languages (only the base without the Translation module). */
       locales: EmailLocale[]
+      translation_enabled: boolean
       store_name: string | null
       storefront_url: string | null
       admin_url: string | null
@@ -43,14 +47,28 @@ export type EmailTypeSummary = {
   default_enabled: boolean
   recipients: string[] | null
   edited: boolean
+  /** Untranslated fields, summed over the store's languages. */
+  missing_translations: number
 }
 
-export type CopyField = { value: string; default: string; edited: boolean }
+export type CopyField = {
+  value: string
+  /** Default in this language; empty for a language without text of its own. */
+  default: string
+  edited: boolean
+  /** The base language's text, sent when this language has none. */
+  original: string
+}
 
 export type EmailTypeDetail = (EmailTypeSummary | { type: "common" }) & {
+  base_locale: EmailLocale
+  locales: EmailLocale[]
+  translation_enabled: boolean
   fields: Array<{ key: string; multiline: boolean }>
   variables: string[] | null
   copy: Record<EmailLocale, Record<string, CopyField>>
+  /** Untranslated fields per language, as saved. */
+  missing: Record<EmailLocale, number>
   edited: boolean
 }
 
@@ -125,7 +143,12 @@ export function useEmailsSettings(enabled: boolean) {
 export function useEmailTypes(enabled: boolean) {
   return useQuery({
     queryKey: [KEY, "types"],
-    queryFn: () => sdk.client.fetch<{ types: EmailTypeSummary[]; common_edited: boolean }>("/admin/emails/types"),
+    queryFn: () =>
+      sdk.client.fetch<{
+        types: EmailTypeSummary[]
+        common_edited: boolean
+        common_missing_translations: number
+      }>("/admin/emails/types"),
     enabled,
   })
 }
@@ -226,7 +249,7 @@ export function useSendTestEmail(type: string) {
   const invalidate = useInvalidate()
   return useMutation({
     mutationFn: (body: { to: string; locale: EmailLocale; order_id?: string }) =>
-      sdk.client.fetch<SendOutcome>(`/admin/emails/types/${type}/test`, { method: "POST", body }),
+      sdk.client.fetch<SendOutcome>(`/admin/emails/types/${type}/send-test`, { method: "POST", body }),
     onSuccess: () => invalidate("messages"),
   })
 }

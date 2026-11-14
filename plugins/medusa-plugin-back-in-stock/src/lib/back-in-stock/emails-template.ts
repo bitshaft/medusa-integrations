@@ -14,7 +14,7 @@
  * documented `templates` option, so neither package depends on the other.
  */
 import { COPY } from "./copy"
-import { LOCALES, type Locale } from "./options"
+import { languageOf, LOCALES, type Locale } from "./options"
 
 export const EMAILS_RESTOCK_TYPE = "back-in-stock"
 export const EMAILS_CONFIRM_TYPE = "back-in-stock-confirm"
@@ -27,10 +27,11 @@ const copyFor = (kind: "restock" | "confirm") =>
     Record<string, string>
   >
 
-const preview = (locale: Locale, kind: "restock" | "confirm") => ({
-  product_title: locale === "pl" ? "Bluza z kapturem" : "Hooded sweatshirt",
+/** Example data for the admin preview; the emails plugin passes a store language code (`pl-PL`). */
+const preview = (locale: string, kind: "restock" | "confirm") => ({
+  product_title: languageOf(locale) === "pl" ? "Bluza z kapturem" : "Hooded sweatshirt",
   variant_title: "M",
-  product_label: locale === "pl" ? "Bluza z kapturem · M" : "Hooded sweatshirt · M",
+  product_label: languageOf(locale) === "pl" ? "Bluza z kapturem · M" : "Hooded sweatshirt · M",
   action_url: kind === "restock" ? "https://example.com/products/hoodie" : "https://example.com/confirm",
   unsubscribe_url: "https://example.com/unsubscribe",
 })
@@ -40,12 +41,12 @@ export const backInStockEmailTemplate = {
     audience: "customer" as const,
     copy: copyFor("restock"),
     variables: VARIABLES,
-    previewData: (locale: Locale) => preview(locale, "restock"),
+    previewData: (locale: string) => preview(locale, "restock"),
   },
   [EMAILS_CONFIRM_TYPE]: {
     audience: "customer" as const,
     copy: copyFor("confirm"),
     variables: VARIABLES,
-    previewData: (locale: Locale) => preview(locale, "confirm"),
+    previewData: (locale: string) => preview(locale, "confirm"),
   },
 }

@@ -6,8 +6,19 @@ import { parsePluginOptions, type PluginOptionsResult } from "./kit/options"
 export const PLUGIN_NAME = "back-in-stock"
 export const PACKAGE_NAME = "@bitshaft/medusa-plugin-back-in-stock"
 
+/** Languages this plugin's own texts (pages, consent, built-in email) are written in. */
 export const LOCALES = ["en", "pl"] as const
 export type Locale = (typeof LOCALES)[number]
+
+/** A BCP 47 language tag such as `pl-PL` or `en`, stored in canonical form. */
+const localeTag = z.string().transform((value, context) => {
+  const code = canonicalLocale(value)
+  if (!code) {
+    context.addIssue({ code: "custom", message: 'Expected a language tag like "pl-PL" or "en"' })
+    return z.NEVER
+  }
+  return code
+})
 
 const localized = z.object({ en: z.string().min(1).optional(), pl: z.string().min(1).optional() })
 
@@ -79,7 +90,12 @@ export const pluginOptionsSchema = z
      * and has the `back-in-stock` template; `off` always uses the built-in template.
      */
     emails: z.enum(["auto", "off"]).default("auto"),
-    defaultLocale: z.enum(LOCALES).default("en"),
+    /**
+     * The shop's original language (BCP 47, e.g. `pl-PL`), used when a
+     * subscriber's language is unknown. Use the same value as the emails
+     * plugin's `defaultLocale`.
+     */
+    defaultLocale: localeTag.default("en"),
 
     /** Render and log emails, send nothing. */
     demo: z.boolean().default(false),
@@ -124,12 +140,49 @@ export function parseOptions(raw: unknown): PluginOptionsResult<BackInStockPlugi
   return parsePluginOptions(pluginOptionsSchema, raw)
 }
 
-export function normalizeLocale(value: unknown, fallback: Locale): Locale {
+/** `pl_pl`, `PL-pl` → `pl-PL`. Undefined for anything that is not a language tag. */
+export function canonicalLocale(value: unknown): string | undefined {
   if (typeof value !== "string") {
-    return fallback
+    return undefined
   }
-  const language = value.trim().toLowerCase().split(/[-_]/)[0]
-  return (LOCALES as readonly string[]).includes(language) ? (language as Locale) : fallback
+  const tag = value.trim().replace(/_/g, "-")
+  if (!tag || tag.length > 35) {
+    return undefined
+  }
+  try {
+    return Intl.getCanonicalLocales(tag)[0]
+  } catch {
+    return undefined
+  }
+}
+
+/** `pl-PL` → `pl`. */
+export function languageOf(locale: string): string {
+  return locale.split(/[-_]/)[0].toLowerCase()
+}
+
+/**
+ * The subscriber's language as a full code (`de-DE`), else the default. It
+ * is stored and passed on to the emails plugin as it is, which matches it
+ * to the store's languages.
+ */
+export function localeCode(value: unknown, fallback: string): string {
+  return canonicalLocale(value) ?? fallback
+}
+
+/**
+ * The language of this plugin's own texts for a code: its language when
+ * there are texts in it, else the default's, else English.
+ */
+export function normalizeLocale(value: unknown, fallback: string): Locale {
+  for (const candidate of [value, fallback]) {
+    const code = canonicalLocale(candidate)
+    const language = code ? languageOf(code) : undefined
+    if (language && (LOCALES as readonly string[]).includes(language)) {
+      return language as Locale
+    }
+  }
+  return "en"
 }
 
 /**
@@ -143,9 +196,12 @@ export function fillUrl(
   if (!template) {
     return undefined
   }
+  // Storefronts prefix paths with the language (`/en/…`); `{locale_code}` is the full code.
+  const code = typeof values.locale === "string" && values.locale ? values.locale : undefined
+  const all = code ? { ...values, locale: languageOf(code), locale_code: values.locale_code ?? code } : values
   let missing = false
   const url = template.replace(/\{([a-zA-Z_]+)\}/g, (_match, key: string) => {
-    const value = values[key]
+    const value = all[key]
     if (value === undefined || value === null || value === "") {
       missing = true
       return ""
