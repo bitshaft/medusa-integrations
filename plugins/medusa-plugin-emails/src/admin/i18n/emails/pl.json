@@ -30,6 +30,7 @@
     "types": {
       "order-confirmation": { "name": "Potwierdzenie zamówienia", "description": "Po złożeniu zamówienia." },
       "payment-received": { "name": "Płatność otrzymana", "description": "Po zaksięgowaniu płatności." },
+      "order-fulfilled": { "name": "Zamówienie skompletowane", "description": "Po utworzeniu realizacji zamówienia (spakowane, przed wysyłką)." },
       "order-shipped": {
         "name": "Zamówienie wysłane",
         "description": "Po oznaczeniu realizacji jako wysłanej, z linkiem do śledzenia."

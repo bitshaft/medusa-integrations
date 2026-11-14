@@ -107,7 +107,7 @@ const refundIssued: EmailLoader = async (input, context) => {
   }
 }
 
-/** `shipment.created` and `delivery.created`: the fulfillment, its tracking numbers and its order. */
+/** `order.fulfillment_created`, `shipment.created` and `delivery.created`: the fulfillment, its tracking numbers and its order. */
 const shipment: EmailLoader = async (input, context) => {
   if (input.no_notification === true) {
     return skip("the fulfillment was created with notifications turned off")
@@ -332,6 +332,7 @@ const teamPaymentFailed: EmailLoader = async (input, context) => {
 export const BUILT_IN_LOADERS: Record<string, EmailLoader> = {
   "order-confirmation": orderEmail(),
   "payment-received": paymentReceived,
+  "order-fulfilled": shipment,
   "order-shipped": shipment,
   "order-delivered": shipment,
   "order-canceled": orderEmail(),

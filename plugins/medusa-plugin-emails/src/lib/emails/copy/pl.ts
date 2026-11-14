@@ -48,6 +48,13 @@ export const pl: CopyDictionary = {
     body: "Otrzymaliśmy Twoją płatność w kwocie {{amount}} za zamówienie nr {{order_number}}. Dziękujemy.",
     button: "Zobacz zamówienie",
   },
+  "order-fulfilled": {
+    subject: "Zamówienie nr {{order_number}} zostało skompletowane",
+    preview: "Produkty są spakowane i czekają na przewoźnika.",
+    heading: "Zamówienie jest gotowe do wysyłki",
+    body: "Zamówienie nr {{order_number}} zostało spakowane. Damy znać, gdy tylko odbierze je przewoźnik.",
+    button: "Zobacz zamówienie",
+  },
   "order-shipped": {
     subject: "Zamówienie nr {{order_number}} jest w drodze",
     preview: "Przesyłka została przekazana przewoźnikowi.",

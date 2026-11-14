@@ -19,7 +19,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
-import { formatRecipients, parseRecipients } from "../../../components/emails/recipients"
+import { formatRecipients, parseRecipients } from "../../components/emails/recipients"
 import {
   type EmailAudience,
   type EmailsGeneralSettings,
@@ -30,8 +30,8 @@ import {
   useResetAllEmails,
   useUpdateEmailsSettings,
   useUpdateEmailType,
-} from "../../../lib/emails/api"
-import { errorMessage } from "../../../lib/emails/kit/format"
+} from "../../lib/emails/api"
+import { errorMessage } from "../../lib/emails/kit/format"
 
 const AUDIENCES: EmailAudience[] = ["customer", "account", "team"]
 
@@ -76,7 +76,7 @@ const EmailsSettingsPage = () => {
           {enabled && (
             <div className="flex items-center gap-x-2">
               <Button size="small" variant="secondary" asChild>
-                <Link to="/settings/emails/log">{t("emails.log.open")}</Link>
+                <Link to="/emails/log">{t("emails.log.open")}</Link>
               </Button>
               <Button size="small" variant="danger" isLoading={resetAll.isPending} onClick={onResetAll}>
                 {t("emails.reset.everything")}
@@ -190,7 +190,7 @@ const EmailsSettingsPage = () => {
                 </Text>
               </div>
               <Button size="small" variant="secondary" asChild>
-                <Link to="/settings/emails/common">{t("emails.list.edit")}</Link>
+                <Link to="/emails/common">{t("emails.list.edit")}</Link>
               </Button>
             </div>
           </Container>
@@ -237,7 +237,7 @@ const TypeRow = ({ type, hasRecipients }: { type: EmailTypeSummary; hasRecipient
           }
         />
         <Button size="small" variant="secondary" asChild>
-          <Link to={`/settings/emails/${type.type}`}>{t("emails.list.edit")}</Link>
+          <Link to={`/emails/${type.type}`}>{t("emails.list.edit")}</Link>
         </Button>
       </div>
     </div>
@@ -378,9 +378,27 @@ const Note = ({ children }: { children: ReactNode }) => (
   </Text>
 )
 
+/** Sidebar icon: a white envelope on a small blue tile. */
+const EmailsSidebarIcon = () => (
+  <span
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: 20,
+      height: 20,
+      borderRadius: 4,
+      backgroundColor: "#2563eb",
+      color: "#ffffff",
+    }}
+  >
+    <Envelope style={{ width: 14, height: 14 }} />
+  </span>
+)
+
 export const config = defineRouteConfig({
   label: "Emails",
-  icon: Envelope,
+  icon: EmailsSidebarIcon,
 })
 
 export default EmailsSettingsPage

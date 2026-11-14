@@ -48,6 +48,13 @@ export const en: CopyDictionary = {
     body: "We've received your payment of {{amount}} for order #{{order_number}}. Thank you.",
     button: "View your order",
   },
+  "order-fulfilled": {
+    subject: "Your order #{{order_number}} is being prepared for shipping",
+    preview: "Your items are packed and ready for the carrier.",
+    heading: "Your order is ready to ship",
+    body: "Your order #{{order_number}} has been packed. We'll email you again as soon as the carrier picks it up.",
+    button: "View your order",
+  },
   "order-shipped": {
     subject: "Your order #{{order_number}} is on its way",
     preview: "Your parcel has been handed to the carrier.",

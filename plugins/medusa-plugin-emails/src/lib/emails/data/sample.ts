@@ -62,6 +62,7 @@ export function sampleData(type: string, order: OrderView, urls: { action?: stri
   switch (type) {
     case "payment-received":
       return { ...base, payment: { amount: order.total, currency_code: order.currency_code } }
+    case "order-fulfilled":
     case "order-shipped":
     case "order-delivered":
       return {

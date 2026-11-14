@@ -24,6 +24,9 @@ describe("emailsForEvent", () => {
     expect(summary("order.return_received", { order_id: "order_1", return_id: "ret_1" })).toEqual([
       ["return-accepted", "return-accepted:ret_1", { order_id: "order_1", return_id: "ret_1" }],
     ])
+    expect(summary("order.fulfillment_created", { order_id: "order_1", fulfillment_id: "ful_1" })).toEqual([
+      ["order-fulfilled", "order-fulfilled:ful_1", { fulfillment_id: "ful_1", no_notification: false }],
+    ])
     expect(summary("shipment.created", { id: "ful_1", no_notification: true })).toEqual([
       ["order-shipped", "order-shipped:ful_1", { fulfillment_id: "ful_1", no_notification: true }],
     ])

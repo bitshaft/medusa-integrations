@@ -43,6 +43,12 @@ const Shipment = (props: EmailTemplateProps) => {
   )
 }
 
+const OrderFulfilled: EmailTemplate = (props) => (
+  <StandardEmail {...props}>
+    <Shipment {...props} />
+  </StandardEmail>
+)
+
 const OrderShipped: EmailTemplate = (props) => (
   <StandardEmail {...props}>
     <Shipment {...props} />
@@ -181,6 +187,7 @@ export const GenericEmail: EmailTemplate = (props) => <StandardEmail {...props} 
 export const BUILT_IN_TEMPLATES: Record<string, EmailTemplate> = {
   "order-confirmation": OrderConfirmation,
   "payment-received": PaymentReceived,
+  "order-fulfilled": OrderFulfilled,
   "order-shipped": OrderShipped,
   "order-delivered": OrderDelivered,
   "order-canceled": OrderCanceled,

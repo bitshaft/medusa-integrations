@@ -178,6 +178,7 @@ button is left out rather than pointing nowhere.
 | -------------------- | --------------------- | ------------------------------------------------------------------------- |
 | Order confirmation   | `order-confirmation`  | `order.placed`                                                            |
 | Payment received     | `payment-received`    | `payment.captured`                                                        |
+| Order fulfilled      | `order-fulfilled`     | `order.fulfillment_created`, when the order is packed |
 | Order shipped        | `order-shipped`       | `shipment.created`, with tracking numbers and the carrier's tracking link |
 | Order delivered      | `order-delivered`     | `delivery.created`                                                        |
 | Order canceled       | `order-canceled`      | `order.canceled`                                                          |

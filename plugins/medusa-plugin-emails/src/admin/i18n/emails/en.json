@@ -30,6 +30,7 @@
     "types": {
       "order-confirmation": { "name": "Order confirmation", "description": "When an order is placed." },
       "payment-received": { "name": "Payment received", "description": "When a payment is captured." },
+      "order-fulfilled": { "name": "Order fulfilled", "description": "When a fulfillment is created for an order (packed, before it ships)." },
       "order-shipped": {
         "name": "Order shipped",
         "description": "When a fulfillment is marked as shipped, with the tracking link."

@@ -18,7 +18,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useParams } from "react-router-dom"
 
-import { formatRecipients, parseRecipients } from "../../../../components/emails/recipients"
+import { formatRecipients, parseRecipients } from "../../../components/emails/recipients"
 import {
   type CopyDraft,
   type EmailLocale,
@@ -30,8 +30,8 @@ import {
   useResetEmailType,
   useSendTestEmail,
   useUpdateEmailType,
-} from "../../../../lib/emails/api"
-import { errorMessage } from "../../../../lib/emails/kit/format"
+} from "../../../lib/emails/api"
+import { errorMessage } from "../../../lib/emails/kit/format"
 
 const LOCALES: EmailLocale[] = ["en", "pl"]
 const COMMON = "common"
@@ -79,7 +79,7 @@ const EmailTypePage = () => {
         </Text>
         <div>
           <Button size="small" variant="secondary" asChild>
-            <Link to="/settings/emails">{t("emails.editor.back")}</Link>
+            <Link to="/emails">{t("emails.editor.back")}</Link>
           </Button>
         </div>
       </Container>
@@ -161,7 +161,7 @@ const Editor = ({
       <Container className="divide-y p-0">
         <div className="flex items-center justify-between gap-x-4 px-6 py-4">
           <div className="min-w-0">
-            <Link to="/settings/emails" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
+            <Link to="/emails" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
               ← {t("emails.editor.back")}
             </Link>
             <div className="mt-1 flex flex-wrap items-center gap-x-2">

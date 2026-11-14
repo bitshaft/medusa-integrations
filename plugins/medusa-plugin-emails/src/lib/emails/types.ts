@@ -41,6 +41,7 @@ function builtIn(
 export const BUILT_IN_TYPES: EmailTypeDefinition[] = [
   builtIn("order-confirmation", "customer", ORDER_VARIABLES),
   builtIn("payment-received", "customer", [...ORDER_VARIABLES, "amount"]),
+  builtIn("order-fulfilled", "customer", ORDER_VARIABLES),
   builtIn("order-shipped", "customer", [...ORDER_VARIABLES, "tracking_number"]),
   builtIn("order-delivered", "customer", [...ORDER_VARIABLES, "tracking_number"]),
   builtIn("order-canceled", "customer", ORDER_VARIABLES),

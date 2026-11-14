@@ -2,8 +2,8 @@ import { Button, Container, Heading, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
-import { MessageLog } from "../../../../components/emails/message-log"
-import { useEmailsStatus } from "../../../../lib/emails/api"
+import { MessageLog } from "../../../components/emails/message-log"
+import { useEmailsStatus } from "../../../lib/emails/api"
 
 /** The whole send log, with search by recipient and a status filter. */
 const EmailsLogPage = () => {
@@ -14,7 +14,7 @@ const EmailsLogPage = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between gap-x-4 px-6 py-4">
         <div>
-          <Link to="/settings/emails" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
+          <Link to="/emails" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
             ← {t("emails.editor.back")}
           </Link>
           <Heading className="mt-1">{t("emails.log.allTitle")}</Heading>
@@ -23,7 +23,7 @@ const EmailsLogPage = () => {
           </Text>
         </div>
         <Button size="small" variant="secondary" asChild>
-          <Link to="/settings/emails">{t("emails.title")}</Link>
+          <Link to="/emails">{t("emails.title")}</Link>
         </Button>
       </div>
       {status.data && !status.data.enabled ? (

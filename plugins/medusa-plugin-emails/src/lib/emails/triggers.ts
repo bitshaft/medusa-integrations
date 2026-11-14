@@ -45,6 +45,14 @@ export function emailsForEvent(name: string, data: EventData): SendEmailInput[] 
       return [keyed("return-requested", { order_id: data.order_id, return_id: data.return_id }, id(data.return_id))]
     case "order.return_received":
       return [keyed("return-accepted", { order_id: data.order_id, return_id: data.return_id }, id(data.return_id))]
+    case "order.fulfillment_created":
+      return [
+        keyed(
+          "order-fulfilled",
+          { fulfillment_id: data.fulfillment_id, no_notification: data.no_notification === true },
+          id(data.fulfillment_id)
+        ),
+      ]
     case "shipment.created":
       return [keyed("order-shipped", fulfillment, id(data.id))]
     case "delivery.created":
