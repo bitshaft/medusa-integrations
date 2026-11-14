@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 import { type OmnibusRow, useDiscounts, useRecordPrices } from "../../lib/compliance/api"
 import { errorMessage, money, shortDate } from "../../lib/compliance/format"
-import { Empty, LegalNote } from "./shared"
+import { Empty, LegalNote, TAB_CLASS } from "./shared"
 
 /** Badges that explain a lowest price: incomplete history, short sales, exemption. */
 export const OmnibusFlags = ({ row }: { row: Pick<OmnibusRow, "history_incomplete" | "sold_since" | "exempt"> }) => {
@@ -73,10 +73,10 @@ export const Omnibus = ({ demo }: { demo: boolean }) => {
       </div>
       <Tabs value={tab} onValueChange={setTab}>
         <Tabs.List>
-          <Tabs.Trigger value="discounts">
+          <Tabs.Trigger className={TAB_CLASS} value="discounts">
             {t("compliance.omnibus.discounts")} ({rows.length})
           </Tabs.Trigger>
-          <Tabs.Trigger value="incomplete">
+          <Tabs.Trigger className={TAB_CLASS} value="incomplete">
             {t("compliance.omnibus.incompleteList")} ({rows.filter((r) => r.history_incomplete).length})
           </Tabs.Trigger>
         </Tabs.List>

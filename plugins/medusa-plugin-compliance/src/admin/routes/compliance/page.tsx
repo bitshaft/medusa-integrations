@@ -11,7 +11,7 @@ import { Gpsr } from "../../components/compliance/gpsr"
 import { Guide } from "../../components/compliance/guide"
 import { Omnibus } from "../../components/compliance/omnibus"
 import { Settings } from "../../components/compliance/settings"
-import { DemoBar } from "../../components/compliance/shared"
+import { DemoBar, TabTrigger } from "../../components/compliance/shared"
 import { keys, useSettings } from "../../lib/compliance/api"
 import { navIcon } from "../../lib/compliance/kit/nav-icon"
 
@@ -53,30 +53,24 @@ const CompliancePage = () => {
         <div className="overflow-x-auto px-6 py-3">
           <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
             <Tabs.List>
-              <Tabs.Trigger value="panel">
-                <ChartBar />
+              <TabTrigger value="panel" icon={ChartBar} color="#2563eb">
                 {t("compliance.tabs.panel")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="gpsr">
-                <Tag />
+              </TabTrigger>
+              <TabTrigger value="gpsr" icon={Tag} color="#ea580c">
                 {t("compliance.tabs.gpsr")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="gdpr">
-                <User />
+              </TabTrigger>
+              <TabTrigger value="gdpr" icon={User} color="#7c3aed">
                 {t("compliance.tabs.gdpr")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="omnibus">
-                <CurrencyDollar />
+              </TabTrigger>
+              <TabTrigger value="omnibus" icon={CurrencyDollar} color="#16a34a">
                 {t("compliance.tabs.omnibus")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="settings">
-                <CogSixTooth />
+              </TabTrigger>
+              <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
                 {t("compliance.tabs.settings")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="guide">
-                <BookOpen />
+              </TabTrigger>
+              <TabTrigger value="guide" icon={BookOpen} color="#db2777">
                 {t("compliance.tabs.guide")}
-              </Tabs.Trigger>
+              </TabTrigger>
             </Tabs.List>
           </Tabs>
         </div>

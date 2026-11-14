@@ -46,6 +46,7 @@ import {
   TextAreaField,
   TextField,
   Toggle,
+  TAB_CLASS,
 } from "./shared"
 
 const LIMIT = 25
@@ -62,9 +63,15 @@ export const Gdpr = ({ demo, warnDays, placeholder }: { demo: boolean; warnDays:
     <Container className="flex flex-col gap-y-4 p-6">
       <Tabs value={tab} onValueChange={setTab}>
         <Tabs.List>
-          <Tabs.Trigger value="requests">{t("compliance.gdpr.requests")}</Tabs.Trigger>
-          <Tabs.Trigger value="types">{t("compliance.gdpr.consentTypes")}</Tabs.Trigger>
-          <Tabs.Trigger value="register">{t("compliance.gdpr.register")}</Tabs.Trigger>
+          <Tabs.Trigger className={TAB_CLASS} value="requests">
+            {t("compliance.gdpr.requests")}
+          </Tabs.Trigger>
+          <Tabs.Trigger className={TAB_CLASS} value="types">
+            {t("compliance.gdpr.consentTypes")}
+          </Tabs.Trigger>
+          <Tabs.Trigger className={TAB_CLASS} value="register">
+            {t("compliance.gdpr.register")}
+          </Tabs.Trigger>
         </Tabs.List>
       </Tabs>
       {tab === "requests" && <Requests demo={demo} warnDays={warnDays} />}
