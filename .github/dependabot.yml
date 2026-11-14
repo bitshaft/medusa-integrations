@@ -71,6 +71,20 @@ updates:
     commit-message:
       prefix: "chore(coupons)"
 
+  - package-ecosystem: npm
+    directory: /plugins/medusa-plugin-loyalty
+    schedule:
+      interval: weekly
+    groups:
+      medusa:
+        patterns: ["@medusajs/*"]
+      dev-tooling:
+        dependency-type: development
+        exclude-patterns: ["@medusajs/*"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(loyalty)"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

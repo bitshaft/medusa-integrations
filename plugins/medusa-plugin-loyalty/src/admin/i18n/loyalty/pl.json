@@ -1,0 +1,296 @@
+{
+  "loyalty": {
+    "title": "Program lojalnościowy",
+    "description": "Punkty za zamówienia i akcje, nagrody, poziomy i wygasanie, z pełną historią każdego punktu.",
+    "programOn": "Program włączony",
+    "programOff": "Program wyłączony",
+    "refresh": "Odśwież",
+    "loadError": "Nie udało się wczytać danych programu.",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "remove": "Usuń",
+    "search": "Szukaj…",
+    "noResults": "Nic nie znaleziono.",
+    "previous": "Poprzednie",
+    "next": "Następne",
+    "range": "{{from}}–{{to}} z {{count}}",
+    "pointsShort": "{{points}} pkt",
+    "pointsUnit": "pkt",
+    "daysUnit": "dni",
+    "monthsUnit": "mies.",
+    "tabs": {
+      "panel": "Panel",
+      "rewards": "Nagrody",
+      "customers": "Klienci",
+      "settings": "Ustawienia",
+      "guide": "Przewodnik"
+    },
+    "disabled": {
+      "title": "Program lojalnościowy jest wyłączony: {{reason}}",
+      "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
+    },
+    "dashboard": {
+      "members": "Członkowie programu",
+      "earned": "Punkty przyznane, 30 dni",
+      "redeemed": "Punkty wymienione, 30 dni",
+      "openValue": "Wartość otwartych punktów",
+      "openValueHint": "{{points}} pkt, szacowane wg najtańszej nagrody kwotowej. To zobowiązanie sklepu.",
+      "noAmountReward": "Dodaj nagrodę kwotową, aby oszacować wartość.",
+      "expiring": "Punkty wygasające w ciągu 30 dni",
+      "open": "Otwarte punkty",
+      "tiers": "Klienci na poziomach",
+      "noTier": "Bez poziomu",
+      "topRewards": "Najpopularniejsze nagrody",
+      "noRedemptions": "Nikt jeszcze nie wymienił nagrody."
+    },
+    "kinds": {
+      "fixed": { "title": "Rabat kwotowy", "hint": "Jednorazowy kod dla tego klienta, np. 20 zł rabatu." },
+      "percentage": {
+        "title": "Rabat procentowy",
+        "hint": "Jednorazowy kod dla tego klienta, np. 10% rabatu na produkty."
+      },
+      "free_shipping": {
+        "title": "Darmowa dostawa",
+        "hint": "Jednorazowy kod dla tego klienta, który zeruje koszt dostawy."
+      },
+      "gift": {
+        "title": "Gratis",
+        "hint": "Wybrany wariant trafia do koszyka klienta za 0 zł, jeśli jest w magazynie."
+      }
+    },
+    "rewards": {
+      "title": "Nagrody",
+      "subtitle": "Co klienci mogą dostać za punkty.",
+      "add": "Dodaj nagrodę",
+      "empty": "Nie ma jeszcze nagród. Dodaj pierwszą.",
+      "name": "Nazwa",
+      "gives": "Daje",
+      "cost": "Koszt",
+      "rules": "Zasady",
+      "redemptions": "Wymieniono",
+      "active": "aktywna",
+      "inactive": "wyłączona",
+      "fromTier": "od poziomu {{tier}}",
+      "limit_one": "{{count}} na klienta",
+      "limit_few": "{{count}} na klienta",
+      "limit_many": "{{count}} na klienta",
+      "limit_other": "{{count}} na klienta",
+      "validDays_one": "kod ważny {{count}} dzień",
+      "validDays_few": "kod ważny {{count}} dni",
+      "validDays_many": "kod ważny {{count}} dni",
+      "validDays_other": "kod ważny {{count}} dnia",
+      "edit": "Edytuj",
+      "delete": "Usuń",
+      "cannotDelete": "Już wymieniona: zamiast usuwać, wyłącz ją.",
+      "deleteTitle": "Usunąć tę nagrodę?",
+      "deleteText": "„{{name}}” zniknie z katalogu. Nikt jej jeszcze nie wymienił.",
+      "deleted": "Nagroda usunięta.",
+      "editTitle": "Edycja nagrody",
+      "addTitle": "Nowa nagroda",
+      "namePlaceholder": "np. 20 zł rabatu",
+      "description": "Opis dla klientów (opcjonalnie)",
+      "kind": "Rodzaj",
+      "amount": "Kwota",
+      "percent": "Procent",
+      "variant": "Wariant produktu",
+      "variantSearch": "Szukaj produktów…",
+      "variantHint": "Jeśli wariantu nie ma w magazynie, wymiana się nie wykona i punkty nie zostaną pobrane.",
+      "minTier": "Najniższy dozwolony poziom",
+      "anyTier": "Dowolny poziom",
+      "perCustomer": "Wymian na klienta",
+      "codeDays": "Kod ważny przez",
+      "emptyMeansNoLimit": "Puste pole oznacza brak limitu.",
+      "activeLabel": "Klienci mogą ją wymienić",
+      "saved": "Nagroda zapisana."
+    },
+    "customers": {
+      "title": "Klienci",
+      "subtitle": "Każdy klient z kontem bierze udział. Kliknij klienta, aby zobaczyć historię.",
+      "search": "Szukaj po nazwisku lub e-mailu",
+      "empty": "Nie znaleziono klientów.",
+      "customer": "Klient",
+      "balance": "Saldo",
+      "tier": "Poziom",
+      "lastActivity": "Ostatnia aktywność",
+      "excluded": "grupa wykluczona",
+      "historyTitle": "Historia punktów",
+      "notMember": {
+        "guest": "Ten klient nie ma konta, więc nie zbiera punktów.",
+        "excluded": "Ten klient jest w wykluczonej grupie: nie zbiera ani nie wymienia punktów.",
+        "not_found": "Ten klient już nie istnieje."
+      },
+      "nextTier": "Następny poziom",
+      "missing": "{{amount}} do poziomu {{tier}}",
+      "expires": "Punkty wygasną",
+      "newsletter": "Przyznaj bonus za newsletter",
+      "newsletterGranted": "Przyznano bonus za newsletter: {{points}} pkt.",
+      "newsletterNot": "Nie przyznano: już otrzymany, akcja wyłączona albo klient nie bierze udziału.",
+      "redemptions": "Wymienione nagrody",
+      "tierHistory": "Historia poziomów"
+    },
+    "redemptionStatus": {
+      "issued": "kod wydany",
+      "used": "wykorzystany",
+      "expired": "wygasł",
+      "in_cart": "w koszyku",
+      "ordered": "zamówiony",
+      "released": "punkty zwrócone"
+    },
+    "ledger": {
+      "title": "Księga punktów",
+      "type": "Typ",
+      "allTypes": "Wszystkie typy",
+      "from": "Od",
+      "to": "Do",
+      "csv": "Eksport CSV",
+      "empty": "Brak wpisów.",
+      "date": "Data",
+      "what": "Co",
+      "points": "Punkty",
+      "balance": "Saldo",
+      "by": "Kto"
+    },
+    "types": {
+      "order": "zamówienie",
+      "action": "akcja",
+      "redemption": "wymiana",
+      "return": "zwrot",
+      "expiry": "wygaśnięcie",
+      "adjustment": "korekta ręczna",
+      "tier_bonus": "bonus poziomu"
+    },
+    "reasons": {
+      "earn": "punkty za zamówienie",
+      "cancel": "zamówienie anulowane",
+      "return": "zwrot towaru",
+      "signup": "założenie konta",
+      "first_order": "pierwsze zamówienie",
+      "birthday": "urodziny",
+      "newsletter": "zapis do newslettera",
+      "redeem": "wymiana na nagrodę",
+      "redeem_returned": "zwrot punktów za nagrodę",
+      "expired": "wygaśnięcie po braku aktywności",
+      "manual": "korekta",
+      "tier_bonus": "awans na poziom"
+    },
+    "actors": { "system": "system", "admin": "administrator", "customer": "klient" },
+    "adjust": {
+      "title": "Korekta ręczna",
+      "points": "Punkty (+/−)",
+      "reason": "Powód (wymagany)",
+      "reasonPlaceholder": "np. reklamacja zamówienia #1042",
+      "save": "Dodaj korektę",
+      "done": "Korekta zapisana. Saldo: {{balance}} pkt.",
+      "hint": "Wpisów nigdy się nie edytuje ani nie usuwa: błąd poprawia się kolejną korektą. Zapisujemy przy niej Twojego użytkownika."
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "subtitle": "Wszystkie zasady programu. Zmiany działają od chwili zapisu; wcześniejsze wpisy zostają bez zmian.",
+      "discard": "Odrzuć zmiany",
+      "defaults": "Wstaw domyślne",
+      "saved": "Ustawienia zapisane.",
+      "saveFailed": "Nie udało się zapisać ustawień: {{error}}",
+      "program": "Program",
+      "programHint": "Gdy wyłączony, nic nie jest naliczane ani wymieniane. Historia i salda zostają.",
+      "programOn": "Program jest włączony",
+      "programOff": "Program jest wyłączony",
+      "terms": "Link do regulaminu programu",
+      "currency": "Waluta",
+      "earn": "Naliczanie",
+      "earnHint": "Liczone od produktów po rabatach, bez dostawy i gratisów, po opłaceniu zamówienia. Zawsze zaokrąglane w dół do pełnego punktu.",
+      "earnPoints": "Punkty",
+      "earnPer": "za każde",
+      "base": "Kwoty",
+      "gross": "brutto (z VAT)",
+      "net": "netto (bez VAT)",
+      "actionsTitle": "Punkty za akcje",
+      "actionsHint": "Każda akcja liczy się raz na klienta (urodziny raz w roku).",
+      "points": "Punkty",
+      "actions": {
+        "signup": "Założenie konta",
+        "signupHint": "Gdy klient się rejestruje. Goście nie dostają nic.",
+        "first_order": "Pierwsze zamówienie",
+        "first_orderHint": "Dodatkowe punkty za pierwsze opłacone zamówienie, ponad zwykłe punkty. Odbierane, jeśli zamówienie zostanie anulowane.",
+        "birthday": "Urodziny",
+        "birthdayHint": "Raz w roku, w dniu, który klient poda na swoim koncie.",
+        "newsletter": "Zapis do newslettera",
+        "newsletterHint": "Gdy inna wtyczka zgłosi zapis (zdarzenie newsletter.subscribed) albo ręcznie na stronie klienta."
+      },
+      "birthdayInterval": "Datę można zmienić co",
+      "birthdayMinDays": "Data ustawiona co najmniej … przed urodzinami",
+      "tiers": "Poziomy",
+      "tiersHint": "Poziom zależy od wydatków w ostatnich miesiącach: produkty po rabatach, minus zwroty. Klienci awansują i spadają sami.",
+      "window": "Wydatki liczone z ostatnich",
+      "tierName": "Nazwa",
+      "tierThreshold": "Od wydatków",
+      "tierMultiplier": "Mnożnik punktów",
+      "tierBonus": "Bonus za osiągnięcie",
+      "newTier": "Poziom {{n}}",
+      "addTier": "Dodaj poziom",
+      "expiry": "Wygasanie",
+      "expiryHint": "Punkty wygasają po okresie bez zamówienia ani wymiany. Ujemne saldo nigdy nie wygasa.",
+      "expiryOn": "Punkty wygasają",
+      "expiryMonths": "Po",
+      "reminderDays": "Zdarzenie z przypomnieniem przed",
+      "rewards": "Nagrody",
+      "returnOnExpiry": "Oddawaj punkty za kody nagród, które wygasły niewykorzystane",
+      "giftRelease": "Usuń gratis z porzuconego koszyka i oddaj punkty po",
+      "excluded": "Wykluczone grupy klientów",
+      "excludedHint": "Klienci z tych grup (np. B2B) nie zbierają ani nie wymieniają punktów.",
+      "groups": "Grupy klientów"
+    },
+    "preview": {
+      "title": "Tak to zobaczy klient",
+      "hint": "Teksty, które sklep dostaje ze Store API, dla przykładowego koszyka.",
+      "basket": "Koszyk",
+      "balance": "Saldo",
+      "tier": "Poziom klienta",
+      "saved": "Podgląd używa zapisanych ustawień."
+    },
+    "guide": {
+      "title": "Jak działa program",
+      "subtitle": "Każda zmiana salda to wpis w księdze punktów. Saldo to zawsze suma wpisów.",
+      "start": {
+        "title": "Start",
+        "text": "1. W zakładce Ustawienia ustaw, ile punktów dostają klienci.\n2. W zakładce Nagrody dodaj nagrody.\n3. Dodaj link do regulaminu programu.\nKażdy klient z kontem bierze udział; goście nie zbierają punktów."
+      },
+      "earning": {
+        "title": "Naliczanie punktów",
+        "text": "Punkty dopisują się, gdy zamówienie jest w pełni opłacone: produkty po rabatach, brutto albo netto wg ustawienia, bez dostawy. Zawsze w dół do pełnego punktu. Działa mnożnik poziomu klienta. Gratisy nie dają punktów. Zamówienie nigdy nie nalicza się dwa razy."
+      },
+      "actions": {
+        "title": "Punkty za akcje",
+        "text": "Założenie konta, pierwsze zamówienie, urodziny i zapis do newslettera, każda włączana osobno, z własną liczbą punktów. Każda liczy się raz (urodziny raz w roku). Datę urodzin można zmienić tylko raz w ustawionym okresie."
+      },
+      "rewards": {
+        "title": "Nagrody",
+        "text": "Rabat kwotowy, procentowy i darmowa dostawa tworzą jednorazowy kod, którego może użyć tylko ten klient, ważny przez ustawioną liczbę dni. Gratis trafia od razu do koszyka klienta za 0 zł; jeśli go nie ma w magazynie, nic się nie dzieje i punkty nie schodzą. Usunięcie gratisu z koszyka oddaje punkty.\nPunkty schodzą w chwili wymiany. Dwa kliknięcia naraz nigdy nie zdejmą ich dwa razy."
+      },
+      "tiers": {
+        "title": "Poziomy",
+        "text": "Poziom zależy od wydatków w ostatnich miesiącach (domyślnie 12). Poziomy sprawdzamy po każdym opłaconym zamówieniu i zwrocie oraz co noc, więc klient spada też wtedy, gdy stare zamówienia wypadną z okresu. Poziom może dawać jednorazowy bonus, przyznawany przy pierwszym osiągnięciu."
+      },
+      "expiry": {
+        "title": "Wygasanie",
+        "text": "Punkty wygasają po ustawionym czasie bez zamówienia ani wymiany. Wcześniej wtyczka wysyła zdarzenie z przypomnieniem, które wtyczka maili może zamienić w wiadomość."
+      },
+      "returns": {
+        "title": "Zwroty i anulowanie",
+        "text": "Zwrócone produkty odbierają swoją część punktów, wg wartości z chwili zakupu. Anulowane zamówienie odbiera wszystko. Jeśli klient wydał już punkty, saldo może spaść poniżej zera: wtedy nie może wymieniać, dopóki kolejne zamówienia go nie wyrównają."
+      },
+      "ledger": {
+        "title": "Księga punktów",
+        "text": "Każdy wpis mówi, co się stało, ile punktów, dlaczego i kto to zrobił. Wpisów nigdy się nie zmienia ani nie usuwa, nie pozwala na to nawet baza danych. Błąd poprawia się korektą ręczną, która wymaga powodu."
+      },
+      "storefront": {
+        "title": "Dla sklepu internetowego",
+        "text": "Sklep odczytuje ze Store API saldo, historię, nagrody i liczbę punktów za koszyk, i przez nie wymienia nagrody. Każdą zasadę sprawdza serwer. Szczegóły w README wtyczki."
+      },
+      "events": {
+        "title": "Dla innych wtyczek",
+        "text": "Wtyczka wysyła zdarzenia (punkty naliczone, wymienione, wygasające, zmiana poziomu i inne), z których może skorzystać wtyczka maili albo newslettera. Sama nie wysyła maili."
+      }
+    },
+    "widget": { "title": "Program lojalnościowy" }
+  }
+}

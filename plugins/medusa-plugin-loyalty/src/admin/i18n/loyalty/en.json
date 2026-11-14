@@ -1,0 +1,292 @@
+{
+  "loyalty": {
+    "title": "Loyalty program",
+    "description": "Points for orders and actions, rewards, tiers and expiry, with the full history of every point.",
+    "programOn": "Program on",
+    "programOff": "Program off",
+    "refresh": "Refresh",
+    "loadError": "Could not load the loyalty data.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "remove": "Remove",
+    "search": "Search…",
+    "noResults": "Nothing found.",
+    "previous": "Previous",
+    "next": "Next",
+    "range": "{{from}}–{{to}} of {{count}}",
+    "pointsShort": "{{points}} pts",
+    "pointsUnit": "pts",
+    "daysUnit": "days",
+    "monthsUnit": "months",
+    "tabs": {
+      "panel": "Panel",
+      "rewards": "Rewards",
+      "customers": "Customers",
+      "settings": "Settings",
+      "guide": "Guide"
+    },
+    "disabled": {
+      "title": "The loyalty program is off: {{reason}}",
+      "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
+    },
+    "dashboard": {
+      "members": "Program members",
+      "earned": "Points given, 30 days",
+      "redeemed": "Points redeemed, 30 days",
+      "openValue": "Value of open points",
+      "openValueHint": "{{points}} pts, estimated by the cheapest amount reward. This is what the shop owes.",
+      "noAmountReward": "Add an amount reward to estimate the value.",
+      "expiring": "Points expiring within 30 days",
+      "open": "Open points",
+      "tiers": "Customers per tier",
+      "noTier": "No tier",
+      "topRewards": "Most popular rewards",
+      "noRedemptions": "No rewards redeemed yet."
+    },
+    "kinds": {
+      "fixed": { "title": "Amount off", "hint": "A one-off code for this customer, e.g. 20 zł off." },
+      "percentage": {
+        "title": "Percentage off",
+        "hint": "A one-off code for this customer, e.g. 10% off the products."
+      },
+      "free_shipping": {
+        "title": "Free shipping",
+        "hint": "A one-off code for this customer that makes shipping free."
+      },
+      "gift": {
+        "title": "Free product",
+        "hint": "The chosen variant goes into the customer's cart at 0 zł, if it is in stock."
+      }
+    },
+    "rewards": {
+      "title": "Rewards",
+      "subtitle": "What customers can get for their points.",
+      "add": "Add reward",
+      "empty": "No rewards yet. Add the first one.",
+      "name": "Name",
+      "gives": "Gives",
+      "cost": "Cost",
+      "rules": "Rules",
+      "redemptions": "Redeemed",
+      "active": "active",
+      "inactive": "off",
+      "fromTier": "from tier {{tier}}",
+      "limit_one": "{{count}} per customer",
+      "limit_other": "{{count}} per customer",
+      "validDays_one": "code valid {{count}} day",
+      "validDays_other": "code valid {{count}} days",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cannotDelete": "Already redeemed: switch it off instead.",
+      "deleteTitle": "Delete this reward?",
+      "deleteText": "\"{{name}}\" will be removed from the catalog. Nobody has redeemed it yet.",
+      "deleted": "Reward deleted.",
+      "editTitle": "Edit reward",
+      "addTitle": "New reward",
+      "namePlaceholder": "e.g. 20 zł off",
+      "description": "Description for customers (optional)",
+      "kind": "Kind",
+      "amount": "Amount",
+      "percent": "Percentage",
+      "variant": "Product variant",
+      "variantSearch": "Search products…",
+      "variantHint": "If the variant is out of stock, the redemption does not happen and no points are taken.",
+      "minTier": "Lowest tier allowed",
+      "anyTier": "Any tier",
+      "perCustomer": "Redemptions per customer",
+      "codeDays": "Code valid for",
+      "emptyMeansNoLimit": "Leave a field empty for no limit.",
+      "activeLabel": "Customers can redeem it",
+      "saved": "Reward saved."
+    },
+    "customers": {
+      "title": "Customers",
+      "subtitle": "Every customer with an account takes part. Click a customer to see the history.",
+      "search": "Search by name or e-mail",
+      "empty": "No customers found.",
+      "customer": "Customer",
+      "balance": "Balance",
+      "tier": "Tier",
+      "lastActivity": "Last activity",
+      "excluded": "excluded group",
+      "historyTitle": "Points history",
+      "notMember": {
+        "guest": "This customer has no account, so they collect no points.",
+        "excluded": "This customer is in an excluded group: they neither earn nor redeem points.",
+        "not_found": "This customer no longer exists."
+      },
+      "nextTier": "Next tier",
+      "missing": "{{amount}} to {{tier}}",
+      "expires": "Points expire",
+      "newsletter": "Give the newsletter bonus",
+      "newsletterGranted": "Newsletter bonus given: {{points}} pts.",
+      "newsletterNot": "Not given: already received, switched off, or the customer does not take part.",
+      "redemptions": "Rewards redeemed",
+      "tierHistory": "Tier history"
+    },
+    "redemptionStatus": {
+      "issued": "code issued",
+      "used": "used",
+      "expired": "expired",
+      "in_cart": "in cart",
+      "ordered": "ordered",
+      "released": "points returned"
+    },
+    "ledger": {
+      "title": "Ledger",
+      "type": "Type",
+      "allTypes": "All types",
+      "from": "From",
+      "to": "To",
+      "csv": "Export CSV",
+      "empty": "No entries.",
+      "date": "Date",
+      "what": "What",
+      "points": "Points",
+      "balance": "Balance",
+      "by": "By"
+    },
+    "types": {
+      "order": "order",
+      "action": "action",
+      "redemption": "redemption",
+      "return": "return",
+      "expiry": "expiry",
+      "adjustment": "manual correction",
+      "tier_bonus": "tier bonus"
+    },
+    "reasons": {
+      "earn": "points for an order",
+      "cancel": "order canceled",
+      "return": "items returned",
+      "signup": "account created",
+      "first_order": "first order",
+      "birthday": "birthday",
+      "newsletter": "newsletter sign-up",
+      "redeem": "reward redeemed",
+      "redeem_returned": "reward points returned",
+      "expired": "expired after inactivity",
+      "manual": "correction",
+      "tier_bonus": "tier reached"
+    },
+    "actors": { "system": "system", "admin": "admin", "customer": "customer" },
+    "adjust": {
+      "title": "Manual correction",
+      "points": "Points (+/−)",
+      "reason": "Reason (required)",
+      "reasonPlaceholder": "e.g. complaint about order #1042",
+      "save": "Add correction",
+      "done": "Correction saved. Balance: {{balance}} pts.",
+      "hint": "Entries are never edited or deleted: a mistake is fixed with another correction. Your user is recorded with it."
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Every rule of the program. Changes apply from the moment you save; past entries stay as they are.",
+      "discard": "Discard changes",
+      "defaults": "Fill in defaults",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings: {{error}}",
+      "program": "Program",
+      "programHint": "When off, nothing is earned or redeemed. History and balances stay.",
+      "programOn": "Program is on",
+      "programOff": "Program is off",
+      "terms": "Link to the program terms",
+      "currency": "Currency",
+      "earn": "Earning",
+      "earnHint": "Counted from products after discounts, without shipping and free gifts, once the order is paid. Always rounded down to a whole point.",
+      "earnPoints": "Points",
+      "earnPer": "for every",
+      "base": "Amounts",
+      "gross": "gross (with VAT)",
+      "net": "net (without VAT)",
+      "actionsTitle": "Points for actions",
+      "actionsHint": "Each action counts once per customer (birthday once a year).",
+      "points": "Points",
+      "actions": {
+        "signup": "Creating an account",
+        "signupHint": "When a customer registers. Guests get nothing.",
+        "first_order": "First order",
+        "first_orderHint": "Extra points for the first paid order, on top of the usual points. Taken back if the order is canceled.",
+        "birthday": "Birthday",
+        "birthdayHint": "Once a year, on the date the customer sets in their account.",
+        "newsletter": "Newsletter sign-up",
+        "newsletterHint": "When another plugin reports a sign-up (the newsletter.subscribed event), or by hand on the customer's page."
+      },
+      "birthdayInterval": "Date can be changed every",
+      "birthdayMinDays": "Date set at least … before the birthday",
+      "tiers": "Tiers",
+      "tiersHint": "A tier depends on spend in the last months: products after discounts, minus returns. Customers move up and down by themselves.",
+      "window": "Spend counted over",
+      "tierName": "Name",
+      "tierThreshold": "From spend",
+      "tierMultiplier": "Points multiplier",
+      "tierBonus": "Bonus on reaching it",
+      "newTier": "Tier {{n}}",
+      "addTier": "Add tier",
+      "expiry": "Expiry",
+      "expiryHint": "Points expire after a period without an order or a redemption. A negative balance never expires.",
+      "expiryOn": "Points expire",
+      "expiryMonths": "After",
+      "reminderDays": "Reminder event before",
+      "rewards": "Rewards",
+      "returnOnExpiry": "Give points back for reward codes that expire unused",
+      "giftRelease": "Remove a gift from an abandoned cart and give the points back after",
+      "excluded": "Excluded customer groups",
+      "excludedHint": "Customers in these groups (e.g. B2B) neither earn nor redeem points.",
+      "groups": "Customer groups"
+    },
+    "preview": {
+      "title": "What the customer sees",
+      "hint": "The texts the store gets from the Store API, for a sample basket.",
+      "basket": "Basket",
+      "balance": "Balance",
+      "tier": "Customer tier",
+      "saved": "The preview uses the saved settings."
+    },
+    "guide": {
+      "title": "How the program works",
+      "subtitle": "Every change of a balance is an entry in the ledger. The balance is always the sum of the entries.",
+      "start": {
+        "title": "Start",
+        "text": "1. Set how many points customers get on the Settings tab.\n2. Add rewards on the Rewards tab.\n3. Add a link to the program terms.\nEvery customer with an account takes part; guests collect nothing."
+      },
+      "earning": {
+        "title": "Earning points",
+        "text": "Points are added once the order is fully paid: products after discounts, gross or net as set, without shipping. Always rounded down. The customer's tier multiplier applies. Free gifts earn nothing. An order never earns twice."
+      },
+      "actions": {
+        "title": "Points for actions",
+        "text": "Account creation, first order, birthday and newsletter sign-up, each switched on separately with its own points. Each counts once (birthday once a year). The birthday date can be changed only once in the set period."
+      },
+      "rewards": {
+        "title": "Rewards",
+        "text": "Amount, percentage and free shipping rewards create a one-off code only that customer can use, valid for the set number of days. A free product goes straight into the customer's cart at 0 zł; if it is out of stock, nothing happens and no points are taken. Removing it from the cart gives the points back.\nPoints are taken the moment a reward is redeemed. Two clicks at once never take them twice."
+      },
+      "tiers": {
+        "title": "Tiers",
+        "text": "A tier depends on spend in the last months (12 by default). Tiers are checked after every paid order and return, and every night, so customers also drop when old orders leave the window. A tier can give a one-off bonus, given the first time a customer reaches it."
+      },
+      "expiry": {
+        "title": "Expiry",
+        "text": "Points expire after the set time without an order or a redemption. Before that, the plugin emits a reminder event, which an e-mail plugin can turn into a message."
+      },
+      "returns": {
+        "title": "Returns and cancellations",
+        "text": "Returned items take back their share of the points, by their value at purchase. A canceled order takes back everything. If the customer already spent the points, the balance can go below zero: they cannot redeem until new orders even it out."
+      },
+      "ledger": {
+        "title": "The ledger",
+        "text": "Every entry says what happened, how many points, why, and who did it. Entries are never changed or deleted, also not by the database. A mistake is fixed with a manual correction, which needs a reason."
+      },
+      "storefront": {
+        "title": "For the storefront",
+        "text": "The store reads the balance, history, rewards and the points a cart will earn from the Store API, and redeems rewards through it. Every rule is checked on the server. See the plugin README."
+      },
+      "events": {
+        "title": "For other plugins",
+        "text": "The plugin emits events (points earned, redeemed, expiring, tier changed and more) that an e-mail or newsletter plugin can use. It does not send e-mails itself."
+      }
+    },
+    "widget": { "title": "Loyalty program" }
+  }
+}

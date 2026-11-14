@@ -11,6 +11,7 @@ with its own version, changelog and release.
 | [VAT white list](./plugins/medusa-plugin-whitelist-vat/README.md) | [`@bitshaft/medusa-plugin-whitelist-vat`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-whitelist-vat) | Tax           |
 | [Back in stock](./plugins/medusa-plugin-back-in-stock/README.md)  | [`@bitshaft/medusa-plugin-back-in-stock`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-back-in-stock) | Store feature |
 | [Coupons](./plugins/medusa-plugin-coupons/README.md)              | [`@bitshaft/medusa-plugin-coupons`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-coupons)             | Store feature |
+| [Loyalty program](./plugins/medusa-plugin-loyalty/README.md)      | [`@bitshaft/medusa-plugin-loyalty`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-loyalty)             | Store feature |
 
 ## Using a plugin
 
