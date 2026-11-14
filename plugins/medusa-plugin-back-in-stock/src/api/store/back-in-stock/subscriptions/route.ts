@@ -24,12 +24,15 @@ export async function POST(req: MedusaRequest<StoreSubscribeBody>, res: MedusaRe
   const body = req.validatedBody
   const customer = customerId(req)
 
-  let email = body.email
-  if (!email && customer) {
+  // A logged-in customer always subscribes with their account email; an
+  // email in the body is only used for guests.
+  let email: string | undefined
+  if (customer) {
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
     const { data } = await query.graph({ entity: "customer", fields: ["email"], filters: { id: customer } })
     email = (data[0] as { email?: string } | undefined)?.email
   }
+  email ??= body.email
   if (!email) {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, "Enter your email address.")
   }

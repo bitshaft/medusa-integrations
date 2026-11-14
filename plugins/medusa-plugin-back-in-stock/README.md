@@ -120,7 +120,9 @@ The names are yours to choose; the plugin only reads options. See
 ## How it works
 
 **Subscribing.** The storefront posts the email and variant to
-`POST /store/back-in-stock/subscriptions`. A variant that can be ordered now
+`POST /store/back-in-stock/subscriptions`. A logged-in customer needs no
+email: their account email is always used (any email in the request is
+ignored). A variant that can be ordered now
 (in stock, not stock-managed, or backorderable) is refused with the code
 `variant_in_stock`. Subscribing records the variant as out of stock in that
 sales channel. With double opt-in, a confirmation email is sent first.

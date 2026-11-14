@@ -12,7 +12,7 @@ const paging = {
 const booleanQuery = z.enum(["true", "false"]).transform((value) => value === "true")
 
 export const StoreSubscribe = z.object({
-  /** Optional for logged-in customers: their account email is used. */
+  /** Required for guests. Ignored for logged-in customers: their account email is used. */
   email: z.string().trim().email().max(254).optional(),
   variant_id: id,
   /** Required when the publishable key is linked to several sales channels. */
