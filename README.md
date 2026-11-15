@@ -13,6 +13,7 @@ with its own version, changelog and release.
 | [Coupons](./plugins/medusa-plugin-coupons/README.md)              | [`@bitshaft/medusa-plugin-coupons`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-coupons)             | Store feature |
 | [Loyalty program](./plugins/medusa-plugin-loyalty/README.md)      | [`@bitshaft/medusa-plugin-loyalty`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-loyalty)             | Store feature |
 | [Compliance](./plugins/medusa-plugin-compliance/README.md)        | [`@bitshaft/medusa-plugin-compliance`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-compliance)       | Store feature |
+| [Stripe insights](./plugins/medusa-plugin-stripe/README.md) | [`@bitshaft/medusa-plugin-stripe`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-stripe) | Payment |
 
 ## Using a plugin
 

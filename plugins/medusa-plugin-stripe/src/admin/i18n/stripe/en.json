@@ -1,0 +1,366 @@
+{
+  "stripe": {
+    "description": "Stripe data for this store: sales, fees, payouts, disputes and setup checks. Read-only.",
+    "refresh": "Refresh",
+    "csv": "Export CSV",
+    "date": "Date",
+    "amount": "Amount",
+    "fee": "Stripe fee",
+    "net": "Net",
+    "order": "Order",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "tabs": {
+      "panel": "Overview",
+      "payments": "Payments",
+      "payouts": "Payouts",
+      "disputes": "Disputes",
+      "checks": "Checks",
+      "guide": "Guide"
+    },
+    "keyKind": {
+      "secret": "Secret key",
+      "restricted": "Restricted key",
+      "publishable": "Publishable key",
+      "unknown": "Key"
+    },
+    "disabled": {
+      "title": "The plugin is disabled: {{reason}}",
+      "hint": "Set the apiKey option in medusa-config.ts (or demo: true) and restart Medusa. The Checks and Guide tabs show what to set up."
+    },
+    "demo": {
+      "title": "Demo mode",
+      "body": "You are looking at sample data. The plugin sends no requests to Stripe in demo mode. Remove demo: true from the options to see your account."
+    },
+    "incomplete": {
+      "truncated": "Incomplete data: only the first 1000 items were read. Totals below are sums of those items only and are too low. Choose a shorter period.",
+      "timeout": "Incomplete data: Stripe did not answer everything within 25 seconds. Press Refresh to try again.",
+      "badge": "Sum of the first 1000 items, incomplete"
+    },
+    "overview": {
+      "title": "Overview",
+      "hint": "From Stripe balance transactions and charges. Each currency is shown separately.",
+      "turnover": "Turnover",
+      "fees": "Stripe fees",
+      "net": "Net",
+      "refunds": "Refunds",
+      "success": "Payment success",
+      "successHint": "{{ok}} of {{all}} attempts",
+      "disputes": "Open disputes",
+      "balance": "Balance available",
+      "pending": "Pending: {{amount}}",
+      "nextPayout": "Next payout",
+      "noPayout": "No payout scheduled",
+      "byMethod": "By payment method",
+      "attempts": "Attempts",
+      "succeeded": "Succeeded",
+      "rate": "Success"
+    },
+    "methods": {
+      "card": "Cards",
+      "blik": "BLIK",
+      "p24": "Przelewy24",
+      "apple_pay": "Apple Pay",
+      "google_pay": "Google Pay",
+      "other": "Other"
+    },
+    "payments": {
+      "title": "Payments",
+      "hint": "PaymentIntents from Stripe with their Medusa order. Paid payments without an order (older than {{minutes}} min) are red.",
+      "allMethods": "All methods",
+      "allStatuses": "All statuses",
+      "allCurrencies": "All currencies",
+      "method": "Method",
+      "status": "Status",
+      "radar": "Radar risk",
+      "empty": "No payments in this period.",
+      "noOrder": "No order",
+      "orphans_one": "{{count}} paid payment has no order in Medusa.",
+      "orphans_other": "{{count}} paid payments have no order in Medusa.",
+      "orphanHint": "A payment without an order usually means the customer paid but the order was not created (closed tab, failed webhook). Check it in Stripe and refund it or create the order by hand. Payments younger than {{minutes}} minutes are not flagged yet (option orphanGraceMinutes)."
+    },
+    "payouts": {
+      "title": "Payouts",
+      "hint": "Click a payout to see the payments, refunds and fees in it.",
+      "arrival": "Arrival",
+      "empty": "No payouts in this period.",
+      "manual": "Manual",
+      "manualHint": "Stripe lists the contents only for automatic payouts.",
+      "detailTitle": "Payout {{amount}} · {{date}}",
+      "items_one": "{{count}} item",
+      "items_other": "{{count}} items",
+      "missingOrders_one": "{{count}} item has no order",
+      "missingOrders_other": "{{count}} items have no order",
+      "type": "Type"
+    },
+    "txn": {
+      "charge": "Payment",
+      "payment": "Payment",
+      "refund": "Refund",
+      "payment_refund": "Refund",
+      "adjustment": "Adjustment",
+      "stripe_fee": "Stripe fee",
+      "application_fee": "Application fee",
+      "dispute": "Dispute",
+      "payment_failure_refund": "Failed payment refund"
+    },
+    "disputes": {
+      "title": "Open disputes",
+      "hint": "Nearest evidence deadline first. Disputes are answered in the Stripe Dashboard.",
+      "deadline": "Evidence due",
+      "reason": "Reason",
+      "respond": "Respond in Stripe",
+      "empty": "No open disputes.",
+      "urgent_one": "Urgent: {{count}} day left",
+      "urgent_other": "Urgent: {{count}} days left",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left",
+      "note": "Urgent means fewer than 3 days to send evidence. Without evidence Stripe decides for the customer.",
+      "reasons": {
+        "fraudulent": "Fraudulent",
+        "product_not_received": "Product not received",
+        "product_unacceptable": "Product unacceptable",
+        "duplicate": "Duplicate",
+        "subscription_canceled": "Subscription canceled",
+        "credit_not_processed": "Credit not processed",
+        "unrecognized": "Unrecognized",
+        "general": "General"
+      }
+    },
+    "status": {
+      "succeeded": "Succeeded",
+      "requires_capture": "Authorised",
+      "requires_payment_method": "Failed",
+      "requires_action": "Needs action",
+      "requires_confirmation": "Not confirmed",
+      "processing": "Processing",
+      "canceled": "Canceled",
+      "paid": "Paid",
+      "pending": "Pending",
+      "in_transit": "In transit",
+      "failed": "Failed"
+    },
+    "risk": {
+      "normal": "Normal",
+      "elevated": "Elevated",
+      "highest": "Highest",
+      "not_assessed": "Not assessed",
+      "unknown": "Unknown"
+    },
+    "threeDs": {
+      "authenticated": "Authenticated",
+      "attempt_acknowledged": "Attempted",
+      "failed": "Failed",
+      "not_supported": "Not supported",
+      "processing_error": "Error",
+      "exempted": "Exempted"
+    },
+    "decline": {
+      "card_declined": "Card declined",
+      "insufficient_funds": "Insufficient funds",
+      "expired_card": "Expired card",
+      "incorrect_cvc": "Incorrect CVC",
+      "lost_card": "Lost card",
+      "stolen_card": "Stolen card",
+      "do_not_honor": "Do not honor",
+      "generic_decline": "Declined by the bank",
+      "authentication_required": "3D Secure required",
+      "fraudulent": "Blocked as fraud",
+      "highest_risk_level": "Blocked by Radar",
+      "processing_error": "Processing error"
+    },
+    "widget": {
+      "title": "Stripe",
+      "openStripe": "Open in Stripe",
+      "exchange": "Settled (exchange rate)",
+      "threeDs": "3D Secure",
+      "payout": "Payout",
+      "availableOn": "Available from {{date}}",
+      "capture": "Capture",
+      "captureMode": {
+        "automatic": "Automatic",
+        "manual": "Manual"
+      },
+      "refunds": "Refunds",
+      "disputes": "Disputes"
+    },
+    "checks": {
+      "title": "Setup checks",
+      "hint": "Each check reads Stripe or Medusa and says how to fix what is wrong.",
+      "summary": "{{ok}} OK · {{warn}} warnings · {{error}} errors",
+      "fix": "How to fix:",
+      "verdict": {
+        "ok": "OK",
+        "warn": "Warning",
+        "error": "Error"
+      },
+      "provider": {
+        "title": "Stripe provider in Medusa",
+        "registered": "The official provider is registered as {{id}}. Other Stripe providers: {{extras}}.",
+        "other_id": "No provider {{id}}; found {{found}}.",
+        "other_id_fix": "Set the providerId option to the id used in medusa-config.ts (the part after pp_stripe_).",
+        "missing": "The official Stripe provider ({{id}}) is not registered.",
+        "missing_fix": "Add @medusajs/medusa/payment-stripe with id \"stripe\" to the payment module providers in medusa-config.ts, then enable it in the region.",
+        "fix": "Check the payment module providers in medusa-config.ts."
+      },
+      "api_key": {
+        "title": "API key",
+        "missing": "No key is set.",
+        "missing_fix": "Create a restricted key (see the Guide) and set it as apiKey, e.g. from STRIPE_INSIGHTS_API_KEY.",
+        "publishable": "This is a publishable key (pk_); it cannot read account data.",
+        "publishable_fix": "Use a restricted key (rk_) with Read permissions.",
+        "unknown_format": "The key does not look like a Stripe key.",
+        "unknown_format_fix": "Copy the key again from the Stripe Dashboard → Developers → API keys.",
+        "invalid_key": "Stripe refused the key ending in {{last4}}.",
+        "invalid_key_fix": "The key was revoked or mistyped. Create a new restricted key and update apiKey.",
+        "no_permission": "The key works but cannot read {{permission}}.",
+        "no_permission_fix": "Set Balance to Read on the restricted key.",
+        "unavailable": "Stripe did not answer.",
+        "unavailable_fix": "Try Refresh. If it keeps failing, check the network access to api.stripe.com.",
+        "full_key": "A full secret key ({{mode}}, …{{last4}}) is used. It works, but it could also move money.",
+        "full_key_fix": "Create a restricted key with Read only (see the Guide) and use it instead.",
+        "restricted": "Restricted key ({{mode}}, …{{last4}}).",
+        "fix": "Check the apiKey option."
+      },
+      "account": {
+        "title": "Stripe account",
+        "no_permission": "The key has no Read permission for {{permission}}.",
+        "no_permission_fix": "In the Stripe Dashboard → Developers → API keys, edit the restricted key and set Account to Read.",
+        "invalid_key": "Stripe refused the key.",
+        "invalid_key_fix": "Check the api key first (see the API key check).",
+        "unavailable": "Stripe did not answer. Try again with Refresh.",
+        "unavailable_fix": "If it keeps happening, check https://status.stripe.com and the backend's network access to api.stripe.com.",
+        "active": "The account {{name}} can take payments and receive payouts.",
+        "charges_disabled": "The account cannot take payments.",
+        "charges_disabled_fix": "Finish the account activation in the Stripe Dashboard (business details, bank account, verification).",
+        "payouts_disabled": "Payments work, but payouts are off.",
+        "payouts_disabled_fix": "Add or verify the bank account in the Stripe Dashboard → Settings → Payouts.",
+        "details_missing": "Stripe still needs account details.",
+        "details_missing_fix": "Open the Stripe Dashboard and complete the requested details.",
+        "fix": "Check the account in the Stripe Dashboard."
+      },
+      "payment_methods": {
+        "title": "Payment methods",
+        "no_permission": "The key has no Read permission for {{permission}}.",
+        "no_permission_fix": "In the Stripe Dashboard → Developers → API keys, edit the restricted key and set Payment Method Configurations to Read.",
+        "invalid_key": "Stripe refused the key.",
+        "invalid_key_fix": "Check the api key first (see the API key check).",
+        "unavailable": "Stripe did not answer. Try again with Refresh.",
+        "unavailable_fix": "If it keeps happening, check https://status.stripe.com and the backend's network access to api.stripe.com.",
+        "all_on": "On: {{on}}.",
+        "no_configuration": "No payment method configuration found.",
+        "no_configuration_fix": "Open the Stripe Dashboard → Settings → Payment methods and save the default configuration.",
+        "cards_off": "Cards are off (off: {{off}}).",
+        "cards_off_fix": "Turn cards on in the Stripe Dashboard → Settings → Payment methods.",
+        "some_off": "Off: {{off}}.",
+        "some_off_fix": "Turn them on in the Stripe Dashboard → Settings → Payment methods if your customers should use them. BLIK and Przelewy24 need PLN.",
+        "fix": "Check the Stripe Dashboard → Settings → Payment methods."
+      },
+      "webhook": {
+        "title": "Webhook of the official provider",
+        "no_permission": "The key has no Read permission for {{permission}}.",
+        "no_permission_fix": "In the Stripe Dashboard → Developers → API keys, edit the restricted key and set Webhook Endpoints to Read.",
+        "invalid_key": "Stripe refused the key.",
+        "invalid_key_fix": "Check the api key first (see the API key check).",
+        "unavailable": "Stripe did not answer. Try again with Refresh.",
+        "unavailable_fix": "If it keeps happening, check https://status.stripe.com and the backend's network access to api.stripe.com.",
+        "configured": "{{url}} is enabled and had no failed deliveries in the last day.",
+        "no_backend_url": "The backend address is unknown, so the webhook cannot be checked.",
+        "no_backend_url_fix": "Set the backendUrl option (or admin.backendUrl / MEDUSA_BACKEND_URL).",
+        "missing": "No webhook points at {{url}}.",
+        "missing_fix": "Stripe Dashboard → Developers → Webhooks → Add endpoint: {{url}}, events payment_intent.succeeded, payment_intent.amount_capturable_updated, payment_intent.payment_failed. Put its signing secret into the provider's webhookSecret.",
+        "disabled": "The webhook {{url}} is disabled.",
+        "disabled_fix": "Enable it in the Stripe Dashboard → Developers → Webhooks.",
+        "events_missing": "{{url}} does not send: {{events}}.",
+        "events_missing_fix": "Add these events to the endpoint in the Stripe Dashboard → Developers → Webhooks.",
+        "failed_deliveries_one": "{{count}} event failed to deliver in the last day.",
+        "failed_deliveries_other": "{{count}} events failed to deliver in the last day.",
+        "failed_deliveries_fix": "Open the endpoint in the Stripe Dashboard to see the errors. Usually the backend was down or webhookSecret does not match.",
+        "fix": "Check the webhook in the Stripe Dashboard → Developers → Webhooks."
+      },
+      "domains": {
+        "title": "Apple Pay and Google Pay domains",
+        "no_permission": "The key has no Read permission for {{permission}}.",
+        "no_permission_fix": "In the Stripe Dashboard → Developers → API keys, edit the restricted key and set Payment Method Domains to Read.",
+        "invalid_key": "Stripe refused the key.",
+        "invalid_key_fix": "Check the api key first (see the API key check).",
+        "unavailable": "Stripe did not answer. Try again with Refresh.",
+        "unavailable_fix": "If it keeps happening, check https://status.stripe.com and the backend's network access to api.stripe.com.",
+        "registered": "Registered and active: {{domains}}.",
+        "no_domains": "No storefront domains to check.",
+        "no_domains_fix": "Set the storefrontDomains option, e.g. [\"sklep.pl\", \"www.sklep.pl\"].",
+        "missing": "Not registered: {{domains}}.",
+        "missing_fix": "Stripe Dashboard → Settings → Payment method domains → Add a new domain.",
+        "inactive": "Registered, but Apple Pay or Google Pay is not active: {{domains}}.",
+        "inactive_fix": "Open the domain in the Stripe Dashboard and fix the verification (Apple Pay needs the domain association file).",
+        "fix": "Check the Stripe Dashboard → Settings → Payment method domains."
+      },
+      "capture": {
+        "title": "Capture mode",
+        "no_permission": "The key has no Read permission for {{permission}}.",
+        "no_permission_fix": "In the Stripe Dashboard → Developers → API keys, edit the restricted key and set PaymentIntents to Read.",
+        "invalid_key": "Stripe refused the key.",
+        "invalid_key_fix": "Check the api key first (see the API key check).",
+        "unavailable": "Stripe did not answer. Try again with Refresh.",
+        "unavailable_fix": "If it keeps happening, check https://status.stripe.com and the backend's network access to api.stripe.com.",
+        "matches": "The last {{total}} payments use {{expected}} capture, as the provider is set.",
+        "no_payments": "No payments yet; the provider is set to {{expected}} capture.",
+        "unknown_config": "The provider's capture setting could not be read from medusa-config.ts.",
+        "unknown_config_fix": "Check that the Stripe provider id matches providerId.",
+        "mismatch": "{{other}} of the last {{total}} payments do not use {{expected}} capture.",
+        "mismatch_fix": "Another app may use this Stripe account, or the provider's capture option changed. Make them match.",
+        "fix": "Check the provider's capture option."
+      },
+      "mode": {
+        "title": "Test or live",
+        "matches": "A {{mode}} key, as expected ({{source}}).",
+        "mismatch": "A {{key}} key, but {{expected}} is expected ({{source}}).",
+        "mismatch_fix": "Use the right key, or set the mode option (\"live\" or \"test\"). Without it, NODE_ENV=production expects live.",
+        "unknown_key": "The key mode is unknown; {{expected}} is expected.",
+        "unknown_key_fix": "Use a key that starts with rk_live_ or rk_test_.",
+        "fix": "Check the key and the mode option."
+      }
+    },
+    "guide": {
+      "title": "Guide",
+      "intro": "From a restricted key to the first test payment. Start in test mode.",
+      "readOnly": "This plugin only reads. Payments, captures and refunds are done by the official Stripe provider in Medusa.",
+      "key": {
+        "title": "Create a restricted key",
+        "body": "Stripe Dashboard → Developers → API keys → Create restricted key. Name it e.g. \"Medusa admin (read)\"."
+      },
+      "permissions": {
+        "title": "Give it Read permissions",
+        "body": "Read: Balance, Balance transactions, Payouts, Disputes, PaymentIntents, Charges (with Refunds), Events, Webhook Endpoints, Payment Method Domains, Payment Method Configurations, Account. Everything else: None. A missing permission shows as a warning on one check."
+      },
+      "options": {
+        "title": "Add the plugin options",
+        "body": "In medusa-config.ts: apiKey: process.env.STRIPE_INSIGHTS_API_KEY, storefrontDomains: [\"sklep.pl\"], mode: \"test\". Restart Medusa."
+      },
+      "provider": {
+        "title": "Check the official provider",
+        "body": "@medusajs/medusa/payment-stripe with id \"stripe\" must be in the payment module providers, with its own secret key and webhookSecret, and enabled in the region."
+      },
+      "webhook": {
+        "title": "Add the webhook",
+        "body": "Stripe Dashboard → Developers → Webhooks → endpoint {backend}/hooks/payment/stripe_stripe with payment_intent.succeeded, payment_intent.amount_capturable_updated and payment_intent.payment_failed."
+      },
+      "methods": {
+        "title": "Turn on payment methods",
+        "body": "Stripe Dashboard → Settings → Payment methods: cards, BLIK, Przelewy24, Apple Pay, Google Pay."
+      },
+      "domains": {
+        "title": "Register the storefront domains",
+        "body": "Stripe Dashboard → Settings → Payment method domains: add each storefront domain for Apple Pay and Google Pay."
+      },
+      "test": {
+        "title": "Make a test payment",
+        "body": "Pay in the storefront with 4242 4242 4242 4242. It should appear under Payments with its order, and every check should be OK."
+      },
+      "live": {
+        "title": "Go live",
+        "body": "Repeat steps 1–2 in live mode, set the live key and mode: \"live\", and check the Checks tab again."
+      }
+    }
+  }
+}

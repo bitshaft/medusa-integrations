@@ -1,0 +1,380 @@
+{
+  "stripe": {
+    "description": "Dane Stripe tego sklepu: sprzedaż, opłaty, wypłaty, spory i kontrole konfiguracji. Tylko odczyt.",
+    "refresh": "Odśwież",
+    "csv": "Eksport CSV",
+    "date": "Data",
+    "amount": "Kwota",
+    "fee": "Opłata Stripe",
+    "net": "Netto",
+    "order": "Zamówienie",
+    "days_one": "{{count}} dzień",
+    "days_few": "{{count}} dni",
+    "days_many": "{{count}} dni",
+    "days_other": "{{count}} dni",
+    "tabs": {
+      "panel": "Panel",
+      "payments": "Płatności",
+      "payouts": "Wypłaty",
+      "disputes": "Spory",
+      "checks": "Kontrole",
+      "guide": "Przewodnik"
+    },
+    "keyKind": {
+      "secret": "Klucz pełny",
+      "restricted": "Klucz ograniczony",
+      "publishable": "Klucz publiczny",
+      "unknown": "Klucz"
+    },
+    "disabled": {
+      "title": "Wtyczka jest wyłączona: {{reason}}",
+      "hint": "Ustaw opcję apiKey w medusa-config.ts (albo demo: true) i uruchom ponownie Medusę. Zakładki Kontrole i Przewodnik pokazują, co skonfigurować."
+    },
+    "demo": {
+      "title": "Tryb demo",
+      "body": "Oglądasz dane pokazowe. W trybie demo wtyczka nie wysyła żadnych zapytań do Stripe. Usuń demo: true z opcji, żeby zobaczyć swoje konto."
+    },
+    "incomplete": {
+      "truncated": "Dane niepełne: odczytano tylko pierwsze 1000 pozycji. Sumy poniżej obejmują tylko te pozycje i są za niskie. Wybierz krótszy okres.",
+      "timeout": "Dane niepełne: Stripe nie odpowiedział na wszystko w ciągu 25 sekund. Naciśnij Odśwież, żeby spróbować ponownie.",
+      "badge": "Suma z pierwszych 1000 pozycji, dane niepełne"
+    },
+    "overview": {
+      "title": "Panel",
+      "hint": "Z transakcji salda i obciążeń w Stripe. Każda waluta osobno.",
+      "turnover": "Obrót",
+      "fees": "Opłaty Stripe",
+      "net": "Netto",
+      "refunds": "Zwroty",
+      "success": "Skuteczność płatności",
+      "successHint": "{{ok}} z {{all}} prób",
+      "disputes": "Otwarte spory",
+      "balance": "Saldo dostępne",
+      "pending": "Oczekujące: {{amount}}",
+      "nextPayout": "Najbliższa wypłata",
+      "noPayout": "Brak zaplanowanej wypłaty",
+      "byMethod": "Według metody płatności",
+      "attempts": "Próby",
+      "succeeded": "Udane",
+      "rate": "Skuteczność"
+    },
+    "methods": {
+      "card": "Karty",
+      "blik": "BLIK",
+      "p24": "Przelewy24",
+      "apple_pay": "Apple Pay",
+      "google_pay": "Google Pay",
+      "other": "Inne"
+    },
+    "payments": {
+      "title": "Płatności",
+      "hint": "PaymentIntenty ze Stripe z zamówieniem w Medusie. Opłacone płatności bez zamówienia (starsze niż {{minutes}} min) są na czerwono.",
+      "allMethods": "Wszystkie metody",
+      "allStatuses": "Wszystkie statusy",
+      "allCurrencies": "Wszystkie waluty",
+      "method": "Metoda",
+      "status": "Status",
+      "radar": "Ryzyko Radar",
+      "empty": "Brak płatności w tym okresie.",
+      "noOrder": "Brak zamówienia",
+      "orphans_one": "{{count}} opłacona płatność nie ma zamówienia w Medusie.",
+      "orphans_few": "{{count}} opłacone płatności nie mają zamówienia w Medusie.",
+      "orphans_many": "{{count}} opłaconych płatności nie ma zamówienia w Medusie.",
+      "orphans_other": "{{count}} opłaconych płatności nie ma zamówienia w Medusie.",
+      "orphanHint": "Płatność bez zamówienia zwykle oznacza, że klient zapłacił, ale zamówienie nie powstało (zamknięta karta, nieudany webhook). Sprawdź ją w Stripe i zwróć pieniądze albo utwórz zamówienie ręcznie. Płatności młodsze niż {{minutes}} min nie są jeszcze oznaczane (opcja orphanGraceMinutes)."
+    },
+    "payouts": {
+      "title": "Wypłaty",
+      "hint": "Kliknij wypłatę, żeby zobaczyć płatności, zwroty i opłaty, które się na nią składają.",
+      "arrival": "Data wpływu",
+      "empty": "Brak wypłat w tym okresie.",
+      "manual": "Ręczna",
+      "manualHint": "Stripe podaje skład tylko dla wypłat automatycznych.",
+      "detailTitle": "Wypłata {{amount}} · {{date}}",
+      "items_one": "{{count}} pozycja",
+      "items_few": "{{count}} pozycje",
+      "items_many": "{{count}} pozycji",
+      "items_other": "{{count}} pozycji",
+      "missingOrders_one": "{{count}} pozycja bez zamówienia",
+      "missingOrders_few": "{{count}} pozycje bez zamówienia",
+      "missingOrders_many": "{{count}} pozycji bez zamówienia",
+      "missingOrders_other": "{{count}} pozycji bez zamówienia",
+      "type": "Rodzaj"
+    },
+    "txn": {
+      "charge": "Płatność",
+      "payment": "Płatność",
+      "refund": "Zwrot",
+      "payment_refund": "Zwrot",
+      "adjustment": "Korekta",
+      "stripe_fee": "Opłata Stripe",
+      "application_fee": "Opłata aplikacji",
+      "dispute": "Spór",
+      "payment_failure_refund": "Zwrot nieudanej płatności"
+    },
+    "disputes": {
+      "title": "Otwarte spory",
+      "hint": "Najbliższy termin na dowody na górze. Na spory odpowiada się w panelu Stripe.",
+      "deadline": "Termin na dowody",
+      "reason": "Powód",
+      "respond": "Odpowiedz w Stripe",
+      "empty": "Brak otwartych sporów.",
+      "urgent_one": "Pilne: został {{count}} dzień",
+      "urgent_few": "Pilne: zostały {{count}} dni",
+      "urgent_many": "Pilne: zostało {{count}} dni",
+      "urgent_other": "Pilne: zostało {{count}} dni",
+      "daysLeft_one": "został {{count}} dzień",
+      "daysLeft_few": "zostały {{count}} dni",
+      "daysLeft_many": "zostało {{count}} dni",
+      "daysLeft_other": "zostało {{count}} dni",
+      "note": "Pilne oznacza mniej niż 3 dni na wysłanie dowodów. Bez dowodów Stripe rozstrzyga na korzyść klienta.",
+      "reasons": {
+        "fraudulent": "Oszustwo",
+        "product_not_received": "Nie otrzymano produktu",
+        "product_unacceptable": "Produkt niezgodny z opisem",
+        "duplicate": "Podwójne obciążenie",
+        "subscription_canceled": "Anulowana subskrypcja",
+        "credit_not_processed": "Nie zwrócono pieniędzy",
+        "unrecognized": "Nierozpoznana transakcja",
+        "general": "Ogólny"
+      }
+    },
+    "status": {
+      "succeeded": "Udana",
+      "requires_capture": "Autoryzowana",
+      "requires_payment_method": "Nieudana",
+      "requires_action": "Wymaga działania",
+      "requires_confirmation": "Niepotwierdzona",
+      "processing": "W toku",
+      "canceled": "Anulowana",
+      "paid": "Wypłacona",
+      "pending": "Oczekuje",
+      "in_transit": "W drodze",
+      "failed": "Nieudana"
+    },
+    "risk": {
+      "normal": "Normalne",
+      "elevated": "Podwyższone",
+      "highest": "Najwyższe",
+      "not_assessed": "Nieocenione",
+      "unknown": "Nieznane"
+    },
+    "threeDs": {
+      "authenticated": "Uwierzytelniona",
+      "attempt_acknowledged": "Próba",
+      "failed": "Nieudana",
+      "not_supported": "Nieobsługiwana",
+      "processing_error": "Błąd",
+      "exempted": "Zwolniona"
+    },
+    "decline": {
+      "card_declined": "Karta odrzucona",
+      "insufficient_funds": "Brak środków",
+      "expired_card": "Karta wygasła",
+      "incorrect_cvc": "Błędny CVC",
+      "lost_card": "Karta zgubiona",
+      "stolen_card": "Karta skradziona",
+      "do_not_honor": "Bank odmówił",
+      "generic_decline": "Odrzucona przez bank",
+      "authentication_required": "Wymagane 3D Secure",
+      "fraudulent": "Zablokowana jako oszustwo",
+      "highest_risk_level": "Zablokowana przez Radar",
+      "processing_error": "Błąd przetwarzania"
+    },
+    "widget": {
+      "title": "Stripe",
+      "openStripe": "Otwórz w Stripe",
+      "exchange": "Rozliczono (kurs wymiany)",
+      "threeDs": "3D Secure",
+      "payout": "Wypłata",
+      "availableOn": "Dostępne od {{date}}",
+      "capture": "Przechwycenie",
+      "captureMode": {
+        "automatic": "Automatyczne",
+        "manual": "Ręczne"
+      },
+      "refunds": "Zwroty",
+      "disputes": "Spory"
+    },
+    "checks": {
+      "title": "Kontrole konfiguracji",
+      "hint": "Każda kontrola czyta Stripe albo Medusę i mówi, jak naprawić problem.",
+      "summary": "{{ok}} OK · {{warn}} ostrzeżeń · {{error}} błędów",
+      "fix": "Jak naprawić:",
+      "verdict": {
+        "ok": "OK",
+        "warn": "Ostrzeżenie",
+        "error": "Błąd"
+      },
+      "provider": {
+        "title": "Provider Stripe w Medusie",
+        "registered": "Oficjalny provider jest zarejestrowany jako {{id}}. Inne providery Stripe: {{extras}}.",
+        "other_id": "Brak providera {{id}}; znaleziono {{found}}.",
+        "other_id_fix": "Ustaw opcję providerId na id z medusa-config.ts (część po pp_stripe_).",
+        "missing": "Oficjalny provider Stripe ({{id}}) nie jest zarejestrowany.",
+        "missing_fix": "Dodaj @medusajs/medusa/payment-stripe z id \"stripe\" do providerów modułu płatności w medusa-config.ts i włącz go w regionie.",
+        "fix": "Sprawdź providery modułu płatności w medusa-config.ts."
+      },
+      "api_key": {
+        "title": "Klucz API",
+        "missing": "Nie ustawiono klucza.",
+        "missing_fix": "Utwórz klucz ograniczony (zob. Przewodnik) i ustaw go jako apiKey, np. z STRIPE_INSIGHTS_API_KEY.",
+        "publishable": "To klucz publiczny (pk_); nie odczyta danych konta.",
+        "publishable_fix": "Użyj klucza ograniczonego (rk_) z uprawnieniami Read.",
+        "unknown_format": "Klucz nie wygląda na klucz Stripe.",
+        "unknown_format_fix": "Skopiuj klucz ponownie z panelu Stripe → Developers → API keys.",
+        "invalid_key": "Stripe odrzucił klucz kończący się na {{last4}}.",
+        "invalid_key_fix": "Klucz został unieważniony albo jest błędny. Utwórz nowy klucz ograniczony i zaktualizuj apiKey.",
+        "no_permission": "Klucz działa, ale nie może czytać {{permission}}.",
+        "no_permission_fix": "Ustaw Balance na Read w kluczu ograniczonym.",
+        "unavailable": "Stripe nie odpowiedział.",
+        "unavailable_fix": "Spróbuj Odśwież. Jeśli dalej nie działa, sprawdź dostęp do api.stripe.com.",
+        "full_key": "Używany jest pełny klucz tajny ({{mode}}, …{{last4}}). Działa, ale mógłby też przesuwać pieniądze.",
+        "full_key_fix": "Utwórz klucz ograniczony tylko do odczytu (zob. Przewodnik) i użyj go zamiast pełnego.",
+        "restricted": "Klucz ograniczony ({{mode}}, …{{last4}}).",
+        "fix": "Sprawdź opcję apiKey."
+      },
+      "account": {
+        "title": "Konto Stripe",
+        "no_permission": "Klucz nie ma uprawnienia Read do {{permission}}.",
+        "no_permission_fix": "W panelu Stripe → Developers → API keys edytuj klucz ograniczony i ustaw Account na Read.",
+        "invalid_key": "Stripe odrzucił klucz.",
+        "invalid_key_fix": "Najpierw popraw klucz (zob. kontrolę Klucz API).",
+        "unavailable": "Stripe nie odpowiedział. Spróbuj ponownie przyciskiem Odśwież.",
+        "unavailable_fix": "Jeśli to się powtarza, sprawdź https://status.stripe.com i dostęp backendu do api.stripe.com.",
+        "active": "Konto {{name}} przyjmuje płatności i otrzymuje wypłaty.",
+        "charges_disabled": "Konto nie może przyjmować płatności.",
+        "charges_disabled_fix": "Dokończ aktywację konta w panelu Stripe (dane firmy, konto bankowe, weryfikacja).",
+        "payouts_disabled": "Płatności działają, ale wypłaty są wyłączone.",
+        "payouts_disabled_fix": "Dodaj albo zweryfikuj konto bankowe w panelu Stripe → Settings → Payouts.",
+        "details_missing": "Stripe potrzebuje jeszcze danych konta.",
+        "details_missing_fix": "Otwórz panel Stripe i uzupełnij wymagane dane.",
+        "fix": "Sprawdź konto w panelu Stripe."
+      },
+      "payment_methods": {
+        "title": "Metody płatności",
+        "no_permission": "Klucz nie ma uprawnienia Read do {{permission}}.",
+        "no_permission_fix": "W panelu Stripe → Developers → API keys edytuj klucz ograniczony i ustaw Payment Method Configurations na Read.",
+        "invalid_key": "Stripe odrzucił klucz.",
+        "invalid_key_fix": "Najpierw popraw klucz (zob. kontrolę Klucz API).",
+        "unavailable": "Stripe nie odpowiedział. Spróbuj ponownie przyciskiem Odśwież.",
+        "unavailable_fix": "Jeśli to się powtarza, sprawdź https://status.stripe.com i dostęp backendu do api.stripe.com.",
+        "all_on": "Włączone: {{on}}.",
+        "no_configuration": "Nie znaleziono konfiguracji metod płatności.",
+        "no_configuration_fix": "Otwórz panel Stripe → Settings → Payment methods i zapisz domyślną konfigurację.",
+        "cards_off": "Karty są wyłączone (wyłączone: {{off}}).",
+        "cards_off_fix": "Włącz karty w panelu Stripe → Settings → Payment methods.",
+        "some_off": "Wyłączone: {{off}}.",
+        "some_off_fix": "Włącz je w panelu Stripe → Settings → Payment methods, jeśli klienci mają z nich korzystać. BLIK i Przelewy24 wymagają PLN.",
+        "fix": "Sprawdź panel Stripe → Settings → Payment methods."
+      },
+      "webhook": {
+        "title": "Webhook oficjalnego providera",
+        "no_permission": "Klucz nie ma uprawnienia Read do {{permission}}.",
+        "no_permission_fix": "W panelu Stripe → Developers → API keys edytuj klucz ograniczony i ustaw Webhook Endpoints na Read.",
+        "invalid_key": "Stripe odrzucił klucz.",
+        "invalid_key_fix": "Najpierw popraw klucz (zob. kontrolę Klucz API).",
+        "unavailable": "Stripe nie odpowiedział. Spróbuj ponownie przyciskiem Odśwież.",
+        "unavailable_fix": "Jeśli to się powtarza, sprawdź https://status.stripe.com i dostęp backendu do api.stripe.com.",
+        "configured": "{{url}} jest włączony i przez ostatnią dobę nie miał nieudanych dostaw.",
+        "no_backend_url": "Nie znam adresu backendu, więc nie da się sprawdzić webhooka.",
+        "no_backend_url_fix": "Ustaw opcję backendUrl (albo admin.backendUrl / MEDUSA_BACKEND_URL).",
+        "missing": "Żaden webhook nie wskazuje na {{url}}.",
+        "missing_fix": "Panel Stripe → Developers → Webhooks → Add endpoint: {{url}}, zdarzenia payment_intent.succeeded, payment_intent.amount_capturable_updated, payment_intent.payment_failed. Jego signing secret wpisz w webhookSecret providera.",
+        "disabled": "Webhook {{url}} jest wyłączony.",
+        "disabled_fix": "Włącz go w panelu Stripe → Developers → Webhooks.",
+        "events_missing": "{{url}} nie wysyła: {{events}}.",
+        "events_missing_fix": "Dodaj te zdarzenia do endpointu w panelu Stripe → Developers → Webhooks.",
+        "failed_deliveries_one": "{{count}} zdarzenie nie zostało dostarczone w ciągu ostatniej doby.",
+        "failed_deliveries_few": "{{count}} zdarzenia nie zostały dostarczone w ciągu ostatniej doby.",
+        "failed_deliveries_many": "{{count}} zdarzeń nie zostało dostarczonych w ciągu ostatniej doby.",
+        "failed_deliveries_other": "{{count}} zdarzeń nie zostało dostarczonych w ciągu ostatniej doby.",
+        "failed_deliveries_fix": "Otwórz endpoint w panelu Stripe, żeby zobaczyć błędy. Zwykle backend nie działał albo webhookSecret się nie zgadza.",
+        "fix": "Sprawdź webhook w panelu Stripe → Developers → Webhooks."
+      },
+      "domains": {
+        "title": "Domeny Apple Pay i Google Pay",
+        "no_permission": "Klucz nie ma uprawnienia Read do {{permission}}.",
+        "no_permission_fix": "W panelu Stripe → Developers → API keys edytuj klucz ograniczony i ustaw Payment Method Domains na Read.",
+        "invalid_key": "Stripe odrzucił klucz.",
+        "invalid_key_fix": "Najpierw popraw klucz (zob. kontrolę Klucz API).",
+        "unavailable": "Stripe nie odpowiedział. Spróbuj ponownie przyciskiem Odśwież.",
+        "unavailable_fix": "Jeśli to się powtarza, sprawdź https://status.stripe.com i dostęp backendu do api.stripe.com.",
+        "registered": "Zarejestrowane i aktywne: {{domains}}.",
+        "no_domains": "Brak domen sklepu do sprawdzenia.",
+        "no_domains_fix": "Ustaw opcję storefrontDomains, np. [\"sklep.pl\", \"www.sklep.pl\"].",
+        "missing": "Niezarejestrowane: {{domains}}.",
+        "missing_fix": "Panel Stripe → Settings → Payment method domains → Add a new domain.",
+        "inactive": "Zarejestrowane, ale Apple Pay albo Google Pay nie jest aktywne: {{domains}}.",
+        "inactive_fix": "Otwórz domenę w panelu Stripe i dokończ weryfikację (Apple Pay wymaga pliku domain association).",
+        "fix": "Sprawdź panel Stripe → Settings → Payment method domains."
+      },
+      "capture": {
+        "title": "Tryb przechwytywania",
+        "no_permission": "Klucz nie ma uprawnienia Read do {{permission}}.",
+        "no_permission_fix": "W panelu Stripe → Developers → API keys edytuj klucz ograniczony i ustaw PaymentIntents na Read.",
+        "invalid_key": "Stripe odrzucił klucz.",
+        "invalid_key_fix": "Najpierw popraw klucz (zob. kontrolę Klucz API).",
+        "unavailable": "Stripe nie odpowiedział. Spróbuj ponownie przyciskiem Odśwież.",
+        "unavailable_fix": "Jeśli to się powtarza, sprawdź https://status.stripe.com i dostęp backendu do api.stripe.com.",
+        "matches": "Ostatnie {{total}} płatności używa przechwytywania {{expected}}, zgodnie z ustawieniem providera.",
+        "no_payments": "Brak płatności; provider ma ustawione przechwytywanie {{expected}}.",
+        "unknown_config": "Nie udało się odczytać ustawienia capture providera z medusa-config.ts.",
+        "unknown_config_fix": "Sprawdź, czy id providera Stripe zgadza się z providerId.",
+        "mismatch": "{{other}} z ostatnich {{total}} płatności nie używa przechwytywania {{expected}}.",
+        "mismatch_fix": "Z tego konta Stripe może korzystać inna aplikacja albo zmieniła się opcja capture providera. Ujednolić ustawienia.",
+        "fix": "Sprawdź opcję capture providera."
+      },
+      "mode": {
+        "title": "Tryb test czy live",
+        "matches": "Klucz {{mode}}, zgodnie z oczekiwaniem ({{source}}).",
+        "mismatch": "Klucz {{key}}, a oczekiwany jest {{expected}} ({{source}}).",
+        "mismatch_fix": "Użyj właściwego klucza albo ustaw opcję mode (\"live\" lub \"test\"). Bez niej NODE_ENV=production oznacza live.",
+        "unknown_key": "Nie da się ustalić trybu klucza; oczekiwany jest {{expected}}.",
+        "unknown_key_fix": "Użyj klucza zaczynającego się od rk_live_ albo rk_test_.",
+        "fix": "Sprawdź klucz i opcję mode."
+      }
+    },
+    "guide": {
+      "title": "Przewodnik",
+      "intro": "Od klucza ograniczonego do pierwszej płatności testowej. Zacznij w trybie testowym.",
+      "readOnly": "Ta wtyczka tylko czyta. Płatności, przechwycenia i zwroty wykonuje oficjalny provider Stripe w Medusie.",
+      "key": {
+        "title": "Utwórz klucz ograniczony",
+        "body": "Panel Stripe → Developers → API keys → Create restricted key. Nazwij go np. „Medusa admin (odczyt)”."
+      },
+      "permissions": {
+        "title": "Nadaj uprawnienia Read",
+        "body": "Read: Balance, Balance transactions, Payouts, Disputes, PaymentIntents, Charges (z Refunds), Events, Webhook Endpoints, Payment Method Domains, Payment Method Configurations, Account. Wszystko inne: None. Brak uprawnienia pokaże się jako ostrzeżenie przy jednej kontroli."
+      },
+      "options": {
+        "title": "Dodaj opcje wtyczki",
+        "body": "W medusa-config.ts: apiKey: process.env.STRIPE_INSIGHTS_API_KEY, storefrontDomains: [\"sklep.pl\"], mode: \"test\". Uruchom ponownie Medusę."
+      },
+      "provider": {
+        "title": "Sprawdź oficjalny provider",
+        "body": "@medusajs/medusa/payment-stripe z id \"stripe\" musi być wśród providerów modułu płatności, z własnym kluczem tajnym i webhookSecret, i włączony w regionie."
+      },
+      "webhook": {
+        "title": "Dodaj webhook",
+        "body": "Panel Stripe → Developers → Webhooks → endpoint {backend}/hooks/payment/stripe_stripe ze zdarzeniami payment_intent.succeeded, payment_intent.amount_capturable_updated i payment_intent.payment_failed."
+      },
+      "methods": {
+        "title": "Włącz metody płatności",
+        "body": "Panel Stripe → Settings → Payment methods: karty, BLIK, Przelewy24, Apple Pay, Google Pay."
+      },
+      "domains": {
+        "title": "Zarejestruj domeny sklepu",
+        "body": "Panel Stripe → Settings → Payment method domains: dodaj każdą domenę sklepu dla Apple Pay i Google Pay."
+      },
+      "test": {
+        "title": "Zrób płatność testową",
+        "body": "Zapłać w sklepie kartą 4242 4242 4242 4242. Płatność powinna pojawić się w zakładce Płatności z zamówieniem, a każda kontrola powinna być OK."
+      },
+      "live": {
+        "title": "Przejdź na live",
+        "body": "Powtórz kroki 1–2 w trybie live, ustaw klucz live i mode: \"live\", a potem sprawdź zakładkę Kontrole."
+      }
+    }
+  }
+}

@@ -13,6 +13,9 @@ with. For example:
 - **Apaczka** and **Apaczka.pl** are trademarks of Alsendo sp. z o.o.
 - Carrier names that appear in the Apaczka plugin (InPost, DPD, DHL, UPS,
   GLS, FedEx, Pocztex, Orlen Paczka and others) belong to their owners.
+- **Stripe** is a trademark of Stripe, Inc. Payment method names shown by
+  the Stripe plugin (BLIK, Przelewy24, Apple Pay, Google Pay, card brands)
+  belong to their owners.
 
 The MIT license in [LICENSE](./LICENSE) covers the code only. It grants no
 rights to these names or logos. Do not use them in a way that suggests a
