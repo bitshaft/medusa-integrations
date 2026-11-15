@@ -113,6 +113,20 @@ updates:
     commit-message:
       prefix: "chore(stripe)"
 
+  - package-ecosystem: npm
+    directory: /plugins/medusa-plugin-negotiations
+    schedule:
+      interval: weekly
+    groups:
+      medusa:
+        patterns: ["@medusajs/*"]
+      dev-tooling:
+        dependency-type: development
+        exclude-patterns: ["@medusajs/*"]
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(negotiations)"
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -1,0 +1,373 @@
+{
+  "negotiations": {
+    "title": "Negotiations",
+    "description": "B2B price requests from signed-in customers, answered in one thread",
+    "refresh": "Refresh",
+    "back": "Negotiations",
+    "save": "Save",
+    "cancel": "Cancel",
+    "yes": "yes",
+    "no": "no",
+    "tabs": {
+      "panel": "Dashboard",
+      "guide": "Rollout guide",
+      "settings": "Settings"
+    },
+    "disabled": {
+      "title": "The plugin is disabled: {{reason}}",
+      "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
+    },
+    "demo": {
+      "title": "Demo mode",
+      "body": "Sample negotiations in every state. They never expire and never create draft orders or carts. Switch the demo option off in medusa-config.ts before going live.",
+      "badge": "Demo"
+    },
+    "status": {
+      "open": "Open",
+      "countered": "Counter-offer",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "expired": "Expired",
+      "withdrawn": "Withdrawn"
+    },
+    "author": {
+      "customer": "Customer",
+      "team": "Team",
+      "system": "System"
+    },
+    "messageType": {
+      "message": "Message",
+      "target_price": "Target price",
+      "counter_offer": "Counter-offer",
+      "acceptance": "Accepted",
+      "rejection": "Rejected",
+      "internal_note": "Internal note",
+      "expiry": "The negotiation expired",
+      "offer_expired": "The counter-offer expired",
+      "withdrawal": "Withdrawn by the customer",
+      "added_to_cart": "The agreed lines were added to the cart",
+      "draft_order_created": "Draft order created"
+    },
+    "stats": {
+      "waiting": "Waiting for you",
+      "open": "Open",
+      "countered": "With a counter-offer",
+      "inTalks": "Value in talks",
+      "expiringSoon": "Expire within 2 days",
+      "accepted30": "Accepted (30 days)",
+      "agreed30": "Agreed in 30 days",
+      "rejected30": "Rejected (30 days)",
+      "expired30": "Expired (30 days)",
+      "firstReply": "Average first reply",
+      "last30": "Last 30 days"
+    },
+    "list": {
+      "title": "Threads",
+      "all": "All",
+      "waiting": "Your move",
+      "search": "Number, product, SKU, customer",
+      "answerOldest": "Answer the oldest",
+      "thread": "Thread",
+      "customer": "Customer",
+      "product": "Product",
+      "quantity": "Qty",
+      "price": "Price",
+      "value": "Value",
+      "status": "Status",
+      "activity": "Last activity",
+      "wholeCart": "Whole cart",
+      "lines_one": "{{count}} line",
+      "lines_other": "{{count}} lines",
+      "yourMove": "Your move",
+      "empty": "No negotiations yet.",
+      "noResults": "Nothing matches the search."
+    },
+    "price": {
+      "below": "{{value}} below catalog",
+      "above": "{{value}} above catalog",
+      "perUnit": "{{price}} per unit · {{total}}",
+      "rounded": "Typed {{requested}}; whole grosze per unit"
+    },
+    "thread": {
+      "productThread": "Product or variant",
+      "customer": "Customer",
+      "product": "Product",
+      "quantity": "Quantity",
+      "catalogUnit": "Catalog price per unit",
+      "catalogTotal": "Catalog value",
+      "target": "Customer's target",
+      "ourOffer": "Our offer",
+      "agreed": "Agreed price",
+      "discount": "{{value}} discount ({{amount}})",
+      "offerValid": "Offer valid until",
+      "acceptedUntil": "Agreed price valid until",
+      "started": "Started",
+      "expires": "Expires",
+      "taxBasis": "Prices",
+      "net": "net",
+      "gross": "gross",
+      "assignee": "Lead",
+      "nobody": "Nobody",
+      "lines": "Lines",
+      "floor": "minimum",
+      "customerCard": "Customer",
+      "productCard": "Product",
+      "draftOrder": "Draft order",
+      "order": "Order",
+      "conversation": "Conversation",
+      "reloaded": "The current state is shown."
+    },
+    "move": {
+      "title": "Your move",
+      "waitingForCustomer": "Waiting for the customer",
+      "acceptTarget": "Accept {{price}}",
+      "acceptOffer": "Close at our offer {{price}}",
+      "customerAcceptOff": "Customers cannot accept offers themselves (customerAccept is off). When the customer agrees, close at our offer.",
+      "reply": "Reply",
+      "counter": "Counter-offer",
+      "note": "Internal note",
+      "reject": "Reject",
+      "replyPlaceholder": "Message to the customer",
+      "notePlaceholder": "Only the team sees this note",
+      "rejectPlaceholder": "Reason the customer will see",
+      "replySend": "Send reply",
+      "noteSend": "Add note",
+      "rejectSend": "Reject the negotiation",
+      "noteHint": "Internal notes never reach the customer: not in the Store API, not in customer events.",
+      "rejectHint": "Rejecting ends the negotiation. The customer sees the reason."
+    },
+    "counter": {
+      "mode": {
+        "unit": "Price per unit",
+        "total": "One amount",
+        "lines": "Price per line"
+      },
+      "unitPrice": "Price per unit ({{currency}})",
+      "unitTotal": "{{quantity}} units · {{total}}",
+      "total": "Amount for the whole cart ({{currency}})",
+      "willSend": "The customer receives: {{total}}",
+      "roundedDown": "Typed {{requested}}. Unit prices are whole grosze, so the offer is {{difference}} lower, in the customer's favour.",
+      "catalog": "catalog",
+      "belowFloor": "under the minimum {{floor}}",
+      "sum": "Total: {{total}}",
+      "validUntil": "Offer valid until",
+      "validHint": "Default: the usual term. After it the price lapses and the thread comes back to you.",
+      "messagePlaceholder": "Message with the offer (optional)",
+      "send": "Send counter-offer {{total}}",
+      "sent": "Counter-offer sent"
+    },
+    "floor": {
+      "title": "Below the minimum price",
+      "line": "{{price}} is under the minimum {{floor}} (together {{difference}} less).",
+      "maxDiscount": "The discount is over the maximum {{max}}: the lowest allowed total is {{min}} ({{difference}} more).",
+      "confirm": "I confirm this price below the threshold",
+      "confirmAccept": "Accept anyway"
+    },
+    "draft": {
+      "title": "Draft order",
+      "hint": "Plan, dry run, then the write: a draft order at the agreed price, once per negotiation.",
+      "off": "Draft orders are off in the plugin options (writers.draftOrders).",
+      "notArmed": "Draft orders are not armed. Arm them in Negotiations → Settings.",
+      "plan": "Show the plan",
+      "region": "Region",
+      "address": "Address",
+      "noAddress": "No address (e-mail only)",
+      "channel": "Sales channel",
+      "regionReason": {
+        "chosen": "Chosen by hand.",
+        "address_country": "From the country of the customer's default address and the negotiation's currency.",
+        "first_with_currency": "The first region with the negotiation's currency."
+      },
+      "total": "Total: {{total}}",
+      "dryRun": "Dry run",
+      "dryRunOk": "Dry run passed: everything needed is in place. The write is valid for 30 minutes with the same data.",
+      "commit": "Create the draft order",
+      "created": "Draft order created",
+      "exists": "A draft order from this negotiation exists.",
+      "ordered": "An order was placed from this negotiation.",
+      "open": "Open"
+    },
+    "runs": {
+      "title": "Write history",
+      "hint": "Every plan, dry run, write and error of the draft order and cart writers.",
+      "empty": "Nothing written yet.",
+      "when": "When",
+      "writerLabel": "Writer",
+      "stageLabel": "Stage",
+      "result": "Result",
+      "writer": {
+        "draft_order": "Draft order",
+        "cart": "Cart"
+      },
+      "stage": {
+        "plan": "Plan",
+        "dry_run": "Dry run",
+        "commit": "Written",
+        "error": "Error"
+      }
+    },
+    "settings": {
+      "saved": "Saved",
+      "counterTitle": "Counter-offers",
+      "counterHint": "How the team prices whole-cart negotiations, and when a price needs a confirmation.",
+      "cartModes": "Counter-offer on a whole cart",
+      "cartModesHint": "Changing it does not touch counter-offers already sent.",
+      "modes": {
+        "both": "Both: one amount or a price per line",
+        "total": "One amount only",
+        "lines": "Price per line only"
+      },
+      "maxDiscount": "Maximum discount without confirmation (%)",
+      "maxDiscountHint": "Empty: no limit. A deeper discount shows a warning and needs a confirmation.",
+      "discountInvalid": "Enter a percentage between 0 and 100, e.g. 12,5.",
+      "writersTitle": "Writes after acceptance",
+      "writersHint": "Off by default. Each needs its option in medusa-config and a person arming it here.",
+      "writer": {
+        "draft_orders": "Draft orders",
+        "draft_ordersHint": "The team creates a Medusa draft order at the agreed price (plan, dry run, write).",
+        "cart": "Cart",
+        "cartHint": "The customer adds the agreed lines to their cart at the agreed price through the Store API."
+      },
+      "optionOff": "Off in medusa-config: set {{option}}: true to allow arming it.",
+      "demoNoWrites": "Demo mode is on: nothing is written.",
+      "expiryTitle": "Expiry",
+      "expiryOn": "A thread with no move for {{days}} days expires (internal notes do not count).",
+      "expiryOff": "Threads never expire (expiryDays: 0).",
+      "acceptedDays": "An agreed price can be used for {{days}} days.",
+      "expireNow": "Expire inactive now",
+      "expired": "Counter-offers lapsed: {{lapsed}}. Threads expired: {{expired}}.",
+      "restoreDemo": "Restore demo data",
+      "demoRestored": "Demo data restored",
+      "optionsTitle": "Options from medusa-config",
+      "optionsHint": "Read-only. Change them in medusa-config.ts and restart Medusa.",
+      "storeCurrency": "store default",
+      "everyone": "every signed-in customer"
+    },
+    "guide": {
+      "whatTitle": "What the plugin does",
+      "what": "Signed-in B2B customers ask for a price for a product, a variant or a whole cart. The team answers in one thread: a reply, a counter-offer with its own deadline, an acceptance, a rejection with a reason, or an internal note. The agreed price can become a draft order or go into the customer's cart, exactly once.",
+      "diagram": {
+        "store": "Storefront",
+        "plugin": "Negotiations",
+        "panel": "Admin",
+        "events": "Events negotiation.*",
+        "consumers": "E-mails, CRM, ERP"
+      },
+      "stepsTitle": "From installation to production",
+      "status": {
+        "done": "Done",
+        "todo": "To do",
+        "optional": "Optional"
+      },
+      "steps": {
+        "install": {
+          "title": "Install the plugin",
+          "body": "npm install, then add it to plugins in medusa-config.ts."
+        },
+        "migrations": {
+          "title": "Run the migrations",
+          "body": "npx medusa db:migrate creates the negotiation tables."
+        },
+        "groups": {
+          "title": "Choose who may negotiate",
+          "body": "allowedCustomerGroups: {{count}} group(s) set, {{missing}} not found. Empty lets every signed-in customer negotiate."
+        },
+        "storefront": {
+          "title": "Add the storefront screens",
+          "body": "“Ask for a price” on the product and cart pages and a negotiations page in the account, on the Store API. Done once the first real request arrives."
+        },
+        "floors": {
+          "title": "Set minimum prices",
+          "body": "In the variant's “Minimum price” widget. Prices below it need a confirmation and are never shown to customers."
+        },
+        "events": {
+          "title": "Connect e-mails, CRM or ERP",
+          "body": "Subscribe to negotiation.* events. Use only the payload's customer field in customer e-mails."
+        },
+        "expiry": {
+          "title": "Check expiry",
+          "body": "Threads expire after {{days}} days without a move (0 = never). The job runs every hour."
+        },
+        "draft_orders": {
+          "title": "Draft orders (optional)",
+          "body": "Set writers.draftOrders: true, then arm it in Settings."
+        },
+        "cart": {
+          "title": "Agreed price in the cart (optional)",
+          "body": "Set writers.cart: true, then arm it in Settings. The storefront calls add-to-cart."
+        },
+        "production": {
+          "title": "Go live",
+          "body": "Switch demo mode off and restart Medusa."
+        }
+      },
+      "promptTitle": "Prompt for an AI assistant",
+      "promptHint": "Paste it into Claude Code, Cursor or another assistant in your Medusa backend project.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "widgets": {
+      "product": "Negotiations",
+      "productHint": "Price requests about this product, including whole carts that contain it.",
+      "customer": "Negotiations",
+      "customerHint": "This customer's price requests.",
+      "orders": "Negotiations: {{waiting}} waiting for you, {{active}} in progress ({{value}}).",
+      "open": "Open negotiations"
+    },
+    "floorWidget": {
+      "title": "Minimum price (negotiations)",
+      "hint": "Internal: never shown to customers. A counter-offer or acceptance below it shows a warning with the difference and needs a confirmation.",
+      "add": "Add currency",
+      "invalid": "Each row needs a 3-letter currency and an amount such as 129,00."
+    },
+    "errors": {
+      "disabled": "Price negotiations are switched off at the moment.",
+      "not_signed_in": "Sign in to negotiate a price.",
+      "group_not_allowed": "Price negotiations are available to selected business customers only. Contact the store.",
+      "invalid_input": "Check the data: {{details}}",
+      "not_found": "The negotiation was not found.",
+      "variant_not_found": "A variant of this negotiation no longer exists.",
+      "product_has_variants": "This product has several variants. Choose one (variant_id).",
+      "cart_not_found": "The cart was not found.",
+      "cart_not_yours": "This is not your cart.",
+      "cart_empty": "The cart is empty.",
+      "cart_completed": "This cart is already completed. Use a new cart.",
+      "cart_has_negotiated_lines": "The cart already holds lines with a negotiated price. Remove them to negotiate the whole cart.",
+      "price_required": "Send a price above zero.",
+      "price_unavailable": "This product has no price in {{currency}}. Choose another region or currency.",
+      "currency_mismatch": "The region's currency ({{cart}}) differs from the negotiation's ({{thread}}).",
+      "quantity_too_large": "The largest quantity of one line is {{max}}.",
+      "message_too_long": "A message can have at most {{max}} characters.",
+      "message_required": "Write a message.",
+      "limit_open_threads": "You already have {{max}} open negotiations. Close one before you start another.",
+      "limit_threads_per_hour": "You can start at most {{max}} negotiations per hour. Try again later.",
+      "limit_messages_per_hour": "You can send at most {{max}} messages per hour. Try again later.",
+      "conflict": "Someone else changed this negotiation in the meantime. It has been reloaded; check it and try again.",
+      "price_changed": "The price changed in the meantime, so nothing was accepted. The negotiation has been reloaded.",
+      "move_not_allowed": "This cannot be done while the negotiation is {{status}}.",
+      "not_your_turn": "Waiting for the other side to answer.",
+      "nothing_to_accept": "There is no price to accept.",
+      "customer_accept_off": "The store confirms offers. Write that you accept it and the team will confirm.",
+      "mode_not_allowed": "This way of pricing ({{mode}}) is not allowed.",
+      "lines_mismatch": "Send a price for every line of the negotiation, exactly once.",
+      "offer_expired": "The negotiated price expired on {{date}}.",
+      "deadline_past": "The offer deadline must be in the future.",
+      "deadline_too_far": "The offer deadline can be at most a year from today.",
+      "below_floor": "The price is under the minimum price or the maximum discount. Confirm it to continue.",
+      "writer_off": "This writer is off in the plugin options (medusa-config).",
+      "writer_not_armed": "This writer is not armed. Arm it in Negotiations → Settings.",
+      "demo_thread": "Demo negotiation: it never writes draft orders or carts.",
+      "not_accepted": "The price has not been accepted yet.",
+      "already_in_cart": "The agreed lines are in the customer's cart; a draft order would sell them twice.",
+      "already_ordered": "An order has already been placed from this offer.",
+      "write_in_progress": "The same write is in progress. Reload in a moment.",
+      "negotiated_line_locked": "The quantity of a line with a negotiated price cannot be changed. Remove the line or ask for a new offer.",
+      "negotiated_line_invalid": "The lines of negotiation {{number}} do not match the agreed offer: {{reason}}. Remove them and add them again.",
+      "reserved_metadata": "Metadata keys starting with “negotiation_” cannot be set.",
+      "draft_order_exists": "A draft order (or an order) from this negotiation already exists.",
+      "dry_run_required": "Run a dry run with the same data first (it is valid for 30 minutes).",
+      "no_region": "No region uses {{currency}}. Choose a region.",
+      "unknown": "Something went wrong. Reload the page and try again."
+    }
+  }
+}

@@ -1,0 +1,375 @@
+{
+  "negotiations": {
+    "title": "Negocjacje",
+    "description": "Zapytania o cenę od zalogowanych klientów B2B, w jednym wątku",
+    "refresh": "Odśwież",
+    "back": "Negocjacje",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "yes": "tak",
+    "no": "nie",
+    "tabs": {
+      "panel": "Panel",
+      "guide": "Przewodnik wdrożenia",
+      "settings": "Ustawienia"
+    },
+    "disabled": {
+      "title": "Wtyczka jest wyłączona: {{reason}}",
+      "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
+    },
+    "demo": {
+      "title": "Tryb demo",
+      "body": "Przykładowe negocjacje we wszystkich stanach. Nie wygasają i nigdy nie tworzą szkiców zamówień ani koszyków. Przed startem wyłącz opcję demo w medusa-config.ts.",
+      "badge": "Demo"
+    },
+    "status": {
+      "open": "Otwarte",
+      "countered": "Z kontrofertą",
+      "accepted": "Zaakceptowane",
+      "rejected": "Odrzucone",
+      "expired": "Wygasłe",
+      "withdrawn": "Wycofane"
+    },
+    "author": {
+      "customer": "Klient",
+      "team": "Zespół",
+      "system": "System"
+    },
+    "messageType": {
+      "message": "Wiadomość",
+      "target_price": "Cena docelowa",
+      "counter_offer": "Kontroferta",
+      "acceptance": "Akceptacja",
+      "rejection": "Odmowa",
+      "internal_note": "Notatka wewnętrzna",
+      "expiry": "Negocjacja wygasła",
+      "offer_expired": "Kontroferta wygasła",
+      "withdrawal": "Wycofane przez klienta",
+      "added_to_cart": "Uzgodnione pozycje dodano do koszyka",
+      "draft_order_created": "Utworzono szkic zamówienia"
+    },
+    "stats": {
+      "waiting": "Czeka na Was",
+      "open": "Otwarte",
+      "countered": "Z kontrofertą",
+      "inTalks": "Wartość w rozmowach",
+      "expiringSoon": "Wygasa w ciągu 2 dni",
+      "accepted30": "Zaakceptowane (30 dni)",
+      "agreed30": "Uzgodnione w 30 dni",
+      "rejected30": "Odrzucone (30 dni)",
+      "expired30": "Wygasłe (30 dni)",
+      "firstReply": "Średni czas pierwszej odpowiedzi",
+      "last30": "Ostatnie 30 dni"
+    },
+    "list": {
+      "title": "Wątki",
+      "all": "Wszystkie",
+      "waiting": "Twój ruch",
+      "search": "Numer, produkt, SKU, klient",
+      "answerOldest": "Odpowiedz na najstarszy",
+      "thread": "Wątek",
+      "customer": "Klient",
+      "product": "Produkt",
+      "quantity": "Ilość",
+      "price": "Cena",
+      "value": "Wartość",
+      "status": "Status",
+      "activity": "Ostatnia aktywność",
+      "wholeCart": "Cały koszyk",
+      "lines_one": "{{count}} pozycja",
+      "lines_few": "{{count}} pozycje",
+      "lines_many": "{{count}} pozycji",
+      "lines_other": "{{count}} pozycji",
+      "yourMove": "Twój ruch",
+      "empty": "Nie ma jeszcze negocjacji.",
+      "noResults": "Nic nie pasuje do wyszukiwania."
+    },
+    "price": {
+      "below": "{{value}} poniżej katalogu",
+      "above": "{{value}} powyżej katalogu",
+      "perUnit": "{{price}} za sztukę · {{total}}",
+      "rounded": "Wpisano {{requested}}; pełne grosze za sztukę"
+    },
+    "thread": {
+      "productThread": "Produkt lub wariant",
+      "customer": "Klient",
+      "product": "Produkt",
+      "quantity": "Ilość",
+      "catalogUnit": "Cena katalogowa za sztukę",
+      "catalogTotal": "Wartość katalogowa",
+      "target": "Cena docelowa klienta",
+      "ourOffer": "Nasza oferta",
+      "agreed": "Uzgodniona cena",
+      "discount": "Rabat {{value}} ({{amount}})",
+      "offerValid": "Oferta ważna do",
+      "acceptedUntil": "Uzgodniona cena ważna do",
+      "started": "Początek",
+      "expires": "Wygasa",
+      "taxBasis": "Ceny",
+      "net": "netto",
+      "gross": "brutto",
+      "assignee": "Prowadzący",
+      "nobody": "Nikt",
+      "lines": "Pozycje",
+      "floor": "minimum",
+      "customerCard": "Karta klienta",
+      "productCard": "Karta produktu",
+      "draftOrder": "Szkic zamówienia",
+      "order": "Zamówienie",
+      "conversation": "Rozmowa",
+      "reloaded": "Pokazujemy aktualny stan."
+    },
+    "move": {
+      "title": "Twój ruch",
+      "waitingForCustomer": "Czekamy na klienta",
+      "acceptTarget": "Akceptuj {{price}}",
+      "acceptOffer": "Zamknij po naszej ofercie {{price}}",
+      "customerAcceptOff": "Klienci nie mogą sami akceptować ofert (customerAccept jest wyłączone). Gdy klient się zgodzi, zamknij po naszej ofercie.",
+      "reply": "Odpowiedź",
+      "counter": "Kontroferta",
+      "note": "Notatka wewnętrzna",
+      "reject": "Odrzuć",
+      "replyPlaceholder": "Wiadomość do klienta",
+      "notePlaceholder": "Tę notatkę widzi tylko zespół",
+      "rejectPlaceholder": "Powód, który zobaczy klient",
+      "replySend": "Wyślij odpowiedź",
+      "noteSend": "Dodaj notatkę",
+      "rejectSend": "Odrzuć negocjację",
+      "noteHint": "Notatki wewnętrzne nigdy nie trafiają do klienta: ani przez Store API, ani w zdarzeniach dla klienta.",
+      "rejectHint": "Odrzucenie kończy negocjację. Klient zobaczy powód."
+    },
+    "counter": {
+      "mode": {
+        "unit": "Cena za sztukę",
+        "total": "Jedna kwota",
+        "lines": "Ceny per pozycja"
+      },
+      "unitPrice": "Cena za sztukę ({{currency}})",
+      "unitTotal": "{{quantity}} szt. · {{total}}",
+      "total": "Kwota za cały koszyk ({{currency}})",
+      "willSend": "Klient dostanie: {{total}}",
+      "roundedDown": "Wpisano {{requested}}. Ceny za sztukę są w pełnych groszach, więc oferta jest niższa o {{difference}}, na korzyść klienta.",
+      "catalog": "katalog",
+      "belowFloor": "poniżej minimum {{floor}}",
+      "sum": "Suma: {{total}}",
+      "validUntil": "Oferta ważna do",
+      "validHint": "Domyślnie zwykły termin. Po nim cena przepada, a wątek wraca do Was.",
+      "messagePlaceholder": "Wiadomość do oferty (opcjonalnie)",
+      "send": "Wyślij kontrofertę {{total}}",
+      "sent": "Kontroferta wysłana"
+    },
+    "floor": {
+      "title": "Poniżej ceny minimalnej",
+      "line": "{{price}} jest poniżej minimum {{floor}} (razem o {{difference}} mniej).",
+      "maxDiscount": "Rabat przekracza maksimum {{max}}: najniższa dozwolona suma to {{min}} (o {{difference}} więcej).",
+      "confirm": "Potwierdzam cenę poniżej progu",
+      "confirmAccept": "Akceptuj mimo to"
+    },
+    "draft": {
+      "title": "Szkic zamówienia",
+      "hint": "Plan, próba na sucho, potem zapis: szkic zamówienia po uzgodnionej cenie, raz na negocjację.",
+      "off": "Szkice zamówień są wyłączone w opcjach wtyczki (writers.draftOrders).",
+      "notArmed": "Szkice zamówień nie są uzbrojone. Uzbrój je w Negocjacje → Ustawienia.",
+      "plan": "Pokaż plan",
+      "region": "Region",
+      "address": "Adres",
+      "noAddress": "Bez adresu (tylko e-mail)",
+      "channel": "Kanał sprzedaży",
+      "regionReason": {
+        "chosen": "Wybrany ręcznie.",
+        "address_country": "Z kraju domyślnego adresu klienta i waluty negocjacji.",
+        "first_with_currency": "Pierwszy region z walutą negocjacji."
+      },
+      "total": "Suma: {{total}}",
+      "dryRun": "Próba na sucho",
+      "dryRunOk": "Próba na sucho udana: wszystko, czego trzeba, jest na miejscu. Zapis jest możliwy przez 30 minut z tymi samymi danymi.",
+      "commit": "Utwórz szkic zamówienia",
+      "created": "Utworzono szkic zamówienia",
+      "exists": "Szkic zamówienia z tej negocjacji istnieje.",
+      "ordered": "Z tej negocjacji złożono zamówienie.",
+      "open": "Otwórz"
+    },
+    "runs": {
+      "title": "Historia zapisów",
+      "hint": "Każdy plan, próba na sucho, zapis i błąd szkiców zamówień i koszyków.",
+      "empty": "Nic jeszcze nie zapisano.",
+      "when": "Kiedy",
+      "writerLabel": "Zapis",
+      "stageLabel": "Etap",
+      "result": "Wynik",
+      "writer": {
+        "draft_order": "Szkic zamówienia",
+        "cart": "Koszyk"
+      },
+      "stage": {
+        "plan": "Plan",
+        "dry_run": "Próba na sucho",
+        "commit": "Zapisano",
+        "error": "Błąd"
+      }
+    },
+    "settings": {
+      "saved": "Zapisano",
+      "counterTitle": "Kontroferty",
+      "counterHint": "Jak zespół wycenia cały koszyk i kiedy cena wymaga potwierdzenia.",
+      "cartModes": "Kontroferta na cały koszyk",
+      "cartModesHint": "Zmiana nie wpływa na kontroferty już wysłane.",
+      "modes": {
+        "both": "Obie: jedna kwota albo ceny per pozycja",
+        "total": "Tylko jedna kwota",
+        "lines": "Tylko ceny per pozycja"
+      },
+      "maxDiscount": "Maksymalny rabat bez potwierdzenia (%)",
+      "maxDiscountHint": "Puste: bez limitu. Większy rabat pokazuje ostrzeżenie i wymaga potwierdzenia.",
+      "discountInvalid": "Podaj procent od 0 do 100, np. 12,5.",
+      "writersTitle": "Zapisy po akceptacji",
+      "writersHint": "Domyślnie wyłączone. Każdy wymaga swojej opcji w medusa-config i uzbrojenia tutaj przez człowieka.",
+      "writer": {
+        "draft_orders": "Szkice zamówień",
+        "draft_ordersHint": "Zespół tworzy szkic zamówienia w Medusie po uzgodnionej cenie (plan, próba na sucho, zapis).",
+        "cart": "Koszyk",
+        "cartHint": "Klient dodaje uzgodnione pozycje do swojego koszyka po uzgodnionej cenie przez Store API."
+      },
+      "optionOff": "Wyłączone w medusa-config: ustaw {{option}}: true, aby móc to uzbroić.",
+      "demoNoWrites": "Tryb demo jest włączony: nic nie jest zapisywane.",
+      "expiryTitle": "Wygasanie",
+      "expiryOn": "Wątek bez ruchu przez {{days}} dni wygasa (notatki wewnętrzne się nie liczą).",
+      "expiryOff": "Wątki nigdy nie wygasają (expiryDays: 0).",
+      "acceptedDays": "Uzgodnioną cenę można wykorzystać przez {{days}} dni.",
+      "expireNow": "Wygaś nieaktywne teraz",
+      "expired": "Wygasłe kontroferty: {{lapsed}}. Wygasłe wątki: {{expired}}.",
+      "restoreDemo": "Przywróć dane demo",
+      "demoRestored": "Przywrócono dane demo",
+      "optionsTitle": "Opcje z medusa-config",
+      "optionsHint": "Tylko do odczytu. Zmień je w medusa-config.ts i uruchom Medusę ponownie.",
+      "storeCurrency": "domyślna waluta sklepu",
+      "everyone": "każdy zalogowany klient"
+    },
+    "guide": {
+      "whatTitle": "Co robi wtyczka",
+      "what": "Zalogowani klienci B2B proszą o cenę dla produktu, wariantu albo całego koszyka. Zespół odpowiada w jednym wątku: wiadomością, kontrofertą z własnym terminem, akceptacją, odmową z powodem albo notatką wewnętrzną. Uzgodniona cena może stać się szkicem zamówienia albo trafić do koszyka klienta, dokładnie raz.",
+      "diagram": {
+        "store": "Sklep",
+        "plugin": "Negocjacje",
+        "panel": "Panel",
+        "events": "Zdarzenia negotiation.*",
+        "consumers": "E-maile, CRM, ERP"
+      },
+      "stepsTitle": "Od instalacji do produkcji",
+      "status": {
+        "done": "Gotowe",
+        "todo": "Do zrobienia",
+        "optional": "Opcjonalne"
+      },
+      "steps": {
+        "install": {
+          "title": "Zainstaluj wtyczkę",
+          "body": "npm install, potem dodaj ją do plugins w medusa-config.ts."
+        },
+        "migrations": {
+          "title": "Uruchom migracje",
+          "body": "npx medusa db:migrate tworzy tabele negocjacji."
+        },
+        "groups": {
+          "title": "Wybierz, kto może negocjować",
+          "body": "allowedCustomerGroups: ustawiono {{count}} grup(y), nie znaleziono {{missing}}. Puste pozwala negocjować każdemu zalogowanemu klientowi."
+        },
+        "storefront": {
+          "title": "Dodaj ekrany w sklepie",
+          "body": "„Zapytaj o cenę” na stronie produktu i koszyka oraz strona negocjacji w koncie klienta, na Store API. Gotowe, gdy przyjdzie pierwsze prawdziwe zapytanie."
+        },
+        "floors": {
+          "title": "Ustaw ceny minimalne",
+          "body": "W widżecie „Cena minimalna” na wariancie. Cena poniżej wymaga potwierdzenia i nigdy nie jest pokazywana klientom."
+        },
+        "events": {
+          "title": "Podłącz e-maile, CRM lub ERP",
+          "body": "Subskrybuj zdarzenia negotiation.*. W e-mailach do klienta używaj tylko pola customer z payloadu."
+        },
+        "expiry": {
+          "title": "Sprawdź wygasanie",
+          "body": "Wątki wygasają po {{days}} dniach bez ruchu (0 = nigdy). Zadanie działa co godzinę."
+        },
+        "draft_orders": {
+          "title": "Szkice zamówień (opcjonalnie)",
+          "body": "Ustaw writers.draftOrders: true, potem uzbrój w Ustawieniach."
+        },
+        "cart": {
+          "title": "Uzgodniona cena w koszyku (opcjonalnie)",
+          "body": "Ustaw writers.cart: true, potem uzbrój w Ustawieniach. Sklep woła add-to-cart."
+        },
+        "production": {
+          "title": "Start produkcyjny",
+          "body": "Wyłącz tryb demo i uruchom Medusę ponownie."
+        }
+      },
+      "promptTitle": "Prompt dla asystenta AI",
+      "promptHint": "Wklej go w Claude Code, Cursora lub innego asystenta w projekcie backendu Medusy.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano"
+    },
+    "widgets": {
+      "product": "Negocjacje",
+      "productHint": "Zapytania o cenę tego produktu, także całe koszyki, które go zawierają.",
+      "customer": "Negocjacje",
+      "customerHint": "Zapytania o cenę tego klienta.",
+      "orders": "Negocjacje: {{waiting}} czeka na Was, {{active}} w toku ({{value}}).",
+      "open": "Otwórz negocjacje"
+    },
+    "floorWidget": {
+      "title": "Cena minimalna (negocjacje)",
+      "hint": "Wewnętrzna: nigdy nie jest pokazywana klientom. Kontroferta albo akceptacja poniżej pokazuje ostrzeżenie z różnicą i wymaga potwierdzenia.",
+      "add": "Dodaj walutę",
+      "invalid": "Każdy wiersz potrzebuje 3-literowej waluty i kwoty, np. 129,00."
+    },
+    "errors": {
+      "disabled": "Negocjacje cen są chwilowo wyłączone.",
+      "not_signed_in": "Zaloguj się, aby negocjować cenę.",
+      "group_not_allowed": "Negocjacje cen są dostępne tylko dla wybranych klientów firmowych. Skontaktuj się ze sklepem.",
+      "invalid_input": "Sprawdź dane: {{details}}",
+      "not_found": "Nie znaleziono negocjacji.",
+      "variant_not_found": "Wariant z tej negocjacji już nie istnieje.",
+      "product_has_variants": "Ten produkt ma kilka wariantów. Wybierz wariant (variant_id).",
+      "cart_not_found": "Nie znaleziono koszyka.",
+      "cart_not_yours": "To nie jest Twój koszyk.",
+      "cart_empty": "Koszyk jest pusty.",
+      "cart_completed": "Ten koszyk jest już zamknięty. Użyj nowego koszyka.",
+      "cart_has_negotiated_lines": "Koszyk zawiera już pozycje z wynegocjowaną ceną. Usuń je, aby negocjować cały koszyk.",
+      "price_required": "Podaj cenę większą od zera.",
+      "price_unavailable": "Ten produkt nie ma ceny w walucie {{currency}}. Wybierz inny region lub walutę.",
+      "currency_mismatch": "Waluta regionu ({{cart}}) różni się od waluty negocjacji ({{thread}}).",
+      "quantity_too_large": "Maksymalna ilość w jednej pozycji to {{max}}.",
+      "message_too_long": "Wiadomość może mieć najwyżej {{max}} znaków.",
+      "message_required": "Napisz wiadomość.",
+      "limit_open_threads": "Masz już {{max}} otwartych negocjacji. Zakończ którąś, zanim zaczniesz nową.",
+      "limit_threads_per_hour": "W ciągu godziny można zacząć najwyżej {{max}} negocjacji. Spróbuj później.",
+      "limit_messages_per_hour": "W ciągu godziny można wysłać najwyżej {{max}} wiadomości. Spróbuj później.",
+      "conflict": "Ktoś inny zmienił w międzyczasie tę negocjację. Wczytaliśmy ją ponownie; sprawdź i spróbuj jeszcze raz.",
+      "price_changed": "Cena zmieniła się w międzyczasie, więc nic nie zostało zaakceptowane. Negocjacja została wczytana ponownie.",
+      "move_not_allowed": "Tego nie można zrobić, gdy negocjacja ma status „{{status}}”.",
+      "not_your_turn": "Czekamy na odpowiedź drugiej strony.",
+      "nothing_to_accept": "Nie ma ceny do zaakceptowania.",
+      "customer_accept_off": "Ofertę zatwierdza sklep. Napisz, że ją przyjmujesz, a zespół ją potwierdzi.",
+      "mode_not_allowed": "Ten sposób podania ceny ({{mode}}) nie jest dozwolony.",
+      "lines_mismatch": "Podaj cenę dla każdej pozycji negocjacji, dokładnie raz.",
+      "offer_expired": "Termin wynegocjowanej ceny minął {{date}}.",
+      "deadline_past": "Termin oferty musi być w przyszłości.",
+      "deadline_too_far": "Termin oferty może być najwyżej rok od dziś.",
+      "below_floor": "Cena jest poniżej ceny minimalnej lub maksymalnego rabatu. Potwierdź ją, aby kontynuować.",
+      "writer_off": "Ten zapis jest wyłączony w opcjach wtyczki (medusa-config).",
+      "writer_not_armed": "Ten zapis nie jest uzbrojony. Uzbrój go w Negocjacje → Ustawienia.",
+      "demo_thread": "Negocjacja pokazowa: nigdy nie tworzy szkiców zamówień ani koszyków.",
+      "not_accepted": "Cena nie została jeszcze zaakceptowana.",
+      "already_in_cart": "Uzgodnione pozycje są w koszyku klienta; szkic zamówienia sprzedałby je drugi raz.",
+      "already_ordered": "Z tej oferty złożono już zamówienie.",
+      "write_in_progress": "To samo jest właśnie zapisywane. Odśwież za chwilę.",
+      "negotiated_line_locked": "Ilości pozycji z wynegocjowaną ceną nie można zmienić. Usuń pozycję albo poproś o nową ofertę.",
+      "negotiated_line_invalid": "Pozycje z negocjacji {{number}} nie zgadzają się z uzgodnioną ofertą: {{reason}}. Usuń je z koszyka i dodaj ponownie.",
+      "reserved_metadata": "Pól metadanych zaczynających się od „negotiation_” nie można ustawiać.",
+      "draft_order_exists": "Szkic zamówienia (lub zamówienie) z tej negocjacji już istnieje.",
+      "dry_run_required": "Najpierw wykonaj próbę na sucho z tymi samymi danymi (ważna 30 minut).",
+      "no_region": "Żaden region nie używa waluty {{currency}}. Wybierz region.",
+      "unknown": "Coś poszło nie tak. Odśwież stronę i spróbuj ponownie."
+    }
+  }
+}
