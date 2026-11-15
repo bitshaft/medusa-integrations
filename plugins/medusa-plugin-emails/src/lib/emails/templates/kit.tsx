@@ -116,15 +116,28 @@ export function EmailLayout({
     brand.company?.email,
   ].filter(Boolean)
 
+  const align = brand.style?.headerAlign ?? "center"
   return (
     <Html lang={locale}>
       <Head />
       {preview ? <Preview>{preview}</Preview> : null}
-      <Body style={{ backgroundColor: brand.colors.background, fontFamily: FONT, margin: 0, padding: "24px 0" }}>
+      <Body
+        style={{
+          backgroundColor: brand.colors.background,
+          fontFamily: brand.style?.fontFamily ?? FONT,
+          margin: 0,
+          padding: "24px 0",
+        }}
+      >
         <Container style={{ maxWidth: "600px", margin: "0 auto", padding: "0 12px" }}>
-          <Section style={{ padding: "8px 0 24px", textAlign: "center" }}>
+          <Section style={{ padding: "8px 0 24px", textAlign: align }}>
             {brand.logoUrl ? (
-              <Img src={brand.logoUrl} alt={brand.name} width={brand.logoWidth} style={{ margin: "0 auto" }} />
+              <Img
+                src={brand.logoUrl}
+                alt={brand.name}
+                width={brand.logoWidth}
+                style={{ margin: align === "center" ? "0 auto" : "0" }}
+              />
             ) : (
               <Text style={{ color: brand.colors.text, fontSize: "20px", fontWeight: 700, margin: 0 }}>
                 {brand.name}
@@ -136,7 +149,7 @@ export function EmailLayout({
             style={{
               backgroundColor: brand.colors.card,
               border: `1px solid ${brand.colors.border}`,
-              borderRadius: "8px",
+              borderRadius: `${brand.style?.cardRadius ?? 8}px`,
               padding: "32px 28px 16px",
             }}
           >
@@ -187,7 +200,7 @@ export function PrimaryButton({ href, brand, children }: { href: string; brand: 
         style={{
           backgroundColor: brand.colors.primary,
           color: brand.colors.primaryText,
-          borderRadius: "6px",
+          borderRadius: `${brand.style?.buttonRadius ?? 6}px`,
           fontSize: "15px",
           fontWeight: 600,
           padding: "12px 20px",

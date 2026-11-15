@@ -1,6 +1,7 @@
 import { COMMON_GROUP, type CopyOverrides } from "./copy"
 import type { EmailsPluginOptions } from "./options"
 import { listDefinitions } from "./registry"
+import { cleanTheme, type StoredTheme } from "./theme"
 
 /**
  * Settings admins change on the settings page. They are stored as rows of
@@ -9,6 +10,8 @@ import { listDefinitions } from "./registry"
  */
 
 export const GENERAL_KEY = "general"
+/** Row `theme`: the Appearance tab (see theme.ts). */
+export const THEME_KEY = "theme"
 export const typeKey = (type: string) => `type:${type}`
 export const copyKey = (group: string) => `copy:${group}`
 
@@ -43,6 +46,8 @@ export type EmailsSettings = {
   low_stock_threshold_overridden: boolean
   types: Record<string, TypeSettings>
   common_copy: CopyOverrides
+  /** Look of the emails set on the Appearance tab, over `brand` from the options. */
+  theme: StoredTheme
 }
 
 export function mergeSettings(
@@ -76,6 +81,7 @@ export function mergeSettings(
     low_stock_threshold_overridden: threshold !== null,
     types,
     common_copy: asObject<CopyOverrides>(byKey.get(copyKey(COMMON_GROUP))),
+    theme: cleanTheme(byKey.get(THEME_KEY)),
   }
 }
 

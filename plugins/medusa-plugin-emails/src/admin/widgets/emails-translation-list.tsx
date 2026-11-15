@@ -21,7 +21,7 @@ const EmailsTranslationList = () => {
       </div>
       <div>
         <Button size="small" variant="secondary" asChild>
-          <Link to="/emails">{t("emails.translations.open")}</Link>
+          <Link to="/emails?tab=templates">{t("emails.translations.open")}</Link>
         </Button>
       </div>
     </Container>

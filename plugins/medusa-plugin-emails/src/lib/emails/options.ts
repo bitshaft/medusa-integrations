@@ -3,6 +3,18 @@ import { z } from "@medusajs/framework/zod"
 import { parsePluginOptions, type PluginOptionsResult } from "./kit/options"
 import { canonicalLocale, type EmailLocale, languageOf, localizedValue } from "./locales"
 import type { AttachmentResolver, Brand, CustomTemplateOption } from "./types"
+import {
+  ALIGNMENTS,
+  BUTTON_SHAPES,
+  type ButtonShape,
+  CARD_SHAPES,
+  type CardShape,
+  DEFAULT_STYLE,
+  FONTS,
+  type FontKey,
+  resolveStyle,
+  type StoredTheme,
+} from "./theme"
 
 /** Name used in log lines and errors. */
 export const PLUGIN_NAME = "emails"
@@ -72,6 +84,17 @@ const brandSchema = z.object({
       muted: "#71717a",
       border: "#e4e4e7",
     }),
+  /** Font, shapes and header alignment. Admins can change them on the "Appearance" tab. */
+  style: z
+    .object({
+      font: z.enum(Object.keys(FONTS) as [FontKey, ...FontKey[]]).default(DEFAULT_STYLE.font),
+      buttonShape: z
+        .enum(Object.keys(BUTTON_SHAPES) as [ButtonShape, ...ButtonShape[]])
+        .default(DEFAULT_STYLE.buttonShape),
+      cardShape: z.enum(Object.keys(CARD_SHAPES) as [CardShape, ...CardShape[]]).default(DEFAULT_STYLE.cardShape),
+      headerAlign: z.enum(ALIGNMENTS).default(DEFAULT_STYLE.headerAlign),
+    })
+    .default(DEFAULT_STYLE),
   /** Extra line in the footer, e.g. a legal note. */
   footerText: localized.optional(),
   /** Company details printed in the footer. */
@@ -210,8 +233,16 @@ export function addressOf(senderValue: string): string {
   return (match ? match[1] : senderValue).trim()
 }
 
-/** Brand settings for one language, with the store name filled in. */
-export function resolveBrand(options: EmailsPluginOptions, language: EmailLocale, storeName?: string | null): Brand {
+/**
+ * Brand settings for one language, with the store name filled in and the
+ * admin's theme (Appearance tab) laid over the options.
+ */
+export function resolveBrand(
+  options: EmailsPluginOptions,
+  language: EmailLocale,
+  storeName?: string | null,
+  theme: StoredTheme = {}
+): Brand {
   const { brand } = options
   const footerText =
     typeof brand.footerText === "string"
@@ -220,9 +251,10 @@ export function resolveBrand(options: EmailsPluginOptions, language: EmailLocale
   const name = brand.name ?? (storeName?.trim() || brand.company.name || "Store")
   return {
     name,
-    logoUrl: brand.logoUrl,
-    logoWidth: brand.logoWidth,
-    colors: brand.colors,
+    logoUrl: theme.logo_url === null ? undefined : (theme.logo_url ?? brand.logoUrl),
+    logoWidth: theme.logo_width ?? brand.logoWidth,
+    colors: { ...brand.colors, ...theme.colors },
+    style: resolveStyle(brand.style, theme),
     footerText: footerText || undefined,
     company: brand.company,
     links: { ...brand.links, website: brand.links.website ?? options.storefrontUrl },

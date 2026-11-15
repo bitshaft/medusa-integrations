@@ -19,6 +19,12 @@ import { Link, useParams } from "react-router-dom"
 
 import { formatRecipients, parseRecipients } from "../../../components/emails/recipients"
 import {
+  VariableInput,
+  VariablePalette,
+  VariablesProvider,
+  VariableText,
+} from "../../../components/emails/variable-input"
+import {
   type CopyDraft,
   type EmailLocale,
   type EmailTypeDetail,
@@ -85,7 +91,7 @@ const EmailTypePage = () => {
         </Text>
         <div>
           <Button size="small" variant="secondary" asChild>
-            <Link to="/emails">{t("emails.editor.back")}</Link>
+            <Link to="/emails?tab=templates">{t("emails.editor.back")}</Link>
           </Button>
         </div>
       </Container>
@@ -156,241 +162,242 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
   }
 
   return (
-    <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
-        <div className="flex items-center justify-between gap-x-4 px-6 py-4">
-          <div className="min-w-0">
-            <Link to="/emails" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
-              ← {t("emails.editor.back")}
-            </Link>
-            <div className="mt-1 flex flex-wrap items-center gap-x-2">
-              <Heading>{name}</Heading>
-              {summary?.custom && <Badge size="2xsmall">{t("emails.list.custom")}</Badge>}
-              {detail.edited && <Badge size="2xsmall">{t("emails.list.edited")}</Badge>}
-            </div>
-            <Text size="small" className="text-ui-fg-subtle">
-              {t(`emails.types.${type}.description`, { defaultValue: "" })}
-            </Text>
-          </div>
-          {summary && (
-            <div className="flex shrink-0 items-center gap-x-2">
-              <Label size="small" htmlFor="emails-type-enabled">
-                {t("emails.editor.enabled")}
-              </Label>
-              <Switch
-                id="emails-type-enabled"
-                checked={summary.enabled}
-                disabled={update.isPending}
-                onCheckedChange={(checked) =>
-                  update.mutate(
-                    { enabled: checked },
-                    { onError: (error) => toast.error(`${t("emails.list.toggleError")} ${errorMessage(error)}`) }
-                  )
-                }
-              />
-            </div>
-          )}
-        </div>
-        {summary?.audience === "team" && <TypeRecipients type={type} recipients={summary.recipients} />}
-      </Container>
-
-      <div className={isCommon ? "flex flex-col gap-y-3" : "grid grid-cols-1 items-start gap-3 xl:grid-cols-2"}>
+    <VariablesProvider>
+      <div className="flex flex-col gap-y-3">
         <Container className="divide-y p-0">
           <div className="flex items-center justify-between gap-x-4 px-6 py-4">
-            <div>
-              <Heading level="h2">{t("emails.editor.text")}</Heading>
+            <div className="min-w-0">
+              <Link to="/emails?tab=templates" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
+                ← {t("emails.editor.back")}
+              </Link>
+              <div className="mt-1 flex flex-wrap items-center gap-x-2">
+                <Heading>{name}</Heading>
+                {summary?.custom && <Badge size="2xsmall">{t("emails.list.custom")}</Badge>}
+                {detail.edited && <Badge size="2xsmall">{t("emails.list.edited")}</Badge>}
+              </div>
               <Text size="small" className="text-ui-fg-subtle">
-                {dirty
-                  ? t("emails.editor.unsaved")
-                  : isOriginal
-                    ? t("emails.editor.textHint")
-                    : t("emails.editor.textHintTranslation", { language: languageLabel(detail.base_locale) })}
+                {t(`emails.types.${type}.description`, { defaultValue: "" })}
               </Text>
             </div>
-            <LanguagePicker
-              detail={detail}
-              locale={locale}
-              onChange={setLocale}
-              label={languageLabel}
-              missing={(code) => countMissing(detail, draft, code)}
-            />
-          </div>
-          {detail.translation_enabled && detail.locales.length < 2 && (
-            <div className="px-6 py-3">
-              <Text size="small" className="text-ui-fg-subtle">
-                <Trans
-                  i18nKey="emails.editor.noLanguages"
-                  components={{
-                    link: (
-                      <Link
-                        to="/settings/store"
-                        className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-                      />
-                    ),
-                  }}
+            {summary && (
+              <div className="flex shrink-0 items-center gap-x-2">
+                <Label size="small" htmlFor="emails-type-enabled">
+                  {t("emails.editor.enabled")}
+                </Label>
+                <Switch
+                  id="emails-type-enabled"
+                  checked={summary.enabled}
+                  disabled={update.isPending}
+                  onCheckedChange={(checked) =>
+                    update.mutate(
+                      { enabled: checked },
+                      { onError: (error) => toast.error(`${t("emails.list.toggleError")} ${errorMessage(error)}`) }
+                    )
+                  }
                 />
-              </Text>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-y-4 px-6 py-4">
-            {detail.fields.map(({ key, multiline }) => {
-              const field = detail.copy[locale]?.[key]
-              const value = draft[locale][key] ?? ""
-              const isDefault = value === (field?.default ?? "") || value.trim() === ""
-              // A language without text of its own shows the original it falls back to.
-              const placeholder = field?.default || field?.original
-              const id = `emails-copy-${locale}-${key}`
-              return (
-                <div key={`${locale}:${key}`} className="flex flex-col gap-y-1">
-                  <div className="flex items-center justify-between gap-x-2">
-                    <Label size="small" htmlFor={id}>
-                      {t(`emails.copyKeys.${key}`, { defaultValue: key })}
-                    </Label>
-                    {!isDefault && (
-                      <div className="flex items-center gap-x-2">
-                        <Badge size="2xsmall">{t("emails.editor.fieldEdited")}</Badge>
-                        <Button size="small" variant="transparent" onClick={() => setField(key, field?.default ?? "")}>
-                          {field?.default ? t("emails.editor.restoreField") : t("emails.editor.useOriginal")}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                  {multiline ? (
-                    <Textarea
-                      id={id}
-                      rows={5}
-                      maxLength={2000}
-                      value={value}
-                      placeholder={placeholder}
-                      onChange={(event) => setField(key, event.target.value)}
-                    />
-                  ) : (
-                    <Input
-                      id={id}
-                      maxLength={2000}
-                      value={value}
-                      placeholder={placeholder}
-                      onChange={(event) => setField(key, event.target.value)}
-                    />
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="px-6 py-4">
-            <Text size="small" weight="plus">
-              {t("emails.editor.variables")}
-            </Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              {detail.variables ? t("emails.editor.variablesHint") : t("emails.editor.anyVariables")}
-            </Text>
-            {detail.variables && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {detail.variables.map((variable) => (
-                  <Badge key={variable} size="2xsmall" className="font-mono">{`{{${variable}}}`}</Badge>
-                ))}
               </div>
             )}
           </div>
-
-          <div className="flex items-center justify-between gap-x-2 px-6 py-4">
-            <Button
-              size="small"
-              variant="danger"
-              disabled={!detail.edited}
-              isLoading={reset.isPending}
-              onClick={onReset}
-            >
-              {t("emails.reset.copy")}
-            </Button>
-            <div className="flex items-center gap-x-2">
-              <Button size="small" variant="secondary" disabled={!dirty} onClick={() => setDraft(saved)}>
-                {t("emails.editor.discard")}
-              </Button>
-              <Button size="small" disabled={!dirty} isLoading={update.isPending} onClick={onSave}>
-                {t("emails.editor.save")}
-              </Button>
-            </div>
-          </div>
+          {summary?.audience === "team" && <TypeRecipients type={type} recipients={summary.recipients} />}
         </Container>
 
-        {!isCommon && (
-          <div className="flex flex-col gap-y-3">
-            <Container className="divide-y p-0">
-              <div className="flex items-center justify-between gap-x-4 px-6 py-4">
-                <div>
-                  <Heading level="h2">{t("emails.editor.preview")}</Heading>
-                  <Text size="small" className="text-ui-fg-subtle">
-                    {dirty
-                      ? t("emails.editor.previewUnsaved")
-                      : preview.data && !preview.data.preview.order
-                        ? t("emails.editor.previewSample")
-                        : languageLabel(locale)}
-                  </Text>
-                </div>
-                {(orders.data?.orders.length ?? 0) > 0 && (
-                  <div className="w-56">
-                    <Select size="small" value={orderId} onValueChange={setOrderId}>
-                      <Select.Trigger aria-label={t("emails.editor.previewOrder")}>
-                        <Select.Value />
-                      </Select.Trigger>
-                      <Select.Content>
-                        <Select.Item value={LATEST}>{t("emails.editor.previewLatest")}</Select.Item>
-                        {orders.data?.orders.map((order) => (
-                          <Select.Item key={order.id} value={order.id}>
-                            #{order.display_id}
-                            {order.email ? ` · ${order.email}` : ""}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select>
-                  </div>
-                )}
-              </div>
-
-              {preview.isError && (
-                <Text size="small" className="text-ui-fg-error px-6 py-4">
-                  {t("emails.editor.previewError")} {errorMessage(preview.error)}
+        <div className={isCommon ? "flex flex-col gap-y-3" : "grid grid-cols-1 items-start gap-3 xl:grid-cols-2"}>
+          <Container className="divide-y p-0">
+            <div className="flex items-center justify-between gap-x-4 px-6 py-4">
+              <div>
+                <Heading level="h2">{t("emails.editor.text")}</Heading>
+                <Text size="small" className="text-ui-fg-subtle">
+                  {dirty
+                    ? t("emails.editor.unsaved")
+                    : isOriginal
+                      ? t("emails.editor.textHint")
+                      : t("emails.editor.textHintTranslation", { language: languageLabel(detail.base_locale) })}
                 </Text>
-              )}
-              {preview.isLoading && (
-                <div className="px-6 py-4">
-                  <Skeleton className="h-96 w-full" />
-                </div>
-              )}
-              {preview.data && (
-                <>
-                  <div className="px-6 py-3">
-                    <Text size="xsmall" className="text-ui-fg-subtle">
-                      {t("emails.editor.subject")}
-                    </Text>
-                    <Text size="small" weight="plus">
-                      {preview.data.preview.subject}
-                    </Text>
-                    {preview.data.preview.to && (
-                      <Text size="xsmall" className="text-ui-fg-subtle">
-                        {t("emails.editor.to")}: {preview.data.preview.to}
+              </div>
+              <LanguagePicker
+                detail={detail}
+                locale={locale}
+                onChange={setLocale}
+                label={languageLabel}
+                missing={(code) => countMissing(detail, draft, code)}
+              />
+            </div>
+            {detail.translation_enabled && detail.locales.length < 2 && (
+              <div className="px-6 py-3">
+                <Text size="small" className="text-ui-fg-subtle">
+                  <Trans
+                    i18nKey="emails.editor.noLanguages"
+                    components={{
+                      link: (
+                        <Link
+                          to="/settings/store"
+                          className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                        />
+                      ),
+                    }}
+                  />
+                </Text>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-y-4 px-6 py-4">
+              {detail.fields.map(({ key, multiline }) => {
+                const field = detail.copy[locale]?.[key]
+                const value = draft[locale][key] ?? ""
+                const isDefault = value === (field?.default ?? "") || value.trim() === ""
+                // A language without text of its own shows the original it falls back to.
+                const placeholder = field?.default || field?.original
+                const id = `emails-copy-${locale}-${key}`
+                return (
+                  <div key={`${locale}:${key}`} className="flex flex-col gap-y-1">
+                    <div className="flex items-center justify-between gap-x-2">
+                      <Label size="small" htmlFor={id}>
+                        {t(`emails.copyKeys.${key}`, { defaultValue: key })}
+                      </Label>
+                      {!isDefault && (
+                        <div className="flex items-center gap-x-2">
+                          <Badge size="2xsmall">{t("emails.editor.fieldEdited")}</Badge>
+                          <Button
+                            size="small"
+                            variant="transparent"
+                            onClick={() => setField(key, field?.default ?? "")}
+                          >
+                            {field?.default ? t("emails.editor.restoreField") : t("emails.editor.useOriginal")}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <VariableInput
+                      id={id}
+                      multiline={multiline}
+                      value={value}
+                      variables={detail.variables}
+                      placeholder={placeholder && !placeholder.includes("{{") ? placeholder : undefined}
+                      aria-invalid={value.length > 2000}
+                      onChange={(next) => setField(key, next)}
+                    />
+                    {!value.trim() && placeholder && (
+                      <Text size="xsmall" className="text-ui-fg-muted">
+                        {t("emails.editor.usesDefault")}{" "}
+                        <VariableText value={placeholder} variables={detail.variables} />
                       </Text>
                     )}
                   </div>
-                  {/* The email is shown as mail clients would: no scripts, no access to the admin. */}
-                  <iframe
-                    title={t("emails.editor.preview")}
-                    sandbox=""
-                    srcDoc={preview.data.preview.html}
-                    className="h-[720px] w-full rounded-b-lg border-0 bg-white"
-                  />
-                </>
-              )}
-            </Container>
+                )
+              })}
+            </div>
 
-            <TestSend type={type} locale={locale} orderId={orderId === LATEST ? undefined : orderId} />
-          </div>
-        )}
+            <div className="px-6 py-4">
+              <Text size="small" weight="plus">
+                {t("emails.editor.variables")}
+              </Text>
+              <Text size="small" className="text-ui-fg-subtle">
+                {detail.variables ? t("emails.editor.variablesHint") : t("emails.editor.anyVariables")}
+              </Text>
+              {detail.variables && (
+                <div className="mt-2">
+                  <VariablePalette variables={detail.variables} />
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-x-2 px-6 py-4">
+              <Button
+                size="small"
+                variant="danger"
+                disabled={!detail.edited}
+                isLoading={reset.isPending}
+                onClick={onReset}
+              >
+                {t("emails.reset.copy")}
+              </Button>
+              <div className="flex items-center gap-x-2">
+                <Button size="small" variant="secondary" disabled={!dirty} onClick={() => setDraft(saved)}>
+                  {t("emails.editor.discard")}
+                </Button>
+                <Button size="small" disabled={!dirty} isLoading={update.isPending} onClick={onSave}>
+                  {t("emails.editor.save")}
+                </Button>
+              </div>
+            </div>
+          </Container>
+
+          {!isCommon && (
+            <div className="flex flex-col gap-y-3">
+              <Container className="divide-y p-0">
+                <div className="flex items-center justify-between gap-x-4 px-6 py-4">
+                  <div>
+                    <Heading level="h2">{t("emails.editor.preview")}</Heading>
+                    <Text size="small" className="text-ui-fg-subtle">
+                      {dirty
+                        ? t("emails.editor.previewUnsaved")
+                        : preview.data && !preview.data.preview.order
+                          ? t("emails.editor.previewSample")
+                          : languageLabel(locale)}
+                    </Text>
+                  </div>
+                  {(orders.data?.orders.length ?? 0) > 0 && (
+                    <div className="w-56">
+                      <Select size="small" value={orderId} onValueChange={setOrderId}>
+                        <Select.Trigger aria-label={t("emails.editor.previewOrder")}>
+                          <Select.Value />
+                        </Select.Trigger>
+                        <Select.Content>
+                          <Select.Item value={LATEST}>{t("emails.editor.previewLatest")}</Select.Item>
+                          {orders.data?.orders.map((order) => (
+                            <Select.Item key={order.id} value={order.id}>
+                              #{order.display_id}
+                              {order.email ? ` · ${order.email}` : ""}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select>
+                    </div>
+                  )}
+                </div>
+
+                {preview.isError && (
+                  <Text size="small" className="text-ui-fg-error px-6 py-4">
+                    {t("emails.editor.previewError")} {errorMessage(preview.error)}
+                  </Text>
+                )}
+                {preview.isLoading && (
+                  <div className="px-6 py-4">
+                    <Skeleton className="h-96 w-full" />
+                  </div>
+                )}
+                {preview.data && (
+                  <>
+                    <div className="px-6 py-3">
+                      <Text size="xsmall" className="text-ui-fg-subtle">
+                        {t("emails.editor.subject")}
+                      </Text>
+                      <Text size="small" weight="plus">
+                        {preview.data.preview.subject}
+                      </Text>
+                      {preview.data.preview.to && (
+                        <Text size="xsmall" className="text-ui-fg-subtle">
+                          {t("emails.editor.to")}: {preview.data.preview.to}
+                        </Text>
+                      )}
+                    </div>
+                    {/* The email is shown as mail clients would: no scripts, no access to the admin. */}
+                    <iframe
+                      title={t("emails.editor.preview")}
+                      sandbox=""
+                      srcDoc={preview.data.preview.html}
+                      className="h-[720px] w-full rounded-b-lg border-0 bg-white"
+                    />
+                  </>
+                )}
+              </Container>
+
+              <TestSend type={type} locale={locale} orderId={orderId === LATEST ? undefined : orderId} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </VariablesProvider>
   )
 }
 

@@ -24,25 +24,58 @@
       "team": "Store team"
     },
     "types": {
-      "order-confirmation": { "name": "Order confirmation", "description": "When an order is placed." },
-      "payment-received": { "name": "Payment received", "description": "When a payment is captured." },
-      "order-fulfilled": { "name": "Order fulfilled", "description": "When a fulfillment is created for an order (packed, before it ships)." },
+      "order-confirmation": {
+        "name": "Order confirmation",
+        "description": "When an order is placed."
+      },
+      "payment-received": {
+        "name": "Payment received",
+        "description": "When a payment is captured."
+      },
+      "order-fulfilled": {
+        "name": "Order fulfilled",
+        "description": "When a fulfillment is created for an order (packed, before it ships)."
+      },
       "order-shipped": {
         "name": "Order shipped",
         "description": "When a fulfillment is marked as shipped, with the tracking link."
       },
-      "order-delivered": { "name": "Order delivered", "description": "When a fulfillment is marked as delivered." },
-      "order-canceled": { "name": "Order canceled", "description": "When an order is canceled." },
-      "refund-issued": { "name": "Refund issued", "description": "When a payment is refunded." },
-      "return-requested": { "name": "Return requested", "description": "When a return is registered." },
-      "return-accepted": { "name": "Return accepted", "description": "When the returned items are received." },
-      "welcome": { "name": "Welcome", "description": "When a customer creates an account." },
+      "order-delivered": {
+        "name": "Order delivered",
+        "description": "When a fulfillment is marked as delivered."
+      },
+      "order-canceled": {
+        "name": "Order canceled",
+        "description": "When an order is canceled."
+      },
+      "refund-issued": {
+        "name": "Refund issued",
+        "description": "When a payment is refunded."
+      },
+      "return-requested": {
+        "name": "Return requested",
+        "description": "When a return is registered."
+      },
+      "return-accepted": {
+        "name": "Return accepted",
+        "description": "When the returned items are received."
+      },
+      "welcome": {
+        "name": "Welcome",
+        "description": "When a customer creates an account."
+      },
       "email-verification": {
         "name": "Email verification",
         "description": "When Medusa asks a customer to confirm their email address."
       },
-      "password-reset": { "name": "Password reset", "description": "When someone asks to reset their password." },
-      "team-new-order": { "name": "New order alert", "description": "To the store team when an order is placed." },
+      "password-reset": {
+        "name": "Password reset",
+        "description": "When someone asks to reset their password."
+      },
+      "team-new-order": {
+        "name": "New order alert",
+        "description": "To the store team when an order is placed."
+      },
       "team-low-stock": {
         "name": "Low stock alert",
         "description": "To the store team when an item drops to the low stock threshold."
@@ -117,7 +150,8 @@
       "previewError": "The preview could not be rendered.",
       "subject": "Subject",
       "to": "To",
-      "notFound": "This email type does not exist."
+      "notFound": "This email type does not exist.",
+      "usesDefault": "Empty: the email uses"
     },
     "test": {
       "title": "Send a test",
@@ -212,6 +246,164 @@
       "contact": "Footer: contact line",
       "team_footer": "Footer of store team emails",
       "unsubscribe": "Footer: unsubscribe link"
+    },
+    "tabs": {
+      "history": "History",
+      "templates": "Templates",
+      "appearance": "Appearance",
+      "settings": "Settings",
+      "guide": "Rollout guide"
+    },
+    "variables": {
+      "remove": "Remove",
+      "paletteHint": "Click a variable to insert it where the cursor is. Hover it to see its code.",
+      "store_name": "Store name",
+      "support_email": "Support e-mail",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "customer_name": "Customer name",
+      "customer_email": "Customer e-mail",
+      "order_number": "Order number",
+      "order_total": "Order total",
+      "order_date": "Order date",
+      "amount": "Amount",
+      "refund_amount": "Refund amount",
+      "tracking_number": "Tracking number",
+      "code": "Code",
+      "expires_at": "Valid until",
+      "count": "Number of products",
+      "threshold": "Stock threshold",
+      "reason": "Reason"
+    },
+    "appearance": {
+      "saved": "Appearance saved",
+      "saveError": "Could not save the appearance.",
+      "palettes": "Colour palettes",
+      "palettesHint": "Pick a starting point, then adjust single colours below.",
+      "preset": {
+        "neutral": "Neutral",
+        "navy": "Navy",
+        "forest": "Forest",
+        "violet": "Violet",
+        "sunset": "Sunset",
+        "night": "Night"
+      },
+      "colors": "Colours",
+      "color": {
+        "primary": "Main colour",
+        "primaryText": "Text on buttons",
+        "background": "Background",
+        "card": "Card",
+        "text": "Text",
+        "muted": "Secondary text",
+        "border": "Borders"
+      },
+      "colorHint": {
+        "primary": "Buttons and links",
+        "primaryText": "Must read well on the main colour",
+        "background": "Around the email",
+        "card": "Behind the content",
+        "text": "Headings and paragraphs",
+        "muted": "Footer and notes",
+        "border": "Lines and frames"
+      },
+      "restoreColor": "Back to the colour from the options",
+      "font": "Font",
+      "fontHint": "Fonts every mail client has. Web fonts would be replaced by mail apps anyway.",
+      "fonts": {
+        "system": "System (like the device)",
+        "helvetica": "Helvetica / Arial",
+        "verdana": "Verdana",
+        "trebuchet": "Trebuchet",
+        "georgia": "Georgia (serif)",
+        "mono": "Monospace"
+      },
+      "buttons": "Buttons",
+      "button": "Button",
+      "buttonShape": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "pill": "Pill"
+      },
+      "card": "Card corners",
+      "cardShape": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "soft": "Soft"
+      },
+      "header": "Header and logo",
+      "align": {
+        "center": "Centred",
+        "left": "Left"
+      },
+      "showLogo": "Show a logo (otherwise the store name)",
+      "logoUrl": "Logo URL",
+      "logoWidth": "Width (px)",
+      "logoHint": "An https:// link to a PNG or JPG. Many mail apps block SVG.",
+      "logoInvalid": "Enter an https:// address of a PNG or JPG image.",
+      "restoreAll": "Restore the options' look",
+      "preview": "Preview",
+      "previewHint": "A real email with the saved look.",
+      "previewUnsaved": "Unsaved changes, shown before saving.",
+      "previewType": "Email to preview"
+    },
+    "guide": {
+      "whatTitle": "What the plugin does",
+      "what": "Medusa events (an order placed, a shipment, a refund, a new account) become emails for customers and alerts for the store team, in the store's languages. Every email is logged with its status and can be sent again; texts and the look are edited here, without code.",
+      "diagram": {
+        "events": "Medusa events",
+        "plugin": "Emails",
+        "provider": "Resend or SMTP",
+        "inbox": "Customer and team inbox"
+      },
+      "stepsTitle": "From installation to production",
+      "status": {
+        "done": "Done",
+        "todo": "To do",
+        "optional": "Optional"
+      },
+      "steps": {
+        "install": {
+          "title": "Install the plugin",
+          "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+        },
+        "provider": {
+          "title": "Connect sending",
+          "body": "Register the Resend or SMTP provider for the \"{{channel}}\" channel and switch demo mode off. In demo mode nothing leaves the store."
+        },
+        "links": {
+          "title": "Set the links",
+          "body": "storefrontUrl and adminUrl, so buttons in emails lead to the order in the store and in the admin."
+        },
+        "team": {
+          "title": "Store team recipients",
+          "body": "Addresses for new order, failed payment and low stock alerts ({{count}} set). On the Settings tab."
+        },
+        "appearance": {
+          "title": "Match the look",
+          "body": "Colours, font, buttons and logo on the Appearance tab, with a live preview."
+        },
+        "texts": {
+          "title": "Review the texts",
+          "body": "On the Templates tab. Variables such as the order number are inserted with a click."
+        },
+        "languages": {
+          "title": "Languages",
+          "body": "The store has {{count}} language(s). With the Translation module, each email can be translated."
+        },
+        "test": {
+          "title": "Send a test email",
+          "body": "Open any template and send a test to your address. Done once an email was really delivered to a provider."
+        },
+        "production": {
+          "title": "Go live",
+          "body": "Demo mode off, a verified sending domain, and a look at the History tab after the first orders."
+        }
+      },
+      "promptTitle": "Prompt for an AI assistant",
+      "promptHint": "Paste it into Claude Code, Cursor or another assistant in your Medusa backend project.",
+      "copy": "Copy",
+      "copied": "Copied"
     }
   }
 }

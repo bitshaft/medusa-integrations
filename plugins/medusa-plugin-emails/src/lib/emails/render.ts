@@ -8,6 +8,7 @@ import { createFormatters } from "./format"
 import type { EmailLocale } from "./locales"
 import { type EmailsPluginOptions, resolveBrand } from "./options"
 import { customCopyFor, getDefinition, templateFor } from "./registry"
+import type { StoredTheme } from "./theme"
 import type { EmailData } from "./types"
 import { buildVariables, withOptionalBlanks } from "./variables"
 
@@ -20,6 +21,8 @@ export type RenderEmailInput = {
   overrides?: { type?: CopyOverrides; common?: CopyOverrides }
   /** The store's name in Medusa, used when `brand.name` is not set. */
   storeName?: string | null
+  /** The admin's theme from the Appearance tab. */
+  theme?: StoredTheme
 }
 
 const DOCTYPE =
@@ -38,7 +41,7 @@ export async function renderEmail(input: RenderEmailInput): Promise<RenderedEmai
     )
   }
 
-  const brand = resolveBrand(options, locale, input.storeName)
+  const brand = resolveBrand(options, locale, input.storeName, input.theme)
   const format = createFormatters(locale)
   const variables = withOptionalBlanks(buildVariables(data, brand, format))
 

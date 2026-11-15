@@ -8,6 +8,13 @@ All notable changes to `@bitshaft/medusa-plugin-emails`. The format follows
 
 First release.
 
+- Admin page with tabs: History (first), Templates, Appearance, Settings
+  and a Rollout guide with the steps' status detected from the store.
+- Appearance tab: colour palettes, every colour, font, button and card
+  shapes, header alignment and logo, with a live preview; stored over
+  `brand` from the options (new `brand.style` option).
+- Variables in the text editor show as clickable chips with readable names.
+
 - Fourteen emails in Polish and English: order confirmation, payment
   received, order shipped (with tracking), delivered, canceled, refund
   issued, return requested and accepted; welcome, email verification and

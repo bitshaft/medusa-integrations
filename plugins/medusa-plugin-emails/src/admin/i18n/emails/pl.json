@@ -24,9 +24,18 @@
       "team": "Zespół sklepu"
     },
     "types": {
-      "order-confirmation": { "name": "Potwierdzenie zamówienia", "description": "Po złożeniu zamówienia." },
-      "payment-received": { "name": "Płatność otrzymana", "description": "Po zaksięgowaniu płatności." },
-      "order-fulfilled": { "name": "Zamówienie skompletowane", "description": "Po utworzeniu realizacji zamówienia (spakowane, przed wysyłką)." },
+      "order-confirmation": {
+        "name": "Potwierdzenie zamówienia",
+        "description": "Po złożeniu zamówienia."
+      },
+      "payment-received": {
+        "name": "Płatność otrzymana",
+        "description": "Po zaksięgowaniu płatności."
+      },
+      "order-fulfilled": {
+        "name": "Zamówienie skompletowane",
+        "description": "Po utworzeniu realizacji zamówienia (spakowane, przed wysyłką)."
+      },
       "order-shipped": {
         "name": "Zamówienie wysłane",
         "description": "Po oznaczeniu realizacji jako wysłanej, z linkiem do śledzenia."
@@ -35,16 +44,34 @@
         "name": "Zamówienie dostarczone",
         "description": "Po oznaczeniu realizacji jako dostarczonej."
       },
-      "order-canceled": { "name": "Zamówienie anulowane", "description": "Po anulowaniu zamówienia." },
-      "refund-issued": { "name": "Zwrot środków", "description": "Po zwrocie płatności." },
-      "return-requested": { "name": "Zgłoszenie zwrotu", "description": "Po zarejestrowaniu zwrotu." },
-      "return-accepted": { "name": "Zwrot przyjęty", "description": "Po przyjęciu zwróconych produktów." },
-      "welcome": { "name": "Powitanie", "description": "Po założeniu konta przez klienta." },
+      "order-canceled": {
+        "name": "Zamówienie anulowane",
+        "description": "Po anulowaniu zamówienia."
+      },
+      "refund-issued": {
+        "name": "Zwrot środków",
+        "description": "Po zwrocie płatności."
+      },
+      "return-requested": {
+        "name": "Zgłoszenie zwrotu",
+        "description": "Po zarejestrowaniu zwrotu."
+      },
+      "return-accepted": {
+        "name": "Zwrot przyjęty",
+        "description": "Po przyjęciu zwróconych produktów."
+      },
+      "welcome": {
+        "name": "Powitanie",
+        "description": "Po założeniu konta przez klienta."
+      },
       "email-verification": {
         "name": "Potwierdzenie adresu e-mail",
         "description": "Gdy Medusa prosi klienta o potwierdzenie adresu e-mail."
       },
-      "password-reset": { "name": "Reset hasła", "description": "Gdy ktoś prosi o zresetowanie hasła." },
+      "password-reset": {
+        "name": "Reset hasła",
+        "description": "Gdy ktoś prosi o zresetowanie hasła."
+      },
       "team-new-order": {
         "name": "Powiadomienie o nowym zamówieniu",
         "description": "Do zespołu sklepu po złożeniu zamówienia."
@@ -123,7 +150,8 @@
       "previewError": "Nie udało się wyrenderować podglądu.",
       "subject": "Temat",
       "to": "Do",
-      "notFound": "Taki typ e-maila nie istnieje."
+      "notFound": "Taki typ e-maila nie istnieje.",
+      "usesDefault": "Puste: mail użyje"
     },
     "test": {
       "title": "Wyślij test",
@@ -218,6 +246,164 @@
       "contact": "Stopka: wiersz kontaktowy",
       "team_footer": "Stopka e-maili dla zespołu",
       "unsubscribe": "Stopka: link do wypisania się"
+    },
+    "tabs": {
+      "history": "Historia",
+      "templates": "Szablony",
+      "appearance": "Wygląd",
+      "settings": "Ustawienia",
+      "guide": "Przewodnik wdrożenia"
+    },
+    "variables": {
+      "remove": "Usuń",
+      "paletteHint": "Kliknij zmienną, aby wstawić ją w miejscu kursora. Najedź, aby zobaczyć jej kod.",
+      "store_name": "Nazwa sklepu",
+      "support_email": "E-mail obsługi",
+      "first_name": "Imię",
+      "last_name": "Nazwisko",
+      "customer_name": "Imię i nazwisko klienta",
+      "customer_email": "E-mail klienta",
+      "order_number": "Numer zamówienia",
+      "order_total": "Wartość zamówienia",
+      "order_date": "Data zamówienia",
+      "amount": "Kwota",
+      "refund_amount": "Kwota zwrotu",
+      "tracking_number": "Numer przesyłki",
+      "code": "Kod",
+      "expires_at": "Ważny do",
+      "count": "Liczba produktów",
+      "threshold": "Próg stanu",
+      "reason": "Powód"
+    },
+    "appearance": {
+      "saved": "Zapisano wygląd",
+      "saveError": "Nie udało się zapisać wyglądu.",
+      "palettes": "Palety kolorów",
+      "palettesHint": "Wybierz punkt wyjścia, a niżej dopasuj pojedyncze kolory.",
+      "preset": {
+        "neutral": "Neutralna",
+        "navy": "Granat",
+        "forest": "Zieleń",
+        "violet": "Fiolet",
+        "sunset": "Pomarańcz",
+        "night": "Noc"
+      },
+      "colors": "Kolory",
+      "color": {
+        "primary": "Kolor główny",
+        "primaryText": "Tekst na przyciskach",
+        "background": "Tło",
+        "card": "Karta",
+        "text": "Tekst",
+        "muted": "Tekst pomocniczy",
+        "border": "Obramowania"
+      },
+      "colorHint": {
+        "primary": "Przyciski i linki",
+        "primaryText": "Musi być czytelny na kolorze głównym",
+        "background": "Wokół maila",
+        "card": "Pod treścią",
+        "text": "Nagłówki i akapity",
+        "muted": "Stopka i dopiski",
+        "border": "Linie i ramki"
+      },
+      "restoreColor": "Wróć do koloru z opcji",
+      "font": "Czcionka",
+      "fontHint": "Czcionki dostępne w każdym programie pocztowym. Czcionki z sieci i tak zostałyby podmienione.",
+      "fonts": {
+        "system": "Systemowa (jak na urządzeniu)",
+        "helvetica": "Helvetica / Arial",
+        "verdana": "Verdana",
+        "trebuchet": "Trebuchet",
+        "georgia": "Georgia (szeryfowa)",
+        "mono": "Stałej szerokości"
+      },
+      "buttons": "Przyciski",
+      "button": "Przycisk",
+      "buttonShape": {
+        "square": "Kwadratowe",
+        "rounded": "Zaokrąglone",
+        "pill": "Pigułka"
+      },
+      "card": "Rogi karty",
+      "cardShape": {
+        "square": "Kwadratowe",
+        "rounded": "Zaokrąglone",
+        "soft": "Miękkie"
+      },
+      "header": "Nagłówek i logo",
+      "align": {
+        "center": "Na środku",
+        "left": "Do lewej"
+      },
+      "showLogo": "Pokaż logo (inaczej nazwę sklepu)",
+      "logoUrl": "Adres logo",
+      "logoWidth": "Szerokość (px)",
+      "logoHint": "Link https:// do pliku PNG lub JPG. Wiele programów pocztowych blokuje SVG.",
+      "logoInvalid": "Podaj adres https:// obrazu PNG lub JPG.",
+      "restoreAll": "Przywróć wygląd z opcji",
+      "preview": "Podgląd",
+      "previewHint": "Prawdziwy mail z zapisanym wyglądem.",
+      "previewUnsaved": "Niezapisane zmiany, widoczne przed zapisem.",
+      "previewType": "Mail do podglądu"
+    },
+    "guide": {
+      "whatTitle": "Co robi wtyczka",
+      "what": "Zdarzenia Medusy (złożone zamówienie, wysyłka, zwrot, nowe konto) zamieniają się w maile do klientów i powiadomienia dla zespołu sklepu, w językach sklepu. Każdy mail trafia do historii ze statusem i można go wysłać ponownie; teksty i wygląd zmieniasz tutaj, bez kodu.",
+      "diagram": {
+        "events": "Zdarzenia Medusy",
+        "plugin": "Emails",
+        "provider": "Resend lub SMTP",
+        "inbox": "Skrzynka klienta i zespołu"
+      },
+      "stepsTitle": "Od instalacji do produkcji",
+      "status": {
+        "done": "Gotowe",
+        "todo": "Do zrobienia",
+        "optional": "Opcjonalne"
+      },
+      "steps": {
+        "install": {
+          "title": "Zainstaluj wtyczkę",
+          "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+        },
+        "provider": {
+          "title": "Podłącz wysyłkę",
+          "body": "Zarejestruj providera Resend albo SMTP dla kanału „{{channel}}” i wyłącz tryb demo. W trybie demo nic nie wychodzi ze sklepu."
+        },
+        "links": {
+          "title": "Ustaw linki",
+          "body": "storefrontUrl i adminUrl, żeby przyciski w mailach prowadziły do zamówienia w sklepie i w panelu."
+        },
+        "team": {
+          "title": "Odbiorcy w zespole",
+          "body": "Adresy dla powiadomień o nowym zamówieniu, nieudanej płatności i niskim stanie (ustawiono: {{count}}). W zakładce Ustawienia."
+        },
+        "appearance": {
+          "title": "Dopasuj wygląd",
+          "body": "Kolory, czcionka, przyciski i logo w zakładce Wygląd, z podglądem na żywo."
+        },
+        "texts": {
+          "title": "Przejrzyj teksty",
+          "body": "W zakładce Szablony. Zmienne, np. numer zamówienia, wstawiasz kliknięciem."
+        },
+        "languages": {
+          "title": "Języki",
+          "body": "Sklep ma języków: {{count}}. Z modułem Translation każdy mail można przetłumaczyć."
+        },
+        "test": {
+          "title": "Wyślij mail testowy",
+          "body": "Otwórz dowolny szablon i wyślij test na swój adres. Gotowe, gdy mail faktycznie trafi do providera."
+        },
+        "production": {
+          "title": "Start produkcyjny",
+          "body": "Tryb demo wyłączony, zweryfikowana domena nadawcy i rzut oka na Historię po pierwszych zamówieniach."
+        }
+      },
+      "promptTitle": "Prompt dla asystenta AI",
+      "promptHint": "Wklej go w Claude Code, Cursora lub innego asystenta w projekcie backendu Medusy.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano"
     }
   }
 }

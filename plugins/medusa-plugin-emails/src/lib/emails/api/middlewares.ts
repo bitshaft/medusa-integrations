@@ -8,6 +8,7 @@ import {
   AdminResetType,
   AdminTestType,
   AdminUpdateSettings,
+  AdminUpdateTheme,
   AdminUpdateType,
 } from "./validators"
 
@@ -21,6 +22,11 @@ export const emailsMiddlewares: MiddlewareRoute[] = [
     matcher: "/admin/emails/settings",
     method: ["POST"],
     middlewares: [validateAndTransformBody(AdminUpdateSettings)],
+  },
+  {
+    matcher: "/admin/emails/theme",
+    method: ["POST"],
+    middlewares: [validateAndTransformBody(AdminUpdateTheme)],
   },
   {
     matcher: "/admin/emails/reset",

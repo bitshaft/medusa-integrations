@@ -153,8 +153,13 @@ The names are yours to choose; the plugin only reads options. See
 
 `brand.name` defaults to the store's name in Medusa. `brand.colors` takes
 `primary`, `primaryText`, `background`, `card`, `text`, `muted` and `border`
-as hex colors. `brand.footerText` is one string or one per language
-(`{ en: "…", "pl-PL": "…" }`), matched like the email text.
+as hex colors. `brand.style` takes `font` (`system`, `helvetica`, `verdana`,
+`trebuchet`, `georgia`, `mono`), `buttonShape` (`square`, `rounded`,
+`pill`), `cardShape` (`square`, `rounded`, `soft`) and `headerAlign`
+(`center`, `left`). Admins can change the colours, style and logo on the
+**Appearance** tab; what they change is stored in the database and laid
+over these options field by field. `brand.footerText` is one string or one
+per language (`{ en: "…", "pl-PL": "…" }`), matched like the email text.
 
 **Links.** Each entry of `urls` is a template; placeholders in `{braces}`
 are URL-encoded. `{locale}` is the email's language as a storefront path
@@ -180,7 +185,7 @@ button is left out rather than pointing nowhere.
 | -------------------- | --------------------- | ------------------------------------------------------------------------- |
 | Order confirmation   | `order-confirmation`  | `order.placed`                                                            |
 | Payment received     | `payment-received`    | `payment.captured`                                                        |
-| Order fulfilled      | `order-fulfilled`     | `order.fulfillment_created`, when the order is packed |
+| Order fulfilled      | `order-fulfilled`     | `order.fulfillment_created`, when the order is packed                     |
 | Order shipped        | `order-shipped`       | `shipment.created`, with tracking numbers and the carrier's tracking link |
 | Order delivered      | `order-delivered`     | `delivery.created`                                                        |
 | Order canceled       | `order-canceled`      | `order.canceled`                                                          |
@@ -236,7 +241,7 @@ verified itself.
 ### Low stock alerts
 
 Every 30 minutes the plugin compares each inventory level (stocked minus
-reserved) with the threshold from Settings → Emails. New shortages are sent
+reserved) with the threshold from Emails → Settings. New shortages are sent
 as one email; an item is reported once and again only after it has been
 restocked above the threshold.
 
@@ -295,25 +300,31 @@ resends work the same way.
 
 ## Admin
 
-**Settings → Emails**
+**Emails** in the main menu, with five tabs:
 
-- Every email type with an on/off toggle, grouped into orders, customer
-  account and store team.
-- Store team recipients and the low stock threshold, with a way back to the
-  defaults from the plugin options. Each alert can have its own recipients.
-- **Editor** per email: the text in every store language, picked from a
-  select that shows what each translation still misses (subject, preview
-  text, heading, body, button, note), the `{{variables}}` it may use, and a
-  **live preview** in the picked language, rendered with a real order from
-  the store. Unsaved edits
-  show in the preview as you type. "Shared texts" holds the greeting,
-  sign-off, table labels and footer of every email.
-- **Send a test** of any email to any address.
-- **Restore defaults**, guarded: per email you type the email's name to
-  confirm; "Reset everything" asks you to type `RESET`. The send log is
-  never reset.
-- **Send log** with search by recipient and a status filter.
-- A "Missing translations" badge on emails a store language still misses.
+- **History** (the first tab): the send log with search by recipient and a
+  status filter, and a **Resend** button per email.
+- **Templates**: every email type with an on/off toggle, grouped into
+  orders, customer account and store team, and "Shared texts" (greeting,
+  sign-off, table labels and footer of every email). Each email opens an
+  **editor**: the text in every store language, picked from a select that
+  shows what each translation still misses, and a **live preview** rendered
+  with a real order from the store. Variables show as chips with a readable
+  name ("Order number" instead of `{{order_number}}`): click one in the list
+  to insert it where the cursor is, click a chip in the text to select it,
+  its × removes it; variables the email cannot use show in red. Also **send
+  a test** and **restore defaults** (you type the email's name to confirm).
+- **Appearance**: colour palettes and each of the seven colours, the font,
+  button and card shapes, header alignment and the logo, with a live preview
+  of any email. "Restore the options' look" goes back to `brand` from the
+  plugin options.
+- **Settings**: sender, languages and links as configured, store team
+  recipients and the low stock threshold (with a way back to the plugin
+  options; each alert can have its own recipients), and "Reset everything"
+  (you type `RESET`; the send log is never reset).
+- **Rollout guide**: what the plugin does, the steps from installation to
+  production with their status detected from your store, and a prompt for
+  an AI assistant.
 
 **Settings → Translations** gets a card pointing to the Emails page, where
 email texts are translated.
@@ -451,9 +462,11 @@ Admin routes, all under `/admin/emails` and behind admin authentication:
 | ----------------------------- | ------------------------------------------------------------- |
 | `GET /status`                 | Enabled or the reason it is not, demo mode, sender.           |
 | `GET, POST /settings`         | Store team recipients and low stock threshold.                |
+| `GET, POST /theme`            | Appearance; `{ theme: null }` restores the plugin options.    |
+| `GET /guide`                  | Rollout steps with their detected status.                     |
 | `GET /types`                  | Email types with their toggles.                               |
 | `GET, POST /types/:type`      | One type: toggle, recipients, text. `:type` may be `common`.  |
-| `POST /types/:type/preview`   | Render with a real order; nothing is sent.                    |
+| `POST /types/:type/preview`   | Render with a real order (and unsaved `copy` or `theme`).     |
 | `POST /types/:type/send-test` | Send a test to `{ to }`.                                      |
 | `POST /types/:type/reset`     | Restore defaults; needs `{ confirm: "<type>" }`.              |
 | `POST /reset`                 | Restore all settings; needs `{ confirm: "RESET" }`.           |
@@ -463,7 +476,7 @@ Admin routes, all under `/admin/emails` and behind admin authentication:
 ## Testing
 
 1. **Demo mode first.** Set `demo: true`, place an order, and look at
-   Settings → Emails → Send log and at the previews.
+   Emails → History and at the previews.
 2. **Resend.** Create an API key at resend.com → API Keys and verify your
    domain (Domains). Until the domain is verified you can send from
    `onboarding@resend.dev` to your own account address only. Set `from` to

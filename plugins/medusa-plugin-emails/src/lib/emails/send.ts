@@ -202,6 +202,7 @@ export async function sendEmail(
         data: loaded.data,
         overrides: { type: settings.types[input.type]?.copy, common: settings.common_copy },
         storeName,
+        theme: settings.theme,
       })
       if (input.subjectPrefix) {
         rendered.subject = `${input.subjectPrefix} ${rendered.subject}`

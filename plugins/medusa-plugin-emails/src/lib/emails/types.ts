@@ -1,3 +1,4 @@
+import type { BrandStyle } from "./theme"
 import type { MedusaContainer } from "@medusajs/framework/types"
 import type { ComponentType } from "react"
 
@@ -156,6 +157,8 @@ export type Brand = {
     muted: string
     border: string
   }
+  /** Font, corner radii and header alignment. */
+  style: BrandStyle
   footerText?: string
   company?: { name?: string; address?: string; taxId?: string; phone?: string; email?: string }
   links: { website?: string; terms?: string; returns?: string; privacy?: string }

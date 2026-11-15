@@ -163,7 +163,7 @@ export function useEmailType(type: string | undefined) {
 
 export function useEmailPreview(
   type: string | undefined,
-  input: { locale: EmailLocale; order_id?: string; copy?: CopyDraft },
+  input: { locale: EmailLocale; order_id?: string; copy?: CopyDraft; theme?: EmailTheme },
   enabled: boolean
 ) {
   return useQuery({
@@ -260,5 +260,67 @@ export function useResendEmail() {
     mutationFn: (id: string) =>
       sdk.client.fetch<SendOutcome>(`/admin/emails/messages/${id}/resend`, { method: "POST" }),
     onSuccess: () => invalidate("messages"),
+  })
+}
+
+/* Appearance and rollout guide --------------------------------------------- */
+
+export type ColorKey = "primary" | "primaryText" | "background" | "card" | "text" | "muted" | "border"
+export type FontKey = "system" | "helvetica" | "verdana" | "trebuchet" | "georgia" | "mono"
+export type ButtonShape = "square" | "rounded" | "pill"
+export type CardShape = "square" | "rounded" | "soft"
+export type Alignment = "center" | "left"
+
+/** What the admin saved on the Appearance tab; missing fields follow the plugin options. */
+export type EmailTheme = {
+  colors?: Partial<Record<ColorKey, string>>
+  font?: FontKey
+  button_shape?: ButtonShape
+  card_shape?: CardShape
+  header_align?: Alignment
+  logo_url?: string | null
+  logo_width?: number
+}
+
+export type ThemeResponse = {
+  theme: EmailTheme
+  defaults: {
+    colors: Record<ColorKey, string>
+    font: FontKey
+    button_shape: ButtonShape
+    card_shape: CardShape
+    header_align: Alignment
+    logo_url: string | null
+    logo_width: number
+  }
+}
+
+export function useEmailTheme(enabled: boolean) {
+  return useQuery({
+    queryKey: [KEY, "theme"],
+    queryFn: () => sdk.client.fetch<ThemeResponse>("/admin/emails/theme"),
+    enabled,
+  })
+}
+
+export function useSaveEmailTheme() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (theme: EmailTheme | null) =>
+      sdk.client.fetch<ThemeResponse>("/admin/emails/theme", { method: "POST", body: { theme } }),
+    onSuccess: (data) => {
+      queryClient.setQueryData([KEY, "theme"], data)
+      queryClient.invalidateQueries({ queryKey: [KEY, "preview"] })
+      queryClient.invalidateQueries({ queryKey: [KEY, "guide"] })
+    },
+  })
+}
+
+export type GuideStep = { id: string; status: "done" | "todo" | "optional"; params?: Record<string, string | number> }
+
+export function useEmailsGuide() {
+  return useQuery({
+    queryKey: [KEY, "guide"],
+    queryFn: () => sdk.client.fetch<{ steps: GuideStep[] }>("/admin/emails/guide"),
   })
 }
