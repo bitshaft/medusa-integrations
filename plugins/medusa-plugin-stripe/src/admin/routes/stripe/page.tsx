@@ -13,7 +13,8 @@ import { Payouts } from "../../components/stripe/payouts"
 import { DemoBar, TabTrigger } from "../../components/stripe/shared"
 import { useRefresh, useStatus } from "../../lib/stripe/api"
 import { errorMessage } from "../../lib/stripe/format"
-import { navIcon } from "../../lib/stripe/kit/nav-icon"
+import { NAV_TILE_STYLE } from "../../lib/stripe/kit/nav-icon"
+import stripeLogo from "../../lib/stripe/stripe-logo.png"
 
 type Tab = "panel" | "payments" | "payouts" | "disputes" | "checks" | "guide"
 
@@ -34,7 +35,7 @@ const StripePage = () => {
       <Container className="divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <CreditCard />
+            <img src={stripeLogo} alt="" className="size-8 shrink-0 rounded-md" />
             <div>
               <div className="flex items-center gap-x-2">
                 <Heading>Stripe</Heading>
@@ -115,9 +116,16 @@ const StripePage = () => {
   )
 }
 
+/** Sidebar icon: the Stripe logo (a coloured square) covering the whole sidebar tile. */
+const StripeNavIcon = () => (
+  <span style={{ ...NAV_TILE_STYLE, overflow: "hidden" }}>
+    <img src={stripeLogo} alt="" style={{ width: 20, height: 20, display: "block" }} />
+  </span>
+)
+
 export const config = defineRouteConfig({
   label: "Stripe",
-  icon: navIcon(CreditCard, "#635bff"),
+  icon: StripeNavIcon,
 })
 
 export default StripePage
