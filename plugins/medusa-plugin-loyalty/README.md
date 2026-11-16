@@ -95,7 +95,7 @@ saved:
 | Give points back for reward codes that expire unused                                                          | yes                   |
 | Release a gift from an abandoned cart after N days                                                            | 14                    |
 | Excluded customer groups (earn and redeem nothing)                                                            | none                  |
-| Link to the program terms (returned to the storefront, which shows it)                                        | empty                 |
+| Link to the program terms (`http(s)://` only; returned to the storefront, which shows it)                     | empty                 |
 
 ### Environment variables
 

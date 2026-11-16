@@ -1,5 +1,11 @@
 import { z } from "@medusajs/framework/zod"
 
+/**
+ * Storefronts put the terms link in an `href`, so only web links are
+ * accepted: `z.string().url()` alone would also take `javascript:` URLs.
+ */
+export const isWebUrl = (value: string) => /^https?:\/\/[^\s/]/i.test(value)
+
 const action = (points: number) =>
   z
     .object({ enabled: z.boolean().default(false), points: z.number().int().min(0).max(1_000_000).default(points) })
@@ -101,7 +107,7 @@ export const settingsSchema = z
       )
       .default({}),
     /** Link to the program terms, returned by the Store API. */
-    terms_url: z.string().url().nullable().default(null),
+    terms_url: z.string().trim().url().refine(isWebUrl, "must start with http:// or https://").nullable().default(null),
   })
   .superRefine((settings, ctx) => {
     const ids = new Set<string>()
@@ -128,8 +134,19 @@ export const DEFAULT_SETTINGS: LoyaltySettings = settingsSchema.parse({})
 
 /** Stored settings on top of the defaults; anything unreadable falls back to the defaults. */
 export function readSettings(stored: unknown): LoyaltySettings {
-  const parsed = settingsSchema.safeParse(stored ?? {})
+  const parsed = settingsSchema.safeParse(withoutUnsafeLinks(stored))
   return parsed.success ? parsed.data : DEFAULT_SETTINGS
+}
+
+/**
+ * A terms link stored before links had to be web links is dropped on its
+ * own, so it does not send every other setting back to the defaults.
+ */
+function withoutUnsafeLinks(stored: unknown): unknown {
+  if (!stored || typeof stored !== "object") return stored ?? {}
+  const value = (stored as { terms_url?: unknown }).terms_url
+  if (typeof value !== "string" || isWebUrl(value.trim())) return stored
+  return { ...stored, terms_url: null }
 }
 
 /** Tiers from the lowest threshold up. */
