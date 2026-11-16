@@ -285,6 +285,11 @@ await checkBackInStockVariantsWorkflow(container).run({
 
 ## What it does not do
 
+- The rate limit (`store.rateLimitPerMinute`) counts requests per visitor by `req.ip`, in
+  the memory of each server process. Behind a proxy or load balancer, set
+  Express `trust proxy` in your app, or every visitor shares the proxy's
+  address. With several server instances, each counts on its own, so the
+  effective limit is the setting times the number of instances.
 - No SMS or push notifications, email only.
 - No product-level subscriptions: customers choose a variant.
 - No conversion tracking (orders placed after an email).
