@@ -182,6 +182,13 @@ white list gives the VAT status.
 
 ### What it does not do
 
+- The rate limit (`store.rateLimitPerMinute`) counts requests per visitor by `req.ip`, in
+  the memory of each server process. Behind a proxy or load balancer, set
+  Express `trust proxy` in your app, or every visitor shares the proxy's
+  address. With several server instances, each counts on its own, so the
+  effective limit is the setting times the number of instances. The daily
+  white list quota (`mf.dailyLimit`) is counted in the database, so all
+  instances share it.
 - It does not change tax rates. A valid EU VAT number is recorded; applying
   0% reverse charge is a decision for the store or its accounting.
 - It does not block checkout unless you turn `checkout.rejectOnCompletion` on.
