@@ -5,6 +5,22 @@ import { OMNIBUS_RULES, WARNING_LANGUAGE } from "./types"
 /** Placeholder shown wherever a lawyer has to supply the wording. */
 export const LAWYER_PLACEHOLDER = "[DO UZUPEŁNIENIA PRZEZ PRAWNIKA]"
 
+/**
+ * Links end up in an `href` (storefront) or an e-mail, so only web links
+ * or paths on the storefront are accepted, never `javascript:` or `data:`.
+ * Empty means "not set".
+ */
+export const isSafeLink = (value: string) =>
+  value === "" || /^https?:\/\/[^\s/]/i.test(value) || /^\/(?!\/)/.test(value)
+
+const link = () =>
+  z
+    .string()
+    .trim()
+    .max(500)
+    .refine(isSafeLink, "must start with http://, https:// or / (a path on the storefront)")
+    .default("")
+
 const int = (min: number, max: number, value: number) => z.number().int().min(min).max(max).default(value)
 
 export const omnibusExceptionSchema = z.object({
@@ -66,8 +82,8 @@ export const settingsSchema = z
          * Storefront page that confirms a request; `{token}` is replaced. It
          * goes into the verification event for the e-mail plugin.
          */
-        verify_url: z.string().trim().max(500).default(""),
-        privacy_policy_url: z.string().trim().max(500).default(""),
+        verify_url: link(),
+        privacy_policy_url: link(),
         /** Shown to the customer after submitting a request. */
         request_notice: z.string().trim().max(2000).default(LAWYER_PLACEHOLDER),
         rate_limit: z
@@ -116,8 +132,24 @@ export type SettingsInput = z.input<typeof settingsSchema>
 export const DEFAULT_SETTINGS: ComplianceSettings = settingsSchema.parse({})
 
 export function readSettings(stored: unknown): ComplianceSettings {
-  const parsed = settingsSchema.safeParse(stored ?? {})
+  const parsed = settingsSchema.safeParse(withoutUnsafeLinks(stored))
   return parsed.success ? parsed.data : DEFAULT_SETTINGS
+}
+
+/**
+ * Links stored before they had to be web links are cleared on their own,
+ * so they do not send every other setting back to the defaults.
+ */
+function withoutUnsafeLinks(stored: unknown): unknown {
+  if (!stored || typeof stored !== "object") return stored ?? {}
+  const gdpr = (stored as { gdpr?: unknown }).gdpr
+  if (!gdpr || typeof gdpr !== "object") return stored
+  const cleaned: Record<string, unknown> = { ...(gdpr as Record<string, unknown>) }
+  for (const key of ["verify_url", "privacy_policy_url"]) {
+    const value = cleaned[key]
+    if (typeof value === "string" && !isSafeLink(value.trim())) cleaned[key] = ""
+  }
+  return { ...stored, gdpr: cleaned }
 }
 
 export type ModuleKey = keyof ComplianceSettings["modules"]

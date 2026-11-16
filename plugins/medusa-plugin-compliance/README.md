@@ -80,8 +80,9 @@ Everything else is a setting on the **Settings** tab:
   marking photo, warnings and their languages);
 - GDPR: deadline for answers (30 days), warning before it (7 days),
   confirmation link lifetime (48 h), the storefront confirmation page
-  (`{token}` placeholder), privacy policy link, the message shown after a
-  request, rate limits (3 per e-mail, 10 per IP per 60 minutes);
+  (`{token}` placeholder) and privacy policy link (`http(s)://` or a
+  storefront path such as `/privacy`; other schemes are refused), the
+  message shown after a request, rate limits (3 per e-mail, 10 per IP per 60 minutes);
 - anonymisation scope: placeholder text, customer metadata, order e-mail,
   phones, shipping address, billing address (kept by default) and the
   **billing data retention period** (72 months from the order date; a

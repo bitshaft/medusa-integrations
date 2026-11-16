@@ -30,3 +30,10 @@ First release.
 - Events: `compliance.consent_granted`, `consent_withdrawn`,
   `request_verification`, `request_opened`, `request_due_soon`,
   `request_closed`, `customer_anonymized`.
+
+### Security
+
+- `gdpr.verify_url` and `gdpr.privacy_policy_url` accept only `http://`,
+  `https://` or a storefront path (`/…`), never `javascript:` or `data:`
+  links. A stored link that does not qualify is cleared on read; the other
+  settings stay.
