@@ -79,6 +79,14 @@ const log = (message) => actions.push(message)
 const blocked = []
 for (const plugin of plugins) {
   for (const file of manifest.plugins[plugin.folder]?.files ?? []) {
+    // The manifest lives in the app and can be edited, so a listed path is
+    // only trusted when it is one this script would write, even with --force.
+    if (!isVendorablePath(file, plugin.namespace)) {
+      blocked.push(
+        `${file} (listed in ${relative(APP, MANIFEST)}, but it is not a namespaced path under src/; remove it from the manifest)`
+      )
+      continue
+    }
     const full = join(APP, file)
     if (!existsSync(full)) {
       continue
@@ -252,6 +260,14 @@ printNextSteps()
 function die(message) {
   console.error(`✖ ${message}`)
   process.exit(1)
+}
+
+/** A path relative to the app, under its `src/`, that belongs to the plugin's namespace. */
+function isVendorablePath(file, namespace) {
+  if (typeof file !== "string" || !file.startsWith("src/") || file.includes("\\")) return false
+  const segments = file.split("/")
+  if (segments.some((segment) => segment === "" || segment === "." || segment === "..")) return false
+  return isNamespaced(file, namespace)
 }
 
 function isNamespaced(file, namespace) {
