@@ -21,6 +21,13 @@ export const StatusBadge = ({ status }: { status: CouponStatus }) => {
   )
 }
 
+/*
+ * Selected tiles and chips use Medusa's inverted button colours:
+ * `bg-ui-button-inverted` with `text-ui-contrast-fg-primary`, as the
+ * Button "inverted" variant does. (`text-ui-fg-on-inverted` is dark in the
+ * dark theme, which made selected items unreadable there.)
+ */
+
 /** A selectable tile, as in the wizard's "Kind" and "Who" steps. */
 export const ChoiceCard = ({
   selected,
@@ -53,7 +60,7 @@ export const ChoiceCard = ({
     <span
       className={clx(
         "flex size-8 shrink-0 items-center justify-center rounded-md",
-        selected ? "bg-ui-button-inverted text-ui-fg-on-inverted" : "bg-ui-bg-component text-ui-fg-subtle"
+        selected ? "bg-ui-button-inverted text-ui-contrast-fg-primary" : "bg-ui-bg-component text-ui-fg-subtle"
       )}
     >
       {icon}
@@ -94,7 +101,7 @@ export const QuickChoices = <T extends string | number>({
         className={clx(
           "txt-compact-small-plus rounded-md border px-3 py-1.5 transition-colors",
           value === option.value
-            ? "border-ui-border-interactive bg-ui-button-inverted text-ui-fg-on-inverted"
+            ? "border-ui-border-interactive bg-ui-button-inverted text-ui-contrast-fg-primary"
             : "border-ui-border-base bg-ui-bg-base text-ui-fg-base hover:bg-ui-bg-base-hover",
           disabled && "cursor-not-allowed opacity-50"
         )}
