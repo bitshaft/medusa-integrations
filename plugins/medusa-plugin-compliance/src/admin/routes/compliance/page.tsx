@@ -2,8 +2,8 @@ import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { ArrowPath, BookOpen, ChartBar, CogSixTooth, CurrencyDollar, DocumentText, Tag, User } from "@medusajs/icons"
 import { Button, Container, Heading, Skeleton, Tabs, Text } from "@medusajs/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useSearchParams } from "react-router-dom"
 
 import { Dashboard } from "../../components/compliance/dashboard"
 import { Gdpr } from "../../components/compliance/gdpr"
@@ -18,14 +18,28 @@ import { PageIcon } from "../../lib/compliance/kit/ui"
 
 const BRAND_COLOR = "#0d9488"
 
-type Tab = "panel" | "gpsr" | "gdpr" | "omnibus" | "settings" | "guide"
+const TABS = ["panel", "gpsr", "gdpr", "omnibus", "settings", "guide"] as const
+type Tab = (typeof TABS)[number]
 
 /** The "Compliance" page in the main menu: GPSR, GDPR and Omnibus in one place. */
 const CompliancePage = () => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const status = useSettings()
-  const [tab, setTab] = useState<Tab>("panel")
+  // The tab is kept in the URL (`?tab=gpsr`), so other pages can link straight to it.
+  const [params, setParams] = useSearchParams()
+  const requested = params.get("tab") as Tab | null
+  const tab: Tab = requested && TABS.includes(requested) ? requested : "panel"
+  const setTab = (next: Tab) =>
+    setParams(
+      (current) => {
+        const copy = new URLSearchParams(current)
+        if (next === "panel") copy.delete("tab")
+        else copy.set("tab", next)
+        return copy
+      },
+      { replace: true }
+    )
   const s = status.data
   const demo = Boolean(s?.settings.demo)
 

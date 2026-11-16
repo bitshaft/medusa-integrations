@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import type { RequestStatus } from "../../lib/compliance/api"
+import { languageLabel } from "../../lib/compliance/format"
 
 /** Shown on every page of the panel while demo mode is on. */
 export const DemoBar = () => {
@@ -238,7 +239,7 @@ export const Toggle = ({
 
 /** Missing GPSR fields as small badges. */
 export const Gaps = ({ gaps }: { gaps: string[] }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   if (!gaps.length) {
     return <StatusBadge color="green">{t("compliance.gpsr.complete")}</StatusBadge>
   }
@@ -246,7 +247,9 @@ export const Gaps = ({ gaps }: { gaps: string[] }) => {
     <div className="flex flex-wrap gap-1">
       {gaps.map((gap) => (
         <Badge key={gap} size="2xsmall" color="orange">
-          {t(`compliance.gpsr.gaps.${gap.replace(/\./g, "_")}`)}
+          {gap.startsWith("warnings.")
+            ? t("compliance.gpsr.gaps.warningsIn", { language: languageLabel(gap.slice(9), i18n.language) })
+            : t(`compliance.gpsr.gaps.${gap.replace(/\./g, "_")}`)}
         </Badge>
       ))}
     </div>

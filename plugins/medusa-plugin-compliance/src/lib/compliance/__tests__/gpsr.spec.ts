@@ -1,6 +1,8 @@
 import { effectiveSafety, gpsrGaps, type ManufacturerProfile, type ProductSafetyData } from "../gpsr"
 import { markdownToText, renderMarkdown } from "../markdown"
+import { storefrontSafety } from "../server/gpsr"
 import { DEFAULT_SETTINGS, settingsSchema } from "../settings"
+import { languageOf } from "../types"
 
 const profile = (overrides: Partial<ManufacturerProfile> = {}): ManufacturerProfile => ({
   id: "cmfr_1",
@@ -123,6 +125,33 @@ describe("gpsrGaps", () => {
       "label_image",
       "warnings.en",
     ])
+  })
+})
+
+describe("warnings in the store's languages", () => {
+  it("requires any store language, not only Polish and English", () => {
+    const strict = settingsSchema.parse({
+      gpsr: { require: { warnings: true }, warning_languages: ["pl", "DE", "cs"] },
+    }).gpsr
+    expect(strict.warning_languages).toEqual(["pl", "de", "cs"])
+    const data = product({ warnings: { pl: "Uwaga", de: "Achtung" } })
+    expect(gpsrGaps(effectiveSafety(data, profile()), strict)).toEqual(["warnings.cs"])
+    expect(() => settingsSchema.parse({ gpsr: { warning_languages: ["pl-PL"] } })).toThrow()
+  })
+
+  it("takes the language of a store locale", () => {
+    expect(languageOf("pl-PL")).toBe("pl")
+    expect(languageOf("de_AT")).toBe("de")
+    expect(languageOf("de-DE,de;q=0.9")).toBe("de")
+    expect(languageOf("")).toBeNull()
+  })
+
+  it("serves the customer's language, else the store's base language, else any", () => {
+    const effective = effectiveSafety(product({ warnings: { pl: "Uwaga", de: "Achtung" } }), profile())
+    expect(storefrontSafety(effective, "de", "pl").warnings).toMatchObject({ locale: "de", text: "Achtung" })
+    expect(storefrontSafety(effective, "fr", "pl").warnings).toMatchObject({ locale: "pl", text: "Uwaga" })
+    const onlyGerman = effectiveSafety(product({ warnings: { de: "Achtung" } }), profile())
+    expect(storefrontSafety(onlyGerman, "fr", "pl").warnings).toMatchObject({ locale: "de", text: "Achtung" })
   })
 })
 

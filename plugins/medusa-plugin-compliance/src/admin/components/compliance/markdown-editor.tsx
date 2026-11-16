@@ -1,5 +1,5 @@
 import { Button, Label, Text, Textarea } from "@medusajs/ui"
-import { useRef, useState } from "react"
+import { type ReactNode, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 /**
@@ -9,10 +9,13 @@ import { useTranslation } from "react-i18next"
  */
 export const MarkdownEditor = ({
   label,
+  badge,
   value,
   onChange,
 }: {
   label: string
+  /** Shown next to the label, e.g. "required". */
+  badge?: ReactNode
   value: string
   onChange: (value: string) => void
 }) => {
@@ -46,9 +49,12 @@ export const MarkdownEditor = ({
   return (
     <div className="flex flex-col gap-y-1">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Label size="xsmall" weight="plus">
-          {label}
-        </Label>
+        <div className="flex items-center gap-x-2">
+          <Label size="xsmall" weight="plus">
+            {label}
+          </Label>
+          {badge}
+        </div>
         <div className="flex gap-x-1">
           <Button size="small" variant="transparent" type="button" onClick={() => wrap("**")} disabled={preview}>
             <strong>B</strong>

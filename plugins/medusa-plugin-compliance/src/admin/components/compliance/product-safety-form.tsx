@@ -1,5 +1,6 @@
-import { Button, Input, Label, Select, Text, toast } from "@medusajs/ui"
-import { useEffect, useState } from "react"
+import { ArrowUpTray, Photo } from "@medusajs/icons"
+import { Badge, Button, Label, Select, Text, toast } from "@medusajs/ui"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import {
@@ -8,8 +9,9 @@ import {
   type ProductSafetyData,
   useManufacturers,
   useSaveProductSafety,
+  useSettings,
 } from "../../lib/compliance/api"
-import { errorMessage } from "../../lib/compliance/format"
+import { errorMessage, languageLabel } from "../../lib/compliance/format"
 import { sdk } from "../../lib/compliance/kit/sdk"
 import { MarkdownEditor } from "./markdown-editor"
 import { Gaps, Section, TextAreaField, TextField, Toggle } from "./shared"
@@ -82,11 +84,22 @@ export const ProductSafetyForm = ({
   current: ProductSafety
   demo: boolean
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const manufacturers = useManufacturers()
+  const settings = useSettings()
   const save = useSaveProductSafety(productId)
   const [form, setForm] = useState<ProductSafetyData>(current.data ?? EMPTY)
   const [uploading, setUploading] = useState(false)
+  const fileInput = useRef<HTMLInputElement>(null)
+  // Every store language, plus required ones and any language that already has text.
+  const required = settings.data?.settings.gpsr.require.warnings ? settings.data.settings.gpsr.warning_languages : []
+  const languages = [
+    ...new Set([
+      ...(settings.data?.store_languages ?? ["pl"]),
+      ...required,
+      ...Object.keys(form.warnings).filter((lang) => form.warnings[lang]?.trim()),
+    ]),
+  ]
 
   useEffect(() => setForm(current.data ?? EMPTY), [current.data])
 
@@ -218,45 +231,73 @@ export const ProductSafetyForm = ({
             onChange={(batch) => setForm({ ...form, identification: { ...form.identification, batch: batch || null } })}
           />
         )}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2">
           <Label size="xsmall" weight="plus">
             {t("compliance.gpsr.fields.label_image")}
           </Label>
-          <div className="flex flex-wrap items-center gap-2">
-            {form.label_image_url && (
-              <img
-                src={form.label_image_url}
-                alt=""
-                className="h-16 w-16 rounded border border-ui-border-base object-cover"
-              />
-            )}
-            <Input
-              size="small"
+          <div className="flex items-center gap-x-4">
+            <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-ui-border-base bg-ui-bg-subtle">
+              {form.label_image_url ? (
+                <img src={form.label_image_url} alt="" className="size-full object-contain" />
+              ) : (
+                <Photo className="text-ui-fg-muted" />
+              )}
+            </div>
+            <div className="flex flex-col gap-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="small"
+                  variant="secondary"
+                  type="button"
+                  isLoading={uploading}
+                  disabled={demo}
+                  onClick={() => fileInput.current?.click()}
+                >
+                  <ArrowUpTray />
+                  {form.label_image_url ? t("compliance.gpsr.imageChange") : t("compliance.gpsr.imageChoose")}
+                </Button>
+                {form.label_image_url && (
+                  <Button
+                    size="small"
+                    variant="transparent"
+                    type="button"
+                    onClick={() => setForm({ ...form, label_image_url: null })}
+                  >
+                    {t("compliance.remove")}
+                  </Button>
+                )}
+              </div>
+              <Text size="xsmall" className="text-ui-fg-subtle">
+                {t("compliance.gpsr.imageHint")}
+              </Text>
+            </div>
+            <input
+              ref={fileInput}
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
               aria-label={t("compliance.gpsr.fields.label_image")}
-              disabled={uploading || demo}
-              onChange={(e) => void upload(e.target.files?.[0])}
+              onChange={(e) => {
+                void upload(e.target.files?.[0])
+                e.target.value = ""
+              }}
             />
-            {form.label_image_url && (
-              <Button
-                size="small"
-                variant="transparent"
-                type="button"
-                onClick={() => setForm({ ...form, label_image_url: null })}
-              >
-                {t("compliance.remove")}
-              </Button>
-            )}
           </div>
         </div>
       </Section>
 
       <Section title={t("compliance.gpsr.warnings")} hint={t("compliance.gpsr.warningsHint")}>
-        {(["pl", "en"] as const).map((lang) => (
+        {languages.map((lang) => (
           <MarkdownEditor
             key={lang}
-            label={t(`compliance.lang.${lang}`)}
+            label={languageLabel(lang, i18n.language)}
+            badge={
+              required.includes(lang) ? (
+                <Badge size="2xsmall" color={form.warnings[lang]?.trim() ? "green" : "orange"}>
+                  {t("compliance.gpsr.requiredLanguage")}
+                </Badge>
+              ) : undefined
+            }
             value={form.warnings[lang] ?? ""}
             onChange={(text) => setForm({ ...form, warnings: { ...form.warnings, [lang]: text } })}
           />

@@ -48,3 +48,14 @@ export function dateTime(value: string | Date | null | undefined, language: stri
 /** A localized text in the admin's language, falling back to the other one. */
 export const pick = (value: Partial<Record<"pl" | "en", string>> | null | undefined, language: string) =>
   value?.[adminLocale(language)] || value?.pl || value?.en || ""
+
+/** "polski", "niemiecki" (or "Polish", "German") for a language code, in the admin's language. */
+export function languageLabel(code: string, adminLanguage: string): string {
+  try {
+    const names = new Intl.DisplayNames([toIntlLocale(adminLanguage) ?? "en", "en"], { type: "language" })
+    const name = names.of(code)
+    return name ? name.charAt(0).toUpperCase() + name.slice(1) : code.toUpperCase()
+  } catch {
+    return code.toUpperCase()
+  }
+}

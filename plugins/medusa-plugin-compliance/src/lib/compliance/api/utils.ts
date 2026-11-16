@@ -15,7 +15,7 @@ import { PLUGIN_NAME } from "../options"
 import { hashIp } from "../requests"
 import type { ModuleKey } from "../settings"
 import { resolveCompliance } from "../server/runtime"
-import type { Locale } from "../types"
+import { languageOf, type Locale } from "../types"
 
 /** The module service, or a clear "disabled" error when the plugin options are invalid. */
 export async function requireEnabled(req: MedusaRequest) {
@@ -89,6 +89,14 @@ export function adminActor(req: MedusaRequest): Actor {
 export async function requestLocale(req: MedusaRequest, explicit?: string): Promise<Locale> {
   const { defaultLocale } = await resolveCompliance(req.scope).getOptions()
   return normalizeLocale(explicit ?? req.get("x-medusa-locale") ?? req.get("accept-language"), defaultLocale)
+}
+
+/**
+ * The language the customer reads warnings in: any store language (`de`,
+ * `cs`), from `locale`, then `x-medusa-locale`, then `Accept-Language`.
+ */
+export function requestLanguage(req: MedusaRequest, explicit?: string): string | null {
+  return languageOf(explicit ?? req.get("x-medusa-locale") ?? req.get("accept-language")?.split(",")[0])
 }
 
 /** A salted hash of the caller's IP, for the rate limit; the IP itself is never stored. */

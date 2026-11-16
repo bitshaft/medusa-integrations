@@ -15,8 +15,21 @@ export type Party = {
 export const PARTY_FIELDS = ["name", "trade_name", "postal_address", "electronic_address"] as const
 export type PartyField = (typeof PARTY_FIELDS)[number]
 
+/**
+ * A language of safety warnings: an ISO 639 code (`pl`, `de`, `cs`).
+ * Warnings follow the store's languages, not only Polish and English.
+ */
+export type WarningLanguage = string
+export const WARNING_LANGUAGE = /^[a-z]{2,3}$/
+
+/** The language part of a store locale: `pl-PL` → `pl`. */
+export const languageOf = (locale: string | null | undefined): WarningLanguage | null => {
+  const code = (locale ?? "").trim().toLowerCase().split(/[-_]/)[0]
+  return WARNING_LANGUAGE.test(code) ? code : null
+}
+
 /** Warnings and safety information: Markdown text per language. */
-export type Warnings = Partial<Record<Locale, string>>
+export type Warnings = Partial<Record<WarningLanguage, string>>
 
 /** Where a GPSR field is missing; `gpsr.missing.<code>` in the admin translations. */
 export const GPSR_GAPS = [
@@ -34,7 +47,7 @@ export const GPSR_GAPS = [
   "label_image",
   "warnings",
 ] as const
-export type GpsrGap = `${(typeof GPSR_GAPS)[number]}` | `warnings.${Locale}`
+export type GpsrGap = `${(typeof GPSR_GAPS)[number]}` | `warnings.${WarningLanguage}`
 
 /* GDPR ---------------------------------------------------------------------- */
 

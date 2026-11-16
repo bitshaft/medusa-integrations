@@ -101,7 +101,10 @@ lawyer.
   electronic address), responsible person in the EU (required when the
   manufacturer is outside the EU), product type, model, batch or serial
   number (when it applies), a photo of the marking, and warnings in
-  Markdown per language.
+  Markdown for each of the store's languages (Settings → Store, with
+  Medusa's Translation module; otherwise the plugin's `defaultLocale`).
+  The settings choose which languages are required. **Settings →
+  Translations** gets a card pointing to these texts and to consent texts.
 - Manufacturer profiles are saved once and attached to many products;
   every field can be overridden on the product.
 - Products without the required data publish as usual. The admin shows how
@@ -195,17 +198,17 @@ Everything is under `/store/compliance`. Refusals have a `code`, a
 `Accept-Language`; Polish by default) and both texts in `messages`.
 Every rule is checked on the server.
 
-| Route                                              |                                                                   |
-| -------------------------------------------------- | ----------------------------------------------------------------- |
-| `GET /gpsr/products/:id?locale=pl`                 | GPSR data for the product page (warnings as HTML, Markdown, text) |
-| `GET /omnibus/variants/:id?region_id=`             | Omnibus data of a variant                                         |
-| `GET /omnibus/products/:id?region_id=`             | The same for every variant of a product                           |
-| `GET /consents/types?placement=checkout&locale=pl` | Active consent types with the current text and version            |
-| `GET /consents?anonymous_id=`                      | Current choices of the signed-in customer or of a browser         |
-| `POST /consents`                                   | Give or withdraw consents                                         |
-| `POST /consents/link`                              | After sign-in: link the browser's cookie choices to the customer  |
-| `POST /requests`                                   | Submit a request (rate limited)                                   |
-| `POST /requests/verify`                            | Confirm a request with the token from the e-mail                  |
+| Route                                              |                                                                                                          |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `GET /gpsr/products/:id?locale=de`                 | GPSR data for the product page (warnings as HTML, Markdown, text) in that language, else the default one |
+| `GET /omnibus/variants/:id?region_id=`             | Omnibus data of a variant                                                                                |
+| `GET /omnibus/products/:id?region_id=`             | The same for every variant of a product                                                                  |
+| `GET /consents/types?placement=checkout&locale=pl` | Active consent types with the current text and version                                                   |
+| `GET /consents?anonymous_id=`                      | Current choices of the signed-in customer or of a browser                                                |
+| `POST /consents`                                   | Give or withdraw consents                                                                                |
+| `POST /consents/link`                              | After sign-in: link the browser's cookie choices to the customer                                         |
+| `POST /requests`                                   | Submit a request (rate limited)                                                                          |
+| `POST /requests/verify`                            | Confirm a request with the token from the e-mail                                                         |
 
 ```ts
 // Omnibus data for a variant in the customer's region

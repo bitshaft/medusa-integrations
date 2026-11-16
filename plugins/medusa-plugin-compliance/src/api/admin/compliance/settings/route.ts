@@ -4,6 +4,7 @@ import { MedusaError } from "@medusajs/framework/utils"
 import { requireEnabled } from "../../../../lib/compliance/api/utils"
 import { LAWYER_PLACEHOLDER, settingsSchema } from "../../../../lib/compliance/settings"
 import { graph, resolveCompliance } from "../../../../lib/compliance/server/runtime"
+import { storeLanguages } from "../../../../lib/compliance/server/languages"
 import { recordPrices } from "../../../../lib/compliance/server/prices"
 
 async function view(req: MedusaRequest) {
@@ -25,6 +26,8 @@ async function view(req: MedusaRequest) {
       countries: (r.countries ?? []).filter(Boolean).map((c: { iso_2: string }) => c.iso_2),
     })),
     lawyer_placeholder: LAWYER_PLACEHOLDER,
+    /** The store's languages (ISO 639), the plugin's default first: warnings can be written in each. */
+    store_languages: await storeLanguages(req.scope, (await service.getOptions()).defaultLocale),
   }
 }
 

@@ -95,7 +95,10 @@ sprawdzić z prawnikiem.
   pocztowy i elektroniczny), osoba odpowiedzialna w UE (wymagana dla
   producenta spoza UE), typ, model, numer partii lub seryjny (jeśli
   dotyczy), zdjęcie oznakowania i ostrzeżenia w Markdown osobno dla każdego
-  języka.
+  języka sklepu (Ustawienia → Sklep, z modułem Translation Medusy; bez
+  niego język `defaultLocale`). W ustawieniach wybierasz, które języki są
+  wymagane. W **Ustawienia → Tłumaczenia** jest karta z odnośnikiem do tych
+  tekstów i do treści zgód.
 - Profile producentów zapisuje się raz i przypina do wielu produktów;
   każde pole można nadpisać na produkcie.
 - Produkt z brakami publikuje się normalnie. Panel pokazuje licznik i listę
@@ -173,7 +176,7 @@ Wszystko pod `/store/compliance`; szczegóły i przykłady w
 [README.md](../README.md#store-api). Odmowy mają `code`, komunikat w
 języku klienta i oba teksty w `messages`. Każdą zasadę sprawdza serwer.
 
-- `GET /gpsr/products/:id`: dane GPSR na kartę produktu
+- `GET /gpsr/products/:id?locale=de`: dane GPSR na kartę produktu (ostrzeżenia w tym języku, inaczej w domyślnym)
 - `GET /omnibus/variants/:id?region_id=` i `/omnibus/products/:id?region_id=`:
   cena aktualna, regularna, czy obniżka, najniższa cena z okresu, data
   początku obniżki, „historia niepełna”

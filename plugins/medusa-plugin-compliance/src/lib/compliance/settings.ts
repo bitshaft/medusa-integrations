@@ -1,6 +1,6 @@
 import { z } from "@medusajs/framework/zod"
 
-import { LOCALES, OMNIBUS_RULES } from "./types"
+import { OMNIBUS_RULES, WARNING_LANGUAGE } from "./types"
 
 /** Placeholder shown wherever a lawyer has to supply the wording. */
 export const LAWYER_PLACEHOLDER = "[DO UZUPEŁNIENIA PRZEZ PRAWNIKA]"
@@ -48,7 +48,10 @@ export const settingsSchema = z
           })
           .prefault({}),
         /** Languages the warnings must be written in when warnings are required. */
-        warning_languages: z.array(z.enum(LOCALES)).min(1).default(["pl"]),
+        warning_languages: z
+          .array(z.string().trim().toLowerCase().regex(WARNING_LANGUAGE, "a language code such as pl or de"))
+          .min(1)
+          .default(["pl"]),
       })
       .prefault({}),
     gdpr: z

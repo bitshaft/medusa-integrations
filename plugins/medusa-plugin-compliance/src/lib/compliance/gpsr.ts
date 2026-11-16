@@ -83,7 +83,7 @@ export function gpsrGaps(safety: EffectiveSafety, require: ComplianceSettings["g
   if (require.require.label_image && blank(safety.label_image_url)) gaps.push("label_image")
   if (require.require.warnings) {
     for (const lang of require.warning_languages) {
-      if (blank(safety.warnings[lang as Locale])) gaps.push(`warnings.${lang as Locale}`)
+      if (blank(safety.warnings[lang])) gaps.push(`warnings.${lang}`)
     }
   }
   return gaps

@@ -160,8 +160,12 @@ export async function saveProductSafety(
   await recomputeGpsr(container, [productId])
 }
 
-/** GPSR data ready for the product page: plain fields, a one-line address and safe HTML warnings. */
-export function storefrontSafety(effective: EffectiveSafety, locale: Locale) {
+/**
+ * GPSR data ready for the product page: plain fields, a one-line address and
+ * safe HTML warnings in the requested language, else the store's base
+ * language, else any language that has them.
+ */
+export function storefrontSafety(effective: EffectiveSafety, language: string, fallback: string) {
   const partyView = (p: Party | null) =>
     p
       ? {
@@ -172,7 +176,10 @@ export function storefrontSafety(effective: EffectiveSafety, locale: Locale) {
           electronic_address: p.electronic_address,
         }
       : null
-  const warning = effective.warnings[locale] ?? effective.warnings.pl ?? effective.warnings.en ?? ""
+  const filled = (lang: string) => (effective.warnings[lang]?.trim() ? lang : null)
+  const locale =
+    filled(language) ?? filled(fallback) ?? Object.keys(effective.warnings).find((lang) => filled(lang)) ?? language
+  const warning = effective.warnings[locale] ?? ""
   return {
     manufacturer: partyView(effective.manufacturer),
     responsible_person: partyView(effective.responsible),

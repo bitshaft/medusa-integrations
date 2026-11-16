@@ -160,8 +160,13 @@
         "label_image": "Photo of the marking",
         "warnings": "Warnings",
         "warnings_pl": "Warnings (Polish)",
-        "warnings_en": "Warnings (English)"
-      }
+        "warnings_en": "Warnings (English)",
+        "warningsIn": "Warnings ({{language}})"
+      },
+      "imageChoose": "Choose a photo",
+      "imageChange": "Change the photo",
+      "imageHint": "PNG, JPG or WebP of the marking on the product or its packaging.",
+      "requiredLanguage": "required"
     },
     "gdpr": {
       "requests": "Requests",
@@ -426,7 +431,8 @@
       "technicalHint": "From medusa-config.ts.",
       "timeZone": "Time zone",
       "providers": "Data providers in the export",
-      "verifyUrlPlaceholder": "https://shop.example.com/gdpr/confirm?token={token}"
+      "verifyUrlPlaceholder": "https://shop.example.com/gdpr/confirm?token={token}",
+      "warningLanguagesHint": "The store's languages (Settings → Store). Warnings must be written in the ones switched on."
     },
     "guide": {
       "title": "Guide",
@@ -497,6 +503,12 @@
         "title": "Demo mode",
         "body": "Switch it on in Settings to show the panel with sample data (products missing GPSR data, requests in different states, prices with discounts). Nothing real is changed while it is on, and the storefront keeps working on real data."
       }
+    },
+    "translations": {
+      "title": "Compliance",
+      "text": "GPSR safety warnings and consent texts are written per language on the Compliance page ({{languages}}).",
+      "gpsr": "GPSR warnings",
+      "consents": "Consent texts"
     }
   }
 }

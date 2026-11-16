@@ -8,7 +8,8 @@ import { productSafety, saveProductSafety, storefrontSafety } from "../../../../
 
 /** `GET /admin/compliance/gpsr/products/:id`: stored data, profile, what the store shows and the gaps. */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  await requireModule(req, "gpsr")
+  const service = await requireModule(req, "gpsr")
+  const base = (await service.getOptions()).defaultLocale
   if (await isDemo(req)) {
     const sample = demoGpsrProducts().find((p) => p.product_id === req.params.id) ?? demoGpsrProducts()[1]
     const effective = effectiveSafety(null, null)
@@ -19,18 +20,19 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       effective,
       gaps: sample.gaps,
       checked_at: sample.checked_at,
-      storefront: storefrontSafety(effective, "pl"),
+      storefront: storefrontSafety(effective, base, base),
     })
     return
   }
   const result = await productSafety(req.scope, req.params.id)
-  res.json({ demo: false, ...result, storefront: storefrontSafety(result.effective, "pl") })
+  res.json({ demo: false, ...result, storefront: storefrontSafety(result.effective, base, base) })
 }
 
 /** `POST /admin/compliance/gpsr/products/:id`: saves the product's GPSR data and checks it. */
 export async function POST(req: MedusaRequest<AdminProductSafety>, res: MedusaResponse) {
-  await requireModule(req, "gpsr")
+  const service = await requireModule(req, "gpsr")
+  const base = (await service.getOptions()).defaultLocale
   await saveProductSafety(req.scope, req.params.id, req.validatedBody)
   const result = await productSafety(req.scope, req.params.id)
-  res.json({ demo: false, ...result, storefront: storefrontSafety(result.effective, "pl") })
+  res.json({ demo: false, ...result, storefront: storefrontSafety(result.effective, base, base) })
 }

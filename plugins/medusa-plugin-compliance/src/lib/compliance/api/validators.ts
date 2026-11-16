@@ -1,7 +1,7 @@
 import { z } from "@medusajs/framework/zod"
 
 import { CONSENT_KEY_PATTERN } from "../consents"
-import { CONSENT_PLACEMENTS, COOKIE_CATEGORIES, REQUEST_STATUSES, REQUEST_TYPES } from "../types"
+import { CONSENT_PLACEMENTS, COOKIE_CATEGORIES, REQUEST_STATUSES, REQUEST_TYPES, WARNING_LANGUAGE } from "../types"
 
 const text = (max: number) => z.string().trim().max(max)
 const optionalText = (max: number) =>
@@ -16,6 +16,11 @@ const page = {
   offset: z.coerce.number().int().min(0).default(0),
 }
 const localized = (max: number) => z.object({ pl: text(max).optional(), en: text(max).optional() })
+/** Text per warning language (any store language, e.g. `de`). */
+const perLanguage = (max: number) =>
+  z
+    .record(z.string().regex(WARNING_LANGUAGE), text(max))
+    .refine((v) => Object.keys(v).length <= 40, "at most 40 languages")
 
 /* Admin -------------------------------------------------------------------- */
 
@@ -62,7 +67,7 @@ export const AdminProductSafety = z.object({
     .nullish()
     .transform((v) => v || null)
     .refine((v) => v === null || /^(https?:\/\/|\/)/.test(v), "must be an http(s) URL or a path"),
-  warnings: localized(20_000).default({}),
+  warnings: perLanguage(20_000).default({}),
 })
 export type AdminProductSafety = z.infer<typeof AdminProductSafety>
 

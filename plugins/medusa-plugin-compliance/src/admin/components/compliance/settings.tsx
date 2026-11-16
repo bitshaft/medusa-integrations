@@ -9,7 +9,7 @@ import {
   type SettingsResponse,
   useSaveSettings,
 } from "../../lib/compliance/api"
-import { errorMessage, shortDate } from "../../lib/compliance/format"
+import { errorMessage, languageLabel, shortDate } from "../../lib/compliance/format"
 import { LegalNote, NumberField, Section, TextAreaField, TextField, Toggle } from "./shared"
 
 /** The Settings tab: every rule of the three modules, with the defaults a new store starts with. */
@@ -104,24 +104,29 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
           onChange={(v) => require({ warnings: v })}
         />
         {s.gpsr.require.warnings && (
-          <div className="flex gap-x-4">
-            {(["pl", "en"] as const).map((lang) => (
-              <Toggle
-                key={lang}
-                label={t(`compliance.lang.${lang}`)}
-                checked={s.gpsr.warning_languages.includes(lang)}
-                onChange={(on) =>
-                  set("gpsr", {
-                    ...s.gpsr,
-                    warning_languages: on
-                      ? [...new Set([...s.gpsr.warning_languages, lang])]
-                      : s.gpsr.warning_languages.filter((l) => l !== lang).length
-                        ? s.gpsr.warning_languages.filter((l) => l !== lang)
-                        : s.gpsr.warning_languages,
-                  })
-                }
-              />
-            ))}
+          <div className="flex flex-col gap-y-2">
+            <Text size="xsmall" className="text-ui-fg-subtle">
+              {t("compliance.settings.warningLanguagesHint")}
+            </Text>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {[...new Set([...data.store_languages, ...s.gpsr.warning_languages])].map((lang) => (
+                <Toggle
+                  key={lang}
+                  label={languageLabel(lang, i18n.language)}
+                  checked={s.gpsr.warning_languages.includes(lang)}
+                  onChange={(on) =>
+                    set("gpsr", {
+                      ...s.gpsr,
+                      warning_languages: on
+                        ? [...new Set([...s.gpsr.warning_languages, lang])]
+                        : s.gpsr.warning_languages.filter((l) => l !== lang).length
+                          ? s.gpsr.warning_languages.filter((l) => l !== lang)
+                          : s.gpsr.warning_languages,
+                    })
+                  }
+                />
+              ))}
+            </div>
           </div>
         )}
       </Section>

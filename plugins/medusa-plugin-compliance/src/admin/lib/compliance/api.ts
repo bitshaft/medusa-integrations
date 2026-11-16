@@ -36,7 +36,8 @@ export type Settings = {
       label_image: boolean
       warnings: boolean
     }
-    warning_languages: Locale[]
+    /** ISO 639 codes (`pl`, `de`), from the store's languages. */
+    warning_languages: string[]
   }
   gdpr: {
     response_days: number
@@ -74,6 +75,8 @@ export type SettingsResponse = {
   omnibus_started_at: string | null
   regions: Array<{ id: string; name: string; countries: string[] }>
   lawyer_placeholder: string
+  /** The store's languages (ISO 639), the plugin's default first. */
+  store_languages: string[]
 }
 
 export type Dashboard = {
@@ -115,7 +118,8 @@ export type ProductSafetyData = {
   responsible: Partial<Party>
   identification: { type: string | null; model: string | null; batch: string | null; batch_applicable: boolean }
   label_image_url: string | null
-  warnings: Localized
+  /** Markdown per language code (`pl`, `de`). */
+  warnings: Partial<Record<string, string>>
 }
 
 export type ProductSafety = {

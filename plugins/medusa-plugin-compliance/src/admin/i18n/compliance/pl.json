@@ -170,8 +170,13 @@
         "label_image": "Zdjęcie oznakowania",
         "warnings": "Ostrzeżenia",
         "warnings_pl": "Ostrzeżenia (polski)",
-        "warnings_en": "Ostrzeżenia (angielski)"
-      }
+        "warnings_en": "Ostrzeżenia (angielski)",
+        "warningsIn": "Ostrzeżenia ({{language}})"
+      },
+      "imageChoose": "Wybierz zdjęcie",
+      "imageChange": "Zmień zdjęcie",
+      "imageHint": "PNG, JPG lub WebP oznakowania na produkcie lub opakowaniu.",
+      "requiredLanguage": "wymagany"
     },
     "gdpr": {
       "requests": "Żądania",
@@ -446,7 +451,8 @@
       "technicalHint": "Z medusa-config.ts.",
       "timeZone": "Strefa czasowa",
       "providers": "Dostawcy danych w eksporcie",
-      "verifyUrlPlaceholder": "https://sklep.pl/rodo/potwierdz?token={token}"
+      "verifyUrlPlaceholder": "https://sklep.pl/rodo/potwierdz?token={token}",
+      "warningLanguagesHint": "Języki sklepu (Ustawienia → Sklep). Ostrzeżenia muszą być napisane we włączonych."
     },
     "guide": {
       "title": "Przewodnik",
@@ -517,6 +523,12 @@
         "title": "Tryb demo",
         "body": "Włącz go w Ustawieniach, żeby pokazać panel na danych pokazowych (produkty z brakami GPSR, żądania w różnych stanach, ceny z obniżkami). Gdy jest włączony, nic prawdziwego się nie zmienia, a sklep dalej działa na prawdziwych danych."
       }
+    },
+    "translations": {
+      "title": "Zgodność",
+      "text": "Ostrzeżenia GPSR i treści zgód piszesz dla każdego języka na stronie Zgodność ({{languages}}).",
+      "gpsr": "Ostrzeżenia GPSR",
+      "consents": "Treści zgód"
     }
   }
 }
