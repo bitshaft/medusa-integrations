@@ -19,7 +19,7 @@ export const Customers = () => {
   const { data, isLoading } = useCustomers({ q: q.trim(), offset, limit: PAGE })
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
         <div>
           <Heading level="h2">{t("loyalty.customers.title")}</Heading>

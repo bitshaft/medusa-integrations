@@ -49,7 +49,7 @@ export const Templates = () => {
         )
       })}
 
-      <Container className="p-0">
+      <Container className="overflow-hidden p-0">
         <div className="flex items-center justify-between gap-x-4 px-6 py-4">
           <div>
             <div className="flex items-center gap-x-2">

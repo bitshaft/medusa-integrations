@@ -14,7 +14,7 @@ export function money(
 ): string {
   if (amount == null) return "—"
   try {
-    return new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL", {
+    return new Intl.NumberFormat(toIntlLocale(language) ?? "en-US", {
       style: "currency",
       currency: (currency || "pln").toUpperCase(),
     }).format(amount)
@@ -26,7 +26,7 @@ export function money(
 /** `13 lis 2026`. */
 export function shortDate(value: string | Date | null | undefined, language: string): string {
   if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -36,7 +36,7 @@ export function shortDate(value: string | Date | null | undefined, language: str
 /** `13 lis 2026, 14:05`. */
 export function dateTime(value: string | Date | null | undefined, language: string): string {
   if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",

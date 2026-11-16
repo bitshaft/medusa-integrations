@@ -28,7 +28,7 @@ const NumberLookup = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("whitelist-vat.lookup.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
@@ -121,7 +121,7 @@ const BankAccountLookup = () => {
   const ready = nip.trim().length >= 10 && account.replace(/\D/g, "").length >= 26
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("whitelist-vat.bank.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

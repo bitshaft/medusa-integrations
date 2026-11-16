@@ -56,7 +56,7 @@ export const Subscriptions = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("back-in-stock.subscriptions.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

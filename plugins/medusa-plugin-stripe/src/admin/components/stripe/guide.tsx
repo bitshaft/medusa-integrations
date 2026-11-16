@@ -9,7 +9,7 @@ const STEPS = ["key", "permissions", "options", "provider", "webhook", "methods"
 export const Guide = () => {
   const { t } = useTranslation()
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("stripe.guide.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

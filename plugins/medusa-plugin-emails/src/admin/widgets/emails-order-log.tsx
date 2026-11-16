@@ -17,7 +17,7 @@ const EmailsOrderLog = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("emails.log.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

@@ -14,6 +14,9 @@ import { Settings } from "../../components/compliance/settings"
 import { DemoBar, TabTrigger } from "../../components/compliance/shared"
 import { keys, useSettings } from "../../lib/compliance/api"
 import { navIcon } from "../../lib/compliance/kit/nav-icon"
+import { PageIcon } from "../../lib/compliance/kit/ui"
+
+const BRAND_COLOR = "#0d9488"
 
 type Tab = "panel" | "gpsr" | "gdpr" | "omnibus" | "settings" | "guide"
 
@@ -29,10 +32,10 @@ const CompliancePage = () => {
   return (
     <div className="flex flex-col gap-y-3">
       {demo && <DemoBar />}
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <DocumentText />
+            <PageIcon icon={DocumentText} color={BRAND_COLOR} />
             <div>
               <Heading>{t("compliance.title")}</Heading>
               <Text size="small" className="text-ui-fg-subtle">
@@ -110,7 +113,7 @@ const CompliancePage = () => {
 const ModuleOff = ({ onOpen }: { onOpen: () => void }) => {
   const { t } = useTranslation()
   return (
-    <Container className="flex flex-wrap items-center justify-between gap-3 p-6">
+    <Container className="overflow-hidden flex flex-wrap items-center justify-between gap-3 p-6">
       <Text size="small" className="text-ui-fg-subtle">
         {t("compliance.moduleOff")}
       </Text>
@@ -124,7 +127,7 @@ const ModuleOff = ({ onOpen }: { onOpen: () => void }) => {
 export const config = defineRouteConfig({
   label: "compliance.title",
   translationNs: "translation",
-  icon: navIcon(DocumentText, "#0d9488"),
+  icon: navIcon(DocumentText, BRAND_COLOR),
 })
 
 export default CompliancePage

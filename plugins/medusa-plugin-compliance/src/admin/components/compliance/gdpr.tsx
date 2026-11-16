@@ -60,7 +60,7 @@ export const Gdpr = ({ demo, warnDays, placeholder }: { demo: boolean; warnDays:
   const { t } = useTranslation()
   const [tab, setTab] = useState("requests")
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <Tabs value={tab} onValueChange={setTab}>
         <Tabs.List>
           <Tabs.Trigger className={TAB_CLASS} value="requests">

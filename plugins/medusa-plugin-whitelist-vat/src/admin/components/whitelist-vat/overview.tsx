@@ -14,6 +14,7 @@ import {
 } from "../../lib/whitelist-vat/api"
 import { errorMessage, formatDateTime } from "../../lib/whitelist-vat/kit/format"
 import { OutcomeBadge, Pager, TaxId, VerdictBadge } from "./shared"
+import { TAB_CLASS } from "../../lib/whitelist-vat/kit/ui"
 
 type EnabledStatus = Extract<WhitelistVatStatus, { enabled: true }>
 
@@ -78,7 +79,7 @@ const Subjects = ({ counts }: { counts: Record<SubjectFilter, number> }) => {
   const subjects = data?.subjects ?? []
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
         <div>
           <Heading level="h2">{t("whitelist-vat.subjects.title")}</Heading>
@@ -110,9 +111,9 @@ const Subjects = ({ counts }: { counts: Record<SubjectFilter, number> }) => {
         >
           <Tabs.List>
             {FILTERS.map((value) => (
-              <Tabs.Trigger key={value} value={value}>
+              <Tabs.Trigger className={TAB_CLASS} key={value} value={value}>
                 {t(`whitelist-vat.subjects.filters.${value}`)}
-                <span className="text-ui-fg-muted ml-1.5">{counts[value]}</span>
+                <span className="text-ui-fg-muted">{counts[value]}</span>
               </Tabs.Trigger>
             ))}
           </Tabs.List>
@@ -228,7 +229,7 @@ const History = () => {
   const checks = data?.checks ?? []
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("whitelist-vat.history.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

@@ -1,6 +1,6 @@
 import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
-import { Badge, Input, Label, StatusBadge, Switch, Tabs, Text, Textarea } from "@medusajs/ui"
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import { Badge, Input, Label, StatusBadge, Switch, Text, Textarea } from "@medusajs/ui"
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import type { RequestStatus } from "../../lib/compliance/api"
@@ -328,23 +328,5 @@ export const Pager = ({
   )
 }
 
-/** Rounded like the rest of the admin (not a pill), with spacing between icon and label. */
-export const TAB_CLASS = "gap-x-1.5 rounded-md"
-
-/** A page tab with a coloured icon. */
-export const TabTrigger = ({
-  value,
-  icon: Icon,
-  color,
-  children,
-}: {
-  value: string
-  icon: ComponentType<{ style?: CSSProperties; color?: string }>
-  color: string
-  children: ReactNode
-}) => (
-  <Tabs.Trigger value={value} className={TAB_CLASS}>
-    <Icon color={color} style={{ flexShrink: 0 }} />
-    {children}
-  </Tabs.Trigger>
-)
+/** Tabs styled the same in every integration (kit). */
+export { TAB_CLASS, TabTrigger } from "../../lib/compliance/kit/ui"

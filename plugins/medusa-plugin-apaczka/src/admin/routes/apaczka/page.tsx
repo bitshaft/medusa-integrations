@@ -7,6 +7,13 @@ import { SettingsPanel } from "../../components/apaczka/settings-panel"
 import { ShipmentsList } from "../../components/apaczka/shipments-list"
 import apaczkaLogo from "../../lib/apaczka/apaczka-logo.png"
 import { NAV_TILE_STYLE } from "../../lib/apaczka/kit/nav-icon"
+import { PageLogo, TabTrigger } from "../../lib/apaczka/kit/ui"
+import { ArchiveBox, CogSixTooth } from "@medusajs/icons"
+
+const TAB_ICONS = {
+  shipments: { icon: ArchiveBox, color: "#ea580c" },
+  settings: { icon: CogSixTooth, color: "#64748b" },
+} as const
 
 const TABS = ["shipments", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -22,9 +29,9 @@ const ApaczkaPage = () => {
 
   return (
     <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="flex flex-col gap-y-3">
-      <Container className="p-0">
+      <Container className="overflow-hidden p-0">
         <div className="flex items-center gap-x-3 px-6 py-4">
-          <img src={apaczkaLogo} alt="" className="size-8 object-contain" />
+          <PageLogo src={apaczkaLogo} />
           <div>
             <Heading>{t("apaczka.page.title")}</Heading>
             <Text size="small" className="text-ui-fg-subtle">
@@ -35,16 +42,16 @@ const ApaczkaPage = () => {
         <div className="px-6 pb-4">
           <Tabs.List>
             {TABS.map((key) => (
-              <Tabs.Trigger key={key} value={key}>
+              <TabTrigger key={key} value={key} icon={TAB_ICONS[key].icon} color={TAB_ICONS[key].color}>
                 {t(`apaczka.page.tabs.${key}`)}
-              </Tabs.Trigger>
+              </TabTrigger>
             ))}
           </Tabs.List>
         </div>
       </Container>
 
       <Tabs.Content value="shipments">
-        <Container className="p-0">
+        <Container className="overflow-hidden p-0">
           <ShipmentsList />
         </Container>
       </Tabs.Content>

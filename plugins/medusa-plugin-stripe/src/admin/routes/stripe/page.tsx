@@ -15,6 +15,7 @@ import { useRefresh, useStatus } from "../../lib/stripe/api"
 import { errorMessage } from "../../lib/stripe/format"
 import { NAV_TILE_STYLE } from "../../lib/stripe/kit/nav-icon"
 import stripeLogo from "../../lib/stripe/stripe-logo.png"
+import { PageLogo } from "../../lib/stripe/kit/ui"
 
 type Tab = "panel" | "payments" | "payouts" | "disputes" | "checks" | "guide"
 
@@ -32,10 +33,10 @@ const StripePage = () => {
   return (
     <div className="flex flex-col gap-y-3">
       {s?.demo && <DemoBar />}
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <img src={stripeLogo} alt="" className="size-8 shrink-0 rounded-md" />
+            <PageLogo src={stripeLogo} fill />
             <div>
               <div className="flex items-center gap-x-2">
                 <Heading>Stripe</Heading>
@@ -106,7 +107,7 @@ const StripePage = () => {
       {s && current === "checks" && <Checks status={s} />}
       {current === "guide" && <Guide />}
       {s && !ready && !["checks", "guide"].includes(current) && (
-        <Container className="p-6">
+        <Container className="overflow-hidden p-6">
           <Text size="small" className="text-ui-fg-subtle">
             {t("stripe.disabled.hint")}
           </Text>

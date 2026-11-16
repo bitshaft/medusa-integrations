@@ -26,7 +26,7 @@ const NegotiationPage = () => {
       {data?.negotiation.is_demo && <DemoBar />}
       {isLoading && <Skeleton className="h-64 w-full" />}
       {error && (
-        <Container className="p-6">
+        <Container className="overflow-hidden p-6">
           <Text size="small" className="text-ui-fg-error">
             {errorText(error)}
           </Text>

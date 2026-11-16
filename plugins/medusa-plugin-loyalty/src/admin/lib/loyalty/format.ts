@@ -12,7 +12,7 @@ export function money(
 ): string {
   if (amount == null) return "—"
   try {
-    return new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL", {
+    return new Intl.NumberFormat(toIntlLocale(language) ?? "en-US", {
       style: "currency",
       currency: (currency || "pln").toUpperCase(),
     }).format(amount)
@@ -24,7 +24,7 @@ export function money(
 /** `13 lis 2026`. */
 export function shortDate(value: string | Date | null | undefined, language: string): string {
   if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -33,7 +33,7 @@ export function shortDate(value: string | Date | null | undefined, language: str
 
 /** `1255` / `12 555` points, with the locale's separators. */
 export const points = (value: number, language: string) =>
-  new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL").format(value)
+  new Intl.NumberFormat(toIntlLocale(language) ?? "en-US").format(value)
 
 /** A random id for forms, so a double submit is written once. */
 export const requestId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`

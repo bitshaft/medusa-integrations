@@ -23,6 +23,9 @@ import { CouponWizard } from "../../components/coupons/wizard"
 import { type CouponView, exportUrl, useSettings } from "../../lib/coupons/api"
 import { adminLocale } from "../../lib/coupons/draft"
 import { navIcon } from "../../lib/coupons/kit/nav-icon"
+import { PageIcon, TabTrigger } from "../../lib/coupons/kit/ui"
+
+const BRAND_COLOR = "#db2777"
 
 type Tab = "panel" | "guide" | "settings"
 type WizardState = { mode: "coupon" | "batch"; coupon: CouponView | null } | null
@@ -41,10 +44,10 @@ const CouponsPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <ReceiptPercent />
+            <PageIcon icon={ReceiptPercent} color={BRAND_COLOR} />
             <div>
               <div className="flex items-center gap-x-2">
                 <Heading>{t("coupons.title")}</Heading>
@@ -93,18 +96,15 @@ const CouponsPage = () => {
         <div className="px-6 py-3">
           <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
             <Tabs.List>
-              <Tabs.Trigger value="panel">
-                <ChartBar />
+              <TabTrigger value="panel" icon={ChartBar} color="#2563eb">
                 {t("coupons.tabs.panel")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="guide">
-                <BookOpen />
+              </TabTrigger>
+              <TabTrigger value="guide" icon={BookOpen} color="#db2777">
                 {t("coupons.tabs.guide")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="settings">
-                <CogSixTooth />
+              </TabTrigger>
+              <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
                 {t("coupons.tabs.settings")}
-              </Tabs.Trigger>
+              </TabTrigger>
             </Tabs.List>
           </Tabs>
         </div>
@@ -147,7 +147,7 @@ const CouponsPage = () => {
 export const config = defineRouteConfig({
   label: "coupons.title",
   translationNs: "translation",
-  icon: navIcon(ReceiptPercent, "#db2777"),
+  icon: navIcon(ReceiptPercent, BRAND_COLOR),
 })
 
 export default CouponsPage

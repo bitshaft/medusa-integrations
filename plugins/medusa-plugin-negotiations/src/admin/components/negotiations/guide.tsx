@@ -35,7 +35,7 @@ export const Guide = () => {
   const { data, isLoading } = useGuide()
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="flex flex-col gap-y-3 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
         <Heading level="h2">{t("negotiations.guide.whatTitle")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
           {t("negotiations.guide.what")}
@@ -43,7 +43,7 @@ export const Guide = () => {
         <Diagram />
       </Container>
 
-      <Container className="flex flex-col gap-y-3 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
         <Heading level="h2">{t("negotiations.guide.stepsTitle")}</Heading>
         {isLoading ? (
           <Skeleton className="h-40" />
@@ -77,7 +77,7 @@ export const Guide = () => {
         )}
       </Container>
 
-      <Container className="flex flex-col gap-y-3 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <Heading level="h2">{t("negotiations.guide.promptTitle")}</Heading>

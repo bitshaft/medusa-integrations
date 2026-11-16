@@ -10,6 +10,15 @@ import { Overview } from "../../components/whitelist-vat/overview"
 import { Settings } from "../../components/whitelist-vat/settings"
 import { useWhitelistVatStatus } from "../../lib/whitelist-vat/api"
 import { navIcon } from "../../lib/whitelist-vat/kit/nav-icon"
+import { PageIcon, TabTrigger } from "../../lib/whitelist-vat/kit/ui"
+import { ChartBar, CogSixTooth, MagnifyingGlass } from "@medusajs/icons"
+
+const BRAND_COLOR = "#16a34a"
+const TAB_ICONS = {
+  overview: { icon: ChartBar, color: "#2563eb" },
+  lookup: { icon: MagnifyingGlass, color: "#ea580c" },
+  settings: { icon: CogSixTooth, color: "#64748b" },
+} as const
 
 const TABS = ["overview", "lookup", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -28,13 +37,16 @@ const WhitelistVatPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex items-center justify-between gap-x-4 px-6 py-4">
-          <div>
-            <Heading>{t("whitelist-vat.title")}</Heading>
-            <Text size="small" className="text-ui-fg-subtle">
-              {t("whitelist-vat.description")}
-            </Text>
+          <div className="flex items-center gap-x-3">
+            <PageIcon icon={ShieldCheck} color={BRAND_COLOR} />
+            <div>
+              <Heading>{t("whitelist-vat.title")}</Heading>
+              <Text size="small" className="text-ui-fg-subtle">
+                {t("whitelist-vat.description")}
+              </Text>
+            </div>
           </div>
           <Button
             size="small"
@@ -52,9 +64,9 @@ const WhitelistVatPage = () => {
             <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
               <Tabs.List>
                 {TABS.map((value) => (
-                  <Tabs.Trigger key={value} value={value}>
+                  <TabTrigger key={value} value={value} icon={TAB_ICONS[value].icon} color={TAB_ICONS[value].color}>
                     {t(`whitelist-vat.tabs.${value}`)}
-                  </Tabs.Trigger>
+                  </TabTrigger>
                 ))}
               </Tabs.List>
             </Tabs>
@@ -94,8 +106,9 @@ const WhitelistVatPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "VAT white list",
-  icon: navIcon(ShieldCheck, "#16a34a"),
+  label: "whitelist-vat.title",
+  translationNs: "translation",
+  icon: navIcon(ShieldCheck, BRAND_COLOR),
 })
 
 export default WhitelistVatPage

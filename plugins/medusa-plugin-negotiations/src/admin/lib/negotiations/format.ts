@@ -25,7 +25,7 @@ const THREE_DECIMAL = new Set(["bhd", "iqd", "jod", "kwd", "lyd", "omr", "tnd"])
 export const digitsOf = (currency: string) =>
   ZERO_DECIMAL.has(currency.toLowerCase()) ? 0 : THREE_DECIMAL.has(currency.toLowerCase()) ? 3 : 2
 
-const locale = (language: string) => toIntlLocale(language) ?? "pl-PL"
+const locale = (language: string) => toIntlLocale(language) ?? "en-US"
 
 /** `2124,98 zł` from 212498 grosze. Amounts stay integers; they become a decimal only here, for display. */
 export function money(minor: number | null | undefined, currency: string | null | undefined, language: string): string {

@@ -12,6 +12,9 @@ import { TabTrigger } from "../../components/emails/shared"
 import { Templates } from "../../components/emails/templates"
 import { useEmailsStatus } from "../../lib/emails/api"
 import { navIcon } from "../../lib/emails/kit/nav-icon"
+import { PageIcon } from "../../lib/emails/kit/ui"
+
+const BRAND_COLOR = "#2563eb"
 
 const TABS = ["history", "templates", "appearance", "settings", "guide"] as const
 type Tab = (typeof TABS)[number]
@@ -41,10 +44,10 @@ const EmailsPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <Envelope />
+            <PageIcon icon={Envelope} color={BRAND_COLOR} />
             <div>
               <Heading>{t("emails.title")}</Heading>
               <Text size="small" className="text-ui-fg-subtle">
@@ -102,7 +105,7 @@ const EmailsPage = () => {
       </Container>
 
       {s?.enabled && tab === "history" && (
-        <Container className="divide-y p-0">
+        <Container className="overflow-hidden divide-y p-0">
           <div className="px-6 py-4">
             <Heading level="h2">{t("emails.log.allTitle")}</Heading>
             <Text size="small" className="text-ui-fg-subtle">
@@ -121,8 +124,9 @@ const EmailsPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Emails",
-  icon: navIcon(Envelope, "#2563eb"),
+  label: "emails.title",
+  translationNs: "translation",
+  icon: navIcon(Envelope, BRAND_COLOR),
 })
 
 export default EmailsPage

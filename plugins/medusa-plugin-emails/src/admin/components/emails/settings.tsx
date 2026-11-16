@@ -41,7 +41,7 @@ export const Settings = ({ status }: { status: Extract<EmailsStatus, { enabled: 
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <Section title={t("emails.status.title")}>
           <Row label={t("emails.status.state")}>
             {s.demo ? (
@@ -71,7 +71,7 @@ export const Settings = ({ status }: { status: Extract<EmailsStatus, { enabled: 
         {settings.data && <GeneralSettings settings={settings.data.settings} />}
       </Container>
 
-      <Container className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
+      <Container className="overflow-hidden flex flex-wrap items-center justify-between gap-3 px-6 py-4">
         <div>
           <Heading level="h2">{t("emails.reset.everything")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">

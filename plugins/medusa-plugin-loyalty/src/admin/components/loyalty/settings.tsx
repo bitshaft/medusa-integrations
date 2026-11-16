@@ -68,7 +68,7 @@ export const Settings = ({ settings, defaults }: Props) => {
 
   return (
     <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_360px]">
-      <Container className="flex flex-col gap-y-4 px-6 py-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <Heading level="h2">{t("loyalty.settings.title")}</Heading>
@@ -104,7 +104,7 @@ export const Settings = ({ settings, defaults }: Props) => {
               <Input
                 size="small"
                 type="url"
-                placeholder="https://sklep.pl/regulamin-programu"
+                placeholder={t("loyalty.settings.termsPlaceholder")}
                 value={form.terms_url ?? ""}
                 onChange={(e) => set("terms_url", e.target.value.trim() || null)}
               />
@@ -370,7 +370,7 @@ const Preview = ({ settings }: { settings: SettingsValues }) => {
   const texts = data?.texts[adminLocale(lang)]
 
   return (
-    <Container className="flex h-fit flex-col gap-y-4 px-6 py-6">
+    <Container className="overflow-hidden flex h-fit flex-col gap-y-4 px-6 py-6">
       <div>
         <Heading level="h2">{t("loyalty.preview.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

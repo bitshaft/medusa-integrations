@@ -9,7 +9,7 @@ import { CustomerLoyalty } from "../components/loyalty/customers"
 const LoyaltyCustomerWidget = ({ data }: DetailWidgetProps<AdminCustomer>) => {
   const { t } = useTranslation()
   return (
-    <Container className="flex flex-col gap-y-4 px-6 py-4">
+    <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-4">
       <Heading level="h2">{t("loyalty.widget.title")}</Heading>
       <CustomerLoyalty customerId={data.id} compact />
     </Container>

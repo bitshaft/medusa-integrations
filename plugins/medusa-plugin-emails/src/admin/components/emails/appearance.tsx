@@ -139,7 +139,7 @@ export const Appearance = ({ locale }: { locale: EmailLocale }) => {
   const query = useEmailTheme(true)
   if (!query.data) {
     return (
-      <Container className="p-6">
+      <Container className="overflow-hidden p-6">
         <Skeleton className="h-64 w-full" />
       </Container>
     )
@@ -202,7 +202,7 @@ const AppearanceForm = ({ data, locale }: { data: ThemeResponse; locale: EmailLo
   return (
     <div className="grid grid-cols-1 items-start gap-3 xl:grid-cols-[minmax(0,420px)_1fr]">
       <div className="flex flex-col gap-y-3">
-        <Container className="divide-y p-0">
+        <Container className="overflow-hidden divide-y p-0">
           <Block title={t("emails.appearance.palettes")} hint={t("emails.appearance.palettesHint")}>
             <div className="grid grid-cols-3 gap-2">
               {PRESETS.map((preset) => {
@@ -444,7 +444,7 @@ const AppearanceForm = ({ data, locale }: { data: ThemeResponse; locale: EmailLo
         </Container>
       </div>
 
-      <Container className="divide-y p-0 xl:sticky xl:top-4">
+      <Container className="overflow-hidden divide-y p-0 xl:sticky xl:top-4">
         <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
           <div>
             <Heading level="h2">{t("emails.editor.preview")}</Heading>

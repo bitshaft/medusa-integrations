@@ -12,7 +12,7 @@ const CustomerNegotiationsWidget = ({ data: customer }: DetailWidgetProps<AdminC
   const settings = useSettings()
   if (!settings.data?.enabled) return null
   return (
-    <Container className="p-0 pb-2">
+    <Container className="overflow-hidden p-0 pb-2">
       <div className="px-6 pt-4">
         <Heading level="h2">{t("negotiations.widgets.customer")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

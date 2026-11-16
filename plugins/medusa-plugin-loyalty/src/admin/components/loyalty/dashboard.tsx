@@ -42,7 +42,7 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-        <Container className="p-0">
+        <Container className="overflow-hidden p-0">
           <div className="px-6 py-4">
             <Heading level="h2">{t("loyalty.dashboard.tiers")}</Heading>
           </div>
@@ -57,7 +57,7 @@ export const Dashboard = () => {
             </Table.Body>
           </Table>
         </Container>
-        <Container className="p-0">
+        <Container className="overflow-hidden p-0">
           <div className="px-6 py-4">
             <Heading level="h2">{t("loyalty.dashboard.topRewards")}</Heading>
           </div>

@@ -44,7 +44,10 @@
       "noRedemptions": "Nikt jeszcze nie wymienił nagrody."
     },
     "kinds": {
-      "fixed": { "title": "Rabat kwotowy", "hint": "Jednorazowy kod dla tego klienta, np. 20 zł rabatu." },
+      "fixed": {
+        "title": "Rabat kwotowy",
+        "hint": "Jednorazowy kod dla tego klienta, np. 20 zł rabatu."
+      },
       "percentage": {
         "title": "Rabat procentowy",
         "hint": "Jednorazowy kod dla tego klienta, np. 10% rabatu na produkty."
@@ -173,7 +176,11 @@
       "manual": "korekta",
       "tier_bonus": "awans na poziom"
     },
-    "actors": { "system": "system", "admin": "administrator", "customer": "klient" },
+    "actors": {
+      "system": "system",
+      "admin": "administrator",
+      "customer": "klient"
+    },
     "adjust": {
       "title": "Korekta ręczna",
       "points": "Punkty (+/−)",
@@ -237,7 +244,8 @@
       "giftRelease": "Usuń gratis z porzuconego koszyka i oddaj punkty po",
       "excluded": "Wykluczone grupy klientów",
       "excludedHint": "Klienci z tych grup (np. B2B) nie zbierają ani nie wymieniają punktów.",
-      "groups": "Grupy klientów"
+      "groups": "Grupy klientów",
+      "termsPlaceholder": "https://sklep.pl/regulamin-programu"
     },
     "preview": {
       "title": "Tak to zobaczy klient",
@@ -291,6 +299,8 @@
         "text": "Wtyczka wysyła zdarzenia (punkty naliczone, wymienione, wygasające, zmiana poziomu i inne), z których może skorzystać wtyczka maili albo newslettera. Sama nie wysyła maili."
       }
     },
-    "widget": { "title": "Program lojalnościowy" }
+    "widget": {
+      "title": "Program lojalnościowy"
+    }
   }
 }

@@ -78,14 +78,14 @@ const EmailTypePage = () => {
 
   if (query.isLoading) {
     return (
-      <Container className="p-6">
+      <Container className="overflow-hidden p-6">
         <Skeleton className="h-48 w-full" />
       </Container>
     )
   }
   if (!detail) {
     return (
-      <Container className="flex flex-col gap-y-3 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
         <Text size="small" className="text-ui-fg-error">
           {query.error ? errorMessage(query.error) : t("emails.editor.notFound")}
         </Text>
@@ -164,7 +164,7 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
   return (
     <VariablesProvider>
       <div className="flex flex-col gap-y-3">
-        <Container className="divide-y p-0">
+        <Container className="overflow-hidden divide-y p-0">
           <div className="flex items-center justify-between gap-x-4 px-6 py-4">
             <div className="min-w-0">
               <Link to="/emails?tab=templates" className="text-ui-fg-subtle txt-small hover:text-ui-fg-base">
@@ -202,7 +202,7 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
         </Container>
 
         <div className={isCommon ? "flex flex-col gap-y-3" : "grid grid-cols-1 items-start gap-3 xl:grid-cols-2"}>
-          <Container className="divide-y p-0">
+          <Container className="overflow-hidden divide-y p-0">
             <div className="flex items-center justify-between gap-x-4 px-6 py-4">
               <div>
                 <Heading level="h2">{t("emails.editor.text")}</Heading>
@@ -324,7 +324,7 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
 
           {!isCommon && (
             <div className="flex flex-col gap-y-3">
-              <Container className="divide-y p-0">
+              <Container className="overflow-hidden divide-y p-0">
                 <div className="flex items-center justify-between gap-x-4 px-6 py-4">
                   <div>
                     <Heading level="h2">{t("emails.editor.preview")}</Heading>
@@ -518,7 +518,7 @@ const TestSend = ({ type, locale, orderId }: { type: string; locale: EmailLocale
     )
 
   return (
-    <Container className="flex flex-col gap-y-3 px-6 py-4">
+    <Container className="overflow-hidden flex flex-col gap-y-3 px-6 py-4">
       <div>
         <Heading level="h2">{t("emails.test.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

@@ -36,7 +36,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
     })
 
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Heading level="h2">{t("compliance.settings.title")}</Heading>
@@ -153,7 +153,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         <TextField
           label={t("compliance.settings.verifyUrl")}
           hint={t("compliance.settings.verifyUrlHint")}
-          placeholder="https://sklep.pl/rodo/potwierdz?token={token}"
+          placeholder={t("compliance.settings.verifyUrlPlaceholder")}
           value={s.gdpr.verify_url}
           onChange={(v) => gdpr({ verify_url: v })}
         />

@@ -21,7 +21,7 @@ const StripeOrderWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
   if (!payments.isLoading && !list.length && !payments.isError) return null
 
   return (
-    <Container className="flex flex-col gap-y-3 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
       <Heading level="h2">{t("stripe.widget.title")}</Heading>
       {payments.data?.demo && <DemoBar />}
       <Incomplete data={payments.data} />

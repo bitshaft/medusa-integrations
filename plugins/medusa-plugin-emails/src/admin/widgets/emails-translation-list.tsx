@@ -12,7 +12,7 @@ const EmailsTranslationList = () => {
   const { t } = useTranslation()
 
   return (
-    <Container className="flex flex-col gap-y-3 px-6 py-4">
+    <Container className="overflow-hidden flex flex-col gap-y-3 px-6 py-4">
       <div>
         <Heading level="h2">{t("emails.translations.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

@@ -44,7 +44,10 @@
       "noRedemptions": "No rewards redeemed yet."
     },
     "kinds": {
-      "fixed": { "title": "Amount off", "hint": "A one-off code for this customer, e.g. 20 zł off." },
+      "fixed": {
+        "title": "Amount off",
+        "hint": "A one-off code for this customer, e.g. 20 zł off."
+      },
       "percentage": {
         "title": "Percentage off",
         "hint": "A one-off code for this customer, e.g. 10% off the products."
@@ -169,7 +172,11 @@
       "manual": "correction",
       "tier_bonus": "tier reached"
     },
-    "actors": { "system": "system", "admin": "admin", "customer": "customer" },
+    "actors": {
+      "system": "system",
+      "admin": "admin",
+      "customer": "customer"
+    },
     "adjust": {
       "title": "Manual correction",
       "points": "Points (+/−)",
@@ -233,7 +240,8 @@
       "giftRelease": "Remove a gift from an abandoned cart and give the points back after",
       "excluded": "Excluded customer groups",
       "excludedHint": "Customers in these groups (e.g. B2B) neither earn nor redeem points.",
-      "groups": "Customer groups"
+      "groups": "Customer groups",
+      "termsPlaceholder": "https://shop.example.com/loyalty-terms"
     },
     "preview": {
       "title": "What the customer sees",
@@ -287,6 +295,8 @@
         "text": "The plugin emits events (points earned, redeemed, expiring, tier changed and more) that an e-mail or newsletter plugin can use. It does not send e-mails itself."
       }
     },
-    "widget": { "title": "Loyalty program" }
+    "widget": {
+      "title": "Loyalty program"
+    }
   }
 }

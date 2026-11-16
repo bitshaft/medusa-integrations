@@ -21,7 +21,7 @@ const BackInStockProduct = ({ data: product }: DetailWidgetProps<AdminProduct>) 
   const variants = (data?.variants ?? []).filter((variant) => variant.waiting || variant.pending || variant.problem)
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("back-in-stock.widget.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

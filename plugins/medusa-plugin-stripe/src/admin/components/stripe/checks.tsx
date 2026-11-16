@@ -13,7 +13,7 @@ export const Checks = ({ status }: { status: Status }) => {
   for (const c of data?.checks ?? []) counts[c.verdict]++
 
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("stripe.checks.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

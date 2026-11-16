@@ -37,7 +37,7 @@ export const RecordPanel = ({ kind, id }: { kind: "orders" | "customers"; id: st
     })
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex items-center justify-between gap-x-4 px-6 py-4">
         <Heading level="h2">{t("whitelist-vat.record.title")}</Heading>
         {taxId && (

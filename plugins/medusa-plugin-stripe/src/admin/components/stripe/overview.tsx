@@ -17,7 +17,7 @@ export const Overview = () => {
   const transactions = data?.truncated.includes("balance_transactions") ? <Incomplete data={data} compact /> : undefined
 
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Heading level="h2">{t("stripe.overview.title")}</Heading>

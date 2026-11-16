@@ -1,6 +1,6 @@
 import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
-import { Badge, StatusBadge, Tabs, Text } from "@medusajs/ui"
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import { Badge, StatusBadge, Text } from "@medusajs/ui"
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import { apiError, type FloorCheck, type Status, type Thread } from "../../lib/negotiations/api"
@@ -120,24 +120,8 @@ export const PriceWithDiscount = ({
   )
 }
 
-export const TAB_CLASS = "gap-x-1.5 rounded-md"
-
-export const TabTrigger = ({
-  value,
-  icon: Icon,
-  color,
-  children,
-}: {
-  value: string
-  icon: ComponentType<{ style?: CSSProperties; color?: string }>
-  color: string
-  children: ReactNode
-}) => (
-  <Tabs.Trigger value={value} className={TAB_CLASS}>
-    <Icon color={color} style={{ flexShrink: 0 }} />
-    {children}
-  </Tabs.Trigger>
-)
+/** Tabs styled the same in every integration (kit). */
+export { TAB_CLASS, TabTrigger } from "../../lib/negotiations/kit/ui"
 
 export const Empty = ({ children }: { children: ReactNode }) => (
   <div className="flex items-center justify-center rounded-lg border border-dashed border-ui-border-base px-6 py-8">

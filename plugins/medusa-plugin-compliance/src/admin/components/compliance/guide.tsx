@@ -17,7 +17,7 @@ export const Guide = () => {
     return Array.isArray(value) ? (value as string[]) : []
   }
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("compliance.guide.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

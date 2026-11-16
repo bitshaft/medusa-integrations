@@ -34,7 +34,7 @@ export function emptyDraft(currencyCode = "pln"): CouponDraft {
 /** Amounts are in major units, like the rest of Medusa's API: `255,00 zł`. */
 export function money(amount: number, currency: string | null | undefined, language: string): string {
   try {
-    return new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL", {
+    return new Intl.NumberFormat(toIntlLocale(language) ?? "en-US", {
       style: "currency",
       currency: (currency || "pln").toUpperCase(),
     }).format(amount)
@@ -46,7 +46,7 @@ export function money(amount: number, currency: string | null | undefined, langu
 /** `13 lis 2026` / `13 Nov 2026`. */
 export function shortDate(value: string | null | undefined, language: string): string {
   if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",

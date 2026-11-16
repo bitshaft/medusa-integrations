@@ -38,7 +38,7 @@ export const Settings = ({ status }: { status: Extract<SettingsResponse, { enabl
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="flex flex-col gap-y-4 px-6 py-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-6">
         <div>
           <Heading level="h2">{t("coupons.settings.title")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -102,7 +102,7 @@ export const Settings = ({ status }: { status: Extract<SettingsResponse, { enabl
         </div>
       </Container>
 
-      <Container className="flex flex-col gap-y-4 px-6 py-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-6">
         <div>
           <Heading level="h2">{t("coupons.settings.optionsTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">

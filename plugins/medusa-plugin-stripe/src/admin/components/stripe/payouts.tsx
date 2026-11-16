@@ -17,7 +17,7 @@ export const Payouts = ({ demo }: { demo: boolean }) => {
   const lang = i18n.language
 
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Heading level="h2">{t("stripe.payouts.title")}</Heading>

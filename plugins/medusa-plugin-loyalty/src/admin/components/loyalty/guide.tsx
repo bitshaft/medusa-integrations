@@ -18,7 +18,7 @@ const SECTIONS = [
 export const Guide = () => {
   const { t } = useTranslation()
   return (
-    <Container className="flex flex-col gap-y-6 px-6 py-6">
+    <Container className="overflow-hidden flex flex-col gap-y-6 px-6 py-6">
       <div>
         <Heading level="h2">{t("loyalty.guide.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

@@ -71,7 +71,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="flex flex-col gap-y-4 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
         <div>
           <Heading level="h2">{t("negotiations.settings.counterTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -122,7 +122,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         </div>
       </Container>
 
-      <Container className="flex flex-col gap-y-4 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
         <div>
           <Heading level="h2">{t("negotiations.settings.writersTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -162,7 +162,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         {o.demo && <Note>{t("negotiations.settings.demoNoWrites")}</Note>}
       </Container>
 
-      <Container className="flex flex-col gap-y-4 p-6">
+      <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
         <div>
           <Heading level="h2">{t("negotiations.settings.expiryTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -205,7 +205,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         </div>
       </Container>
 
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("negotiations.settings.optionsTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -250,7 +250,7 @@ const RunsHistory = () => {
   const lang = i18n.language
   const { data, isLoading } = useRuns()
   return (
-    <Container className="p-0">
+    <Container className="overflow-hidden p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("negotiations.runs.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

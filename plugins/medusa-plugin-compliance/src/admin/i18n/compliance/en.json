@@ -425,7 +425,8 @@
       "technical": "Technical options",
       "technicalHint": "From medusa-config.ts.",
       "timeZone": "Time zone",
-      "providers": "Data providers in the export"
+      "providers": "Data providers in the export",
+      "verifyUrlPlaceholder": "https://shop.example.com/gdpr/confirm?token={token}"
     },
     "guide": {
       "title": "Guide",

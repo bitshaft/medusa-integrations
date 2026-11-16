@@ -115,7 +115,7 @@ const ModuleCard = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-x-2">

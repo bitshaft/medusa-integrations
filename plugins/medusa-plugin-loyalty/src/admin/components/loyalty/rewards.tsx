@@ -86,7 +86,7 @@ export const Rewards = ({ tiers, currencyCode }: { tiers: Tier[]; currencyCode: 
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
           <Heading level="h2">{t("loyalty.rewards.title")}</Heading>

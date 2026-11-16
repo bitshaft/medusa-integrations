@@ -63,7 +63,7 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
     thread.catalog_total ? Math.round(((thread.catalog_total - amount) * 10_000) / thread.catalog_total) : null
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex items-start justify-between gap-2 px-6 py-4">
         <div>
           <div className="flex items-center gap-x-2">
@@ -241,7 +241,7 @@ const Conversation = ({ detail }: { detail: ThreadDetail }) => {
     return u ? [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email : null
   }
   return (
-    <Container className="flex flex-col gap-y-3 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
       <Heading level="h2">{t("negotiations.thread.conversation")}</Heading>
       {detail.messages.map((m) => (
         <Bubble
@@ -391,7 +391,7 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
 
   const modes: Mode[] = ["reply", "counter", "note", "reject"]
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-x-2">
           <Heading level="h2">{t("negotiations.move.title")}</Heading>

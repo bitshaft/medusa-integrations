@@ -20,7 +20,7 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("whitelist-vat.settings.registers")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
@@ -75,7 +75,7 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
         </Register>
       </Container>
 
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("whitelist-vat.settings.options")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">

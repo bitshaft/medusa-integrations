@@ -12,6 +12,9 @@ import { Rewards } from "../../components/loyalty/rewards"
 import { Settings } from "../../components/loyalty/settings"
 import { useSettings } from "../../lib/loyalty/api"
 import { navIcon } from "../../lib/loyalty/kit/nav-icon"
+import { PageIcon, TabTrigger } from "../../lib/loyalty/kit/ui"
+
+const BRAND_COLOR = "#d97706"
 
 type Tab = "panel" | "rewards" | "customers" | "settings" | "guide"
 
@@ -25,10 +28,10 @@ const LoyaltyPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <Star />
+            <PageIcon icon={Star} color={BRAND_COLOR} />
             <div>
               <div className="flex items-center gap-x-2">
                 <Heading>{t("loyalty.title")}</Heading>
@@ -56,26 +59,21 @@ const LoyaltyPage = () => {
         <div className="px-6 py-3">
           <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
             <Tabs.List>
-              <Tabs.Trigger value="panel">
-                <ChartBar />
+              <TabTrigger value="panel" icon={ChartBar} color="#2563eb">
                 {t("loyalty.tabs.panel")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="rewards">
-                <Gift />
+              </TabTrigger>
+              <TabTrigger value="rewards" icon={Gift} color="#ea580c">
                 {t("loyalty.tabs.rewards")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="customers">
-                <Users />
+              </TabTrigger>
+              <TabTrigger value="customers" icon={Users} color="#7c3aed">
                 {t("loyalty.tabs.customers")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="settings">
-                <CogSixTooth />
+              </TabTrigger>
+              <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
                 {t("loyalty.tabs.settings")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="guide">
-                <BookOpen />
+              </TabTrigger>
+              <TabTrigger value="guide" icon={BookOpen} color="#db2777">
                 {t("loyalty.tabs.guide")}
-              </Tabs.Trigger>
+              </TabTrigger>
             </Tabs.List>
           </Tabs>
         </div>
@@ -106,7 +104,7 @@ const LoyaltyPage = () => {
 export const config = defineRouteConfig({
   label: "loyalty.title",
   translationNs: "translation",
-  icon: navIcon(Star, "#d97706"),
+  icon: navIcon(Star, BRAND_COLOR),
 })
 
 export default LoyaltyPage

@@ -16,7 +16,7 @@ const OrderListNegotiationsWidget = () => {
   const s = stats.data?.stats
   if (!enabled || !s || (!s.waiting && !s.open && !s.countered)) return null
   return (
-    <Container className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+    <Container className="overflow-hidden flex flex-wrap items-center justify-between gap-3 px-6 py-3">
       <div className="flex items-center gap-x-3">
         <ChatBubbleLeftRight className="text-ui-fg-interactive" />
         <Text size="small">

@@ -25,6 +25,7 @@ import {
   useSettings,
 } from "../../lib/back-in-stock/api"
 import { errorMessage } from "../../lib/back-in-stock/kit/format"
+import { TAB_CLASS } from "../../lib/back-in-stock/kit/ui"
 
 type EnabledStatus = Extract<BackInStockStatus, { enabled: true }>
 type NumberField = "minQuantity" | "delayMinutes" | "minGapHours" | "maxNotifications"
@@ -142,7 +143,7 @@ const SettingsForm = ({ data }: { data: SettingsResponse }) => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("back-in-stock.settings.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
@@ -196,8 +197,12 @@ const SettingsForm = ({ data }: { data: SettingsResponse }) => {
           </Label>
           <Tabs value={locale} onValueChange={(value) => setLocale(value as "en" | "pl")}>
             <Tabs.List>
-              <Tabs.Trigger value="pl">PL</Tabs.Trigger>
-              <Tabs.Trigger value="en">EN</Tabs.Trigger>
+              <Tabs.Trigger className={TAB_CLASS} value="pl">
+                PL
+              </Tabs.Trigger>
+              <Tabs.Trigger className={TAB_CLASS} value="en">
+                EN
+              </Tabs.Trigger>
             </Tabs.List>
           </Tabs>
         </div>
@@ -272,7 +277,7 @@ const Sending = ({ status }: { status: EnabledStatus }) => {
   )
   const notSet = t("back-in-stock.sending.notSet")
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h2">{t("back-in-stock.sending.title")}</Heading>
       </div>
@@ -340,7 +345,7 @@ const DemoTools = ({ demoCount }: { demoCount: number }) => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex items-center justify-between gap-x-4 px-6 py-4">
         <div>
           <Heading level="h2">{t("back-in-stock.demoTools.title")}</Heading>

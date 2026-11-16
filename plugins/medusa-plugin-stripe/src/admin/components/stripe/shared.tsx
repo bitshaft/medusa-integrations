@@ -1,6 +1,6 @@
 import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
-import { Badge, StatusBadge, Tabs, Text } from "@medusajs/ui"
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import { Badge, StatusBadge, Text } from "@medusajs/ui"
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
@@ -95,25 +95,8 @@ export const Tile = ({
   </div>
 )
 
-/** Rounded like the rest of the admin (not a pill), with spacing and a coloured icon. */
-export const TAB_CLASS = "gap-x-1.5 rounded-md"
-
-export const TabTrigger = ({
-  value,
-  icon: Icon,
-  color,
-  children,
-}: {
-  value: string
-  icon: ComponentType<{ style?: CSSProperties; color?: string }>
-  color: string
-  children: ReactNode
-}) => (
-  <Tabs.Trigger value={value} className={TAB_CLASS}>
-    <Icon color={color} style={{ flexShrink: 0 }} />
-    {children}
-  </Tabs.Trigger>
-)
+/** Tabs styled the same in every integration (kit). */
+export { TAB_CLASS, TabTrigger } from "../../lib/stripe/kit/ui"
 
 export const OrderLink = ({ order, demo }: { order: OrderRef | null; demo: boolean }) => {
   const { t } = useTranslation()

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useSimulateRestock, useWanted, type WantedVariant } from "../../lib/back-in-stock/api"
 import { errorMessage } from "../../lib/back-in-stock/kit/format"
 import { Pager, ProblemBadge, VariantCell } from "./shared"
+import { TAB_CLASS } from "../../lib/back-in-stock/kit/ui"
 
 const PAGE = 20
 type Scope = "real" | "demo"
@@ -29,7 +30,7 @@ export const Wanted = () => {
     )
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="overflow-hidden divide-y p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
         <div>
           <Heading level="h2">{t("back-in-stock.wanted.title")}</Heading>
@@ -45,8 +46,12 @@ export const Wanted = () => {
           }}
         >
           <Tabs.List>
-            <Tabs.Trigger value="real">{t("back-in-stock.subscriptions.realOnly")}</Tabs.Trigger>
-            <Tabs.Trigger value="demo">{t("back-in-stock.demo")}</Tabs.Trigger>
+            <Tabs.Trigger className={TAB_CLASS} value="real">
+              {t("back-in-stock.subscriptions.realOnly")}
+            </Tabs.Trigger>
+            <Tabs.Trigger className={TAB_CLASS} value="demo">
+              {t("back-in-stock.demo")}
+            </Tabs.Trigger>
           </Tabs.List>
         </Tabs>
       </div>

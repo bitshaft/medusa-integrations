@@ -14,7 +14,7 @@ export const SettingsPanel = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
             <Heading>{t("apaczka.settings.title")}</Heading>
@@ -146,7 +146,7 @@ export const SettingsPanel = () => {
         )}
       </Container>
 
-      <Container className="p-0">
+      <Container className="overflow-hidden p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("apaczka.settings.servicesTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle">

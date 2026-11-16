@@ -11,6 +11,9 @@ import { Settings } from "../../components/negotiations/settings"
 import { DemoBar, TabTrigger } from "../../components/negotiations/shared"
 import { keys, useSettings } from "../../lib/negotiations/api"
 import { navIcon } from "../../lib/negotiations/kit/nav-icon"
+import { PageIcon } from "../../lib/negotiations/kit/ui"
+
+const BRAND_COLOR = "#0891b2"
 
 type Tab = "panel" | "guide" | "settings"
 
@@ -24,10 +27,10 @@ const NegotiationsPage = () => {
   return (
     <div className="flex flex-col gap-y-3">
       {s?.options.demo && <DemoBar />}
-      <Container className="divide-y p-0">
+      <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
-            <ChatBubbleLeftRight />
+            <PageIcon icon={ChatBubbleLeftRight} color={BRAND_COLOR} />
             <div>
               <Heading>{t("negotiations.title")}</Heading>
               <Text size="small" className="text-ui-fg-subtle">
@@ -82,7 +85,7 @@ const NegotiationsPage = () => {
 export const config = defineRouteConfig({
   label: "negotiations.title",
   translationNs: "translation",
-  icon: navIcon(ChatBubbleLeftRight, "#0891b2"),
+  icon: navIcon(ChatBubbleLeftRight, BRAND_COLOR),
 })
 
 export default NegotiationsPage

@@ -38,7 +38,7 @@ export const Dashboard = () => {
           />
         </div>
       )}
-      <Container className="p-0 pb-2">
+      <Container className="overflow-hidden p-0 pb-2">
         <div className="px-6 pt-4">
           <Heading level="h2">{t("negotiations.list.title")}</Heading>
         </div>

@@ -12,7 +12,7 @@ const ProductNegotiationsWidget = ({ data: product }: DetailWidgetProps<AdminPro
   const settings = useSettings()
   if (!settings.data?.enabled) return null
   return (
-    <Container className="p-0 pb-2">
+    <Container className="overflow-hidden p-0 pb-2">
       <div className="px-6 pt-4">
         <Heading level="h2">{t("negotiations.widgets.product")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

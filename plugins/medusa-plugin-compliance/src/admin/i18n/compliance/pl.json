@@ -445,7 +445,8 @@
       "technical": "Opcje techniczne",
       "technicalHint": "Z medusa-config.ts.",
       "timeZone": "Strefa czasowa",
-      "providers": "Dostawcy danych w eksporcie"
+      "providers": "Dostawcy danych w eksporcie",
+      "verifyUrlPlaceholder": "https://sklep.pl/rodo/potwierdz?token={token}"
     },
     "guide": {
       "title": "Przewodnik",

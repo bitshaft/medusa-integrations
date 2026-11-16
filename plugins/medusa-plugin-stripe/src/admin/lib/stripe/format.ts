@@ -30,7 +30,7 @@ export function money(minor: number | null | undefined, currency: string | null 
   if (minor == null || !currency) return "—"
   const digits = ZERO_DECIMAL.has(currency.toLowerCase()) ? 0 : 2
   try {
-    return new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL", {
+    return new Intl.NumberFormat(toIntlLocale(language) ?? "en-US", {
       style: "currency",
       currency: currency.toUpperCase(),
       minimumFractionDigits: digits,
@@ -50,7 +50,7 @@ export function totals(value: Totals | null | undefined, language: string): stri
 /** `13 lis 2026` from a Unix timestamp in seconds. */
 export function date(seconds: number | null | undefined, language: string): string {
   if (!seconds) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -59,7 +59,7 @@ export function date(seconds: number | null | undefined, language: string): stri
 
 export function dateTime(seconds: number | null | undefined, language: string): string {
   if (!seconds) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -70,7 +70,7 @@ export function dateTime(seconds: number | null | undefined, language: string): 
 /** 934 per mille → `93,4%`. */
 export function percent(perMille: number | null, language: string): string {
   if (perMille == null) return "—"
-  return new Intl.NumberFormat(toIntlLocale(language) ?? "pl-PL", {
+  return new Intl.NumberFormat(toIntlLocale(language) ?? "en-US", {
     style: "percent",
     maximumFractionDigits: 1,
   }).format(perMille / 1000)

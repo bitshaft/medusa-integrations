@@ -82,7 +82,7 @@ export const DraftOrderPanel = ({ detail }: { detail: ThreadDetail }) => {
   const runs = detail.runs.filter((r) => r.writer === "draft_order" || r.writer === "cart")
 
   return (
-    <Container className="flex flex-col gap-y-3 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
       <div>
         <Heading level="h2">{t("negotiations.draft.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">

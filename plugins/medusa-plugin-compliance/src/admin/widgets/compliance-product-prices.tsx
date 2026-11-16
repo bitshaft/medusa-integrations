@@ -24,7 +24,7 @@ const ProductPricesWidget = ({ data: product }: DetailWidgetProps<AdminProduct>)
   const current = series.find((s) => keyOf(s) === key) ?? series[0]
 
   return (
-    <Container className="flex flex-col gap-y-4 p-6">
+    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("compliance.omnibus.widgetTitle")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
