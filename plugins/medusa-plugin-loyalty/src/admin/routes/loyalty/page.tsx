@@ -18,7 +18,7 @@ const BRAND_COLOR = "#d97706"
 
 type Tab = "panel" | "rewards" | "customers" | "settings" | "guide"
 
-/** The "Loyalty program" page under Extensions. */
+/** The "Loyalty" page in the main menu. */
 const LoyaltyPage = () => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -91,11 +91,11 @@ const LoyaltyPage = () => {
       </Container>
 
       {s?.enabled && tab === "panel" && <Dashboard />}
-      {s?.enabled && tab === "rewards" && (
-        <Rewards tiers={s.settings.tiers.levels} currencyCode={s.settings.currency_code} />
-      )}
+      {s?.enabled && tab === "rewards" && <Rewards tiers={s.settings.tiers.levels} currencyCode={s.currency_code} />}
       {s?.enabled && tab === "customers" && <Customers />}
-      {s?.enabled && tab === "settings" && <Settings settings={s.settings} defaults={s.defaults} />}
+      {s?.enabled && tab === "settings" && (
+        <Settings settings={s.settings} defaults={s.defaults} storeCurrencies={s.store_currencies} />
+      )}
       {tab === "guide" && <Guide />}
     </div>
   )

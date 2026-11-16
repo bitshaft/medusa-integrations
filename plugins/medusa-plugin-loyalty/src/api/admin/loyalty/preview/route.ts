@@ -4,6 +4,7 @@ import { requireEnabled } from "../../../../lib/loyalty/api/utils"
 import type { AdminPreview } from "../../../../lib/loyalty/api/validators"
 import { addMonths, earnedPoints, nextTier } from "../../../../lib/loyalty/points"
 import { sortedTiers } from "../../../../lib/loyalty/settings"
+import { programCurrency } from "../../../../lib/loyalty/server/runtime"
 import { customerTexts } from "../../../../lib/loyalty/texts"
 
 /**
@@ -24,7 +25,7 @@ export async function POST(req: MedusaRequest<AdminPreview>, res: MedusaResponse
     tier_name: tier?.name ?? null,
     next_tier: next ? { name: next.tier.name, remaining: next.remaining } : null,
     expires_at: settings.expiry.enabled ? addMonths(new Date(), settings.expiry.months) : null,
-    currency_code: settings.currency_code,
+    currency_code: await programCurrency(req.scope, settings),
     time_zone: options.timeZone,
   }
   res.json({ points, texts: { pl: customerTexts(input, "pl"), en: customerTexts(input, "en") } })

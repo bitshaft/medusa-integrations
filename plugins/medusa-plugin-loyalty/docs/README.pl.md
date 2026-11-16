@@ -45,7 +45,7 @@ module.exports = defineConfig({
 npx medusa db:migrate
 ```
 
-Strona pojawia się w **Extensions → Program lojalnościowy**, a na stronie
+Strona pojawia się w **Lojalność** w głównym menu, a na stronie
 każdego klienta widżet.
 
 ## Konfiguracja
@@ -81,7 +81,8 @@ do newslettera, domyślnie `newsletter.subscribed`) i
   punkty.
 - **Ujemne saldo** jest dozwolone, blokuje wymianę i spłacają je kolejne
   punkty.
-- **Akcje**: rejestracja i newsletter raz na klienta, urodziny raz w roku.
+- **Akcje**: rejestracja i newsletter raz na klienta, urodziny raz w roku i nie częściej niż co 330 dni (zmiana daty o dzień po bonusie nic nie daje).
+- **Waluta** kwot programu to jedna z walut sklepu, domyślnie jego waluta domyślna.
 - **Poziomy**: po każdym opłaconym zamówieniu i zwrocie oraz codziennie;
   zmiana zapisuje się w historii i emituje `loyalty.tier_changed`.
 - **Wygasanie**: całe dodatnie saldo po N miesiącach bez zamówienia ani
@@ -107,7 +108,7 @@ polsku i angielsku. Każdą zasadę sprawdza serwer.
 - `GET /rewards`: katalog z informacją, czy klienta stać
 - `POST /rewards/:id/redeem`: zwraca kod albo zaktualizowany koszyk
 - `GET /estimate?amount=` lub `?cart_id=`: ile punktów da produkt lub koszyk
-- `GET /terms`: link do regulaminu
+- `GET /terms`: link do regulaminu (sklep pokazuje go klientom; wtyczka nie tworzy strony regulaminu)
 - `POST /birthday`: data urodzin
 
 ## Zdarzenia

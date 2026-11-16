@@ -60,7 +60,7 @@ module.exports = defineConfig({
 npx medusa db:migrate
 ```
 
-The page appears under **Extensions → Loyalty program**, and a widget on
+The page appears under **Loyalty** in the main menu, and a widget on
 every customer page.
 
 ## Configuration
@@ -69,7 +69,7 @@ every customer page.
 
 | Option          | Default         | Meaning                                                                 |
 | --------------- | --------------- | ----------------------------------------------------------------------- |
-| `timeZone`      | `Europe/Warsaw` | "Today" for birthdays, and dates in exports.                             |
+| `timeZone`      | `Europe/Warsaw` | "Today" for birthdays, and dates in exports.                            |
 | `defaultLocale` | `pl`            | Language of customer messages when the request names none (`pl`, `en`). |
 
 Invalid options never stop Medusa: the plugin stays disabled and logs one
@@ -80,45 +80,47 @@ line (`[loyalty] Disabled: …`).
 Everything else is set by the store owner and applies from the moment it is
 saved:
 
-| Setting                                  | Default        |
-| ---------------------------------------- | -------------- |
-| Program on/off                           | on             |
-| Points: X points per Y of the base       | 1 point per 1  |
-| Base: items after discounts, gross / net | gross          |
-| Sign-up, first order, birthday, newsletter: on/off and points | off; 50, 100, 100, 50 |
-| Birthday: date change allowed every N days; date set at least N days before | 365, 30 |
-| Tiers: name, spend threshold, multiplier, one-off bonus; spend window | none; 12 months |
-| Expiry after N months without an order or redemption; reminder N days before | 12 months, 30 days |
-| Give points back for reward codes that expire unused | yes |
-| Release a gift from an abandoned cart after N days | 14 |
-| Excluded customer groups (earn and redeem nothing) | none |
-| Link to the program terms                | empty          |
+| Setting                                                                      | Default               |
+| ---------------------------------------------------------------------------- | --------------------- |
+| Program on/off                                                               | on                    |
+| Currency of program amounts (one of the store's currencies)                  | the store's default   |
+| Points: X points per Y of the base                                           | 1 point per 1         |
+| Base: items after discounts, gross / net                                     | gross                 |
+| Sign-up, first order, birthday, newsletter: on/off and points                | off; 50, 100, 100, 50 |
+| Birthday: date change allowed every N days; date set at least N days before  | 365, 30               |
+| Birthday: at least 330 days between two bonuses (fixed)                      | 330                   |
+| Tiers: name, spend threshold, multiplier, one-off bonus; spend window        | none; 12 months       |
+| Expiry after N months without an order or redemption; reminder N days before | 12 months, 30 days    |
+| Give points back for reward codes that expire unused                         | yes                   |
+| Release a gift from an abandoned cart after N days                           | 14                    |
+| Excluded customer groups (earn and redeem nothing)                           | none                  |
+| Link to the program terms (returned to the storefront, which shows it)       | empty                 |
 
 ### Environment variables
 
-| Variable                   | Meaning                                                                                       |
-| -------------------------- | --------------------------------------------------------------------------------------------- |
-| `LOYALTY_NEWSLETTER_EVENT` | Event that means "newsletter sign-up" (default `newsletter.subscribed`).                      |
-| `LOYALTY_DISABLE_HOOKS`    | `line-item` to skip the plugin's hook on `updateLineItemInCartWorkflow` (see below).           |
+| Variable                   | Meaning                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| `LOYALTY_NEWSLETTER_EVENT` | Event that means "newsletter sign-up" (default `newsletter.subscribed`).             |
+| `LOYALTY_DISABLE_HOOKS`    | `line-item` to skip the plugin's hook on `updateLineItemInCartWorkflow` (see below). |
 
 ## How it works
 
-| What | When | How |
-| --- | --- | --- |
-| Earning | the order is fully paid (`payment.captured`, also checked on `order.placed`) | items after discounts, gross or net, without shipping and gifts; × rate × tier multiplier; rounded down. Once per order. |
-| First-order bonus | first paid order, when no earlier non-canceled order exists | extra points, taken back if the order is canceled |
-| Returns | `order.return_received` | the share of the points of the returned units, by their value at purchase (not by money refunded). Cumulative and idempotent. |
-| Cancellation | `order.canceled` | everything earned for the order; gifts in it give their points back |
-| Negative balance | after a return of spent points | allowed; blocks redemptions; new points pay it off |
-| Sign-up | `customer.created` with an account | once |
-| Newsletter | `newsletter.subscribed` with `customer_id` or `email`, or by hand in the admin | once |
-| Birthday | daily job | once a year; date set through the Store API, changes limited |
-| Tiers | after every paid order and return, and daily | spend in the window (items after discounts, minus returns); a change is recorded and emits `loyalty.tier_changed`; the tier bonus is given once per tier |
-| Expiry | daily job | the whole positive balance after N months without an order or redemption (or since joining); `loyalty.points_expiring` once, N days before |
-| Code rewards | redemption | a one-off promotion code (`LOY-XXXXXXXX`) in the Promotion Module: limit 1, a `customer.id` rule so only this customer can use it, end date on its campaign |
-| Gift rewards | redemption | stock checked in the cart's sales channel, then the variant is added to the customer's open cart at 0, marked `metadata.loyalty_redemption_id`. Removing it before the order gives the points back; its quantity stays 1. |
-| Unused codes | daily job | closed, promotion switched off, points back if the setting says so |
-| Abandoned gifts | daily job | removed from the cart and refunded after N days |
+| What              | When                                                                           | How                                                                                                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Earning           | the order is fully paid (`payment.captured`, also checked on `order.placed`)   | items after discounts, gross or net, without shipping and gifts; × rate × tier multiplier; rounded down. Once per order.                                                                                                  |
+| First-order bonus | first paid order, when no earlier non-canceled order exists                    | extra points, taken back if the order is canceled                                                                                                                                                                         |
+| Returns           | `order.return_received`                                                        | the share of the points of the returned units, by their value at purchase (not by money refunded). Cumulative and idempotent.                                                                                             |
+| Cancellation      | `order.canceled`                                                               | everything earned for the order; gifts in it give their points back                                                                                                                                                       |
+| Negative balance  | after a return of spent points                                                 | allowed; blocks redemptions; new points pay it off                                                                                                                                                                        |
+| Sign-up           | `customer.created` with an account                                             | once                                                                                                                                                                                                                      |
+| Newsletter        | `newsletter.subscribed` with `customer_id` or `email`, or by hand in the admin | once                                                                                                                                                                                                                      |
+| Birthday          | daily job                                                                      | once a year; date set through the Store API, changes limited                                                                                                                                                              |
+| Tiers             | after every paid order and return, and daily                                   | spend in the window (items after discounts, minus returns); a change is recorded and emits `loyalty.tier_changed`; the tier bonus is given once per tier                                                                  |
+| Expiry            | daily job                                                                      | the whole positive balance after N months without an order or redemption (or since joining); `loyalty.points_expiring` once, N days before                                                                                |
+| Code rewards      | redemption                                                                     | a one-off promotion code (`LOY-XXXXXXXX`) in the Promotion Module: limit 1, a `customer.id` rule so only this customer can use it, end date on its campaign                                                               |
+| Gift rewards      | redemption                                                                     | stock checked in the cart's sales channel, then the variant is added to the customer's open cart at 0, marked `metadata.loyalty_redemption_id`. Removing it before the order gives the points back; its quantity stays 1. |
+| Unused codes      | daily job                                                                      | closed, promotion switched off, points back if the setting says so                                                                                                                                                        |
+| Abandoned gifts   | daily job                                                                      | removed from the cart and refunded after N days                                                                                                                                                                           |
 
 Guests collect nothing. Customers in excluded groups neither earn nor redeem.
 
@@ -130,15 +132,15 @@ customer session or bearer token. Refusals are `400` (or `404`) with a
 `Masz za mało punktów na tę nagrodę: potrzeba 500, masz 120. / You do not have enough points for this reward: it needs 500, you have 120.`
 Every rule is checked on the server.
 
-| Method | Path | Who | Returns |
-| --- | --- | --- | --- |
-| GET | `/store/loyalty/me` | customer | balance, tier, spend, next tier with `remaining`, `expires_at`, birthday, terms link, and ready `texts` |
-| GET | `/store/loyalty/history?offset=&limit=` | customer | ledger entries, newest first, `count` |
-| GET | `/store/loyalty/rewards` | anyone | active rewards; for a customer also `can_redeem`, `blocked_reason`, `points_missing`, `limit_left` |
-| POST | `/store/loyalty/rewards/:id/redeem` | customer | `{ type: "code", code, expires_at, balance }` or `{ type: "gift", cart, balance }` (send `{ cart_id }` for gifts) |
-| GET | `/store/loyalty/estimate?amount=129.99` or `?cart_id=` | anyone | `points`, `base`, `multiplier`, `message` |
-| GET | `/store/loyalty/terms` | anyone | `terms_url`, `program_enabled` |
-| POST | `/store/loyalty/birthday` | customer | sets `{ birthday: "1990-05-17" }` (or `"--05-17"`) |
+| Method | Path                                                   | Who      | Returns                                                                                                           |
+| ------ | ------------------------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| GET    | `/store/loyalty/me`                                    | customer | balance, tier, spend, next tier with `remaining`, `expires_at`, birthday, terms link, and ready `texts`           |
+| GET    | `/store/loyalty/history?offset=&limit=`                | customer | ledger entries, newest first, `count`                                                                             |
+| GET    | `/store/loyalty/rewards`                               | anyone   | active rewards; for a customer also `can_redeem`, `blocked_reason`, `points_missing`, `limit_left`                |
+| POST   | `/store/loyalty/rewards/:id/redeem`                    | customer | `{ type: "code", code, expires_at, balance }` or `{ type: "gift", cart, balance }` (send `{ cart_id }` for gifts) |
+| GET    | `/store/loyalty/estimate?amount=129.99` or `?cart_id=` | anyone   | `points`, `base`, `multiplier`, `message`                                                                         |
+| GET    | `/store/loyalty/terms`                                 | anyone   | `terms_url`, `program_enabled`                                                                                    |
+| POST   | `/store/loyalty/birthday`                              | customer | sets `{ birthday: "1990-05-17" }` (or `"--05-17"`)                                                                |
 
 A code can go straight into the cart with Medusa's own
 `POST /store/carts/:id/promotions { promo_codes: [code] }`.
@@ -173,15 +175,15 @@ Example `GET /store/loyalty/me`:
 
 `points` is signed: negative means taken from the customer, positive given.
 
-| Event | Payload |
-| --- | --- |
-| `loyalty.points_earned` | `customer_id`, `points`, `reason` (`order`, `signup`, `newsletter`, `birthday`, `tier_bonus`, `manual`), `balance`, and `order_id` + `entries` for orders, `tier_id` for tier bonuses |
-| `loyalty.points_redeemed` | `customer_id`, `points` (negative), `balance`, `redemption_id`, `reward_id` |
+| Event                     | Payload                                                                                                                                                                                                                                                               |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `loyalty.points_earned`   | `customer_id`, `points`, `reason` (`order`, `signup`, `newsletter`, `birthday`, `tier_bonus`, `manual`), `balance`, and `order_id` + `entries` for orders, `tier_id` for tier bonuses                                                                                 |
+| `loyalty.points_redeemed` | `customer_id`, `points` (negative), `balance`, `redemption_id`, `reward_id`                                                                                                                                                                                           |
 | `loyalty.points_reverted` | `customer_id`, `points`, `reason` (`return`, `cancel`, `manual`: taken back; `gift_removed`, `gift_cart_abandoned`, `gift_order_canceled`, `code_expired`: given back), with `order_id`, `redemption_id`, `cart_id` or `code` as they apply, and `balance` when known |
-| `loyalty.points_expiring` | `customer_id`, `points`, `expires_at` |
-| `loyalty.points_expired` | `customer_id`, `points`, `balance`, `expired_at` |
-| `loyalty.tier_changed` | `customer_id`, `from_tier` `{ id, name }` or null, `to_tier` `{ id, name }` or null, `direction` (`up`/`down`), `spend` |
-| `loyalty.reward_redeemed` | `customer_id`, `redemption_id`, `reward_id`, `reward_name`, `kind`, `cost`, and `code` + `expires_at` for codes or `cart_id` for gifts |
+| `loyalty.points_expiring` | `customer_id`, `points`, `expires_at`                                                                                                                                                                                                                                 |
+| `loyalty.points_expired`  | `customer_id`, `points`, `balance`, `expired_at`                                                                                                                                                                                                                      |
+| `loyalty.tier_changed`    | `customer_id`, `from_tier` `{ id, name }` or null, `to_tier` `{ id, name }` or null, `direction` (`up`/`down`), `spend`                                                                                                                                               |
+| `loyalty.reward_redeemed` | `customer_id`, `redemption_id`, `reward_id`, `reward_name`, `kind`, `cost`, and `code` + `expires_at` for codes or `cart_id` for gifts                                                                                                                                |
 
 The plugin sends no e-mails; an e-mail plugin can listen to these.
 

@@ -37,6 +37,23 @@ export async function emit(container: MedusaContainer, name: string, data: Recor
   await container.resolve<IEventBusModuleService>(Modules.EVENT_BUS).emit({ name, data })
 }
 
+/** The store's currencies in Medusa, the default first. */
+export async function storeCurrencies(container: MedusaContainer): Promise<string[]> {
+  const { data } = await graph(container)({
+    entity: "store",
+    fields: ["supported_currencies.currency_code", "supported_currencies.is_default"],
+  })
+  const list = ((data[0]?.supported_currencies ?? []) as Array<{ currency_code: string; is_default?: boolean }>)
+    .filter(Boolean)
+    .sort((a, b) => Number(Boolean(b.is_default)) - Number(Boolean(a.is_default)))
+  return list.map((c) => c.currency_code.toLowerCase())
+}
+
+/** The program's currency: the one chosen in the settings, else the store's default. */
+export async function programCurrency(container: MedusaContainer, settings: { currency_code: string | null }) {
+  return settings.currency_code ?? (await storeCurrencies(container))[0] ?? "pln"
+}
+
 /** The program is on and the plugin options are valid. */
 export async function programRunning(container: MedusaContainer): Promise<boolean> {
   const service = resolveLoyalty(container)

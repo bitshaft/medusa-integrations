@@ -10,7 +10,8 @@ export type Tier = { id: string; name: string; threshold: number; multiplier: nu
 
 export type Settings = {
   enabled: boolean
-  currency_code: string
+  /** `null`: the store's default currency. */
+  currency_code: string | null
   earn: { points: number; per_amount: number; base: "gross" | "net" }
   actions: {
     signup: { enabled: boolean; points: number }
@@ -33,6 +34,10 @@ export type SettingsResponse =
       options: { timeZone: string; defaultLocale: "pl" | "en" }
       settings: Settings
       defaults: Settings
+      /** The store's currencies, the default first. */
+      store_currencies: string[]
+      /** The currency the program uses now (the chosen one, else the store's default). */
+      currency_code: string
     }
 
 export type Dashboard = {

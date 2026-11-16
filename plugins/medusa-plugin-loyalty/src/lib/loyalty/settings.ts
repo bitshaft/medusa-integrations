@@ -27,11 +27,16 @@ export const settingsSchema = z
   .object({
     /** Master switch: when off nothing is earned or redeemed, history stays. */
     enabled: z.boolean().default(true),
+    /**
+     * Currency of the amounts in the program (spend thresholds, reward
+     * values). `null` follows the store's default currency in Medusa.
+     */
     currency_code: z
       .string()
       .regex(/^[a-zA-Z]{3}$/, "a three-letter currency code")
       .transform((value) => value.toLowerCase())
-      .default("pln"),
+      .nullable()
+      .default(null),
     earn: z
       .object({
         /** `points` for every `per_amount` of the base: 1 point per 1 zł by default. */

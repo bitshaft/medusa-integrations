@@ -27,12 +27,21 @@ export function birthdayIn(year: number, birthday: { month: number; day: number 
 }
 
 /**
- * Whether the birthday bonus is due today: it is the birthday, and the date
+ * The shortest gap between two birthday bonuses. Bonuses are keyed by
+ * calendar year, so without it a date moved across New Year (bonus on
+ * 31 December, date changed to 5 January) would pay twice in a few days.
+ * 330 days leaves room for a real correction of the date by a few weeks.
+ */
+export const MIN_DAYS_BETWEEN_BONUSES = 330
+
+/**
+ * Whether the birthday bonus is due today: it is the birthday, the date
  * was set at least `min_days_before` days earlier (so a date cannot be set
- * to "today" just for the points).
+ * to "today" just for the points), and the last birthday bonus was at least
+ * `MIN_DAYS_BETWEEN_BONUSES` days ago.
  */
 export function birthdayDue(
-  input: { birthday: string | null; set_at: Date | null },
+  input: { birthday: string | null; set_at: Date | null; last_bonus_at?: Date | null },
   settings: LoyaltySettings["actions"]["birthday"],
   now: Date,
   timeZone: string
@@ -43,7 +52,11 @@ export function birthdayDue(
   if (!settings.enabled || !parsed || !input.set_at) return { due: false, year }
   if (birthdayIn(year, parsed) !== today) return { due: false, year }
   const setDaysAgo = (now.getTime() - input.set_at.getTime()) / DAY
-  return { due: setDaysAgo >= settings.min_days_before, year }
+  if (setDaysAgo < settings.min_days_before) return { due: false, year }
+  if (input.last_bonus_at && (now.getTime() - input.last_bonus_at.getTime()) / DAY < MIN_DAYS_BETWEEN_BONUSES) {
+    return { due: false, year }
+  }
+  return { due: true, year }
 }
 
 /** When a customer may change their birthday again; null when they may now. */

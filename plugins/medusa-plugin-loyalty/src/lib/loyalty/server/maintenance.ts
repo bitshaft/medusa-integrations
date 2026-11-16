@@ -70,8 +70,18 @@ export async function grantBirthdays(
   if (!settings.enabled || !rule.enabled || rule.points <= 0) return 0
   let granted = 0
   for await (const account of accounts(container, { birthday: { $ne: null } })) {
+    const input = {
+      birthday: account.birthday,
+      set_at: account.birthday_set_at ? new Date(account.birthday_set_at) : null,
+    }
+    if (!birthdayDue(input, rule, now, timeZone).due) continue
+    // Only for birthdays due today: when was the last birthday bonus?
+    const [last] = await service.listLoyaltyEntries(
+      { customer_id: account.customer_id, reason: "birthday" },
+      { take: 1, order: { created_at: "DESC" }, select: ["created_at"] }
+    )
     const { due, year } = birthdayDue(
-      { birthday: account.birthday, set_at: account.birthday_set_at ? new Date(account.birthday_set_at) : null },
+      { ...input, last_bonus_at: last ? new Date(last.created_at) : null },
       rule,
       now,
       timeZone

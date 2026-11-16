@@ -236,6 +236,30 @@ describe("birthday", () => {
     expect(birthdayDue({ birthday: null, set_at: null }, settings, now, zone).due).toBe(false)
   })
 
+  it("moving the date by a day after the bonus pays nothing more that year", () => {
+    // Date set long ago (no change lock), bonus on 7 June, date changed to the 8th on the same day.
+    const bonus = new Date("2026-06-07T06:00:00Z")
+    const changed = { birthday: "1990-06-08", set_at: new Date("2026-06-07T12:00:00Z"), last_bonus_at: bonus }
+    expect(birthdayDue(changed, settings, new Date("2026-06-08T10:00:00Z"), zone).due).toBe(false)
+    // Even without the 30-day rule, the last bonus is too recent.
+    expect(birthdayDue(changed, { ...settings, min_days_before: 0 }, new Date("2026-06-08T10:00:00Z"), zone).due).toBe(
+      false
+    )
+    // A year later the new date counts, once.
+    expect(birthdayDue(changed, settings, new Date("2027-06-08T10:00:00Z"), zone)).toEqual({ due: true, year: 2027 })
+  })
+
+  it("moving the date across New Year does not pay twice within weeks", () => {
+    // Bonus on 31 December 2026, date changed to 5 January: 5 January 2027 is a new calendar year, but too soon.
+    const moved = {
+      birthday: "1990-01-05",
+      set_at: new Date("2026-12-01T00:00:00Z"),
+      last_bonus_at: new Date("2026-12-31T08:00:00Z"),
+    }
+    expect(birthdayDue(moved, settings, new Date("2027-01-05T10:00:00Z"), zone).due).toBe(false)
+    expect(birthdayDue(moved, settings, new Date("2028-01-05T10:00:00Z"), zone).due).toBe(true)
+  })
+
   it("locks changes for the configured interval", () => {
     const setAt = new Date("2026-01-01T00:00:00Z")
     expect(birthdayLockedUntil(setAt, settings, new Date("2026-06-01T00:00:00Z"))).toEqual(

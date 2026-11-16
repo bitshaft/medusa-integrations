@@ -14,10 +14,18 @@ import { adminLocale, points, slug } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { NumberField, Picker, Section } from "./shared"
 
-type Props = { settings: SettingsValues; defaults: SettingsValues }
+type Props = {
+  settings: SettingsValues
+  defaults: SettingsValues
+  /** The store's currencies, the default first. */
+  storeCurrencies: string[]
+}
+
+/** Select value for "follow the store's default currency". */
+const STORE_DEFAULT = "__store__"
 
 /** "Settings": every rule of the program, saved together; and a preview of what customers read. */
-export const Settings = ({ settings, defaults }: Props) => {
+export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
   const { t } = useTranslation()
   const save = useSaveSettings()
   const [form, setForm] = useState<SettingsValues>(settings)
@@ -29,7 +37,13 @@ export const Settings = ({ settings, defaults }: Props) => {
   const set = <K extends keyof SettingsValues>(key: K, value: SettingsValues[K]) =>
     setForm((f) => ({ ...f, [key]: value }))
   const dirty = JSON.stringify(form) !== JSON.stringify(settings)
-  const currency = form.currency_code.toUpperCase()
+  const storeDefault = storeCurrencies[0] ?? "pln"
+  const currency = (form.currency_code ?? storeDefault).toUpperCase()
+  // A currency saved earlier that the store no longer has stays visible, with a warning.
+  const currencyOptions =
+    form.currency_code && !storeCurrencies.includes(form.currency_code)
+      ? [...storeCurrencies, form.currency_code]
+      : storeCurrencies
 
   const onSave = () =>
     save.mutate(form, {
@@ -108,18 +122,45 @@ export const Settings = ({ settings, defaults }: Props) => {
                 value={form.terms_url ?? ""}
                 onChange={(e) => set("terms_url", e.target.value.trim() || null)}
               />
+              <Text size="xsmall" className="text-ui-fg-subtle">
+                {t("loyalty.settings.termsHint")}
+              </Text>
             </div>
-            <div className="flex w-28 flex-col gap-y-1">
+            <div className="flex w-56 flex-col gap-y-1">
               <Label size="xsmall" weight="plus">
                 {t("loyalty.settings.currency")}
               </Label>
-              <Input
+              <Select
                 size="small"
-                maxLength={3}
-                className="uppercase"
-                value={form.currency_code}
-                onChange={(e) => set("currency_code", e.target.value.toLowerCase())}
-              />
+                value={form.currency_code ?? STORE_DEFAULT}
+                onValueChange={(value) => set("currency_code", value === STORE_DEFAULT ? null : value)}
+              >
+                <Select.Trigger>
+                  <Select.Value />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Item value={STORE_DEFAULT}>
+                    {t("loyalty.settings.currencyStore", { currency: storeDefault.toUpperCase() })}
+                  </Select.Item>
+                  {currencyOptions.map((code) => (
+                    <Select.Item key={code} value={code}>
+                      {code.toUpperCase()}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select>
+              <Text
+                size="xsmall"
+                className={
+                  form.currency_code && !storeCurrencies.includes(form.currency_code)
+                    ? "text-ui-fg-error"
+                    : "text-ui-fg-subtle"
+                }
+              >
+                {form.currency_code && !storeCurrencies.includes(form.currency_code)
+                  ? t("loyalty.settings.currencyMissing", { currency })
+                  : t("loyalty.settings.currencyHint")}
+              </Text>
             </div>
           </div>
         </Section>
@@ -354,13 +395,13 @@ export const Settings = ({ settings, defaults }: Props) => {
         </Section>
       </Container>
 
-      <Preview settings={settings} />
+      <Preview settings={settings} currency={(settings.currency_code ?? storeDefault).toUpperCase()} />
     </div>
   )
 }
 
 /** "What the customer sees": the texts the Store API returns, for a sample basket, with the saved settings. */
-const Preview = ({ settings }: { settings: SettingsValues }) => {
+const Preview = ({ settings, currency }: { settings: SettingsValues; currency: string }) => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
   const [amount, setAmount] = useState<number | null>(300)
@@ -385,7 +426,7 @@ const Preview = ({ settings }: { settings: SettingsValues }) => {
           min={0}
           step={10}
           width="w-28"
-          suffix={settings.currency_code.toUpperCase()}
+          suffix={currency}
         />
         <NumberField
           label={t("loyalty.preview.balance")}

@@ -4,7 +4,7 @@ import { MedusaError } from "@medusajs/framework/utils"
 import { readPackageVersion } from "../../../../lib/loyalty/kit/package-info"
 import { PACKAGE_NAME } from "../../../../lib/loyalty/options"
 import { DEFAULT_SETTINGS, settingsSchema } from "../../../../lib/loyalty/settings"
-import { resolveLoyalty } from "../../../../lib/loyalty/server/runtime"
+import { programCurrency, resolveLoyalty, storeCurrencies } from "../../../../lib/loyalty/server/runtime"
 
 /** `GET /admin/loyalty/settings` — the program settings, their defaults, and whether the plugin runs. */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
@@ -14,12 +14,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     res.json({ enabled: false, disabled_reason: await service.disabledReason(), version })
     return
   }
+  const settings = await service.getSettings()
   res.json({
     enabled: true,
     version,
     options: await service.getOptions(),
-    settings: await service.getSettings(),
+    settings,
     defaults: DEFAULT_SETTINGS,
+    /** The store's currencies (default first) and the one the program uses now. */
+    store_currencies: await storeCurrencies(req.scope),
+    currency_code: await programCurrency(req.scope, settings),
   })
 }
 

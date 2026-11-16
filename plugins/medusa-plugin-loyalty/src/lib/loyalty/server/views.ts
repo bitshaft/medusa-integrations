@@ -5,7 +5,7 @@ import { type LoyaltySettings, sortedTiers } from "../settings"
 import { customerTexts } from "../texts"
 import type { Locale } from "../types"
 import { GIFT_METADATA_KEY } from "./orders"
-import { graph, type Membership, membership, resolveLoyalty } from "./runtime"
+import { graph, type Membership, membership, resolveLoyalty, programCurrency } from "./runtime"
 import { snapshot, tierAllows } from "./rewards"
 import { multiplierOf, tierById, tierStatus } from "./tiers"
 
@@ -34,7 +34,7 @@ export async function memberSummary(container: MedusaContainer, customerId: stri
     expires_at: expires?.toISOString() ?? null,
     last_activity_at: account?.last_activity_at?.toISOString() ?? null,
     birthday: account?.birthday ?? null,
-    currency_code: settings.currency_code,
+    currency_code: await programCurrency(container, settings),
     terms_url: settings.terms_url,
     time_zone: options.timeZone,
   }
@@ -148,7 +148,7 @@ export async function estimate(
               tier_name: null,
               next_tier: null,
               expires_at: null,
-              currency_code: settings.currency_code,
+              currency_code: await programCurrency(container, settings),
               time_zone: options.timeZone,
             },
             locale
@@ -196,7 +196,7 @@ export async function dashboardStats(container: MedusaContainer, now = new Date(
     open_points: accounts.open_points,
     open_value: value != null ? Math.round(accounts.open_points * value * 100) / 100 : null,
     point_value: value,
-    currency_code: settings.currency_code,
+    currency_code: await programCurrency(container, settings),
     tiers: [
       ...sortedTiers(settings).map((tier) => ({
         id: tier.id,
