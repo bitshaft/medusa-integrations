@@ -1,6 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { requireEnabled } from "../../../../lib/coupons/api/utils"
+import { optionalCustomerId, requireEnabled } from "../../../../lib/coupons/api/utils"
 import { progressForStore } from "../../../../lib/coupons/server/store"
 
 /**
@@ -11,5 +11,5 @@ import { progressForStore } from "../../../../lib/coupons/server/store"
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   await requireEnabled(req)
   const { cart_id } = req.validatedQuery as { cart_id: string }
-  res.json(await progressForStore(req.scope, cart_id))
+  res.json(await progressForStore(req.scope, cart_id, optionalCustomerId(req)))
 }

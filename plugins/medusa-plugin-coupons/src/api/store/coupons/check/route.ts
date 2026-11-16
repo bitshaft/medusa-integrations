@@ -1,6 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { requestLocale, requireEnabled } from "../../../../lib/coupons/api/utils"
+import { optionalCustomerId, requestLocale, requireEnabled } from "../../../../lib/coupons/api/utils"
 import type { StoreCheckCoupon } from "../../../../lib/coupons/api/validators"
 import { checkForStore } from "../../../../lib/coupons/server/store"
 
@@ -15,5 +15,11 @@ import { checkForStore } from "../../../../lib/coupons/server/store"
 export async function POST(req: MedusaRequest<StoreCheckCoupon>, res: MedusaResponse) {
   await requireEnabled(req)
   const { cart_id, code, locale } = req.validatedBody
-  res.json(await checkForStore(req.scope, { cart_id, code }, await requestLocale(req, locale)))
+  res.json(
+    await checkForStore(
+      req.scope,
+      { cart_id, code, customer_id: optionalCustomerId(req) },
+      await requestLocale(req, locale)
+    )
+  )
 }

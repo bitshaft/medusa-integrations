@@ -172,7 +172,15 @@ Reasons: `not_found`, `not_started`, `ended`, `paused`, `exhausted`,
 `email_required`, `audience`, `first_order`, `per_customer_limit`,
 `min_subtotal`, `exclusive_conflict`. The language comes from `locale`, then
 the `x-medusa-locale` header, then `Accept-Language`, then `defaultLocale`.
-The endpoint is rate limited per visitor (`checkRateLimitPerMinute`).
+The endpoint is rate limited per visitor (`checkRateLimitPerMinute`; see
+[what it does not do](#what-it-does-not-do) for proxies and several
+instances).
+
+A cart that belongs to a customer answers only to that customer, signed in
+with the usual session or bearer token; to anyone else it is `404`, like a
+missing cart, so the customer's groups, first orders and coupon history stay
+private. Guest carts work with the cart id alone, as in Medusa's own cart
+route. The same holds for `/store/coupons/progress`.
 
 ### Progress to the next tier or free shipping
 
@@ -250,6 +258,11 @@ first-order, exclusion, tier or automatic-combining rules do not apply at all
 
 ## What it does not do
 
+- The rate limit (`checkRateLimitPerMinute`) counts requests per visitor by `req.ip`, in
+  the memory of each server process. Behind a proxy or load balancer, set
+  Express `trust proxy` in your app, or every visitor shares the proxy's
+  address. With several server instances, each counts on its own, so the
+  effective limit is the setting times the number of instances.
 - No storefront components: use the Store API above.
 - No Omnibus (lowest price in 30 days); that is a separate plugin. Discounts
   are standard Medusa adjustments it can read.

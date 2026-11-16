@@ -1,4 +1,9 @@
-import type { MedusaNextFunction, MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import type {
+  AuthenticatedMedusaRequest,
+  MedusaNextFunction,
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import type { z } from "@medusajs/framework/zod"
 
@@ -14,6 +19,11 @@ export async function requireEnabled(req: MedusaRequest) {
     throw pluginDisabledError(PLUGIN_NAME, (await service.disabledReason()) ?? "invalid options")
   }
   return service
+}
+
+/** The signed-in customer, or null for guests. */
+export function optionalCustomerId(req: MedusaRequest): string | null {
+  return (req as AuthenticatedMedusaRequest).auth_context?.actor_id ?? null
 }
 
 /** The customer's language: `locale` in the query or body, then `x-medusa-locale`, then the plugin default. */

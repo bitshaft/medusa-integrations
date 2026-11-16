@@ -23,12 +23,28 @@ const CART_FIELDS = [
   "promotions.code",
 ]
 
-export async function loadCart(container: MedusaContainer, cartId: string): Promise<CartForCheck> {
+/**
+ * The cart for a Store API call. A customer's cart answers only to that
+ * customer, and otherwise reads as missing, so its customer's groups,
+ * first-order status and past coupon uses stay private. Guest carts stay
+ * readable by id, as in Medusa's own cart route.
+ */
+export async function loadCart(
+  container: MedusaContainer,
+  cartId: string,
+  customerId: string | null
+): Promise<CartForCheck> {
   const { data } = await (
     resolveQuery(container) as unknown as { graph: (c: object) => Promise<{ data: CartForCheck[] }> }
   ).graph({ entity: "cart", fields: CART_FIELDS, filters: { id: cartId } })
   const cart = data[0]
-  if (!cart) throw new MedusaError(MedusaError.Types.NOT_FOUND, `Cart ${cartId} was not found.`)
+  const owner = cart?.customer_id ?? cart?.customer?.id ?? null
+  if (!cart || (owner && owner !== customerId)) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      `Cart ${cartId} was not found. If it belongs to a customer account, send the request signed in as that customer.`
+    )
+  }
   return cart
 }
 
@@ -50,10 +66,10 @@ export type StoreCheckResult =
  */
 export async function checkForStore(
   container: MedusaContainer,
-  input: { cart_id: string; code: string },
+  input: { cart_id: string; code: string; customer_id: string | null },
   locale: Locale
 ): Promise<StoreCheckResult> {
-  const cart = await loadCart(container, input.cart_id)
+  const cart = await loadCart(container, input.cart_id, input.customer_id)
   const code = normalizeCode(input.code)
   const result = await checkCode(container, cart, input.code)
   if (result.result === "foreign") {
@@ -97,8 +113,12 @@ export async function checkForStore(
  * automatic offers open to everyone. Coupons limited to groups or chosen
  * customers are left out, so nothing private is shown.
  */
-export async function progressForStore(container: MedusaContainer, cartId: string): Promise<CartProgress> {
-  const cart = await loadCart(container, cartId)
+export async function progressForStore(
+  container: MedusaContainer,
+  cartId: string,
+  customerId: string | null
+): Promise<CartProgress> {
+  const cart = await loadCart(container, cartId, customerId)
   const now = new Date()
   const entered = new Set(enteredOnCart(cart))
   const onCart = codesOnCart(cart)

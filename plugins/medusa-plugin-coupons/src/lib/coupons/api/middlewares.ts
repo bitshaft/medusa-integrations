@@ -1,4 +1,4 @@
-import { type MiddlewareRoute, validateAndTransformBody } from "@medusajs/framework/http"
+import { authenticate, type MiddlewareRoute, validateAndTransformBody } from "@medusajs/framework/http"
 
 import { validateQuery } from "../kit/api"
 import { rateLimitCheck } from "./utils"
@@ -13,6 +13,9 @@ import {
   StoreCheckCoupon,
   StoreProgressQuery,
 } from "./validators"
+
+/** Signed-in customers are recognised, so their own carts answer to them; guests still get through. */
+const optionalCustomer = authenticate("customer", ["session", "bearer"], { allowUnauthenticated: true })
 
 /**
  * Middleware routes of the coupons plugin. Kept here, not in
@@ -38,7 +41,11 @@ export const couponsMiddlewares: MiddlewareRoute[] = [
   {
     matcher: "/store/coupons/check",
     method: ["POST"],
-    middlewares: [rateLimitCheck, validateAndTransformBody(StoreCheckCoupon)],
+    middlewares: [rateLimitCheck, optionalCustomer, validateAndTransformBody(StoreCheckCoupon)],
   },
-  { matcher: "/store/coupons/progress", method: ["GET"], middlewares: [validateQuery(StoreProgressQuery)] },
+  {
+    matcher: "/store/coupons/progress",
+    method: ["GET"],
+    middlewares: [optionalCustomer, validateQuery(StoreProgressQuery)],
+  },
 ]
