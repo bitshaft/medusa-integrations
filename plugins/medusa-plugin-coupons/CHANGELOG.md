@@ -8,13 +8,6 @@ All notable changes to `@bitshaft/medusa-plugin-coupons`. The format follows
 
 First release.
 
-### Security
-
-- `POST /store/coupons/check` and `GET /store/coupons/progress` answer for
-  a customer's cart only to that customer. Before, anyone with the cart id
-  could learn the owner's coupon eligibility (groups, first order, earlier
-  uses).
-
 - Coupon panel under Extensions: cards, filters with counters, search, list
   with a one-sentence description, uses, discount, orders and revenue; edit,
   pause/resume, duplicate, open in Medusa promotions, delete; orders per
@@ -37,3 +30,10 @@ First release.
   Promotion Module.
 - CSV export of all coupons with their stats.
 - Admin in English and Polish.
+
+### Security
+
+- `POST /store/coupons/check` and `GET /store/coupons/progress` answer for
+  a customer's cart only to that customer. Before, anyone with the cart id
+  could learn the owner's coupon eligibility (groups, first order, earlier
+  uses).
