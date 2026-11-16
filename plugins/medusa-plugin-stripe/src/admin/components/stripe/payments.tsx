@@ -130,7 +130,7 @@ export const Payments = ({ demo, graceMinutes }: { demo: boolean; graceMinutes: 
                   <Table.Cell className="text-right">{money(p.net, p.currency, lang)}</Table.Cell>
                   <Table.Cell>
                     {p.orphan ? (
-                      <Badge size="2xsmall" color="red">
+                      <Badge size="2xsmall" color="red" className="whitespace-nowrap">
                         {t("stripe.payments.noOrder")}
                       </Badge>
                     ) : (

@@ -38,33 +38,35 @@ export const Payouts = ({ demo }: { demo: boolean }) => {
       ) : !data?.payouts.length ? (
         <Empty>{t("stripe.payouts.empty")}</Empty>
       ) : (
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>{t("stripe.payouts.arrival")}</Table.HeaderCell>
-              <Table.HeaderCell>{t("stripe.payments.status")}</Table.HeaderCell>
-              <Table.HeaderCell className="text-right">{t("stripe.amount")}</Table.HeaderCell>
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {data.payouts.map((p) => (
-              <Table.Row key={p.id} className="cursor-pointer" onClick={() => setSelected(p.id)}>
-                <Table.Cell>{date(p.arrival_date, lang)}</Table.Cell>
-                <Table.Cell>
-                  <div className="flex items-center gap-x-2">
-                    <StripeStatus status={p.status} />
-                    {!p.automatic && <Badge size="2xsmall">{t("stripe.payouts.manual")}</Badge>}
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="text-right">{money(p.amount, p.currency, lang)}</Table.Cell>
-                <Table.Cell className="text-right">
-                  <ExternalLink href={p.dashboard_url}>Stripe</ExternalLink>
-                </Table.Cell>
+        <div className="overflow-x-auto">
+          <Table>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t("stripe.payouts.arrival")}</Table.HeaderCell>
+                <Table.HeaderCell>{t("stripe.payments.status")}</Table.HeaderCell>
+                <Table.HeaderCell className="text-right">{t("stripe.amount")}</Table.HeaderCell>
+                <Table.HeaderCell />
               </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+            </Table.Header>
+            <Table.Body>
+              {data.payouts.map((p) => (
+                <Table.Row key={p.id} className="cursor-pointer" onClick={() => setSelected(p.id)}>
+                  <Table.Cell>{date(p.arrival_date, lang)}</Table.Cell>
+                  <Table.Cell>
+                    <div className="flex items-center gap-x-2">
+                      <StripeStatus status={p.status} />
+                      {!p.automatic && <Badge size="2xsmall">{t("stripe.payouts.manual")}</Badge>}
+                    </div>
+                  </Table.Cell>
+                  <Table.Cell className="text-right">{money(p.amount, p.currency, lang)}</Table.Cell>
+                  <Table.Cell className="text-right">
+                    <ExternalLink href={p.dashboard_url}>Stripe</ExternalLink>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </div>
       )}
       <PayoutDrawer id={selected} demo={demo} onClose={() => setSelected(null)} />
     </Container>
@@ -79,7 +81,7 @@ const PayoutDrawer = ({ id, demo, onClose }: { id: string | null; demo: boolean;
 
   return (
     <Drawer open={id !== null} onOpenChange={(open) => !open && onClose()}>
-      <Drawer.Content className="max-w-3xl">
+      <Drawer.Content className="sm:max-w-3xl">
         <Drawer.Header>
           <Drawer.Title>
             {data
@@ -115,41 +117,46 @@ const PayoutDrawer = ({ id, demo, onClose }: { id: string | null; demo: boolean;
                   {t("stripe.payouts.missingOrders", { count: missing })}
                 </Badge>
               )}
-              <Table>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>{t("stripe.date")}</Table.HeaderCell>
-                    <Table.HeaderCell>{t("stripe.payouts.type")}</Table.HeaderCell>
-                    <Table.HeaderCell className="text-right">{t("stripe.amount")}</Table.HeaderCell>
-                    <Table.HeaderCell className="text-right">{t("stripe.fee")}</Table.HeaderCell>
-                    <Table.HeaderCell className="text-right">{t("stripe.net")}</Table.HeaderCell>
-                    <Table.HeaderCell>{t("stripe.order")}</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {data.items.map((i) => (
-                    <Table.Row
-                      key={i.id}
-                      className={i.missing_order ? "bg-ui-tag-red-bg hover:bg-ui-tag-red-bg-hover" : undefined}
-                    >
-                      <Table.Cell>{dateTime(i.created, lang)}</Table.Cell>
-                      <Table.Cell>{t(`stripe.txn.${i.type}`, { defaultValue: i.type.replace(/_/g, " ") })}</Table.Cell>
-                      <Table.Cell className="text-right">{money(i.amount, i.currency, lang)}</Table.Cell>
-                      <Table.Cell className="text-right">{money(i.fee, i.currency, lang)}</Table.Cell>
-                      <Table.Cell className="text-right">{money(i.net, i.currency, lang)}</Table.Cell>
-                      <Table.Cell>
-                        {i.missing_order ? (
-                          <Badge size="2xsmall" color="red">
-                            {t("stripe.payments.noOrder")}
-                          </Badge>
-                        ) : (
-                          <OrderLink order={i.order} demo={demo} />
-                        )}
-                      </Table.Cell>
+              {/* Six columns: scroll sideways rather than spill out of the drawer on narrow screens. */}
+              <div className="overflow-x-auto rounded-lg border border-ui-border-base">
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>{t("stripe.date")}</Table.HeaderCell>
+                      <Table.HeaderCell>{t("stripe.payouts.type")}</Table.HeaderCell>
+                      <Table.HeaderCell className="text-right">{t("stripe.amount")}</Table.HeaderCell>
+                      <Table.HeaderCell className="text-right">{t("stripe.fee")}</Table.HeaderCell>
+                      <Table.HeaderCell className="text-right">{t("stripe.net")}</Table.HeaderCell>
+                      <Table.HeaderCell>{t("stripe.order")}</Table.HeaderCell>
                     </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
+                  </Table.Header>
+                  <Table.Body>
+                    {data.items.map((i) => (
+                      <Table.Row
+                        key={i.id}
+                        className={i.missing_order ? "bg-ui-tag-red-bg hover:bg-ui-tag-red-bg-hover" : undefined}
+                      >
+                        <Table.Cell>{dateTime(i.created, lang)}</Table.Cell>
+                        <Table.Cell>
+                          {t(`stripe.txn.${i.type}`, { defaultValue: i.type.replace(/_/g, " ") })}
+                        </Table.Cell>
+                        <Table.Cell className="text-right">{money(i.amount, i.currency, lang)}</Table.Cell>
+                        <Table.Cell className="text-right">{money(i.fee, i.currency, lang)}</Table.Cell>
+                        <Table.Cell className="text-right">{money(i.net, i.currency, lang)}</Table.Cell>
+                        <Table.Cell>
+                          {i.missing_order ? (
+                            <Badge size="2xsmall" color="red" className="whitespace-nowrap">
+                              {t("stripe.payments.noOrder")}
+                            </Badge>
+                          ) : (
+                            <OrderLink order={i.order} demo={demo} />
+                          )}
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
             </>
           )}
         </Drawer.Body>

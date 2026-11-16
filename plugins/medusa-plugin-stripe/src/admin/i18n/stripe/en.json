@@ -81,7 +81,7 @@
     },
     "payouts": {
       "title": "Payouts",
-      "hint": "Click a payout to see the payments, refunds and fees in it.",
+      "hint": "Transfers from your Stripe balance to the store's bank account. Stripe collects payments, deducts fees and refunds, and sends the rest on your payout schedule. Click a payout to see the payments, refunds and fees in it.",
       "arrival": "Arrival",
       "empty": "No payouts in this period.",
       "manual": "Manual",

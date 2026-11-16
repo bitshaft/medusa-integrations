@@ -107,7 +107,7 @@ export const Customers = () => {
         </div>
       )}
       <Drawer open={!!opened} onOpenChange={(open) => !open && setOpened(null)}>
-        <Drawer.Content className="max-w-3xl">
+        <Drawer.Content className="sm:max-w-3xl">
           <Drawer.Header>
             <Drawer.Title>{t("loyalty.customers.historyTitle")}</Drawer.Title>
           </Drawer.Header>

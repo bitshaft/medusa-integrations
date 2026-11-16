@@ -338,7 +338,7 @@ const CouponDrawer = ({ coupon, onClose }: { coupon: CouponView | null; onClose:
 
   return (
     <Drawer open={!!coupon} onOpenChange={(open) => !open && onClose()}>
-      <Drawer.Content className="max-w-xl">
+      <Drawer.Content className="sm:max-w-xl">
         <Drawer.Header>
           <Drawer.Title>
             {isBatch

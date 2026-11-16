@@ -85,7 +85,7 @@
     },
     "payouts": {
       "title": "Wypłaty",
-      "hint": "Kliknij wypłatę, żeby zobaczyć płatności, zwroty i opłaty, które się na nią składają.",
+      "hint": "Przelewy z salda Stripe na konto bankowe sklepu. Stripe zbiera płatności, potrąca opłaty i zwroty, a resztę przelewa według harmonogramu wypłat. Kliknij wypłatę, żeby zobaczyć płatności, zwroty i opłaty, które się na nią składają.",
       "arrival": "Data wpływu",
       "empty": "Brak wypłat w tym okresie.",
       "manual": "Ręczna",
