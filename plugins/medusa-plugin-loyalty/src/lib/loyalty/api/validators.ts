@@ -84,6 +84,12 @@ export type StoreRedeem = z.infer<typeof StoreRedeem>
 export const StoreEstimateQuery = z
   .object({
     amount: z.coerce.number().min(0).max(100_000_000).optional(),
+    /** Currency of `amount`; default: the program currency. */
+    currency_code: z
+      .string()
+      .regex(/^[a-zA-Z]{3}$/)
+      .transform((value) => value.toLowerCase())
+      .optional(),
     cart_id: z.string().min(1).optional(),
     locale: z.enum(["pl", "en"]).optional(),
   })

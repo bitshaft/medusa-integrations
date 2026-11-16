@@ -1,6 +1,6 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
 
-import { earnedPoints, expiresAt, orderBase, pointValue } from "../points"
+import { currencyFactor, earnedPoints, expiresAt, orderBase, pointValue } from "../points"
 import { type LoyaltySettings, sortedTiers } from "../settings"
 import { customerTexts } from "../texts"
 import type { Locale } from "../types"
@@ -104,16 +104,18 @@ export async function rewardCatalog(container: MedusaContainer, customerId: stri
 /** Points an amount or a cart would earn, with the customer's tier multiplier when signed in. */
 export async function estimate(
   container: MedusaContainer,
-  input: { amount?: number; cart_id?: string; customer_id?: string | null },
+  input: { amount?: number; currency_code?: string; cart_id?: string; customer_id?: string | null },
   locale: Locale
 ) {
   const service = resolveLoyalty(container)
   const [settings, options] = await Promise.all([service.getSettings(), service.getOptions()])
+  const currency = await programCurrency(container, settings)
   let base = 0
+  let amountCurrency = input.currency_code ?? currency
   if (input.cart_id) {
     const { data } = await graph(container)({
       entity: "cart",
-      fields: ["id", "items.id", "items.quantity", "items.total", "items.tax_total", "items.metadata"],
+      fields: ["id", "currency_code", "items.id", "items.quantity", "items.total", "items.tax_total", "items.metadata"],
       filters: { id: input.cart_id },
     })
     const lines = ((data[0]?.items ?? []) as Array<Record<string, any> | null>).filter(Boolean).map((item) => ({
@@ -124,9 +126,13 @@ export async function estimate(
       is_reward: !!item!.metadata?.[GIFT_METADATA_KEY],
     }))
     base = orderBase(lines, settings.earn.base).total
+    amountCurrency = data[0]?.currency_code ?? currency
   } else {
     base = Math.max(0, input.amount ?? 0)
   }
+  // The same conversion as for orders; a currency without a rate earns nothing.
+  const factor = currencyFactor(amountCurrency, currency, settings.currency_rates)
+  base = factor === null ? 0 : Math.round(base * factor * 100) / 100
   let multiplier = 1
   let member = !!input.customer_id
   if (input.customer_id) {
@@ -148,7 +154,7 @@ export async function estimate(
               tier_name: null,
               next_tier: null,
               expires_at: null,
-              currency_code: await programCurrency(container, settings),
+              currency_code: currency,
               time_zone: options.timeZone,
             },
             locale

@@ -1,9 +1,9 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
 
 import type { EntryInput } from "../../../modules/loyalty/service"
-import { earnedPoints, keptBase, type OrderLine, orderBase, returnTarget } from "../points"
+import { convertBase, currencyFactor, earnedPoints, keptBase, type OrderLine, orderBase, returnTarget } from "../points"
 import type { EarnMetadata, ReturnMetadata } from "../spend"
-import { emit, graph, logger, LoyaltyEvents, membership, resolveLoyalty } from "./runtime"
+import { emit, graph, logger, LoyaltyEvents, membership, programCurrency, resolveLoyalty } from "./runtime"
 import { multiplierOf, recomputeTier } from "./tiers"
 
 /** Marks a cart line as a loyalty gift. Gifts earn nothing and are watched in the cart. */
@@ -113,7 +113,14 @@ export async function awardOrder(container: MedusaContainer, orderId: string, no
   const customerId = order.customer_id as string
   const account = await service.getAccount(customerId)
   const multiplier = multiplierOf(settings, account?.tier_id)
-  const base = orderBase(orderLines(order), settings.earn.base)
+  // Amounts count in the program currency: other currencies by the admin's rate, or not at all.
+  const factor = currencyFactor(
+    order.currency_code,
+    await programCurrency(container, settings),
+    settings.currency_rates
+  )
+  if (factor === null) return { status: "skipped", reason: "currency_without_rate" }
+  const base = convertBase(orderBase(orderLines(order), settings.earn.base), factor)
   const points = earnedPoints(base.total, settings.earn, multiplier)
   const label = order.display_id != null ? `#${order.display_id}` : order.id
 

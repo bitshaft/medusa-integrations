@@ -249,7 +249,12 @@
       "currencyStore": "Jak w sklepie ({{currency}})",
       "currencyHint": "W tej walucie są kwoty programu (progi wydatków, wartości nagród).",
       "currencyMissing": "Sklep nie ma już waluty {{currency}}. Wybierz jedną z walut sklepu.",
-      "termsHint": "Sklep pokazuje ten link klientom (Store API: GET /store/loyalty/terms i /store/loyalty/me). Wtyczka nie tworzy strony regulaminu; program lojalnościowy wymaga opublikowanego regulaminu."
+      "termsHint": "Sklep pokazuje ten link klientom (Store API: GET /store/loyalty/terms i /store/loyalty/me). Wtyczka nie tworzy strony regulaminu; program lojalnościowy wymaga opublikowanego regulaminu.",
+      "rates": "Inne waluty",
+      "ratesHint": "Ile w {{currency}} liczy się zamówienie w innej walucie sklepu: do punktów, progów poziomów i zwrotów. Bez przelicznika zamówienia w tej walucie nie dają punktów.",
+      "rateLabel": "1 {{from}} =",
+      "rateExample": "Zamówienie za {{amount}} liczy się jak {{converted}}.",
+      "rateMissing": "Brak przelicznika: zamówienia w {{currency}} nie dają punktów."
     },
     "preview": {
       "title": "Tak to zobaczy klient",

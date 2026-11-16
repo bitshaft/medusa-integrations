@@ -132,6 +132,21 @@ moduleIntegrationTestRunner<LoyaltyModuleService>({
         expect(await awardOrder(ctx.container, "order_2")).toEqual({ status: "earned", points: 100 })
       })
 
+      it("counts orders in other currencies by the admin's rate, and not at all without one", async () => {
+        ctx.data.order.push(order("order_eur1", ANNA, [item("i1", 1, 100)], { currency_code: "eur" }))
+        expect(await awardOrder(ctx.container, "order_eur1")).toEqual({
+          status: "skipped",
+          reason: "currency_without_rate",
+        })
+
+        await service.saveSettings({ currency_code: "pln", currency_rates: { eur: 4.3 } })
+        ctx.data.order.push(order("order_eur2", ANNA, [item("i1", 1, 100)], { currency_code: "eur" }))
+        expect(await awardOrder(ctx.container, "order_eur2")).toEqual({ status: "earned", points: 430 })
+        // Tier spend and returns use the converted amount.
+        const [earn] = await service.entriesByKey(["order:order_eur2:earn"])
+        expect((earn.metadata as Row).base_total).toBe(430)
+      })
+
       it("adds the first-order bonus only on the first order", async () => {
         await service.saveSettings({ actions: { first_order: { enabled: true, points: 100 } } })
         const first = order("order_3", ANNA, [item("i1", 1, 100)], { created_at: "2026-01-01T10:00:00Z" })

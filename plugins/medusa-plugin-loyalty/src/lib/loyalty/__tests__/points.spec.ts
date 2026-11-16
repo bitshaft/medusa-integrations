@@ -4,6 +4,8 @@ import { formatDate, formatMoney, formatPoints, pluralPl } from "../format"
 import { reasonMessage } from "../messages"
 import {
   addMonths,
+  convertBase,
+  currencyFactor,
   earnedPoints,
   expiresAt,
   isExpired,
@@ -344,5 +346,32 @@ describe("formatting and messages", () => {
         ]
       )
     ).toBe('﻿Typ;Punkty\r\n\'=SUM();-50\r\n"zamówienie; #12";1,5\r\n')
+  })
+})
+
+describe("other currencies", () => {
+  it("counts the program currency 1:1, others by the admin's rate, and none without a rate", () => {
+    expect(currencyFactor("pln", "pln", {})).toBe(1)
+    expect(currencyFactor("PLN", "pln", {})).toBe(1)
+    expect(currencyFactor(null, "pln", {})).toBe(1)
+    expect(currencyFactor("eur", "pln", { eur: 4.3 })).toBe(4.3)
+    expect(currencyFactor("usd", "pln", { eur: 4.3 })).toBeNull()
+  })
+
+  it("converts every line, so returns and tier spend stay in the program currency", () => {
+    const base = orderBase(
+      [
+        { id: "a", quantity: 2, total: 50, tax_total: 0, is_reward: false },
+        { id: "b", quantity: 1, total: 19.99, tax_total: 0, is_reward: false },
+      ],
+      "gross"
+    )
+    const converted = convertBase(base, 4.3)
+    expect(converted.lines).toEqual([
+      { id: "a", quantity: 2, base: 215 },
+      { id: "b", quantity: 1, base: 85.96 },
+    ])
+    expect(converted.total).toBe(300.96)
+    expect(convertBase(base, 1)).toBe(base)
   })
 })

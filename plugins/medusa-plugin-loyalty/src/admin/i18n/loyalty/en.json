@@ -245,7 +245,12 @@
       "currencyStore": "As in the store ({{currency}})",
       "currencyHint": "Amounts in the program (spend thresholds, reward values) are in this currency.",
       "currencyMissing": "The store no longer has {{currency}}. Choose one of the store's currencies.",
-      "termsHint": "Shown to customers by your storefront (Store API: GET /store/loyalty/terms and /store/loyalty/me). The plugin does not create the terms page itself; in Poland a loyalty program needs published terms."
+      "termsHint": "Shown to customers by your storefront (Store API: GET /store/loyalty/terms and /store/loyalty/me). The plugin does not create the terms page itself; in Poland a loyalty program needs published terms.",
+      "rates": "Other currencies",
+      "ratesHint": "How much an order in another store currency counts in {{currency}}: for points, tier spend and returns. Without a rate, orders in that currency earn nothing.",
+      "rateLabel": "1 {{from}} =",
+      "rateExample": "An order of {{amount}} counts as {{converted}}.",
+      "rateMissing": "No rate: orders in {{currency}} earn no points."
     },
     "preview": {
       "title": "What the customer sees",

@@ -21,6 +21,32 @@ export function earnedPoints(
   return Math.floor((base / earn.per_amount) * earn.points * multiplier + EPSILON)
 }
 
+/**
+ * How much 1 unit of `currency` is worth in the program currency: 1 for
+ * the program currency itself, the admin's rate for another one, `null`
+ * when there is none (such orders earn nothing).
+ */
+export function currencyFactor(
+  currency: string | null | undefined,
+  programCurrency: string,
+  rates: Record<string, number>
+): number | null {
+  const code = (currency ?? programCurrency).toLowerCase()
+  if (code === programCurrency.toLowerCase()) return 1
+  const rate = rates[code]
+  return rate && rate > 0 ? rate : null
+}
+
+/** An order's base converted to the program currency, line by line (so returns and tier spend stay right). */
+export function convertBase(
+  base: { total: number; lines: BaseLine[] },
+  factor: number
+): { total: number; lines: BaseLine[] } {
+  if (factor === 1) return base
+  const lines = base.lines.map((line) => ({ ...line, base: round2(line.base * factor) }))
+  return { total: round2(lines.reduce((sum, line) => sum + line.base, 0)), lines }
+}
+
 /** An order line as the earning rules need it. */
 export type OrderLine = {
   id: string

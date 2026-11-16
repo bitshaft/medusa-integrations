@@ -24,6 +24,8 @@ export type Settings = {
   rewards: { return_points_on_code_expiry: boolean; gift_release_days: number }
   excluded_group_ids: string[]
   terms_url: string | null
+  /** `{ eur: 4.3 }`: 1 EUR counts as 4.30 in the program currency. Currencies without a rate earn nothing. */
+  currency_rates: Record<string, number>
 }
 
 export type SettingsResponse =

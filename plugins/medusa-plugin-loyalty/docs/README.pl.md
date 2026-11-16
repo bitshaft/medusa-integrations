@@ -82,7 +82,7 @@ do newslettera, domyślnie `newsletter.subscribed`) i
 - **Ujemne saldo** jest dozwolone, blokuje wymianę i spłacają je kolejne
   punkty.
 - **Akcje**: rejestracja i newsletter raz na klienta, urodziny raz w roku i nie częściej niż co 330 dni (zmiana daty o dzień po bonusie nic nie daje).
-- **Waluta** kwot programu to jedna z walut sklepu, domyślnie jego waluta domyślna.
+- **Waluta** kwot programu to jedna z walut sklepu, domyślnie jego waluta domyślna. Dla innych walut sklepu admin ustawia przelicznik (np. 1 EUR = 4,30 zł); zamówienia w walucie bez przelicznika nie dają punktów.
 - **Poziomy**: po każdym opłaconym zamówieniu i zwrocie oraz codziennie;
   zmiana zapisuje się w historii i emituje `loyalty.tier_changed`.
 - **Wygasanie**: całe dodatnie saldo po N miesiącach bez zamówienia ani

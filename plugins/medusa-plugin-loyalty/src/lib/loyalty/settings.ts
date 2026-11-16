@@ -89,6 +89,17 @@ export const settingsSchema = z
       .prefault({}),
     /** Customer groups that neither earn nor redeem (e.g. B2B). */
     excluded_group_ids: z.array(z.string().min(1)).max(200).default([]),
+    /**
+     * Other currencies of the store: `{ eur: 4.3 }` means 1 EUR counts as
+     * 4.30 in the program currency (for points, tier spend and returns).
+     * Orders in a currency without a rate earn nothing.
+     */
+    currency_rates: z
+      .record(
+        z.string().regex(/^[a-z]{3}$/, "a lower-case three-letter currency code"),
+        z.number().positive().max(1_000_000)
+      )
+      .default({}),
     /** Link to the program terms, returned by the Store API. */
     terms_url: z.string().url().nullable().default(null),
   })

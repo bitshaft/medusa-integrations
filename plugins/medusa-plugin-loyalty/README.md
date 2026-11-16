@@ -80,21 +80,22 @@ line (`[loyalty] Disabled: …`).
 Everything else is set by the store owner and applies from the moment it is
 saved:
 
-| Setting                                                                      | Default               |
-| ---------------------------------------------------------------------------- | --------------------- |
-| Program on/off                                                               | on                    |
-| Currency of program amounts (one of the store's currencies)                  | the store's default   |
-| Points: X points per Y of the base                                           | 1 point per 1         |
-| Base: items after discounts, gross / net                                     | gross                 |
-| Sign-up, first order, birthday, newsletter: on/off and points                | off; 50, 100, 100, 50 |
-| Birthday: date change allowed every N days; date set at least N days before  | 365, 30               |
-| Birthday: at least 330 days between two bonuses (fixed)                      | 330                   |
-| Tiers: name, spend threshold, multiplier, one-off bonus; spend window        | none; 12 months       |
-| Expiry after N months without an order or redemption; reminder N days before | 12 months, 30 days    |
-| Give points back for reward codes that expire unused                         | yes                   |
-| Release a gift from an abandoned cart after N days                           | 14                    |
-| Excluded customer groups (earn and redeem nothing)                           | none                  |
-| Link to the program terms (returned to the storefront, which shows it)       | empty                 |
+| Setting                                                                                                       | Default               |
+| ------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Program on/off                                                                                                | on                    |
+| Currency of program amounts (one of the store's currencies)                                                   | the store's default   |
+| Other store currencies: 1 unit = N in the program currency (orders in a currency without a rate earn nothing) | none                  |
+| Points: X points per Y of the base                                                                            | 1 point per 1         |
+| Base: items after discounts, gross / net                                                                      | gross                 |
+| Sign-up, first order, birthday, newsletter: on/off and points                                                 | off; 50, 100, 100, 50 |
+| Birthday: date change allowed every N days; date set at least N days before                                   | 365, 30               |
+| Birthday: at least 330 days between two bonuses (fixed)                                                       | 330                   |
+| Tiers: name, spend threshold, multiplier, one-off bonus; spend window                                         | none; 12 months       |
+| Expiry after N months without an order or redemption; reminder N days before                                  | 12 months, 30 days    |
+| Give points back for reward codes that expire unused                                                          | yes                   |
+| Release a gift from an abandoned cart after N days                                                            | 14                    |
+| Excluded customer groups (earn and redeem nothing)                                                            | none                  |
+| Link to the program terms (returned to the storefront, which shows it)                                        | empty                 |
 
 ### Environment variables
 

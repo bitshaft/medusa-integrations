@@ -165,6 +165,43 @@ export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
           </div>
         </Section>
 
+        {storeCurrencies.some((code) => code !== currency.toLowerCase()) && (
+          <Section title={t("loyalty.settings.rates")} hint={t("loyalty.settings.ratesHint", { currency })}>
+            <div className="flex flex-col gap-y-3">
+              {storeCurrencies
+                .filter((code) => code !== currency.toLowerCase())
+                .map((code) => {
+                  const rate = form.currency_rates[code] ?? null
+                  return (
+                    <div key={code} className="flex flex-wrap items-end gap-3">
+                      <NumberField
+                        label={t("loyalty.settings.rateLabel", { from: code.toUpperCase() })}
+                        value={rate}
+                        min={0}
+                        step={0.01}
+                        suffix={currency}
+                        onChange={(value) => {
+                          const rates = { ...form.currency_rates }
+                          if (value && value > 0) rates[code] = value
+                          else delete rates[code]
+                          set("currency_rates", rates)
+                        }}
+                      />
+                      <Text size="xsmall" className={rate ? "pb-2 text-ui-fg-subtle" : "pb-2 text-ui-tag-orange-text"}>
+                        {rate
+                          ? t("loyalty.settings.rateExample", {
+                              amount: `100 ${code.toUpperCase()}`,
+                              converted: `${(Math.round(100 * rate * 100) / 100).toFixed(2)} ${currency}`,
+                            })
+                          : t("loyalty.settings.rateMissing", { currency: code.toUpperCase() })}
+                      </Text>
+                    </div>
+                  )
+                })}
+            </div>
+          </Section>
+        )}
+
         <Section title={t("loyalty.settings.earn")} hint={t("loyalty.settings.earnHint")}>
           <div className="flex flex-wrap items-end gap-4">
             <NumberField
