@@ -155,7 +155,6 @@
       "mfQuota": "Wykorzystano dziś {{used}} z {{limit}} zapytań",
       "gusHint": "Zna każdą firmę, nie tylko podatników VAT. Bez limitu dziennego.",
       "gusOff": "Ustaw gus.apiKey, aby z niego korzystać. Klucz jest wydawany bezpłatnie na api.stat.gov.pl.",
-      "gusKey": "Klucz",
       "viesHint": "Potwierdza numery VAT UE. Nie wymaga klucza.",
       "viesRequester": "Numer pytającego",
       "viesNoRequester": "Ustaw vies.requesterVatNumber na własny numer VAT UE, aby otrzymywać numer konsultacji jako dowód.",

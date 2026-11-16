@@ -1,7 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
 import { PROBLEM_STATUSES, resolveWhitelistVat, staleBefore } from "../../../../lib/whitelist-vat/api/utils"
-import { maskIdentifier } from "../../../../lib/whitelist-vat/kit/secrets"
 import { readPackageVersion } from "../../../../lib/whitelist-vat/kit/package-info"
 import { PACKAGE_NAME } from "../../../../lib/whitelist-vat/options"
 import { startOfWarsawDay } from "../../../../lib/whitelist-vat/verify"
@@ -46,7 +45,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       gus: {
         enabled: Boolean(options.gus.apiKey),
         environment: options.gus.environment,
-        api_key: options.gus.apiKey ? maskIdentifier(options.gus.apiKey) : null,
+        // The key is a secret: not even a part of it leaves the server.
       },
       vies: {
         enabled: options.vies.enabled,

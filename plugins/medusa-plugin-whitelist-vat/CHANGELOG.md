@@ -26,3 +26,9 @@ First release.
   and the `whitelist-vat.tax_id.verified` event.
 - Works without options; invalid options leave the plugin disabled with one
   log line instead of stopping Medusa.
+
+### Security
+
+- `GET /admin/whitelist-vat/status` no longer returns part of the GUS API
+  key (its first and last four characters); the settings tab shows only
+  whether GUS is configured.

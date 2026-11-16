@@ -105,7 +105,7 @@ export type WhitelistVatStatus =
       version: string
       registers: {
         mf: { enabled: boolean; environment: string; requests_today: number; daily_limit: number }
-        gus: { enabled: boolean; environment: string; api_key: string | null }
+        gus: { enabled: boolean; environment: string }
         vies: { enabled: boolean; requester_vat_number: string | null }
       }
       counts: Record<SubjectFilter, number>

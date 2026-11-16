@@ -155,7 +155,6 @@
       "mfQuota": "{{used}} of {{limit}} requests used today",
       "gusHint": "Knows every business, not only VAT payers. No daily limit.",
       "gusOff": "Set gus.apiKey to use it. Keys are issued free of charge at api.stat.gov.pl.",
-      "gusKey": "Key",
       "viesHint": "Confirms EU VAT numbers. No key needed.",
       "viesRequester": "Requester number",
       "viesNoRequester": "Set vies.requesterVatNumber to your own EU VAT number to get a consultation number as proof.",

@@ -51,9 +51,6 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
           {gus.enabled && (
             <>
               <Detail label={t("whitelist-vat.settings.environment")}>{gus.environment}</Detail>
-              <Detail label={t("whitelist-vat.settings.gusKey")}>
-                <span className="font-mono">{gus.api_key}</span>
-              </Detail>
             </>
           )}
         </Register>
