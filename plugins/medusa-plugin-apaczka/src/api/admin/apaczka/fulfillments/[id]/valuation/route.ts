@@ -3,7 +3,7 @@ import { MedusaError } from "@medusajs/framework/utils"
 
 import { customerAddress, warehouseAddress } from "../../../../../../lib/apaczka/addresses"
 import { buildOrderPayload } from "../../../../../../lib/apaczka/order-builder"
-import { buildParcels } from "../../../../../../lib/apaczka/parcels"
+import { buildParcels, missingWeights } from "../../../../../../lib/apaczka/parcels"
 import { optionsForService } from "../../../../../../lib/apaczka/options"
 import {
   codAmountForContext,
@@ -27,6 +27,8 @@ export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaR
   const items = context.items.map((item) => ({
     title: item.title,
     quantity: item.quantity,
+    variant_id: item.variant?.id ?? null,
+    product_id: item.variant?.product_id ?? null,
     weight: item.variant?.weight,
     length: item.variant?.length,
     width: item.variant?.width,
@@ -87,6 +89,9 @@ export async function POST(req: MedusaRequest<AdminCreateShipment>, res: MedusaR
       point_id: payload.address.receiver.foreign_address_id ?? null,
     },
     sender_postal_code: payload.address.sender.postal_code,
+    /** Items counted with the default weight (their variant has none), and that weight. */
+    missing_weight: missingWeights(items),
+    default_item_weight_kg: optionsForService(options, serviceId).parcel.defaultItemWeightKg,
     option: context.option,
   })
 }

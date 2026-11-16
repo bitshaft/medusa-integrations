@@ -14,7 +14,14 @@ export type ShipmentContextItem = {
   title: string
   quantity: number
   unit_price: number
-  variant?: { weight?: number | null; length?: number | null; width?: number | null; height?: number | null } | null
+  variant?: {
+    id?: string | null
+    product_id?: string | null
+    weight?: number | null
+    length?: number | null
+    width?: number | null
+    height?: number | null
+  } | null
 }
 
 export type ShipmentContext = {
@@ -149,6 +156,8 @@ export async function loadShipmentContext(container: MedusaContainer, fulfillmen
               "items.quantity",
               "items.requires_shipping",
               "items.detail.fulfilled_quantity",
+              "items.variant.id",
+              "items.variant.product_id",
               "items.variant.weight",
               "items.variant.length",
               "items.variant.width",

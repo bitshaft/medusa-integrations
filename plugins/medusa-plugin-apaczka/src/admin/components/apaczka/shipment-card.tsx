@@ -127,7 +127,9 @@ export const ShipmentCard = ({ shipment }: Props) => {
 
       {isPending && shipment.error && (
         <Text size="small" className="text-ui-fg-error">
-          {t("apaczka.pendingReason", { reason: shipment.error })}
+          {shipment.error === "missing_weight"
+            ? t("apaczka.weight.held")
+            : t("apaczka.pendingReason", { reason: shipment.error })}
         </Text>
       )}
 

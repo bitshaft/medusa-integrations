@@ -188,6 +188,24 @@
         "prev": "Previous",
         "next": "Next"
       }
+    },
+    "weight": {
+      "title": "Parcel weight",
+      "hint": "How parcels are weighed when products have no weight.",
+      "defaults": "A product without a weight counts as {{weight}} kg per unit (option parcel.defaultItemWeightKg). Catalog weights are read in {{unit}}; packaging adds {{packaging}} kg; a parcel weighs at least {{min}} kg.",
+      "hold": "Hold shipments with products without a weight",
+      "holdHint": "On: such a shipment is not created automatically. It waits on the order with the reason, so someone can enter the real weight and create it. Off: it is sent with the default weight.",
+      "holdManualMode": "Shipments are created by hand anyway (shipmentCreation: manual); the warning shows in the shipment form.",
+      "saved": "Saved",
+      "missingTitle": "Variants without a weight",
+      "missingHint": "Enter their weight in the product (variant → Shipping). Until then, parcels use the default weight.",
+      "allSet": "Every variant has a weight.",
+      "product": "Product",
+      "variant": "Variant",
+      "warningTitle_one": "{{count}} product has no weight: it counts as {{weight}} kg per unit.",
+      "warningTitle_other": "{{count}} products have no weight: each counts as {{weight}} kg per unit.",
+      "warningHint": "Check the parcel weight below before creating the shipment; a wrong weight can mean a carrier surcharge.",
+      "held": "Waiting: a product has no weight. Check the parcel weight and create the shipment."
     }
   }
 }

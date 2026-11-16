@@ -192,6 +192,12 @@ point validated          (auto or from admin)          status changes           
   and staff create the shipment from the **Apaczka shipments** panel on the
   order page. That lets them check the price and adjust parcels, pickup, COD
   or the point first.
+- **Parcel weight.** Parcels are weighed from the variants' `weight`
+  (grams by default, `parcel.weightUnit`). A variant without a weight counts
+  as `parcel.defaultItemWeightKg` (1 kg) per unit. The shipment form warns
+  about such products, and **Settings → Parcel weight** lists every variant
+  without a weight and can hold automatic shipments that contain one, so a
+  person checks the parcel before the carrier gets a guessed weight.
 - **Sender address.** Built from the stock location's address, merged with
   `sender` (global defaults) and `senderByLocation` (per location).
 - **Cash on delivery.** Each parcel collects only what is still unpaid. Split

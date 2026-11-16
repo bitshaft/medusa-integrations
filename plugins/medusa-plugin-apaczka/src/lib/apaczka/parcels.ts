@@ -11,6 +11,26 @@ export type ParcelItem = {
   height?: number | null
 }
 
+/** An item counted with the default weight because its variant has none. */
+export type MissingWeight = { title: string; quantity: number; variant_id: string | null; product_id: string | null }
+
+/**
+ * Items whose variant has no weight. Parcels count each of their units as
+ * `defaultItemWeightKg`, which can be far from the truth, so staff are told.
+ */
+export function missingWeights(
+  items: Array<ParcelItem & { variant_id?: string | null; product_id?: string | null }>
+): MissingWeight[] {
+  return items
+    .filter((item) => item.quantity > 0 && !isPositive(item.weight))
+    .map((item) => ({
+      title: item.title ?? "",
+      quantity: item.quantity,
+      variant_id: item.variant_id ?? null,
+      product_id: item.product_id ?? null,
+    }))
+}
+
 export type ParcelContext = {
   items: ParcelItem[]
   options: ParcelOptions

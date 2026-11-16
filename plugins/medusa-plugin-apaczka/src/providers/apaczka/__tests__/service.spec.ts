@@ -306,6 +306,23 @@ describe("ApaczkaFulfillmentProviderService", () => {
       expect(result).toMatchObject({ labels: [], data: { apaczka: { state: "pending", service_id: 21 } } })
     })
 
+    it("hands shipments with a product without a weight to the workflow, which may hold them", async () => {
+      const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
+      const provider = createProvider()
+      const noWeight = {
+        ...order,
+        items: [{ id: "item_1", title: "Kubek", unit_price: 50, variant: { weight: null } }],
+      }
+      const result = await provider.createFulfillment(
+        await shippingData(provider),
+        items,
+        noWeight as never,
+        { location_id: "sloc_1", delivery_address: shippingAddress } as never
+      )
+      expect(send).not.toHaveBeenCalled()
+      expect(result.data.apaczka).toMatchObject({ state: "pending", auto_create: true })
+    })
+
     it("hands COD shipments to the workflow so the amount reflects what is unpaid", async () => {
       const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
       const provider = createProvider({ cod: { bankAccount: "PL61109010140000071219812874" } })

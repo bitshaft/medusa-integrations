@@ -27,6 +27,14 @@ moduleIntegrationTestRunner<ApaczkaModuleService>({
     })
 
     describe("shipments", () => {
+      it("stores the Settings tab, with defaults until saved", async () => {
+        expect(await service.getSettings()).toEqual({ hold_without_weight: false })
+        await service.saveSettings({ hold_without_weight: true })
+        await service.saveSettings({ hold_without_weight: true })
+        expect(await service.getSettings()).toEqual({ hold_without_weight: true })
+        expect(await service.listApaczkaSettings({})).toHaveLength(1)
+      })
+
       it("creates a shipment with defaults", async () => {
         const shipment = await service.createApaczkaShipments({
           fulfillment_id: "ful_1",
