@@ -8,8 +8,10 @@ import type { ShipmentStatus } from "../../lib/apaczka/client/statuses"
 import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
 import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
 import { type ApaczkaPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
+import { type ApaczkaSettings, readSettings, settingsSchema } from "../../lib/apaczka/settings"
 import { userAgent } from "../../lib/apaczka/version"
 import { ApaczkaShipment } from "./models/shipment"
+import { ApaczkaSetting } from "./models/setting"
 import { ApaczkaTrackingEvent } from "./models/tracking-event"
 
 type InjectedDependencies = { logger: Logger }
@@ -32,6 +34,7 @@ export type TrackingEventInput = {
 export default class ApaczkaModuleService extends MedusaService({
   ApaczkaShipment,
   ApaczkaTrackingEvent,
+  ApaczkaSetting,
 }) {
   protected readonly logger_: Logger
   private readonly state_: EnabledState | { disabled: string }
@@ -83,6 +86,21 @@ export default class ApaczkaModuleService extends MedusaService({
 
   async getCatalog(): Promise<ApaczkaCatalog> {
     return this.enabled_().catalog
+  }
+
+  /** Settings from the admin's Settings tab, with defaults for anything never saved. */
+  async getSettings(): Promise<ApaczkaSettings> {
+    const [row] = await this.listApaczkaSettings({ key: "settings" })
+    return readSettings(row?.value)
+  }
+
+  async saveSettings(value: unknown): Promise<ApaczkaSettings> {
+    const settings = settingsSchema.parse(value)
+    const [row] = await this.listApaczkaSettings({ key: "settings" })
+    // A JSON column update merges objects, so replace the row instead.
+    if (row) await this.deleteApaczkaSettings(row.id)
+    await this.createApaczkaSettings({ key: "settings", value: settings as unknown as Record<string, unknown> })
+    return settings
   }
 
   async getOptions(): Promise<ApaczkaPluginOptions> {

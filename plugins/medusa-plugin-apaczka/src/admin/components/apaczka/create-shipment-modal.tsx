@@ -1,7 +1,8 @@
-import { Plus, Trash } from "@medusajs/icons"
+import { ExclamationCircle, Plus, Trash } from "@medusajs/icons"
 import { Button, FocusModal, Heading, IconButton, Input, Label, Select, Switch, Text, toast } from "@medusajs/ui"
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Link } from "react-router-dom"
 
 import {
   type ParcelInput,
@@ -170,6 +171,39 @@ export const CreateShipmentModal = ({ fulfillmentId, open, onOpenChange }: Props
                   </Text>
                 </div>
                 <Heading level="h2">{formatGrosze(valuation.data.price_gross, i18n.language)}</Heading>
+              </div>
+            )}
+
+            {(valuation.data?.missing_weight.length ?? 0) > 0 && (
+              <div className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3">
+                <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
+                <div className="flex flex-col gap-y-1">
+                  <Text size="small" weight="plus" className="text-ui-tag-orange-text">
+                    {t("apaczka.weight.warningTitle", {
+                      count: valuation.data!.missing_weight.length,
+                      weight: valuation.data!.default_item_weight_kg,
+                    })}
+                  </Text>
+                  <ul className="flex flex-col gap-y-0.5">
+                    {valuation.data!.missing_weight.map((item, index) => (
+                      <li key={`${item.variant_id ?? index}`}>
+                        <Text size="small" className="text-ui-tag-orange-text">
+                          {item.product_id ? (
+                            <Link to={`/products/${item.product_id}`} target="_blank" className="underline">
+                              {item.title}
+                            </Link>
+                          ) : (
+                            item.title
+                          )}{" "}
+                          × {item.quantity}
+                        </Text>
+                      </li>
+                    ))}
+                  </ul>
+                  <Text size="xsmall" className="text-ui-tag-orange-text">
+                    {t("apaczka.weight.warningHint")}
+                  </Text>
+                </div>
               </div>
             )}
 

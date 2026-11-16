@@ -117,6 +117,29 @@ export type Valuation = {
   }
   sender_postal_code: string
   option: ServiceOption
+  /** Items counted with the default weight because their variant has none. */
+  missing_weight: Array<{ title: string; quantity: number; variant_id: string | null; product_id: string | null }>
+  default_item_weight_kg: number
+}
+
+export type ApaczkaSettingsResponse = {
+  settings: { hold_without_weight: boolean }
+  parcel: {
+    default_item_weight_kg: number
+    weight_unit: "g" | "kg"
+    packaging_weight_kg: number
+    min_weight_kg: number
+    strategy: "single" | "per_item"
+  }
+  shipment_creation: "auto" | "manual"
+}
+
+export type VariantWithoutWeight = {
+  id: string
+  title: string | null
+  sku: string | null
+  product_id: string | null
+  product_title: string | null
 }
 
 /** Returned when options are missing or invalid; the plugin is then inactive. */
@@ -160,6 +183,37 @@ export const apaczkaKeys = {
   status: ["apaczka", "status"] as const,
   services: ["apaczka", "services"] as const,
   pickupHours: (postalCode: string, serviceId: number) => ["apaczka", "pickup-hours", postalCode, serviceId] as const,
+  settings: ["apaczka", "settings"] as const,
+  withoutWeight: (offset: number) => ["apaczka", "without-weight", offset] as const,
+}
+
+export function useApaczkaSettings(enabled = true) {
+  return useQuery({
+    queryKey: apaczkaKeys.settings,
+    queryFn: () => sdk.client.fetch<ApaczkaSettingsResponse>("/admin/apaczka/settings"),
+    enabled,
+  })
+}
+
+export function useSaveApaczkaSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (settings: ApaczkaSettingsResponse["settings"]) =>
+      sdk.client.fetch<ApaczkaSettingsResponse>("/admin/apaczka/settings", { method: "POST", body: settings }),
+    onSuccess: (data) => queryClient.setQueryData(apaczkaKeys.settings, data),
+  })
+}
+
+export function useVariantsWithoutWeight(offset: number, enabled = true) {
+  return useQuery({
+    queryKey: apaczkaKeys.withoutWeight(offset),
+    queryFn: () =>
+      sdk.client.fetch<{ variants: VariantWithoutWeight[]; count: number; limit: number; offset: number }>(
+        "/admin/apaczka/variants-without-weight",
+        { query: { limit: 10, offset } }
+      ),
+    enabled,
+  })
 }
 
 /* Hooks --------------------------------------------------------------------- */

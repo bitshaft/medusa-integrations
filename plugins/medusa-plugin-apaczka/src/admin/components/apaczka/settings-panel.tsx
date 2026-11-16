@@ -1,8 +1,29 @@
-import { Badge, Button, Container, Copy, Heading, Skeleton, StatusBadge, Table, Text } from "@medusajs/ui"
+import {
+  Badge,
+  Button,
+  Container,
+  Copy,
+  Heading,
+  Label,
+  Skeleton,
+  StatusBadge,
+  Switch,
+  Table,
+  Text,
+  toast,
+} from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Link } from "react-router-dom"
 
-import { useApaczkaServices, useApaczkaStatus } from "../../lib/apaczka/api"
+import {
+  useApaczkaServices,
+  useApaczkaSettings,
+  useApaczkaStatus,
+  useSaveApaczkaSettings,
+  useVariantsWithoutWeight,
+} from "../../lib/apaczka/api"
+import { errorMessage } from "../../lib/apaczka/format"
 
 /** The Settings tab: connection, configuration from plugin options, tracking and services. */
 export const SettingsPanel = () => {
@@ -146,6 +167,8 @@ export const SettingsPanel = () => {
         )}
       </Container>
 
+      {s?.enabled && <ParcelWeight />}
+
       <Container className="overflow-hidden p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("apaczka.settings.servicesTitle")}</Heading>
@@ -233,5 +256,135 @@ const OnOff = ({ value }: { value: boolean }) => {
     <StatusBadge color={value ? "green" : "grey"}>
       {value ? t("apaczka.settings.on") : t("apaczka.settings.off")}
     </StatusBadge>
+  )
+}
+
+const PAGE = 10
+
+/**
+ * Parcel weights: what a product without a weight counts as, whether such
+ * shipments wait for a person, and which variants have no weight.
+ */
+const ParcelWeight = () => {
+  const { t } = useTranslation()
+  const settings = useApaczkaSettings()
+  const save = useSaveApaczkaSettings()
+  const [offset, setOffset] = useState(0)
+  const variants = useVariantsWithoutWeight(offset)
+  const data = settings.data
+  const count = variants.data?.count ?? 0
+
+  return (
+    <Container className="overflow-hidden divide-y p-0">
+      <div className="px-6 py-4">
+        <Heading level="h2">{t("apaczka.weight.title")}</Heading>
+        <Text size="small" className="text-ui-fg-subtle">
+          {data
+            ? t("apaczka.weight.defaults", {
+                weight: data.parcel.default_item_weight_kg,
+                unit: data.parcel.weight_unit,
+                packaging: data.parcel.packaging_weight_kg,
+                min: data.parcel.min_weight_kg,
+              })
+            : t("apaczka.weight.hint")}
+        </Text>
+      </div>
+
+      {data && (
+        <div className="flex items-start justify-between gap-x-6 px-6 py-4">
+          <div>
+            <Label htmlFor="apaczka-hold-weight" size="small" weight="plus">
+              {t("apaczka.weight.hold")}
+            </Label>
+            <Text size="xsmall" className="text-ui-fg-subtle">
+              {data.shipment_creation === "manual" ? t("apaczka.weight.holdManualMode") : t("apaczka.weight.holdHint")}
+            </Text>
+          </div>
+          <Switch
+            id="apaczka-hold-weight"
+            checked={data.settings.hold_without_weight}
+            disabled={save.isPending}
+            onCheckedChange={(checked) =>
+              save.mutate(
+                { ...data.settings, hold_without_weight: checked },
+                {
+                  onSuccess: () => toast.success(t("apaczka.weight.saved")),
+                  onError: (error) => toast.error(errorMessage(error)),
+                }
+              )
+            }
+          />
+        </div>
+      )}
+
+      <div className="flex flex-col gap-y-3 px-6 py-4">
+        <div className="flex items-center gap-x-2">
+          <Text size="small" weight="plus">
+            {t("apaczka.weight.missingTitle")}
+          </Text>
+          {variants.data && (
+            <Badge size="2xsmall" color={count ? "orange" : "green"}>
+              {count}
+            </Badge>
+          )}
+        </div>
+        {variants.isLoading ? (
+          <Skeleton className="h-16 w-full" />
+        ) : !count ? (
+          <Text size="small" className="text-ui-fg-subtle">
+            {t("apaczka.weight.allSet")}
+          </Text>
+        ) : (
+          <>
+            <Text size="xsmall" className="text-ui-fg-subtle">
+              {t("apaczka.weight.missingHint")}
+            </Text>
+            <div className="overflow-x-auto rounded-lg border border-ui-border-base">
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>{t("apaczka.weight.product")}</Table.HeaderCell>
+                    <Table.HeaderCell>{t("apaczka.weight.variant")}</Table.HeaderCell>
+                    <Table.HeaderCell>SKU</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {variants.data!.variants.map((v) => (
+                    <Table.Row key={v.id}>
+                      <Table.Cell>
+                        {v.product_id ? (
+                          <Link
+                            to={`/products/${v.product_id}/variants/${v.id}`}
+                            className="text-ui-fg-interactive hover:underline"
+                          >
+                            {v.product_title ?? v.product_id}
+                          </Link>
+                        ) : (
+                          (v.product_title ?? "—")
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>{v.title ?? "—"}</Table.Cell>
+                      <Table.Cell className="font-mono">{v.sku ?? "—"}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+              {count > PAGE && (
+                <Table.Pagination
+                  count={count}
+                  pageSize={PAGE}
+                  pageIndex={Math.floor(offset / PAGE)}
+                  pageCount={Math.ceil(count / PAGE)}
+                  canPreviousPage={offset > 0}
+                  canNextPage={offset + PAGE < count}
+                  previousPage={() => setOffset(Math.max(0, offset - PAGE))}
+                  nextPage={() => setOffset(offset + PAGE)}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </Container>
   )
 }

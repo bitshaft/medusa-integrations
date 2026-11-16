@@ -37,7 +37,7 @@ import { exchangeRate, priceForCustomer } from "../../lib/apaczka/money"
 import { buildOrderPayload } from "../../lib/apaczka/order-builder"
 import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
 import { type ApaczkaPluginOptions, optionsForService, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
-import type { ParcelItem } from "../../lib/apaczka/parcels"
+import { missingWeights, type ParcelItem } from "../../lib/apaczka/parcels"
 import { createShipment, labelsFor } from "../../lib/apaczka/shipments"
 import { userAgent } from "../../lib/apaczka/version"
 
@@ -325,6 +325,11 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
         variant: orderItem?.variant,
       })
     })
+    // A product without a weight: the plugin's fulfillment subscriber decides,
+    // because only it can read the admin setting that may hold such shipments.
+    if (missingWeights(parcelItems).length) {
+      return this.pending(shippingData, option, undefined, { autoCreate: true })
+    }
     const itemsValue = items.reduce((sum, item) => {
       const orderItem = orderItems.get(item.line_item_id as string)
       return sum + Number(orderItem?.unit_price ?? 0) * Number(item.quantity ?? 0)

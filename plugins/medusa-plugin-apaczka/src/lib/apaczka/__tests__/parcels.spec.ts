@@ -1,4 +1,4 @@
-import { buildParcels } from "../parcels"
+import { buildParcels, missingWeights } from "../parcels"
 import { options } from "./fixtures"
 
 const parcel = (overrides = {}) => ({ ...options().parcel, ...overrides })
@@ -67,5 +67,32 @@ describe("buildParcels", () => {
     const [p] = buildParcels({ items: [{ quantity: 1 }], options: parcel({ nonStandard: true }), content: "Order #1" })
     expect(p.is_nstd).toBe(1)
     expect(p.content).toBe("Order #1")
+  })
+})
+
+describe("missingWeights", () => {
+  it("lists items counted with the default weight", () => {
+    expect(
+      missingWeights([
+        { title: "Kubek", quantity: 2, weight: 400, variant_id: "v1", product_id: "p1" },
+        { title: "Talerz", quantity: 1, weight: null, variant_id: "v2", product_id: "p2" },
+        { title: "Miska", quantity: 3, weight: 0 },
+        { title: "Zwrócony", quantity: 0, weight: null },
+      ])
+    ).toEqual([
+      { title: "Talerz", quantity: 1, variant_id: "v2", product_id: "p2" },
+      { title: "Miska", quantity: 3, variant_id: null, product_id: null },
+    ])
+  })
+
+  it("and those units weigh the default in the parcel", () => {
+    const [p] = buildParcels({
+      items: [
+        { quantity: 1, weight: 500 },
+        { quantity: 2, weight: null },
+      ],
+      options: parcel({ defaultItemWeightKg: 1.5 }),
+    })
+    expect(p.weight).toBe(3.5)
   })
 })

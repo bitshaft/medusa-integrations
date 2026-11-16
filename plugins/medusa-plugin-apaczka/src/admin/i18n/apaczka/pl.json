@@ -188,6 +188,26 @@
         "prev": "Poprzednia",
         "next": "Następna"
       }
+    },
+    "weight": {
+      "title": "Waga paczek",
+      "hint": "Jak liczona jest waga, gdy produkty nie mają wagi.",
+      "defaults": "Produkt bez wagi liczy się jako {{weight}} kg za sztukę (opcja parcel.defaultItemWeightKg). Wagi z katalogu są w {{unit}}; opakowanie dodaje {{packaging}} kg; paczka waży co najmniej {{min}} kg.",
+      "hold": "Wstrzymuj przesyłki z produktami bez wagi",
+      "holdHint": "Włączone: taka przesyłka nie powstaje automatycznie. Czeka przy zamówieniu z powodem, żeby ktoś wpisał prawdziwą wagę i ją utworzył. Wyłączone: idzie z wagą domyślną.",
+      "holdManualMode": "Przesyłki i tak tworzysz ręcznie (shipmentCreation: manual); ostrzeżenie pokazuje się w formularzu przesyłki.",
+      "saved": "Zapisano",
+      "missingTitle": "Warianty bez wagi",
+      "missingHint": "Wpisz ich wagę w produkcie (wariant → Wysyłka). Do tego czasu paczki dostają wagę domyślną.",
+      "allSet": "Każdy wariant ma wagę.",
+      "product": "Produkt",
+      "variant": "Wariant",
+      "warningTitle_one": "{{count}} produkt nie ma wagi: liczy się jako {{weight}} kg za sztukę.",
+      "warningTitle_few": "{{count}} produkty nie mają wagi: każdy liczy się jako {{weight}} kg za sztukę.",
+      "warningTitle_many": "{{count}} produktów nie ma wagi: każdy liczy się jako {{weight}} kg za sztukę.",
+      "warningTitle_other": "{{count}} produktów nie ma wagi: każdy liczy się jako {{weight}} kg za sztukę.",
+      "warningHint": "Sprawdź wagę paczki poniżej przed utworzeniem przesyłki; zła waga może oznaczać dopłatę u kuriera.",
+      "held": "Czeka: produkt nie ma wagi. Sprawdź wagę paczki i utwórz przesyłkę."
     }
   }
 }
