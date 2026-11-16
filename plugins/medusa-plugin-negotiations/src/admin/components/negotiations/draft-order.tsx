@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 import { type DraftPlan, draftOrderStep, keys, type ThreadDetail } from "../../lib/negotiations/api"
 import { dateTime, money } from "../../lib/negotiations/format"
-import { Note, useErrorText } from "./shared"
+import { Note, useBasisMoney, useErrorText } from "./shared"
 
 type Choices = { region_id?: string; sales_channel_id?: string; address_id?: string | null }
 
@@ -31,6 +31,7 @@ const addressLine = (a: Record<string, any>) =>
 export const DraftOrderPanel = ({ detail }: { detail: ThreadDetail }) => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
+  const basisMoney = useBasisMoney()
   const thread = detail.negotiation
   const client = useQueryClient()
   const errorText = useErrorText()
@@ -146,7 +147,7 @@ export const DraftOrderPanel = ({ detail }: { detail: ThreadDetail }) => {
               </Text>
             ))}
             <Text size="small" weight="plus">
-              {t("negotiations.draft.total", { total: money(plan.total, plan.currency_code, lang) })}
+              {t("negotiations.draft.total", { total: basisMoney(plan.total, plan.currency_code, plan.tax_inclusive) })}
             </Text>
           </div>
           {plan.problems.length > 0 && (

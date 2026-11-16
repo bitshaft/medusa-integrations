@@ -9,10 +9,12 @@ All notable changes to `@bitshaft/medusa-plugin-compliance`. The format follows
 First release.
 
 - GPSR: manufacturer, responsible person in the EU, identification and
-  warnings per language on each product; manufacturer profiles with
+  warnings in each of the store's languages (one field with a language
+  select) on each product; manufacturer profiles with
   per-product overrides; completeness check daily and on product change;
   Store API for the product page.
-- GDPR: versioned consent types; append-only consent register for
+- GDPR: versioned consent types with names and texts in each of the
+  store's languages; append-only consent register for
   customers, e-mail addresses and anonymous browsers (cookies), linked
   after sign-in; data subject requests confirmed by e-mail, with deadlines,
   warnings, history and rate limits; data export (JSON and CSV in a ZIP)

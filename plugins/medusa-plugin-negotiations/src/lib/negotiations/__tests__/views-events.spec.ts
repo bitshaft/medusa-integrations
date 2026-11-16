@@ -135,7 +135,6 @@ describe("limits and options", () => {
     expect(DEFAULT_OPTIONS).toMatchObject({
       expiryDays: 14,
       acceptedOfferDays: 14,
-      taxInclusive: false,
       customerAccept: true,
       allowedCustomerGroups: [],
       writers: { draftOrders: false, cart: false },

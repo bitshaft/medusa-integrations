@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
 import {
+  type PriceBases,
   type Settings as SettingsType,
   type SettingsResponse,
   useExpireNow,
@@ -37,6 +38,53 @@ const OptionRow = ({ name, value }: { name: string; value: string }) => (
     </Text>
   </div>
 )
+
+/**
+ * Net or gross per currency, and the regions whose own setting differs (for
+ * prices set only for them), as Medusa's "Tax inclusive pricing" sets it. A
+ * thread takes it from the catalog price it starts from, so this is
+ * read-only here: it changes with the catalog.
+ */
+const PriceBasesCard = ({ bases }: { bases: PriceBases | null }) => {
+  const { t } = useTranslation()
+  const word = (taxInclusive: boolean) => t(taxInclusive ? "negotiations.basis.gross" : "negotiations.basis.net")
+  const row = (key: string, label: string, taxInclusive: boolean) => (
+    <div key={key} className="flex items-center justify-between gap-3 px-6 py-2">
+      <Text size="small">{label}</Text>
+      <Text size="small" weight="plus">
+        {word(taxInclusive)}
+      </Text>
+    </div>
+  )
+  return (
+    <Container className="overflow-hidden divide-y p-0">
+      <div className="px-6 py-4">
+        <Heading level="h2">{t("negotiations.basis.settingsTitle")}</Heading>
+        <Text size="small" className="text-ui-fg-subtle">
+          {t("negotiations.basis.settingsHint")}
+        </Text>
+      </div>
+      {bases === null ? (
+        <div className="px-6 py-4">
+          <Note tone="warn">{t("negotiations.basis.unavailable")}</Note>
+        </div>
+      ) : (
+        <div className="py-2">
+          {Object.entries(bases.currencies).map(([code, taxInclusive]) =>
+            row(code, t("negotiations.basis.currency", { currency: code.toUpperCase() }), taxInclusive)
+          )}
+          {bases.regions.map((r) =>
+            row(
+              r.id,
+              t("negotiations.basis.region", { name: r.name, currency: r.currency_code.toUpperCase() }),
+              r.tax_inclusive
+            )
+          )}
+        </div>
+      )}
+    </Container>
+  )
+}
 
 /** The "Settings" tab: options from medusa-config (read-only), the admin settings, expiry and the writers' history. */
 export const Settings = ({ data }: { data: SettingsResponse }) => {
@@ -205,6 +253,8 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         </div>
       </Container>
 
+      <PriceBasesCard bases={data.price_bases} />
+
       <Container className="overflow-hidden divide-y p-0">
         <div className="px-6 py-4">
           <Heading level="h2">{t("negotiations.settings.optionsTitle")}</Heading>
@@ -215,7 +265,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         <div className="py-2">
           <OptionRow name="expiryDays" value={String(o.expiryDays)} />
           <OptionRow name="acceptedOfferDays" value={String(o.acceptedOfferDays)} />
-          <OptionRow name="taxInclusive" value={yesNo(o.taxInclusive)} />
           <OptionRow
             name="defaultCurrency"
             value={o.defaultCurrency?.toUpperCase() ?? t("negotiations.settings.storeCurrency")}

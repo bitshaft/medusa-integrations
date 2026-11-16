@@ -45,9 +45,9 @@ export function dateTime(value: string | Date | null | undefined, language: stri
   }).format(new Date(value))
 }
 
-/** A localized text in the admin's language, falling back to the other one. */
-export const pick = (value: Partial<Record<"pl" | "en", string>> | null | undefined, language: string) =>
-  value?.[adminLocale(language)] || value?.pl || value?.en || ""
+/** A localized text in the admin's language, else Polish or English, else any language that has it. */
+export const pick = (value: Partial<Record<string, string>> | null | undefined, language: string) =>
+  value?.[adminLocale(language)] || value?.pl || value?.en || Object.values(value ?? {}).find(Boolean) || ""
 
 /** "polski", "niemiecki" (or "Polish", "German") for a language code, in the admin's language. */
 export function languageLabel(code: string, adminLanguage: string): string {

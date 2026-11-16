@@ -2,6 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
 import { requireEnabled } from "../../../../lib/compliance/api/utils"
+import { requiredWarningLanguages } from "../../../../lib/compliance/gpsr"
 import { LAWYER_PLACEHOLDER, settingsSchema } from "../../../../lib/compliance/settings"
 import { graph, resolveCompliance } from "../../../../lib/compliance/server/runtime"
 import { storeLanguages } from "../../../../lib/compliance/server/languages"
@@ -47,6 +48,13 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   if (!parsed.success) {
     const message = parsed.error.issues.map((i) => `${i.path.map(String).join(".")}: ${i.message}`).join("; ")
     throw new MedusaError(MedusaError.Types.INVALID_DATA, `Invalid settings: ${message}`)
+  }
+  // Warnings can be required only in the store's languages; others are dropped.
+  try {
+    const languages = await storeLanguages(req.scope, (await service.getOptions()).defaultLocale, { strict: true })
+    parsed.data.gpsr.warning_languages = requiredWarningLanguages(parsed.data.gpsr.warning_languages, languages)
+  } catch {
+    // The store's languages couldn't be read: keep the list as sent rather than guess.
   }
   const before = await service.getSettings()
   await service.saveSettings(parsed.data)

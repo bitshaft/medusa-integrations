@@ -40,6 +40,8 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
   testSuite: ({ service }) => {
     let container: MedusaContainer
     let events: Array<{ name: string; data: Row }>
+    /** Whether the catalog price includes tax, as Medusa's pricing would report it. */
+    let catalogGross: boolean
 
     const customers: Record<string, Row> = {
       cus_a: {
@@ -64,6 +66,7 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
 
     beforeEach(() => {
       events = []
+      catalogGross = false
       container = createMedusaContainer()
       container.register(NEGOTIATIONS_MODULE, asValue(service))
       container.register(
@@ -87,7 +90,7 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
                     title: "850 W",
                     sku: "WU-850",
                     product: { id: "prod_drill", title: "Drill", status: "published" },
-                    calculated_price: { calculated_amount: 429, is_calculated_price_tax_inclusive: false },
+                    calculated_price: { calculated_amount: 429, is_calculated_price_tax_inclusive: catalogGross },
                   },
                 ],
               }
@@ -131,6 +134,21 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
       expect(thread.catalog_total).toBe(40 * 42_900)
       expect(thread.target_total).toBe(40 * 36_000)
       expect(events.map((e) => e.name)).toContain("negotiation.created")
+    })
+
+    it("a thread is net or gross as the catalog price the customer saw, and keeps it", async () => {
+      const net = (await open("cus_a")).thread
+      expect(net.tax_inclusive).toBe(false)
+      catalogGross = true
+      const gross = (await open("cus_b")).thread
+      expect(gross.tax_inclusive).toBe(true)
+      // The catalog changing later does not change what was agreed on.
+      catalogGross = false
+      const countered = await teamCounter(ctx(), "user_1", gross.id, {
+        version: gross.version,
+        price: { mode: "unit", unit_price: 40_000 },
+      })
+      expect(countered.thread.tax_inclusive).toBe(true)
     })
 
     it("stores amounts above 32 bits", async () => {

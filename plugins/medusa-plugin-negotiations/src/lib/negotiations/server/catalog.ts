@@ -71,11 +71,59 @@ export async function storeCurrency(container: MedusaContainer): Promise<string 
   return (currencies.find((c) => c.is_default) ?? currencies[0])?.currency_code ?? null
 }
 
+/**
+ * Net or gross, as the catalog sets it with Medusa's "Tax inclusive pricing":
+ * per currency (Settings -> Store -> Currencies), and per region (Settings ->
+ * Regions). Medusa applies a region's setting only to prices set for that
+ * region; every other price follows its currency. For the admin's labels:
+ * threads take the basis Medusa calculated for their price, not this.
+ */
+export type PriceBases = {
+  /** By lower-case currency code: the store's currencies, plus any with a setting. */
+  currencies: Record<string, boolean>
+  /** Regions whose own setting differs from their currency's: it holds for prices set only for that region. */
+  regions: Array<{ id: string; name: string; currency_code: string; tax_inclusive: boolean }>
+}
+
+export async function priceBases(container: MedusaContainer): Promise<PriceBases> {
+  const query = graph(container)
+  const [preferences, regions, store] = await Promise.all([
+    query({ entity: "price_preference", fields: ["attribute", "value", "is_tax_inclusive"] }),
+    query({ entity: "region", fields: ["id", "name", "currency_code"] }),
+    query({ entity: "store", fields: ["id", "supported_currencies.currency_code"] }),
+  ])
+  const byCurrency = new Map<string, boolean>()
+  const byRegion = new Map<string, boolean>()
+  for (const p of preferences.data as Row[]) {
+    if (!p?.value) continue
+    if (p.attribute === "currency_code") byCurrency.set(String(p.value).toLowerCase(), Boolean(p.is_tax_inclusive))
+    if (p.attribute === "region_id") byRegion.set(String(p.value), Boolean(p.is_tax_inclusive))
+  }
+  const currencies: Record<string, boolean> = {}
+  for (const c of ((store.data as Row[])[0]?.supported_currencies ?? []).filter(Boolean)) {
+    const code = String(c.currency_code).toLowerCase()
+    currencies[code] = byCurrency.get(code) ?? false
+  }
+  for (const [code, value] of byCurrency) currencies[code] = value
+  return {
+    currencies,
+    regions: (regions.data as Row[])
+      .filter((r) => r && byRegion.has(r.id))
+      .map((r) => ({
+        id: r.id as string,
+        name: (r.name ?? r.id) as string,
+        currency_code: String(r.currency_code ?? "").toLowerCase(),
+        tax_inclusive: byRegion.get(r.id) as boolean,
+      }))
+      .filter((r) => r.tax_inclusive !== (currencies[r.currency_code] ?? false)),
+  }
+}
+
 export type ProductQuote = {
   line: ThreadLine
   currency_code: string
   region_id: string | null
-  /** Whether the catalog price includes tax, as Medusa reported it. */
+  /** Whether the catalog price includes tax, as Medusa calculated it; the thread takes it. */
   price_tax_inclusive: boolean
 }
 
@@ -199,6 +247,7 @@ export async function loadCart(container: MedusaContainer, cartId: string): Prom
       "items.thumbnail",
       "items.quantity",
       "items.unit_price",
+      "items.is_tax_inclusive",
       "items.is_custom_price",
       "items.metadata",
     ],
@@ -253,4 +302,17 @@ export function cartLines(cart: CartRow): ThreadLine[] {
   }
   if (!lines.size) throw new NegotiationError("cart_empty")
   return [...lines.values()]
+}
+
+/**
+ * Whether the cart's prices include tax, as Medusa priced its lines. A cart
+ * has one region, so its lines agree; lines that don't are refused rather
+ * than mixed in one amount.
+ */
+export function cartTaxInclusive(cart: CartRow): boolean {
+  const bases = new Set(cart.items.filter((item) => item.variant_id).map((item) => Boolean(item.is_tax_inclusive)))
+  if (bases.size > 1) {
+    throw new NegotiationError("invalid_input", { details: "the cart mixes prices with and without tax" })
+  }
+  return bases.has(true)
 }

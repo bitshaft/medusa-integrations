@@ -1,5 +1,5 @@
 import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
-import { Badge, Input, Label, StatusBadge, Switch, Text, Textarea } from "@medusajs/ui"
+import { Badge, Input, Label, Select, StatusBadge, Switch, Text, Textarea } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -36,6 +36,57 @@ export const LegalNote = ({ children }: { children?: ReactNode }) => {
       <Text size="xsmall" className="text-ui-fg-subtle">
         {children ?? t("compliance.legal.short")}
       </Text>
+    </div>
+  )
+}
+
+/**
+ * Which language a field is being written in, like the e-mail editor's: the
+ * store's languages, the default one first and marked "original". `note`
+ * adds a word after a language, e.g. "empty". With one language there is
+ * nothing to pick, so it only names it.
+ */
+export const LanguageSelect = ({
+  languages,
+  value,
+  onChange,
+  note,
+}: {
+  languages: string[]
+  value: string
+  onChange: (language: string) => void
+  note?: (language: string) => string | null
+}) => {
+  const { t, i18n } = useTranslation()
+  const label = (code: string) =>
+    code === languages[0]
+      ? t("compliance.languages.original", { language: languageLabel(code, i18n.language) })
+      : languageLabel(code, i18n.language)
+  if (languages.length < 2) {
+    return (
+      <Text size="small" className="shrink-0 text-ui-fg-subtle">
+        {label(languages[0] ?? value)}
+      </Text>
+    )
+  }
+  return (
+    <div className="w-60 shrink-0">
+      <Select size="small" value={value} onValueChange={onChange}>
+        <Select.Trigger aria-label={t("compliance.languages.language")}>
+          <Select.Value />
+        </Select.Trigger>
+        <Select.Content>
+          {languages.map((code) => {
+            const extra = note?.(code)
+            return (
+              <Select.Item key={code} value={code}>
+                {label(code)}
+                {extra && <span className="text-ui-fg-subtle"> · {extra}</span>}
+              </Select.Item>
+            )
+          })}
+        </Select.Content>
+      </Select>
     </div>
   )
 }

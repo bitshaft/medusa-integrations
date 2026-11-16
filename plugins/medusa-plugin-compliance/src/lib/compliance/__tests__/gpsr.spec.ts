@@ -1,6 +1,15 @@
-import { effectiveSafety, gpsrGaps, type ManufacturerProfile, type ProductSafetyData } from "../gpsr"
+import { requestLanguage } from "../api/utils"
+import { AdminConsentType } from "../api/validators"
+import {
+  effectiveSafety,
+  gpsrGaps,
+  type ManufacturerProfile,
+  type ProductSafetyData,
+  requiredWarningLanguages,
+} from "../gpsr"
 import { markdownToText, renderMarkdown } from "../markdown"
 import { storefrontSafety } from "../server/gpsr"
+import { onlyLanguages } from "../server/languages"
 import { DEFAULT_SETTINGS, settingsSchema } from "../settings"
 import { languageOf } from "../types"
 
@@ -129,6 +138,38 @@ describe("gpsrGaps", () => {
 })
 
 describe("warnings in the store's languages", () => {
+  it("keeps text only in the store's languages, trimmed, without empty ones", () => {
+    expect(onlyLanguages({ pl: " Uwaga ", de: "Achtung", en: " " }, ["pl", "en", "fr"])).toEqual({ pl: "Uwaga" })
+    expect(onlyLanguages(undefined, ["pl"])).toEqual({})
+  })
+
+  it("reads ?locale= after Medusa moved it to req.locale, then the headers", () => {
+    const request = (locale: string | undefined, headers: Record<string, string> = {}) =>
+      ({ locale, query: {}, get: (name: string) => headers[name.toLowerCase()] }) as never
+    expect(requestLanguage(request("fr-FR"))).toBe("fr")
+    expect(requestLanguage(request(undefined, { "x-medusa-locale": "en-US" }))).toBe("en")
+    expect(requestLanguage(request(undefined, { "accept-language": "de-DE,de;q=0.9" }))).toBe("de")
+    expect(requestLanguage(request(undefined))).toBeNull()
+  })
+
+  it("requires only languages the store offers, and the default one when none is left", () => {
+    expect(requiredWarningLanguages(["pl", "fr", "de"], ["pl", "en", "fr"])).toEqual(["pl", "fr"])
+    expect(requiredWarningLanguages(["de"], ["pl", "en"])).toEqual(["pl"])
+  })
+
+  it("accepts consent names and texts in any store language", () => {
+    const parsed = AdminConsentType.parse({
+      key: "terms",
+      name: { fr: "Conditions" },
+      placement: "checkout",
+      text: { pl: "Regulamin", fr: "Conditions générales" },
+    })
+    expect(parsed.text).toEqual({ pl: "Regulamin", fr: "Conditions générales" })
+    expect(() =>
+      AdminConsentType.parse({ key: "terms", name: {}, placement: "checkout", text: { "pl-PL": "x" } })
+    ).toThrow()
+  })
+
   it("requires any store language, not only Polish and English", () => {
     const strict = settingsSchema.parse({
       gpsr: { require: { warnings: true }, warning_languages: ["pl", "DE", "cs"] },

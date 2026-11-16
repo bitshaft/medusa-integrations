@@ -195,6 +195,7 @@ const Row = ({
           amount={unit ?? thread.current_price}
           bp={thread.discount_bp}
           currency={thread.currency_code}
+          taxInclusive={thread.tax_inclusive}
         />
       </Table.Cell>
       {!compact && (

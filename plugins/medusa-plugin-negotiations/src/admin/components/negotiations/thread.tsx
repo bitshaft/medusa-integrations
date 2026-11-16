@@ -16,7 +16,7 @@ import {
 import { customerName, dateTime, money, percent, relative } from "../../lib/negotiations/format"
 import { CounterForm } from "./counter-form"
 import { DraftOrderPanel } from "./draft-order"
-import { DemoBadge, floorWarning, Note, StatusLabel, TurnDot, useErrorText } from "./shared"
+import { BasisBadge, DemoBadge, floorWarning, Note, StatusLabel, TurnDot, useBasisMoney, useErrorText } from "./shared"
 
 const ACTIVE = ["open", "countered"]
 
@@ -72,6 +72,7 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
               {thread.number}
             </Heading>
             {thread.is_demo && <DemoBadge />}
+            <BasisBadge taxInclusive={thread.tax_inclusive} />
           </div>
           <Text size="small" className="text-ui-fg-subtle">
             {thread.kind === "cart" ? t("negotiations.list.wholeCart") : t("negotiations.thread.productThread")}
@@ -101,6 +102,11 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
           </>
         )}
         <Row label={t("negotiations.thread.quantity")}>{thread.quantity_total}</Row>
+        <Row label={t("negotiations.thread.taxBasis")}>
+          <Text size="small" weight="plus">
+            {thread.tax_inclusive ? t("negotiations.basis.rowGross") : t("negotiations.basis.rowNet")}
+          </Text>
+        </Row>
         {thread.kind === "product" && line && (
           <Row label={t("negotiations.thread.catalogUnit")}>{money(line.catalog_unit_price, c, lang)}</Row>
         )}
@@ -137,9 +143,6 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
         <Row label={t("negotiations.thread.started")}>{dateTime(thread.created_at, lang)}</Row>
         <Row label={t("negotiations.thread.expires")}>
           {thread.expires_at ? `${dateTime(thread.expires_at, lang)} (${relative(thread.expires_at, lang)})` : "—"}
-        </Row>
-        <Row label={t("negotiations.thread.taxBasis")}>
-          {thread.tax_inclusive ? t("negotiations.thread.gross") : t("negotiations.thread.net")}
         </Row>
         <Row label={t("negotiations.thread.assignee")}>
           <Select
@@ -309,15 +312,16 @@ const PriceBlock = ({ offer, thread }: { offer: Offer; thread: Thread }) => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
   const c = thread.currency_code
+  const basisMoney = useBasisMoney()
   return (
     <div className="mt-1">
       <Text size="base" weight="plus">
         {offer.mode === "unit"
           ? t("negotiations.price.perUnit", {
               price: money(offer.lines[0]?.unit_price, c, lang),
-              total: money(offer.total, c, lang),
+              total: basisMoney(offer.total, c, thread.tax_inclusive),
             })
-          : money(offer.total, c, lang)}
+          : basisMoney(offer.total, c, thread.tax_inclusive)}
       </Text>
       {offer.mode === "total" && offer.requested_total != null && offer.requested_total !== offer.total && (
         <Text size="xsmall">
@@ -351,6 +355,7 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
   const [mode, setMode] = useState<Mode>("reply")
   const [text, setText] = useState("")
   const errorText = useErrorText()
+  const basisMoney = useBasisMoney()
   const reply = useThreadAction<{ type: "message" | "internal_note"; message: string; version?: number }>(
     thread.id,
     "messages"
@@ -408,12 +413,16 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
         <div className="flex flex-wrap gap-2">
           <Button size="small" onClick={() => startAccept("target")} isLoading={accept.isPending}>
             <Check />
-            {t("negotiations.move.acceptTarget", { price: money(thread.target_total, thread.currency_code, lang) })}
+            {t("negotiations.move.acceptTarget", {
+              price: basisMoney(thread.target_total, thread.currency_code, thread.tax_inclusive),
+            })}
           </Button>
           {thread.status === "countered" && thread.offer_total !== null && (
             <Button size="small" variant="secondary" onClick={() => startAccept("offer")} isLoading={accept.isPending}>
               <Check />
-              {t("negotiations.move.acceptOffer", { price: money(thread.offer_total, thread.currency_code, lang) })}
+              {t("negotiations.move.acceptOffer", {
+                price: basisMoney(thread.offer_total, thread.currency_code, thread.tax_inclusive),
+              })}
             </Button>
           )}
         </div>

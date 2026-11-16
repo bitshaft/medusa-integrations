@@ -93,21 +93,48 @@ export const TurnDot = ({ thread }: { thread: Pick<Thread, "turn" | "status"> })
   )
 }
 
-/** A price with how far it is below the catalog price. */
+/**
+ * An amount with "net" or "gross" ("108,00 zł gross"), so nobody has to guess
+ * which one the customer means. A thread is net or gross as the catalog
+ * price it started from.
+ */
+export function useBasisMoney() {
+  const { t, i18n } = useTranslation()
+  return (amount: number | null | undefined, currency: string, taxInclusive: boolean) =>
+    t("negotiations.basis.amount", {
+      amount: money(amount, currency, i18n.language),
+      basis: t(taxInclusive ? "negotiations.basis.gross" : "negotiations.basis.net"),
+    })
+}
+
+/** "Net prices" / "Gross prices" next to a thread's number. */
+export const BasisBadge = ({ taxInclusive }: { taxInclusive: boolean }) => {
+  const { t } = useTranslation()
+  return (
+    <Badge size="2xsmall" color="grey">
+      {t(taxInclusive ? "negotiations.basis.badgeGross" : "negotiations.basis.badgeNet")}
+    </Badge>
+  )
+}
+
+/** A price, net or gross, with how far it is below the catalog price. */
 export const PriceWithDiscount = ({
   amount,
   bp,
   currency,
+  taxInclusive,
 }: {
   amount: number
   bp: number | null
   currency: string
+  taxInclusive: boolean
 }) => {
   const { i18n, t } = useTranslation()
+  const basisMoney = useBasisMoney()
   return (
     <div className="flex flex-col">
       <Text size="small" weight="plus">
-        {money(amount, currency, i18n.language)}
+        {basisMoney(amount, currency, taxInclusive)}
       </Text>
       {bp !== null && bp !== 0 && (
         <Text size="xsmall" className={bp > 0 ? "text-ui-fg-subtle" : "text-ui-tag-orange-text"}>

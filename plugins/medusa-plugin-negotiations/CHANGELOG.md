@@ -10,6 +10,12 @@ First release.
 
 - Price negotiation threads for a product, a variant or a whole cart, with
   lines and catalog prices frozen when sent, numbered `NEG-YYYY-0001`.
+- Net or gross as the catalog: each thread takes it from the catalog price
+  as Medusa calculated it ("Tax inclusive pricing" per currency, or per
+  region for region prices) and keeps it, and the cart and draft order lines
+  are written with it. No `taxInclusive` option (an old one is ignored).
+  The admin shows the basis on threads, prices, counter-offers, settings and
+  minimum prices.
 - An explicit state machine (open, countered, accepted, rejected, expired,
   withdrawn); every move is one conditional update on status and version,
   so nothing is closed twice; acceptance carries the price that was seen.

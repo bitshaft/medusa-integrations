@@ -13,7 +13,8 @@ import {
 } from "../consents"
 import { ComplianceError } from "../messages"
 import { normalizeEmail } from "../requests"
-import { type ActorType, type ConsentPlacement, type ConsentSource, type CookieCategory, LOCALES } from "../types"
+import { type ActorType, type ConsentPlacement, type ConsentSource, type CookieCategory } from "../types"
+import { onlyLanguages, storeLanguages } from "./languages"
 import { ComplianceEvents, emit, resolveCompliance } from "./runtime"
 
 type Row = Record<string, any>
@@ -82,7 +83,7 @@ export async function consentCatalog(container: MedusaContainer, placement?: Con
 
 export type ConsentTypeInput = {
   key: string
-  name: Partial<Record<(typeof LOCALES)[number], string>>
+  name: ConsentText
   placement: ConsentPlacement
   required: boolean
   active: boolean
@@ -92,13 +93,15 @@ export type ConsentTypeInput = {
 
 /**
  * Creates or updates a consent type. A changed text becomes a new version;
- * earlier versions and the entries given to them stay as they were.
+ * earlier versions and the entries given to them stay as they were. The
+ * name and text are kept in the store's languages only.
  */
 export async function saveConsentType(container: MedusaContainer, input: ConsentTypeInput, actor: Actor) {
   const service = resolveCompliance(container)
+  const languages = await storeLanguages(container, (await service.getOptions()).defaultLocale, { strict: true })
   const [existing] = await service.listComplianceConsentTypes({ key: input.key })
   const config = {
-    name: input.name,
+    name: onlyLanguages(input.name, languages),
     placement: input.placement,
     required: input.required,
     active: input.active,
@@ -110,7 +113,7 @@ export async function saveConsentType(container: MedusaContainer, input: Consent
   const versions = (await service.listComplianceConsentVersions({ type_key: input.key })).map((v) =>
     toVersion(v as Row)
   )
-  const text = withPlaceholders(input.text, LOCALES)
+  const text = withPlaceholders(input.text, languages)
   const plan = planVersion(versions, input.key, text)
   if (plan.create) {
     await service.createComplianceConsentVersions({

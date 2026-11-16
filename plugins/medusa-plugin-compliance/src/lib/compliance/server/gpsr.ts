@@ -7,9 +7,11 @@ import {
   type ManufacturerProfile,
   oneLine,
   type ProductSafetyData,
+  requiredWarningLanguages,
 } from "../gpsr"
 import { markdownToText, renderMarkdown } from "../markdown"
 import type { GpsrGap, Locale, Party, Warnings } from "../types"
+import { onlyLanguages, storeLanguages } from "./languages"
 import { graph, graphAll, moduleOn, resolveCompliance } from "./runtime"
 
 type Row = Record<string, any>
@@ -57,6 +59,17 @@ export function toSafetyData(row: Row | null | undefined): ProductSafetyData | n
   }
 }
 
+/** The GPSR settings with the required warning languages limited to the ones the store offers. */
+async function gpsrRules(container: MedusaContainer) {
+  const service = resolveCompliance(container)
+  const settings = await service.getSettings()
+  const languages = await storeLanguages(container, (await service.getOptions()).defaultLocale)
+  return {
+    ...settings.gpsr,
+    warning_languages: requiredWarningLanguages(settings.gpsr.warning_languages, languages),
+  }
+}
+
 /**
  * Checks products and stores the gaps. Products without GPSR data get a row
  * too, so the admin can list them. Publishing is never blocked.
@@ -67,7 +80,7 @@ export async function recomputeGpsr(
 ): Promise<{ checked: number; incomplete: number }> {
   if (!(await moduleOn(container, "gpsr"))) return { checked: 0, incomplete: 0 }
   const service = resolveCompliance(container)
-  const settings = await service.getSettings()
+  const rules = await gpsrRules(container)
   const products = productIds
     ? (await graph(container)({ entity: "product", fields: ["id", "title", "status"], filters: { id: productIds } }))
         .data
@@ -91,7 +104,7 @@ export async function recomputeGpsr(
   for (const product of products) {
     const row = byProduct.get(product.id) as Row | undefined
     const data = toSafetyData(row)
-    const gaps = gpsrGaps(effectiveSafety(data, profiles.get(data?.manufacturer_id ?? "") ?? null), settings.gpsr)
+    const gaps = gpsrGaps(effectiveSafety(data, profiles.get(data?.manufacturer_id ?? "") ?? null), rules)
     if (gaps.length) incomplete++
     const result = {
       gaps,
@@ -127,23 +140,27 @@ export async function productSafety(container: MedusaContainer, productId: strin
     : null
   const profile = profileRow ? toProfile(profileRow as Row) : null
   const effective = effectiveSafety(data, profile)
-  const settings = await service.getSettings()
   return {
     data,
     profile,
     effective,
-    gaps: gpsrGaps(effective, settings.gpsr) as GpsrGap[],
+    gaps: gpsrGaps(effective, await gpsrRules(container)) as GpsrGap[],
     checked_at: (row as Row | undefined)?.checked_at ?? null,
   }
 }
 
-/** Saves the product's GPSR data and checks it at once. */
+/**
+ * Saves the product's GPSR data and checks it at once. Warnings are kept
+ * only in the store's languages: text in a language the store no longer
+ * offers is dropped.
+ */
 export async function saveProductSafety(
   container: MedusaContainer,
   productId: string,
   input: Partial<ProductSafetyData>
 ): Promise<void> {
   const service = resolveCompliance(container)
+  const languages = await storeLanguages(container, (await service.getOptions()).defaultLocale, { strict: true })
   const [row] = await service.listComplianceProductSafeties({ product_id: productId })
   const value = {
     manufacturer_id: input.manufacturer_id ?? null,
@@ -152,7 +169,7 @@ export async function saveProductSafety(
     responsible: input.responsible ?? {},
     identification: input.identification ?? null,
     label_image_url: input.label_image_url ?? null,
-    warnings: input.warnings ?? {},
+    warnings: onlyLanguages(input.warnings, languages),
   }
   // JSON columns merge on update, so a cleared field would survive; replace the row instead.
   if (row) await service.deleteComplianceProductSafeties(row.id)

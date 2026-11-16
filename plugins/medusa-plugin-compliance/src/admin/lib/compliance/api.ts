@@ -5,7 +5,8 @@ import { backendUrl, sdk } from "./kit/sdk"
 /* Types (mirroring the admin API) ----------------------------------------- */
 
 export type Locale = "pl" | "en"
-export type Localized = Partial<Record<Locale, string>>
+/** Text per store language (ISO 639: `pl`, `en`, `fr`). */
+export type Localized = Partial<Record<string, string>>
 export type Party = {
   name: string | null
   trade_name: string | null

@@ -14,7 +14,7 @@ import {
 import { errorMessage, languageLabel } from "../../lib/compliance/format"
 import { sdk } from "../../lib/compliance/kit/sdk"
 import { MarkdownEditor } from "./markdown-editor"
-import { Gaps, Section, TextAreaField, TextField, Toggle } from "./shared"
+import { Gaps, LanguageSelect, Section, TextAreaField, TextField, Toggle } from "./shared"
 
 const EMPTY: ProductSafetyData = {
   manufacturer_id: null,
@@ -91,15 +91,18 @@ export const ProductSafetyForm = ({
   const [form, setForm] = useState<ProductSafetyData>(current.data ?? EMPTY)
   const [uploading, setUploading] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
-  // Every store language, plus required ones and any language that already has text.
-  const required = settings.data?.settings.gpsr.require.warnings ? settings.data.settings.gpsr.warning_languages : []
-  const languages = [
-    ...new Set([
-      ...(settings.data?.store_languages ?? ["pl"]),
-      ...required,
-      ...Object.keys(form.warnings).filter((lang) => form.warnings[lang]?.trim()),
-    ]),
-  ]
+  // The store's languages, the default (the original the store falls back to) first.
+  // Text in other languages is dropped on save, as on the server.
+  const languages = settings.data?.store_languages ?? []
+  const original = languages[0] ?? null
+  const requiredInStore = settings.data?.settings.gpsr.require.warnings
+    ? settings.data.settings.gpsr.warning_languages.filter((lang) => languages.includes(lang))
+    : null
+  const required = requiredInStore === null ? [] : requiredInStore.length ? requiredInStore : languages.slice(0, 1)
+  const [picked, setPicked] = useState<string | null>(null)
+  const language = picked && languages.includes(picked) ? picked : original
+  const filled = (lang: string) => Boolean(form.warnings[lang]?.trim())
+  const dropped = Object.keys(form.warnings).some((lang) => !languages.includes(lang) && filled(lang))
 
   useEffect(() => setForm(current.data ?? EMPTY), [current.data])
 
@@ -120,13 +123,19 @@ export const ProductSafetyForm = ({
   }
 
   const submit = () =>
-    save.mutate(form, {
-      onSuccess: (result) =>
-        result.gaps.length
-          ? toast.warning(t("compliance.gpsr.savedWithGaps", { count: result.gaps.length }))
-          : toast.success(t("compliance.gpsr.saved")),
-      onError: (error) => toast.error(errorMessage(error)),
-    })
+    save.mutate(
+      {
+        ...form,
+        warnings: Object.fromEntries(languages.filter(filled).map((lang) => [lang, form.warnings[lang] ?? ""])),
+      },
+      {
+        onSuccess: (result) =>
+          result.gaps.length
+            ? toast.warning(t("compliance.gpsr.savedWithGaps", { count: result.gaps.length }))
+            : toast.success(t("compliance.gpsr.saved")),
+        onError: (error) => toast.error(errorMessage(error)),
+      }
+    )
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -286,26 +295,54 @@ export const ProductSafetyForm = ({
         </div>
       </Section>
 
-      <Section title={t("compliance.gpsr.warnings")} hint={t("compliance.gpsr.warningsHint")}>
-        {languages.map((lang) => (
+      <Section
+        title={t("compliance.gpsr.warnings")}
+        hint={t("compliance.gpsr.warningsHint", { language: languageLabel(original ?? "pl", i18n.language) })}
+        actions={
+          language && (
+            <LanguageSelect
+              languages={languages}
+              value={language}
+              onChange={setPicked}
+              note={(lang) =>
+                filled(lang)
+                  ? null
+                  : required.includes(lang)
+                    ? t("compliance.languages.requiredEmpty")
+                    : t("compliance.languages.empty")
+              }
+            />
+          )
+        }
+      >
+        {language && (
           <MarkdownEditor
-            key={lang}
-            label={languageLabel(lang, i18n.language)}
+            // Each language starts in edit mode.
+            key={language}
+            label={languageLabel(language, i18n.language)}
             badge={
-              required.includes(lang) ? (
-                <Badge size="2xsmall" color={form.warnings[lang]?.trim() ? "green" : "orange"}>
+              required.includes(language) ? (
+                <Badge size="2xsmall" color={filled(language) ? "green" : "orange"}>
                   {t("compliance.gpsr.requiredLanguage")}
                 </Badge>
               ) : undefined
             }
-            value={form.warnings[lang] ?? ""}
-            onChange={(text) => setForm({ ...form, warnings: { ...form.warnings, [lang]: text } })}
+            value={form.warnings[language] ?? ""}
+            // An empty translation shows what the store falls back to.
+            placeholder={language !== original && original ? form.warnings[original] || undefined : undefined}
+            onChange={(text) => setForm({ ...form, warnings: { ...form.warnings, [language]: text } })}
           />
-        ))}
+        )}
+        {dropped && (
+          <Text size="xsmall" className="text-ui-fg-subtle">
+            {t("compliance.languages.dropped")}
+          </Text>
+        )}
       </Section>
 
       <div className="flex justify-end">
-        <Button size="small" onClick={submit} isLoading={save.isPending} disabled={demo}>
+        {/* Saving keeps warnings only in the store's languages, so it waits for them. */}
+        <Button size="small" onClick={submit} isLoading={save.isPending} disabled={demo || !languages.length}>
           {t("compliance.save")}
         </Button>
       </div>

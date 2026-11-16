@@ -111,7 +111,12 @@ const CompliancePage = () => {
       {s?.enabled &&
         tab === "gdpr" &&
         (s.settings.modules.gdpr ? (
-          <Gdpr demo={demo} warnDays={s.settings.gdpr.warn_days} placeholder={s.lawyer_placeholder} />
+          <Gdpr
+            demo={demo}
+            warnDays={s.settings.gdpr.warn_days}
+            placeholder={s.lawyer_placeholder}
+            languages={s.store_languages}
+          />
         ) : (
           <ModuleOff onOpen={() => setTab("settings")} />
         ))}

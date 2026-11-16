@@ -96,7 +96,10 @@ sprawdzić z prawnikiem.
   producenta spoza UE), typ, model, numer partii lub seryjny (jeśli
   dotyczy), zdjęcie oznakowania i ostrzeżenia w Markdown osobno dla każdego
   języka sklepu (Ustawienia → Sklep, z modułem Translation Medusy; bez
-  niego język `defaultLocale`). W ustawieniach wybierasz, które języki są
+  niego język `defaultLocale`). Jedno pole z wyborem języka, jak w edytorze
+  e-maili: język domyślny to oryginał, a język bez własnej treści pokazuje
+  go w sklepie. Treść w języku, którego sklep już nie oferuje, jest usuwana
+  przy zapisie. W ustawieniach wybierasz, które z języków sklepu są
   wymagane. W **Ustawienia → Tłumaczenia** jest karta z odnośnikiem do tych
   tekstów i do treści zgód.
 - Profile producentów zapisuje się raz i przypina do wielu produktów;
@@ -107,9 +110,12 @@ sprawdzić z prawnikiem.
 
 ### RODO
 
-- **Rodzaje zgód**: identyfikator, nazwa, treść (pl i en), wersja, „wymagana”
-  i miejsce (rejestracja, koszyk, konto, newsletter, cookies). Zmiana
-  treści tworzy nową wersję; stare zostają.
+- **Rodzaje zgód**: identyfikator, nazwa i treść w każdym języku sklepu
+  (jedno pole z wyborem języka; pusta treść dostaje znacznik dla prawnika,
+  treść w innych językach jest usuwana przy zapisie), wersja, „wymagana” i
+  miejsce (rejestracja, koszyk, konto, newsletter, cookies). Zmiana treści
+  w dowolnym języku tworzy nową wersję; stare zostają. Dodanie języka do
+  sklepu sprawia więc, że następny zapis to nowa wersja.
 - **Wpisy zgód** dla klienta, adresu e-mail albo anonimowego identyfikatora
   przeglądarki: rodzaj, wersja treści, udzielona lub wycofana, data,
   źródło. Tylko do dopisywania (trigger w bazie blokuje zmiany); wycofanie

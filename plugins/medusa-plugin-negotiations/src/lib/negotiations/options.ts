@@ -26,8 +26,9 @@ export const pluginOptionsSchema = z.object({
   expiryDays: int(0, 3650).default(14),
   /** Days the customer has to use an accepted price. Default: expiryDays, or 14 when expiryDays is 0. */
   acceptedOfferDays: int(1, 3650).optional(),
-  /** Whether agreed prices include tax. Default: net prices. */
-  taxInclusive: z.boolean().default(false),
+  // Net or gross is not an option: each thread takes it from the catalog
+  // price it starts from (Medusa's tax-inclusive pricing per region or
+  // currency), so agreed prices mean what the customer saw.
   /** Currency of product threads when the customer sends none. Default: the store's default currency. */
   defaultCurrency: z
     .string()

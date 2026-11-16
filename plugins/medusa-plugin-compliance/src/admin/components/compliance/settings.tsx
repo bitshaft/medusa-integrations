@@ -29,11 +29,22 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
   const exception = (index: number, patch: Partial<OmnibusException>) =>
     omnibus({ exceptions: s.omnibus.exceptions.map((e, i) => (i === index ? { ...e, ...patch } : e)) })
 
+  // Warnings can be required only in the store's languages; others are dropped on save.
+  const requiredInStore = s.gpsr.warning_languages.filter((lang) => data.store_languages.includes(lang))
   const submit = () =>
-    save.mutate(s, {
-      onSuccess: () => toast.success(t("compliance.settings.saved")),
-      onError: (error) => toast.error(errorMessage(error)),
-    })
+    save.mutate(
+      {
+        ...s,
+        gpsr: {
+          ...s.gpsr,
+          warning_languages: requiredInStore.length ? requiredInStore : data.store_languages.slice(0, 1),
+        },
+      },
+      {
+        onSuccess: () => toast.success(t("compliance.settings.saved")),
+        onError: (error) => toast.error(errorMessage(error)),
+      }
+    )
 
   return (
     <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
@@ -109,19 +120,20 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
               {t("compliance.settings.warningLanguagesHint")}
             </Text>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {[...new Set([...data.store_languages, ...s.gpsr.warning_languages])].map((lang) => (
+              {data.store_languages.map((lang) => (
                 <Toggle
                   key={lang}
                   label={languageLabel(lang, i18n.language)}
-                  checked={s.gpsr.warning_languages.includes(lang)}
+                  checked={requiredInStore.includes(lang)}
                   onChange={(on) =>
                     set("gpsr", {
                       ...s.gpsr,
+                      // At least one language stays required.
                       warning_languages: on
-                        ? [...new Set([...s.gpsr.warning_languages, lang])]
-                        : s.gpsr.warning_languages.filter((l) => l !== lang).length
-                          ? s.gpsr.warning_languages.filter((l) => l !== lang)
-                          : s.gpsr.warning_languages,
+                        ? [...new Set([...requiredInStore, lang])]
+                        : requiredInStore.filter((l) => l !== lang).length
+                          ? requiredInStore.filter((l) => l !== lang)
+                          : requiredInStore,
                     })
                   }
                 />

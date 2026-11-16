@@ -81,6 +81,15 @@
       "edit": "Edit",
       "hint": "**bold**, *italic*, ## heading, - list. The store gets safe HTML."
     },
+    "languages": {
+      "language": "Language",
+      "original": "{{language}} (original)",
+      "empty": "empty",
+      "requiredEmpty": "required, empty",
+      "toFill": "to fill in",
+      "noName": "no name",
+      "dropped": "Text in a language the store no longer offers is removed when you save."
+    },
     "gpsr": {
       "complete": "Complete",
       "status": "GPSR data",
@@ -128,7 +137,7 @@
       "identification": "Product identification",
       "identificationHint": "Type, model and, where it applies, the batch or serial number.",
       "warnings": "Warnings and safety information",
-      "warningsHint": "Written separately for each language.",
+      "warningsHint": "One text per store language: pick the language on the right. A language without its own text shows the original ({{language}}) in the store.",
       "saved": "GPSR data saved and complete",
       "savedWithGaps_one": "Saved. {{count}} field is still missing.",
       "savedWithGaps_other": "Saved. {{count}} fields are still missing.",
@@ -314,7 +323,9 @@
         "admin": "Admin",
         "link": "Linked after sign-in",
         "import": "Import"
-      }
+      },
+      "texts": "Name and text",
+      "textsHint": "Written for each store language: pick the language on the right."
     },
     "omnibus": {
       "title": "Discounts and the lowest prior price",

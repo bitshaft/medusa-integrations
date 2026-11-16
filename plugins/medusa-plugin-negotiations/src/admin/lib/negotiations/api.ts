@@ -142,7 +142,6 @@ export type SettingsResponse = {
   options: {
     expiryDays: number
     acceptedOfferDays: number
-    taxInclusive: boolean
     defaultCurrency?: string
     customerAccept: boolean
     allowedCustomerGroups: string[]
@@ -157,6 +156,13 @@ export type SettingsResponse = {
     demo: boolean
   }
   settings: Settings
+  /** Net or gross as the catalog sets it (Tax inclusive pricing); `null` when it couldn't be read. */
+  price_bases: PriceBases | null
+}
+
+export type PriceBases = {
+  currencies: Record<string, boolean>
+  regions: Array<{ id: string; name: string; currency_code: string; tax_inclusive: boolean }>
 }
 
 export type PriceInput =
@@ -184,6 +190,8 @@ export type DraftPlan = {
     total: number
   }>
   total: number
+  /** Whether the draft order's prices include tax: the thread's. */
+  tax_inclusive: boolean
   problems: string[]
 }
 

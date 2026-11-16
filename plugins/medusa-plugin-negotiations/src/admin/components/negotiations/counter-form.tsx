@@ -13,7 +13,7 @@ import {
   useThreadAction,
 } from "../../lib/negotiations/api"
 import { money, moneyInput, parseMoney } from "../../lib/negotiations/format"
-import { floorWarning, Note, useErrorText } from "./shared"
+import { floorWarning, Note, useBasisMoney, useErrorText } from "./shared"
 
 const DAY = 86_400_000
 const isoDay = (date: Date) => date.toISOString().slice(0, 10)
@@ -43,6 +43,10 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
   const [confirmed, setConfirmed] = useState(false)
   const [preview, setPreview] = useState<{ offer: Offer; floors: FloorCheck } | null>(null)
   const errorText = useErrorText()
+  // Every amount here is net or gross as the thread (the catalog price the customer saw).
+  const basisMoney = useBasisMoney()
+  const priced = (amount: number | null | undefined) => basisMoney(amount, c, thread.tax_inclusive)
+  const basis = t(thread.tax_inclusive ? "negotiations.basis.gross" : "negotiations.basis.net")
   const counter = useThreadAction<Record<string, unknown>>(thread.id, "counter")
 
   const price: PriceInput | null = useMemo(() => {
@@ -110,6 +114,8 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
 
   return (
     <div className="flex flex-col gap-y-4">
+      <Note>{t(thread.tax_inclusive ? "negotiations.basis.counterGross" : "negotiations.basis.counterNet")}</Note>
+
       {modes.length > 1 && (
         <div className="flex flex-wrap gap-2">
           {modes.map((m) => (
@@ -122,13 +128,13 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
 
       {mode === "unit" && (
         <div className="flex flex-col gap-y-1">
-          <Label size="small">{t("negotiations.counter.unitPrice", { currency: c.toUpperCase() })}</Label>
+          <Label size="small">{t("negotiations.counter.unitPrice", { basis, currency: c.toUpperCase() })}</Label>
           <Input size="small" inputMode="decimal" value={unit} onChange={(e) => setUnit(e.target.value)} />
           {preview && (
             <Text size="xsmall" className="text-ui-fg-subtle">
               {t("negotiations.counter.unitTotal", {
                 quantity: thread.quantity_total,
-                total: money(preview.offer.total, c, lang),
+                total: priced(preview.offer.total),
               })}
             </Text>
           )}
@@ -137,12 +143,12 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
 
       {mode === "total" && (
         <div className="flex flex-col gap-y-1">
-          <Label size="small">{t("negotiations.counter.total", { currency: c.toUpperCase() })}</Label>
+          <Label size="small">{t("negotiations.counter.total", { basis, currency: c.toUpperCase() })}</Label>
           <Input size="small" inputMode="decimal" value={total} onChange={(e) => setTotal(e.target.value)} />
           {preview && (
             <div className="flex flex-col gap-y-1 rounded-lg bg-ui-bg-subtle px-3 py-2">
               <Text size="small" weight="plus">
-                {t("negotiations.counter.willSend", { total: money(preview.offer.total, c, lang) })}
+                {t("negotiations.counter.willSend", { total: priced(preview.offer.total) })}
               </Text>
               {preview.offer.requested_total !== preview.offer.total && (
                 <Text size="xsmall" className="text-ui-fg-subtle">
@@ -190,7 +196,7 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
             )
           })}
           <Text size="small" weight="plus" className="text-right">
-            {t("negotiations.counter.sum", { total: linesTotal === null ? "—" : money(linesTotal, c, lang) })}
+            {t("negotiations.counter.sum", { total: linesTotal === null ? "—" : priced(linesTotal) })}
           </Text>
         </div>
       )}
@@ -238,7 +244,7 @@ export const CounterForm = ({ detail, onSent }: { detail: ThreadDetail; onSent: 
 
       <div className="flex justify-end">
         <Button size="small" disabled={!canSend} isLoading={counter.isPending} onClick={send}>
-          {t("negotiations.counter.send", { total: preview ? money(preview.offer.total, c, lang) : "—" })}
+          {t("negotiations.counter.send", { total: preview ? priced(preview.offer.total) : "—" })}
         </Button>
       </div>
     </div>

@@ -85,18 +85,31 @@ export function adminActor(req: MedusaRequest): Actor {
   return { type: "user", id: (req as AuthenticatedMedusaRequest).auth_context?.actor_id ?? null }
 }
 
+/**
+ * The locale Medusa resolved for the request. Its apply-locale middleware
+ * moves `?locale=` here and deletes it from the query, so a route never
+ * sees it in `req.query`.
+ */
+const medusaLocale = (req: MedusaRequest): string | undefined => (req as { locale?: string }).locale || undefined
+
 /** The customer's language: `locale`, then `x-medusa-locale`, then `Accept-Language`, then the plugin default. */
 export async function requestLocale(req: MedusaRequest, explicit?: string): Promise<Locale> {
   const { defaultLocale } = await resolveCompliance(req.scope).getOptions()
-  return normalizeLocale(explicit ?? req.get("x-medusa-locale") ?? req.get("accept-language"), defaultLocale)
+  return normalizeLocale(
+    explicit ?? medusaLocale(req) ?? req.get("x-medusa-locale") ?? req.get("accept-language"),
+    defaultLocale
+  )
 }
 
 /**
- * The language the customer reads warnings in: any store language (`de`,
- * `cs`), from `locale`, then `x-medusa-locale`, then `Accept-Language`.
+ * The language the customer reads warnings and consents in: any store
+ * language (`de`, `cs`), from `locale`, then `x-medusa-locale`, then
+ * `Accept-Language`.
  */
 export function requestLanguage(req: MedusaRequest, explicit?: string): string | null {
-  return languageOf(explicit ?? req.get("x-medusa-locale") ?? req.get("accept-language")?.split(",")[0])
+  return languageOf(
+    explicit ?? medusaLocale(req) ?? req.get("x-medusa-locale") ?? req.get("accept-language")?.split(",")[0]
+  )
 }
 
 /** A salted hash of the caller's IP, for the rate limit; the IP itself is never stored. */

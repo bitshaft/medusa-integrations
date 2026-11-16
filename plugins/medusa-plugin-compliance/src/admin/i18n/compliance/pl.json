@@ -89,6 +89,15 @@
       "edit": "Edytuj",
       "hint": "**pogrubienie**, *kursywa*, ## nagłówek, - lista. Sklep dostaje bezpieczny HTML."
     },
+    "languages": {
+      "language": "Język",
+      "original": "{{language}} (oryginał)",
+      "empty": "pusty",
+      "requiredEmpty": "wymagany, pusty",
+      "toFill": "do uzupełnienia",
+      "noName": "bez nazwy",
+      "dropped": "Treść w języku, którego sklep już nie oferuje, jest usuwana przy zapisie."
+    },
     "gpsr": {
       "complete": "Komplet",
       "status": "Dane GPSR",
@@ -136,7 +145,7 @@
       "identification": "Identyfikacja produktu",
       "identificationHint": "Typ, model i, jeśli dotyczy, numer partii lub seryjny.",
       "warnings": "Ostrzeżenia i informacje o bezpieczeństwie",
-      "warningsHint": "Osobno dla każdego języka.",
+      "warningsHint": "Jedna treść na każdy język sklepu: wybierz język po prawej. Język bez własnej treści pokazuje w sklepie oryginał ({{language}}).",
       "saved": "Dane GPSR zapisane, komplet",
       "savedWithGaps_one": "Zapisano. Brakuje jeszcze {{count}} pola.",
       "savedWithGaps_few": "Zapisano. Brakuje jeszcze {{count}} pól.",
@@ -332,7 +341,9 @@
         "admin": "Panel",
         "link": "Połączone po zalogowaniu",
         "import": "Import"
-      }
+      },
+      "texts": "Nazwa i treść",
+      "textsHint": "Osobno dla każdego języka sklepu: wybierz język po prawej."
     },
     "omnibus": {
       "title": "Obniżki i najniższa cena sprzed obniżki",

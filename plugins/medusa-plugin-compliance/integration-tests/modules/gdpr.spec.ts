@@ -142,6 +142,8 @@ function makeStore(service: ComplianceModuleService) {
     ],
     auth_identity: [{ id: "authid_1", app_metadata: { customer_id: "cus_anna" } }],
     product: [],
+    // Settings → Store languages (Medusa's Translation module is registered below).
+    store: [{ id: "store_1", supported_locales: [{ locale_code: "pl-PL" }, { locale_code: "en-US" }] }],
   }
   const events: Array<{ name: string; data: Row }> = []
   const matches = (row: Row, filters: Row = {}) =>
@@ -161,6 +163,7 @@ function makeStore(service: ComplianceModuleService) {
     },
   })
   register("logger", { info() {}, warn() {}, error() {}, debug() {} })
+  register(Modules.TRANSLATION, {})
   register(Modules.EVENT_BUS, {
     emit: async (message: { name: string; data: Row } | Array<{ name: string; data: Row }>) => {
       for (const m of Array.isArray(message) ? message : [message]) events.push({ name: m.name, data: m.data })
@@ -285,6 +288,57 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
           [1, "Treść 1", LAWYER_PLACEHOLDER],
           [2, "Treść 2", LAWYER_PLACEHOLDER],
         ])
+      })
+
+      it("keeps consent names and texts in the store's languages only", async () => {
+        const { container, db } = makeStore(service)
+        db.store[0].supported_locales = [{ locale_code: "pl-PL" }, { locale_code: "fr-FR" }]
+        const saved = await saveConsentType(
+          container,
+          {
+            key: "marketing",
+            name: { pl: "Marketing", en: "Marketing", fr: " Marketing FR " },
+            placement: "account",
+            required: false,
+            active: true,
+            cookie_category: null,
+            text: { pl: "Zgoda", en: "Consent", de: "Einwilligung" },
+          },
+          admin
+        )
+        expect(saved).toMatchObject({ version: 1, new_version: true })
+        const [type] = await service.listComplianceConsentTypes({ key: "marketing" })
+        // English is no longer a store language: dropped on save; French is trimmed.
+        expect(type.name).toEqual({ pl: "Marketing", fr: "Marketing FR" })
+        const [version] = await service.listComplianceConsentVersions({ type_key: "marketing" })
+        // French has no text yet, so it gets the lawyer placeholder; German is dropped.
+        expect(version.text).toEqual({ pl: "Zgoda", fr: LAWYER_PLACEHOLDER })
+      })
+
+      it("refuses to save when the store's languages can't be read, instead of dropping texts", async () => {
+        const { container } = makeStore(service)
+        const query = container.resolve("query") as { graph: (config: Row) => Promise<unknown> }
+        const graph = query.graph
+        query.graph = async (config: Row) => {
+          if (config.entity === "store") throw new Error("database down")
+          return graph(config)
+        }
+        await expect(
+          saveConsentType(
+            container,
+            {
+              key: "terms-x",
+              name: { pl: "Regulamin" },
+              placement: "checkout",
+              required: true,
+              active: true,
+              cookie_category: null,
+              text: { pl: "Treść", en: "Text" },
+            },
+            admin
+          )
+        ).rejects.toThrow(/store's languages/)
+        expect(await service.listComplianceConsentTypes({ key: "terms-x" })).toHaveLength(0)
       })
 
       it("records a consent and its withdrawal as separate entries and emits events", async () => {

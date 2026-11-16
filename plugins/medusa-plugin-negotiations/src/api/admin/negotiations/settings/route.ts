@@ -3,8 +3,19 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { adminRoute, parse } from "../../../../lib/negotiations/api/utils"
 import { AdminSettings } from "../../../../lib/negotiations/api/validators"
 import { PACKAGE_NAME } from "../../../../lib/negotiations/options"
-import { resolveNegotiations } from "../../../../lib/negotiations/server/runtime"
+import { type PriceBases, priceBases } from "../../../../lib/negotiations/server/catalog"
+import { logger, resolveNegotiations } from "../../../../lib/negotiations/server/runtime"
 import { requireEnabled } from "../../../../lib/negotiations/server/threads"
+
+/** Net or gross per region and currency, for the admin's labels; `null` when Medusa's pricing can't be read. */
+async function bases(req: MedusaRequest): Promise<PriceBases | null> {
+  try {
+    return await priceBases(req.scope)
+  } catch (error) {
+    logger(req.scope).warn(`[negotiations] Could not read the tax-inclusive pricing: ${(error as Error).message}`)
+    return null
+  }
+}
 
 async function view(req: MedusaRequest) {
   const service = resolveNegotiations(req.scope)
@@ -16,6 +27,7 @@ async function view(req: MedusaRequest) {
     /** Options from medusa-config, read-only here. */
     options: await service.getOptions(),
     settings: await service.getSettings(),
+    price_bases: await bases(req),
   }
 }
 

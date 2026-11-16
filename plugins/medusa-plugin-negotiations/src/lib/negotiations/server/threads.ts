@@ -8,7 +8,15 @@ import { catalogTotal } from "../money"
 import { allowedOfferModes, buildOffer, buildTarget, type PriceInput } from "../offers"
 import type { Actor, Offer, ThreadKind, ThreadLine } from "../types"
 import { eventPayload, type MessageRecord, type NegotiationEvent, NegotiationEvents, type ThreadRecord } from "../views"
-import { cartLines, customerCart, inAllowedGroup, loadCustomer, quoteProduct, snapshotOf } from "./catalog"
+import {
+  cartLines,
+  cartTaxInclusive,
+  customerCart,
+  inAllowedGroup,
+  loadCustomer,
+  quoteProduct,
+  snapshotOf,
+} from "./catalog"
 import { emit, resolveNegotiations } from "./runtime"
 
 type Ctx = { container: MedusaContainer; now?: Date }
@@ -111,6 +119,9 @@ export async function openThread(ctx: Ctx, customerId: string | null, input: Ope
   let lines: ThreadLine[]
   let currency: string
   let regionId: string | null
+  // Net or gross as the customer saw the catalog price; the thread keeps it,
+  // so the agreed price means the same in the cart and in a draft order.
+  let taxInclusive: boolean
   let sourceCart: string | null = null
   let target: Offer
   if (input.kind === "product") {
@@ -120,6 +131,7 @@ export async function openThread(ctx: Ctx, customerId: string | null, input: Ope
     lines = [quote.line]
     currency = quote.currency_code
     regionId = quote.region_id
+    taxInclusive = quote.price_tax_inclusive
     if (!(input.target_unit_price > 0)) throw new NegotiationError("price_required")
     target = buildTarget(kind, lines, input.target_unit_price)
   } else {
@@ -129,6 +141,7 @@ export async function openThread(ctx: Ctx, customerId: string | null, input: Ope
     for (const line of lines) checkQuantity(options.limits, line.quantity)
     currency = cart.currency_code
     regionId = cart.region_id
+    taxInclusive = cartTaxInclusive(cart)
     sourceCart = cart.id
     target = buildTarget(kind, lines, input.target_total)
     if (target.total <= 0) throw new NegotiationError("price_required")
@@ -145,7 +158,7 @@ export async function openThread(ctx: Ctx, customerId: string | null, input: Ope
       kind,
       lines,
       currency_code: currency,
-      tax_inclusive: options.taxInclusive,
+      tax_inclusive: taxInclusive,
       region_id: regionId,
       source_cart_id: sourceCart,
       product_id: lines[0].product_id,

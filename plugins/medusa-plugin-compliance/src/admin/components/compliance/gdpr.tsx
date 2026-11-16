@@ -39,6 +39,7 @@ import { dateTime, errorMessage, pick, shortDate } from "../../lib/compliance/fo
 import {
   DaysLeft,
   Empty,
+  LanguageSelect,
   LegalNote,
   Pager,
   RequestStatusBadge,
@@ -56,7 +57,18 @@ const COOKIES: CookieCategory[] = ["necessary", "analytics", "marketing"]
 const ALL = "__all__"
 
 /** The GDPR tab: data subject requests, consent types and the consent register. */
-export const Gdpr = ({ demo, warnDays, placeholder }: { demo: boolean; warnDays: number; placeholder: string }) => {
+export const Gdpr = ({
+  demo,
+  warnDays,
+  placeholder,
+  languages,
+}: {
+  demo: boolean
+  warnDays: number
+  placeholder: string
+  /** The store's languages, the default first: consent names and texts are written in each. */
+  languages: string[]
+}) => {
   const { t } = useTranslation()
   const [tab, setTab] = useState("requests")
   return (
@@ -75,7 +87,7 @@ export const Gdpr = ({ demo, warnDays, placeholder }: { demo: boolean; warnDays:
         </Tabs.List>
       </Tabs>
       {tab === "requests" && <Requests demo={demo} warnDays={warnDays} />}
-      {tab === "types" && <ConsentTypes demo={demo} placeholder={placeholder} />}
+      {tab === "types" && <ConsentTypes demo={demo} placeholder={placeholder} languages={languages} />}
       {tab === "register" && <Register />}
     </Container>
   )
@@ -437,11 +449,32 @@ type TypeDraft = {
   latest: number | null
 }
 
-const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: string }) => {
+const ConsentTypes = ({
+  demo,
+  placeholder,
+  languages,
+}: {
+  demo: boolean
+  placeholder: string
+  languages: string[]
+}) => {
   const { t, i18n } = useTranslation()
   const types = useConsentTypes()
   const save = useSaveConsentType()
   const [draft, setDraft] = useState<TypeDraft | null>(null)
+  // One language at a time, like the e-mail editor; the default (original) first.
+  const original = languages[0] ?? "pl"
+  const [picked, setPicked] = useState<string | null>(null)
+  const language = picked && languages.includes(picked) ? picked : original
+  const written = (value: string | undefined) => Boolean(value?.trim()) && value?.trim() !== placeholder
+  /** Only the store's languages are saved; text in others is dropped. */
+  const inStore = (value: Localized) =>
+    Object.fromEntries(languages.filter((lang) => value[lang]?.trim()).map((lang) => [lang, value[lang] as string]))
+  const dropped =
+    draft !== null &&
+    [...Object.keys(draft.name), ...Object.keys(draft.text)].some(
+      (lang) => !languages.includes(lang) && (draft.name[lang]?.trim() || draft.text[lang]?.trim())
+    )
 
   const edit = (type: ConsentType) =>
     setDraft({
@@ -459,15 +492,20 @@ const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: strin
   const submit = () => {
     if (!draft) return
     const { isNew: _n, latest: _l, ...body } = draft
-    save.mutate(body, {
-      onSuccess: (r) => {
-        toast.success(
-          r.new_version ? t("compliance.gdpr.newVersionSaved", { version: r.version }) : t("compliance.gdpr.typeSaved")
-        )
-        setDraft(null)
-      },
-      onError: (error) => toast.error(errorMessage(error)),
-    })
+    save.mutate(
+      { ...body, name: inStore(body.name), text: inStore(body.text) },
+      {
+        onSuccess: (r) => {
+          toast.success(
+            r.new_version
+              ? t("compliance.gdpr.newVersionSaved", { version: r.version })
+              : t("compliance.gdpr.typeSaved")
+          )
+          setDraft(null)
+        },
+        onError: (error) => toast.error(errorMessage(error)),
+      }
+    )
   }
 
   return (
@@ -488,7 +526,7 @@ const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: strin
               required: false,
               active: true,
               cookie_category: null,
-              text: { pl: placeholder, en: placeholder },
+              text: Object.fromEntries(languages.map((lang) => [lang, placeholder])),
               isNew: true,
               latest: null,
             })
@@ -564,16 +602,6 @@ const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: strin
                 disabled={!draft.isNew}
                 onChange={(key) => setDraft({ ...draft, key: key.toLowerCase() })}
               />
-              <div className="grid grid-cols-2 gap-3">
-                {(["pl", "en"] as const).map((lang) => (
-                  <TextField
-                    key={lang}
-                    label={`${t("compliance.gdpr.typeName")} (${lang.toUpperCase()})`}
-                    value={draft.name[lang]}
-                    onChange={(v) => setDraft({ ...draft, name: { ...draft.name, [lang]: v } })}
-                  />
-                ))}
-              </div>
               <div className="flex flex-col gap-y-1">
                 <Label size="xsmall" weight="plus">
                   {t("compliance.gdpr.placement")}
@@ -636,16 +664,44 @@ const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: strin
                 checked={draft.active}
                 onChange={(active) => setDraft({ ...draft, active })}
               />
-              <LegalNote>{t("compliance.gdpr.textHint", { placeholder })}</LegalNote>
-              {(["pl", "en"] as const).map((lang) => (
-                <TextAreaField
-                  key={lang}
-                  rows={6}
-                  label={`${t("compliance.gdpr.text")} (${lang.toUpperCase()})`}
-                  value={draft.text[lang]}
-                  onChange={(v) => setDraft({ ...draft, text: { ...draft.text, [lang]: v } })}
+              <Section
+                title={t("compliance.gdpr.texts")}
+                hint={t("compliance.gdpr.textsHint")}
+                actions={
+                  <LanguageSelect
+                    languages={languages}
+                    value={language}
+                    onChange={setPicked}
+                    note={(lang) =>
+                      !written(draft.text[lang])
+                        ? t("compliance.languages.toFill")
+                        : !draft.name[lang]?.trim()
+                          ? t("compliance.languages.noName")
+                          : null
+                    }
+                  />
+                }
+              >
+                <TextField
+                  label={t("compliance.gdpr.typeName")}
+                  value={draft.name[language] ?? ""}
+                  placeholder={language !== original ? draft.name[original] : undefined}
+                  onChange={(v) => setDraft({ ...draft, name: { ...draft.name, [language]: v } })}
                 />
-              ))}
+                <LegalNote>{t("compliance.gdpr.textHint", { placeholder })}</LegalNote>
+                <TextAreaField
+                  key={language}
+                  rows={6}
+                  label={t("compliance.gdpr.text")}
+                  value={draft.text[language] ?? ""}
+                  onChange={(v) => setDraft({ ...draft, text: { ...draft.text, [language]: v } })}
+                />
+                {dropped && (
+                  <Text size="xsmall" className="text-ui-fg-subtle">
+                    {t("compliance.languages.dropped")}
+                  </Text>
+                )}
+              </Section>
               {!draft.isNew && (
                 <Text size="xsmall" className="text-ui-fg-subtle">
                   {t("compliance.gdpr.versionHint", { version: draft.latest ?? 0 })}
@@ -659,7 +715,12 @@ const ConsentTypes = ({ demo, placeholder }: { demo: boolean; placeholder: strin
                 {t("compliance.cancel")}
               </Button>
             </Drawer.Close>
-            <Button size="small" onClick={submit} isLoading={save.isPending} disabled={!draft?.key}>
+            <Button
+              size="small"
+              onClick={submit}
+              isLoading={save.isPending}
+              disabled={!draft?.key || !languages.length}
+            >
               {t("compliance.save")}
             </Button>
           </Drawer.Footer>

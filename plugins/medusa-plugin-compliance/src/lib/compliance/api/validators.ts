@@ -15,8 +15,7 @@ const page = {
   limit: z.coerce.number().int().min(1).max(200).default(50),
   offset: z.coerce.number().int().min(0).default(0),
 }
-const localized = (max: number) => z.object({ pl: text(max).optional(), en: text(max).optional() })
-/** Text per warning language (any store language, e.g. `de`). */
+/** Text per store language (ISO 639, e.g. `pl`, `de`). */
 const perLanguage = (max: number) =>
   z
     .record(z.string().regex(WARNING_LANGUAGE), text(max))
@@ -80,7 +79,7 @@ export type AdminGpsrQuery = z.infer<typeof AdminGpsrQuery>
 
 export const AdminConsentType = z.object({
   key: z.string().trim().regex(CONSENT_KEY_PATTERN, "lowercase letters, digits, dots, dashes or underscores"),
-  name: localized(200),
+  name: perLanguage(200).default({}),
   placement: z.enum(CONSENT_PLACEMENTS),
   required: z.boolean().default(false),
   active: z.boolean().default(true),
@@ -88,7 +87,7 @@ export const AdminConsentType = z.object({
     .enum(COOKIE_CATEGORIES)
     .nullish()
     .transform((v) => v ?? null),
-  text: localized(20_000),
+  text: perLanguage(20_000).default({}),
 })
 export type AdminConsentType = z.infer<typeof AdminConsentType>
 

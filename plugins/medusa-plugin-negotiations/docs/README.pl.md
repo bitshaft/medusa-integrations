@@ -68,7 +68,6 @@ wartość zostawia wtyczkę wyłączoną z jedną linią w logu
 | ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------- |
 | `expiryDays`             | `14`                | Wątek bez ruchu przez tyle dni wygasa. `0` = nigdy. Notatki wewnętrzne się nie liczą                    |
 | `acceptedOfferDays`      | `expiryDays` (`14`) | Ile dni klient ma na wykorzystanie uzgodnionej ceny (14 przy `expiryDays: 0`). Widoczne dla klienta     |
-| `taxInclusive`           | `false`             | Czy uzgodnione ceny zawierają podatek. Domyślnie netto                                                  |
 | `defaultCurrency`        | waluta sklepu       | Waluta wątków o produkt, gdy klient nie poda regionu ani waluty                                         |
 | `customerAccept`         | `true`              | Klient może sam zaakceptować kontrofertę. Wyłączone: zespół zamyka po swojej ofercie                    |
 | `allowedCustomerGroups`  | `[]`                | Id albo nazwy grup, które mogą negocjować. Puste: każdy zalogowany klient                               |
@@ -104,6 +103,19 @@ uzbrajanie każdego zapisu.
   wpisanych „2125,00 zł”). Różnica zawsze na korzyść klienta.
 - **Cena katalogowa** liczona jak w Store API (region, waluta, grupy klienta,
   więc i cenniki) w chwili wysłania i zamrożona w wątku.
+- **Netto czy brutto** wynika z katalogu, nie z opcji: wątek bierze je z
+  ceny katalogowej, od której startuje, tak jak policzyła ją Medusa. Medusa
+  ustawia to przełącznikiem „Ceny zawierają podatek” dla waluty (Ustawienia →
+  Sklep → Waluty) i dla regionu (Ustawienia → Regiony) w przypadku cen
+  ustawionych tylko dla tego regionu. Sklep z cenami brutto negocjuje brutto,
+  sklep z cenami netto negocjuje netto, a zmiana w katalogu przełącza nowe
+  wątki. Wątek zachowuje swoją podstawę do końca, a pozycje w koszyku i w
+  szkicu zamówienia są z nią zapisywane, więc uzgodnione 108 zł brutto to
+  108 zł przy kasie. Koszyk z pozycjami netto i brutto naraz jest odrzucany.
+  Admin pokazuje podstawę w każdym wątku (plakietka, wiersz „Ceny”, pola
+  kontroferty, przyciski akceptacji, rozmowa i suma szkicu zamówienia), w
+  Ustawieniach dla każdej waluty (oraz regionów z innym ustawieniem) i przy
+  cenach minimalnych.
 - **Cena minimalna** na wariancie (widżet, per waluta) i opcjonalny
   maksymalny rabat. Kontroferta albo akceptacja poniżej: ostrzeżenie z
   różnicą i wymagane potwierdzenie. Cena minimalna nigdy nie wychodzi do
@@ -166,7 +178,11 @@ historia zapisów, przewodnik i ceny minimalne. Tabela tras:
 ## Ograniczenia
 
 - Jedna waluta na wątek. Ceny katalogowe są zamrażane w chwili wysłania.
-- Podstawa podatku (`taxInclusive`) jest jedna dla wszystkich uzgodnionych cen.
+- Netto i brutto nie są przeliczane jedno na drugie (stawka VAT zależy od
+  kraju dostawy, produktu i odwrotnego obciążenia, znanych dopiero przy
+  kasie). Cena minimalna jest per waluta i porównywana z cenami wątku tak,
+  jak są, więc dla cen ustawionych tylko dla regionu z innym ustawieniem
+  „Ceny zawierają podatek” niż jego waluta porównuje się ją z drugą podstawą.
 - Wątek o produkt dotyczy jednego wariantu. Koszyk z pozycjami już
   wynegocjowanymi nie może być negocjowany jako całość.
 - Blokady koszyka to middleware na trasach Store API, nie hooki workflow

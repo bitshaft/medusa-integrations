@@ -82,7 +82,6 @@ values keep the plugin disabled and log one line (`[negotiations] Disabled:
 | ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `expiryDays`             | `14`                | A thread with no move for this many days expires. `0` = never. Internal notes do not count as moves            |
 | `acceptedOfferDays`      | `expiryDays` (`14`) | Days the customer has to use an agreed price (14 when `expiryDays` is 0). Shown to the customer                |
-| `taxInclusive`           | `false`             | Whether agreed prices include tax. Default: net prices                                                         |
 | `defaultCurrency`        | store default       | Currency of product threads when the customer sends neither a region nor a currency                            |
 | `customerAccept`         | `true`              | Customers may accept a counter-offer themselves. Off: the team closes the deal at its offer                    |
 | `allowedCustomerGroups`  | `[]`                | Customer group ids or names allowed to negotiate. Empty: every signed-in customer                              |
@@ -129,6 +128,19 @@ maximum discount without a confirmation, and arming each writer.
 - **Catalog price** is computed like the Store API does (region, currency,
   the customer's groups, so price lists apply) when the thread is sent, and
   frozen. For a whole cart it is the cart's unit prices at that moment.
+- **Net or gross** follows the catalog, not an option: a thread takes it
+  from the catalog price it starts from, as Medusa calculated it. Medusa
+  sets it with "Tax inclusive pricing" per currency (Settings → Store →
+  Currencies), and per region (Settings → Regions) for prices set only for
+  that region. A shop with gross prices negotiates gross,
+  one with net prices negotiates net, and switching the catalog switches new
+  threads with it. A thread keeps its basis to the end, and the cart and
+  draft order lines are written with it, so an agreed 108 zł gross is 108 zł
+  at checkout. A cart whose lines mix net and gross is refused. The admin
+  shows the basis on every thread (a badge, the "Prices" row, the
+  counter-offer fields, the accept buttons, the conversation and the draft
+  order total), lists it per currency in Settings (plus regions whose own
+  setting differs), and next to each minimum price.
 - **Minimum price.** A per-currency minimum price on each variant (variant
   widget) and an optional maximum discount. A counter-offer or acceptance
   below them shows the difference and needs a confirmation. Minimum prices
@@ -271,7 +283,8 @@ All under `/admin/negotiations`.
 - **Rollout guide**: what the plugin does, how it connects, the steps from
   installation to production with their status, and the AI prompt.
 - **Settings**: options (read-only), counter-offer modes, maximum discount,
-  arming the writers, expiry, demo data, the writer history.
+  arming the writers, expiry, demo data, net or gross per region, the writer
+  history.
 
 Widgets: threads on the product page and on the customer page, a minimum
 price on the variant page, and a line above the order list.
@@ -280,8 +293,12 @@ price on the variant page, and a line above the order list.
 
 - One currency per thread. Catalog prices are frozen when the thread is sent;
   later catalog changes do not move them.
-- The tax basis (`taxInclusive`) is one setting for all agreed prices; the
-  catalog price is shown as Medusa calculated it for the customer.
+- Net and gross are never converted into each other (the VAT rate depends
+  on the delivery country, the product and reverse charge, which are known
+  only at checkout). A minimum price is entered per currency and compared
+  with the thread's prices as they are, so for prices set only for a region
+  whose "Tax inclusive pricing" differs from its currency's, it is compared
+  with the other basis.
 - Product threads are for one variant. A whole-cart thread takes the cart
   as it is; it cannot hold lines that are already negotiated.
 - The cart guards are middlewares on the Store API routes, not workflow

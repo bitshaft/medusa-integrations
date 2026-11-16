@@ -654,5 +654,84 @@ medusaIntegrationTestRunner({
       const stats = await api.get("/admin/negotiations/stats", admin)
       expect(stats.data.stats).toMatchObject({ waiting: 1, open: 1, in_talks: { pln: 80_000 } })
     })
+
+    // Last: it opens threads the counts above don't expect.
+    it("net or gross follows Medusa's tax-inclusive pricing, from the catalog price to the cart line", async () => {
+      // "Tax inclusive pricing" for PLN (Settings -> Store -> Currencies); the products have PLN prices.
+      const pricing = container.resolve(Modules.PRICING)
+      const setPlnTaxInclusive = async (isTaxInclusive: boolean) => {
+        const [existing] = await pricing.listPricePreferences({ attribute: "currency_code", value: ["pln"] })
+        if (existing) await pricing.updatePricePreferences(existing.id, { is_tax_inclusive: isTaxInclusive })
+        else
+          await pricing.createPricePreferences({
+            attribute: "currency_code",
+            value: "pln",
+            is_tax_inclusive: isTaxInclusive,
+          })
+      }
+      // A customer of its own, so the thread limits of the other tests stay as they were.
+      const query = container.resolve(ContainerRegistrationKeys.QUERY)
+      const { data: groups } = await query.graph({ entity: "customer_group", fields: ["id"], filters: { name: "b2b" } })
+      const signed = await signUp("gross@example.com")
+      await linkCustomersToCustomerGroupWorkflow(container).run({ input: { id: groups[0].id, add: [signed.id] } })
+      const customer = { headers: signed.headers }
+
+      const net = await api.get("/admin/negotiations/settings", admin)
+      expect(net.data.options).not.toHaveProperty("taxInclusive")
+      expect(net.data.price_bases.currencies.pln ?? false).toBe(false)
+
+      await setPlnTaxInclusive(true)
+      try {
+        const gross = await api.get("/admin/negotiations/settings", admin)
+        expect(gross.data.price_bases.currencies.pln).toBe(true)
+
+        // From the product page of the region: the price the customer saw includes tax.
+        const opened = await api.post(
+          "/store/negotiations",
+          { kind: "product", variant_id: drill.id, region_id: regionId, quantity: 5, target_unit_price: 40_000 },
+          store(customer)
+        )
+        const thread = opened.data.negotiation
+        expect(thread.tax_inclusive).toBe(true)
+
+        // A whole cart in the region: its lines are priced with tax.
+        const { data: created } = await api.post("/store/carts", { region_id: regionId }, store(customer))
+        await api.post(
+          `/store/carts/${created.cart.id}/line-items`,
+          { variant_id: socket.id, quantity: 4 },
+          store(customer)
+        )
+        const cartThread = await api.post(
+          "/store/negotiations",
+          { kind: "cart", cart_id: created.cart.id, target_total: 9_000 },
+          store(customer)
+        )
+        expect(cartThread.data.negotiation.tax_inclusive).toBe(true)
+
+        // Agreed at 400 zł with tax: the cart line is written with tax included, so checkout adds none on top.
+        const detail = await api.get(`/admin/negotiations/${thread.id}`, admin)
+        await api.post(
+          `/admin/negotiations/${thread.id}/accept`,
+          { version: detail.data.negotiation.version, basis: "target", price: detail.data.negotiation.target_total },
+          admin
+        )
+        await arm({ draft_orders: true, cart: true })
+        const { data: target } = await api.post("/store/carts", { region_id: regionId }, store(customer))
+        const added = await call("post", `/store/negotiations/${thread.id}/add-to-cart`, store(customer), {
+          cart_id: target.cart.id,
+        })
+        expect(added.status).toBe(200)
+        const cart = (await api.get(`/store/carts/${target.cart.id}`, store(customer))).data.cart
+        const [stored] = await container.resolve(Modules.CART).listLineItems({ id: cart.items[0].id })
+        expect(stored).toMatchObject({ quantity: 5, is_tax_inclusive: true })
+        expect(Number(stored.unit_price)).toBe(400)
+
+        // The admin's draft order panel shows the same basis.
+        const plan = await api.post(`/admin/negotiations/${thread.id}/draft-order/plan`, {}, admin)
+        expect(plan.data.plan.tax_inclusive).toBe(true)
+      } finally {
+        await setPlnTaxInclusive(false)
+      }
+    })
   },
 })

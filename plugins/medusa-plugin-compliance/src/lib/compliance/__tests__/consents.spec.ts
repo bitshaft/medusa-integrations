@@ -46,6 +46,8 @@ describe("consent versions", () => {
 
   it("fills empty languages with the lawyer placeholder", () => {
     expect(withPlaceholders({ pl: "Treść", en: " " }, ["pl", "en"])).toEqual({ pl: "Treść", en: LAWYER_PLACEHOLDER })
+    // Any store language; text in a language the store doesn't offer is dropped.
+    expect(withPlaceholders({ pl: "Treść", de: "Text" }, ["pl", "fr"])).toEqual({ pl: "Treść", fr: LAWYER_PLACEHOLDER })
   })
 
   it("accepts a grant only for the current version", () => {

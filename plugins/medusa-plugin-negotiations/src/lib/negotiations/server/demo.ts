@@ -6,6 +6,7 @@ import { buildOffer, buildTarget } from "../offers"
 import type { CustomerSnapshot, Offer, Status, ThreadKind, ThreadLine } from "../types"
 import type NegotiationsModuleService from "../../../modules/negotiations/service"
 import type { NewMessage } from "../../../modules/negotiations/service"
+import { priceBases } from "./catalog"
 import { resolveNegotiations } from "./runtime"
 
 const HOUR = 3_600_000
@@ -206,17 +207,26 @@ const STATUS_TURN: Record<Status, "team" | "customer" | null> = {
 export async function resetDemo(container: MedusaContainer, now = new Date()) {
   const s = resolveNegotiations(container)
   await s.clearDemo()
-  await seed(s, now)
+  await seed(s, now, await demoTaxInclusive(container))
 }
 
 /** Seeds the demo threads once, the first time the admin opens the page in demo mode. */
 export async function ensureDemo(container: MedusaContainer) {
   const s = resolveNegotiations(container)
   if (!(await s.getOptions()).demo || (await s.hasDemo())) return
-  await seed(s, new Date())
+  await seed(s, new Date(), await demoTaxInclusive(container))
 }
 
-async function seed(s: NegotiationsModuleService, now: Date) {
+/** Demo threads are in PLN, net or gross as the store prices PLN; net when that can't be read. */
+async function demoTaxInclusive(container: MedusaContainer): Promise<boolean> {
+  try {
+    return (await priceBases(container)).currencies.pln ?? false
+  } catch {
+    return false
+  }
+}
+
+async function seed(s: NegotiationsModuleService, now: Date, taxInclusive: boolean) {
   const options = await s.getOptions()
   for (const spec of SPECS) {
     const customer = customers[spec.customer]
@@ -247,7 +257,7 @@ async function seed(s: NegotiationsModuleService, now: Date) {
         kind: spec.kind,
         lines: spec.lines,
         currency_code: "pln",
-        tax_inclusive: options.taxInclusive,
+        tax_inclusive: taxInclusive,
         region_id: null,
         source_cart_id: null,
         product_id: spec.lines[0].product_id,

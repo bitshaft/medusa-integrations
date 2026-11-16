@@ -12,12 +12,15 @@ export const MarkdownEditor = ({
   badge,
   value,
   onChange,
+  placeholder,
 }: {
   label: string
   /** Shown next to the label, e.g. "required". */
   badge?: ReactNode
   value: string
   onChange: (value: string) => void
+  /** Shown while empty, e.g. the text the store falls back to. */
+  placeholder?: string
 }) => {
   const { t } = useTranslation()
   const ref = useRef<HTMLTextAreaElement>(null)
@@ -84,7 +87,14 @@ export const MarkdownEditor = ({
           <MarkdownPreview source={value} />
         </div>
       ) : (
-        <Textarea ref={ref} aria-label={label} rows={5} value={value} onChange={(e) => onChange(e.target.value)} />
+        <Textarea
+          ref={ref}
+          aria-label={label}
+          rows={5}
+          value={value}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+        />
       )}
       <Text size="xsmall" className="text-ui-fg-muted">
         {t("compliance.editor.hint")}

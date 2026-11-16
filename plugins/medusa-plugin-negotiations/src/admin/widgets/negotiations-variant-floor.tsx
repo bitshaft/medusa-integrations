@@ -33,6 +33,12 @@ const VariantFloorWidget = ({ data: variant }: DetailWidgetProps<AdminProductVar
       )
   }, [floors.data])
   if (!settings.data?.enabled) return null
+  // A minimum price is compared with the thread's prices: net or gross as the catalog in that currency.
+  const basisOf = (currency: string) => {
+    const taxInclusive = settings.data?.price_bases?.currencies[currency.trim().toLowerCase()]
+    if (taxInclusive === undefined) return ""
+    return t(taxInclusive ? "negotiations.basis.gross" : "negotiations.basis.net")
+  }
 
   const submit = () => {
     const parsed = rows
@@ -54,11 +60,11 @@ const VariantFloorWidget = ({ data: variant }: DetailWidgetProps<AdminProductVar
       <div>
         <Heading level="h2">{t("negotiations.floorWidget.title")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          {t("negotiations.floorWidget.hint")}
+          {t("negotiations.floorWidget.hint")} {t("negotiations.basis.floorHint")}
         </Text>
       </div>
       {rows.map((row, i) => (
-        <div key={i} className="grid grid-cols-[90px_1fr_auto] items-center gap-2">
+        <div key={i} className="grid grid-cols-[90px_1fr_48px_auto] items-center gap-2">
           <Input
             size="small"
             placeholder="PLN"
@@ -73,6 +79,9 @@ const VariantFloorWidget = ({ data: variant }: DetailWidgetProps<AdminProductVar
             value={row.amount}
             onChange={(e) => setRows(rows.map((r, j) => (j === i ? { ...r, amount: e.target.value } : r)))}
           />
+          <Text size="small" className="text-ui-fg-subtle">
+            {basisOf(row.currency_code)}
+          </Text>
           <IconButton size="small" variant="transparent" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
             <Trash />
           </IconButton>

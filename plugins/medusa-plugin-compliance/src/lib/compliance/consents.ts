@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto"
 
 import { LAWYER_PLACEHOLDER } from "./settings"
-import type { ConsentPlacement, CookieCategory, Locale } from "./types"
+import type { ConsentPlacement, CookieCategory } from "./types"
 
-export type ConsentText = Partial<Record<Locale, string>>
+/** Text per store language (ISO 639: `pl`, `en`, `fr`). */
+export type ConsentText = Partial<Record<string, string>>
 
 export type ConsentVersionRecord = {
   type_key: string
@@ -16,7 +17,7 @@ export type ConsentVersionRecord = {
 
 export type ConsentTypeRecord = {
   key: string
-  name: Partial<Record<Locale, string>>
+  name: ConsentText
   placement: ConsentPlacement
   required: boolean
   active: boolean
@@ -37,13 +38,16 @@ export const CONSENT_KEY_PATTERN = /^[a-z0-9][a-z0-9_.-]{1,59}$/
 export function textHash(text: ConsentText): string {
   const normal = Object.keys(text)
     .sort()
-    .map((lang) => `${lang}:${(text[lang as Locale] ?? "").trim()}`)
+    .map((lang) => `${lang}:${(text[lang] ?? "").trim()}`)
     .join("\n")
   return createHash("sha256").update(normal).digest("hex")
 }
 
-/** A new text with an empty language gets the lawyer placeholder, so nothing is published blank. */
-export function withPlaceholders(text: ConsentText, languages: readonly Locale[]): ConsentText {
+/**
+ * The text in exactly these languages (the store's): an empty one gets the
+ * lawyer placeholder, so nothing is published blank; others are dropped.
+ */
+export function withPlaceholders(text: ConsentText, languages: readonly string[]): ConsentText {
   const result: ConsentText = {}
   for (const lang of languages) result[lang] = text[lang]?.trim() || LAWYER_PLACEHOLDER
   return result

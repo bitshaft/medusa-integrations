@@ -89,6 +89,16 @@ export function gpsrGaps(safety: EffectiveSafety, require: ComplianceSettings["g
   return gaps
 }
 
+/**
+ * The languages warnings must be written in: the required ones the store
+ * still offers. When none is left, the store's default language, so
+ * "warnings required" never turns into "nothing required".
+ */
+export function requiredWarningLanguages(required: readonly string[], storeLanguages: readonly string[]): string[] {
+  const kept = required.filter((lang) => storeLanguages.includes(lang))
+  return kept.length ? kept : storeLanguages.slice(0, 1)
+}
+
 /** Readable one-line address: keeps line breaks typed by the team as ", ". */
 export function oneLine(value: string | null): string | null {
   return value ? value.replace(/\s*\n\s*/g, ", ").trim() : null
