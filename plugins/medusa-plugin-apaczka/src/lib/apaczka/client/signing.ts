@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto"
 
 import { ApaczkaWebhookError } from "./errors"
-import { extractTopLevelValue } from "./json-span"
+import { topLevelEntries } from "./json-span"
 import type { PushTrackingNotification } from "./types"
 
 /** Apaczka rejects requests whose `expires` is more than 15 minutes ahead. */
@@ -78,23 +78,33 @@ export function verifyPushTrackingWebhook(input: {
     throw new ApaczkaWebhookError("Webhook body is missing the response field")
   }
 
+  // JSON.parse keeps the last of repeated keys, so a body could carry a
+  // genuine signed `response` for the check and a forged one for the result.
+  const entries = safeEntries(raw)
+  for (const key of ["signature", "response"]) {
+    if ((entries?.filter((entry) => entry.key === key).length ?? 0) > 1) {
+      throw new ApaczkaWebhookError(`Webhook body has the ${key} field more than once`)
+    }
+  }
+
   const candidates = new Set<string>()
-  const rawResponse = safeExtract(raw, "response")
+  const rawResponse = entries?.find((entry) => entry.key === "response")?.value
   if (rawResponse) {
     candidates.add(rawResponse)
   }
   candidates.add(JSON.stringify(parsed.response))
 
   const provided = parsed.signature.toLowerCase()
-  const matches = [...candidates].some((json) =>
+  const verified = [...candidates].find((json) =>
     safeEqualHex(hmacHex(input.appSecret, `${input.appId}::${json}:`), provided)
   )
 
-  if (!matches) {
+  if (verified === undefined) {
     throw new ApaczkaWebhookError("Webhook signature does not match")
   }
 
-  return parsed.response as PushTrackingNotification
+  // The result is read from the very bytes the signature covers.
+  return JSON.parse(verified) as PushTrackingNotification
 }
 
 function hmacHex(secret: string, data: string): string {
@@ -107,9 +117,9 @@ function safeEqualHex(expected: string, provided: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-function safeExtract(raw: string, key: string): string | undefined {
+function safeEntries(raw: string): Array<{ key: string; value: string }> | undefined {
   try {
-    return extractTopLevelValue(raw, key)
+    return topLevelEntries(raw)
   } catch {
     return undefined
   }

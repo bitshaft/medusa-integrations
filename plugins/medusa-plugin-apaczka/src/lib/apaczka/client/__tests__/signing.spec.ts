@@ -71,6 +71,33 @@ describe("verifyPushTrackingWebhook", () => {
     expect(() => verifyPushTrackingWebhook({ appId: APP_ID, appSecret: APP_SECRET, rawBody: body })).not.toThrow()
   })
 
+  it("acts only on the bytes it verified, never on a second response key", () => {
+    // A genuine notification (e.g. a captured one) with a forged one appended
+    // under the same key: JSON.parse keeps the last, the signature covers the first.
+    const genuine = JSON.stringify(response)
+    const forged = JSON.stringify({ orderNumber: "999", statuses: [{ status: "DELIVERED", updatedAt: "x" }] })
+    const body = `{"signature":"${signed(genuine)}","response":${genuine},"response":${forged}}`
+    let result: unknown
+    try {
+      result = verifyPushTrackingWebhook({ appId: APP_ID, appSecret: APP_SECRET, rawBody: body })
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApaczkaWebhookError)
+      return
+    }
+    expect(result).toEqual(response)
+  })
+
+  it("rejects a body with more than one signature or response", () => {
+    const json = JSON.stringify(response)
+    const twice = `{"signature":"${signed(json)}","response":${json},"response":${json}}`
+    const twoSignatures = `{"signature":"bad","signature":"${signed(json)}","response":${json}}`
+    for (const body of [twice, twoSignatures]) {
+      expect(() => verifyPushTrackingWebhook({ appId: APP_ID, appSecret: APP_SECRET, rawBody: body })).toThrow(
+        /more than once/
+      )
+    }
+  })
+
   it("rejects a tampered payload", () => {
     const json = JSON.stringify(response)
     const tampered = { ...response, orderNumber: "999" }

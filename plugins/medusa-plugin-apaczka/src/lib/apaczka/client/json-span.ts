@@ -10,6 +10,17 @@
  * Returns `undefined` when the document is not an object or has no such key.
  */
 export function extractTopLevelValue(json: string, key: string): string | undefined {
+  return topLevelEntries(json)?.find((entry) => entry.key === key)?.value
+}
+
+/**
+ * Every top-level property of a JSON object with the exact source text of
+ * its value, in order and including repeated keys (which `JSON.parse`
+ * silently collapses to the last one). `undefined` when the document is not
+ * a JSON object this scanner can read.
+ */
+export function topLevelEntries(json: string): Array<{ key: string; value: string }> | undefined {
+  const entries: Array<{ key: string; value: string }> = []
   let i = skipWhitespace(json, 0)
   if (json[i] !== "{") {
     return undefined
@@ -19,7 +30,7 @@ export function extractTopLevelValue(json: string, key: string): string | undefi
   while (i < json.length) {
     i = skipWhitespace(json, i)
     if (json[i] === "}") {
-      return undefined
+      return entries
     }
     if (json[i] === ",") {
       i = skipWhitespace(json, i + 1)
@@ -29,7 +40,7 @@ export function extractTopLevelValue(json: string, key: string): string | undefi
     }
 
     const keyEnd = scanString(json, i)
-    const currentKey = JSON.parse(json.slice(i, keyEnd)) as string
+    const key = JSON.parse(json.slice(i, keyEnd)) as string
     i = skipWhitespace(json, keyEnd)
     if (json[i] !== ":") {
       return undefined
@@ -37,9 +48,7 @@ export function extractTopLevelValue(json: string, key: string): string | undefi
     i = skipWhitespace(json, i + 1)
 
     const valueEnd = scanValue(json, i)
-    if (currentKey === key) {
-      return json.slice(i, valueEnd)
-    }
+    entries.push({ key, value: json.slice(i, valueEnd) })
     i = valueEnd
   }
 
