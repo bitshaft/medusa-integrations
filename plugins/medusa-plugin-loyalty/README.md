@@ -139,9 +139,13 @@ Every rule is checked on the server.
 | GET    | `/store/loyalty/history?offset=&limit=`                | customer | ledger entries, newest first, `count`                                                                             |
 | GET    | `/store/loyalty/rewards`                               | anyone   | active rewards; for a customer also `can_redeem`, `blocked_reason`, `points_missing`, `limit_left`                |
 | POST   | `/store/loyalty/rewards/:id/redeem`                    | customer | `{ type: "code", code, expires_at, balance }` or `{ type: "gift", cart, balance }` (send `{ cart_id }` for gifts) |
-| GET    | `/store/loyalty/estimate?amount=129.99` or `?cart_id=` | anyone   | `points`, `base`, `multiplier`, `message`                                                                         |
+| GET    | `/store/loyalty/estimate?amount=129.99` or `?cart_id=` | anyone¹  | `points`, `base`, `multiplier`, `message`                                                                         |
 | GET    | `/store/loyalty/terms`                                 | anyone   | `terms_url`, `program_enabled`                                                                                    |
 | POST   | `/store/loyalty/birthday`                              | customer | sets `{ birthday: "1990-05-17" }` (or `"--05-17"`)                                                                |
+
+¹ A cart that belongs to a customer is estimated only for that customer
+(`cart_not_yours` otherwise); guest carts can be estimated by anyone with
+the id, as in Medusa's own cart route.
 
 A code can go straight into the cart with Medusa's own
 `POST /store/carts/:id/promotions { promo_codes: [code] }`.
@@ -214,6 +218,15 @@ Admin endpoints are under `/admin/loyalty` (`settings`, `dashboard`,
   back with a correcting entry).
 - Module links (read-only): customer → `loyalty_account`, order →
   `loyalty_entries`, promotion → `loyalty_redemption`.
+- Store API guards (middlewares on Medusa's cart routes). A gift line is
+  marked by its `loyalty_redemption_id` metadata, so customers cannot set
+  metadata keys starting with `loyalty_` on any line
+  (`POST /store/carts`, `POST /store/carts/:id/line-items`), cannot change
+  the metadata or raise the quantity of a gift line
+  (`POST /store/carts/:id/line-items/:line_id`; removing it is fine), and
+  `POST /store/carts/:id/complete` refuses a cart whose gift line does not
+  match a redemption of this cart and customer, with the reward's variant,
+  a quantity of 1 and a price of 0. They do not depend on the hook below.
 - Hook: `updateLineItemInCartWorkflow.hooks.validate` keeps a gift's
   quantity at 1. Medusa allows one handler per hook; if your app has one,
   set `LOYALTY_DISABLE_HOOKS=line-item` and call `validateGiftQuantity` from

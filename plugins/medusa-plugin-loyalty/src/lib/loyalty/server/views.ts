@@ -1,5 +1,6 @@
 import type { MedusaContainer } from "@medusajs/framework/types"
 
+import { LoyaltyError } from "../messages"
 import { currencyFactor, earnedPoints, expiresAt, orderBase, pointValue } from "../points"
 import { type LoyaltySettings, sortedTiers } from "../settings"
 import { customerTexts } from "../texts"
@@ -115,9 +116,20 @@ export async function estimate(
   if (input.cart_id) {
     const { data } = await graph(container)({
       entity: "cart",
-      fields: ["id", "currency_code", "items.id", "items.quantity", "items.total", "items.tax_total", "items.metadata"],
+      fields: [
+        "id",
+        "customer_id",
+        "currency_code",
+        "items.id",
+        "items.quantity",
+        "items.total",
+        "items.tax_total",
+        "items.metadata",
+      ],
       filters: { id: input.cart_id },
     })
+    // A customer's cart is theirs alone; guest carts stay readable, as in Medusa's own cart route.
+    if (data[0]?.customer_id && data[0].customer_id !== input.customer_id) throw new LoyaltyError("cart_not_yours")
     const lines = ((data[0]?.items ?? []) as Array<Record<string, any> | null>).filter(Boolean).map((item) => ({
       id: item!.id,
       quantity: Number(item!.quantity ?? 0),

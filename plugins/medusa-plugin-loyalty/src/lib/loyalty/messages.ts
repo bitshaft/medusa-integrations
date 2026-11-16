@@ -60,6 +60,18 @@ export const REASONS = {
     pl: "Gratis z programu lojalnościowego zawsze ma ilość 1.",
     en: "A loyalty gift always has a quantity of 1.",
   },
+  reward_gift_locked: {
+    pl: "Gratisu z programu lojalnościowego nie można zmieniać. Możesz go usunąć z koszyka.",
+    en: "A loyalty gift cannot be changed. You can remove it from the cart.",
+  },
+  reward_gift_invalid: {
+    pl: "Gratis z programu lojalnościowego w koszyku jest nieważny. Usuń go z koszyka i wymień nagrodę ponownie.",
+    en: "The loyalty gift in the cart is no longer valid. Remove it from the cart and redeem the reward again.",
+  },
+  reserved_metadata: {
+    pl: 'Klucze metadanych zaczynające się od "loyalty_" są zarezerwowane dla programu lojalnościowego. Usuń je z żądania.',
+    en: 'Metadata keys starting with "loyalty_" are reserved for the loyalty program. Remove them from the request.',
+  },
 } as const
 
 export type Reason = keyof typeof REASONS

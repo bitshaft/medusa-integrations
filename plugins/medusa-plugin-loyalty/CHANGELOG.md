@@ -8,6 +8,18 @@ All notable changes to `@bitshaft/medusa-plugin-loyalty`. The format follows
 
 First release.
 
+### Security
+
+- Gift lines can no longer be turned into free products. A customer could
+  remove the `loyalty_redemption_id` marker from a gift line through
+  `POST /store/carts/:id/line-items/:line_id`, which gave the points back
+  while the line kept its price of 0, and then raise its quantity. Store API
+  guards now refuse `loyalty_` metadata keys from customers, any metadata
+  change and quantity above 1 on gift lines, and checkout of a cart whose
+  gift lines do not match their redemptions.
+- `GET /store/loyalty/estimate?cart_id=` no longer estimates another
+  customer's cart.
+
 - Immutable points ledger: every balance change is an entry with a type,
   points, links, description and actor; the database refuses edits and
   deletes; every write is idempotent; balance changes lock the account.

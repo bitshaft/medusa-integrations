@@ -12,8 +12,14 @@ import {
   revertReturnedUnits,
 } from "../../src/lib/loyalty/server/orders"
 import { expireRewardCodes, syncCartGifts } from "../../src/lib/loyalty/server/rewards"
-import { rewardCatalog } from "../../src/lib/loyalty/server/views"
-import { validateGiftQuantity } from "../../src/lib/loyalty/server/hooks"
+import { estimate, rewardCatalog } from "../../src/lib/loyalty/server/views"
+import {
+  guardLineItemUpdate,
+  refuseReservedItemsMetadata,
+  refuseReservedMetadata,
+  validateCartGifts,
+  validateGiftQuantity,
+} from "../../src/lib/loyalty/server/hooks"
 import { LOYALTY_MODULE } from "../../src/modules/loyalty"
 import type LoyaltyModuleService from "../../src/modules/loyalty/service"
 
@@ -330,6 +336,128 @@ moduleIntegrationTestRunner<LoyaltyModuleService>({
         expect(() => validateGiftQuantity({ input: { item_id: "li_x", update: { quantity: 3 } }, cart })).not.toThrow()
       })
 
+      describe("cart guards", () => {
+        async function giftInCart(cartId: string, line: Row = {}) {
+          await service.post(ANNA, [{ key: `seed:${cartId}`, type: "adjustment", reason: "manual", points: 100 }])
+          const { redemption } = await service.redeem({
+            customer_id: ANNA,
+            reward: gift,
+            status: "in_cart",
+            cart_id: cartId,
+            variant_id: "variant_mug",
+            now: new Date(),
+          })
+          ctx.data.cart.push({
+            id: cartId,
+            customer_id: ANNA,
+            completed_at: null,
+            items: [
+              {
+                id: "li_gift",
+                variant_id: "variant_mug",
+                quantity: 1,
+                unit_price: 0,
+                metadata: { [GIFT_METADATA_KEY]: redemption.id, loyalty_reward_id: gift.id },
+                ...line,
+              },
+              { id: "li_paid", variant_id: "variant_tee", quantity: 2, unit_price: 49, metadata: null },
+            ],
+          })
+          return redemption
+        }
+
+        it("refuses the plugin's metadata keys on lines the customer adds", () => {
+          expect(() => refuseReservedMetadata({ [GIFT_METADATA_KEY]: "lred_x" })).toThrow(/loyalty_/)
+          expect(() => refuseReservedMetadata({ loyalty_reward_id: "lrew_x" })).toThrow(/loyalty_/)
+          expect(() =>
+            refuseReservedItemsMetadata([{ metadata: { note: "a" } }, { metadata: { loyalty_x: 1 } }])
+          ).toThrow(/loyalty_/)
+          expect(() => refuseReservedMetadata({ gift_wrap: true })).not.toThrow()
+          expect(() => refuseReservedMetadata(null)).not.toThrow()
+          expect(() => refuseReservedItemsMetadata(undefined)).not.toThrow()
+        })
+
+        it("keeps the gift marker: no metadata change and no more units, but removal is fine", async () => {
+          await giftInCart("cart_g1")
+          // The attack: strip the marker (points come back), then raise the quantity at a price of 0.
+          await expect(
+            guardLineItemUpdate(ctx.container, "cart_g1", "li_gift", {
+              quantity: 1,
+              metadata: { [GIFT_METADATA_KEY]: null },
+            })
+          ).rejects.toThrow(/loyalty_/)
+          await expect(
+            guardLineItemUpdate(ctx.container, "cart_g1", "li_gift", { quantity: 1, metadata: {} })
+          ).rejects.toThrow(/cannot be changed/)
+          await expect(guardLineItemUpdate(ctx.container, "cart_g1", "li_gift", { quantity: 5 })).rejects.toThrow(
+            /quantity of 1/
+          )
+          await expect(
+            guardLineItemUpdate(ctx.container, "cart_g1", "li_gift", { quantity: 0 })
+          ).resolves.toBeUndefined()
+          await expect(
+            guardLineItemUpdate(ctx.container, "cart_g1", "li_paid", { quantity: 5, metadata: { note: "x" } })
+          ).resolves.toBeUndefined()
+        })
+
+        it("lets a cart with a genuine gift check out", async () => {
+          await giftInCart("cart_g2")
+          await expect(validateCartGifts(ctx.container, "cart_g2")).resolves.toBeUndefined()
+        })
+
+        it.each([
+          ["more than one unit", { quantity: 3 }],
+          ["a price other than 0", { unit_price: 25 }],
+          ["another variant", { variant_id: "variant_tv" }],
+        ])("refuses checkout when the gift line has %s", async (_label, line) => {
+          await giftInCart("cart_g3", line)
+          await expect(validateCartGifts(ctx.container, "cart_g3")).rejects.toThrow(/no longer valid/)
+        })
+
+        it("refuses checkout for a marker without a redemption in this cart, of this customer", async () => {
+          const redemption = await giftInCart("cart_g4")
+          // Same redemption, another cart.
+          ctx.data.cart.push({
+            id: "cart_g5",
+            customer_id: ANNA,
+            completed_at: null,
+            items: [
+              {
+                id: "li_copy",
+                variant_id: "variant_mug",
+                quantity: 1,
+                unit_price: 0,
+                metadata: { [GIFT_METADATA_KEY]: redemption.id },
+              },
+            ],
+          })
+          await expect(validateCartGifts(ctx.container, "cart_g5")).rejects.toThrow(/no longer valid/)
+          // The cart moved to another customer.
+          ctx.data.cart.find((c) => c.id === "cart_g4")!.customer_id = "cus_other"
+          await expect(validateCartGifts(ctx.container, "cart_g4")).rejects.toThrow(/no longer valid/)
+        })
+
+        it("refuses checkout when two lines carry the same gift", async () => {
+          const redemption = await giftInCart("cart_g6")
+          ctx.data.cart
+            .find((c) => c.id === "cart_g6")!
+            .items.push({
+              id: "li_twin",
+              variant_id: "variant_mug",
+              quantity: 1,
+              unit_price: 0,
+              metadata: { [GIFT_METADATA_KEY]: redemption.id },
+            })
+          await expect(validateCartGifts(ctx.container, "cart_g6")).rejects.toThrow(/no longer valid/)
+        })
+
+        it("ignores carts without gifts and carts that already became orders", async () => {
+          ctx.data.cart.push({ id: "cart_plain", customer_id: ANNA, completed_at: null, items: [] })
+          await expect(validateCartGifts(ctx.container, "cart_plain")).resolves.toBeUndefined()
+          await expect(validateCartGifts(ctx.container, "cart_missing")).resolves.toBeUndefined()
+        })
+      })
+
       it("gives the points of an unused expired code back, or not, as set", async () => {
         const code = { id: "lrew_code", name: "Rabat", kind: "fixed" as const, cost: 100, per_customer_limit: null }
         await service.post(ANNA, [{ key: "seed", type: "adjustment", reason: "manual", points: 200 }])
@@ -393,6 +521,29 @@ moduleIntegrationTestRunner<LoyaltyModuleService>({
         })
         await expirePoints(ctx.container, await service.getSettings(), new Date())
         expect(await service.balanceOf(ANNA)).toBe(-50)
+      })
+    })
+
+    describe("estimate", () => {
+      const cart = (id: string, customer_id: string | null) => ({
+        id,
+        customer_id,
+        currency_code: "pln",
+        items: [{ id: `${id}_li`, quantity: 1, total: 123, tax_total: 23, metadata: null }],
+      })
+
+      it("estimates a customer's cart only for that customer; guest carts stay open", async () => {
+        ctx.data.cart.push(cart("cart_est_anna", ANNA), cart("cart_est_guest", null))
+        const mine = await estimate(ctx.container, { cart_id: "cart_est_anna", customer_id: ANNA }, "en")
+        expect(mine.points).toBeGreaterThan(0)
+        await expect(
+          estimate(ctx.container, { cart_id: "cart_est_anna", customer_id: "cus_other" }, "en")
+        ).rejects.toThrow(/does not belong to your account/)
+        await expect(estimate(ctx.container, { cart_id: "cart_est_anna", customer_id: null }, "en")).rejects.toThrow(
+          /does not belong to your account/
+        )
+        const guest = await estimate(ctx.container, { cart_id: "cart_est_guest", customer_id: null }, "en")
+        expect(guest.points).toBe(mine.points)
       })
     })
 
