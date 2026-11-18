@@ -19,8 +19,13 @@
     },
     "demo": {
       "title": "Demo mode",
-      "body": "Sample negotiations in every state. They never expire and never create draft orders or carts. Switch the demo option off in medusa-config.ts before going live.",
-      "badge": "Demo"
+      "body": "Sample negotiations built from your store's products, in every state. They never expire and never create draft orders or carts. \"Restore test data\" brings back a fresh set. Turn the demo option off in medusa-config.ts before going live.",
+      "badge": "Demo",
+      "reset": "Restore test data",
+      "resetTitle": "Restore test data?",
+      "resetBody": "Every demo negotiation is replaced with a fresh set that shows all features: every status, product and cart threads, several rounds of offers, a lapsed offer, an offer added to the cart, notes and assignees. Real negotiations are not touched.",
+      "cancel": "Cancel",
+      "restored": "Test data restored"
     },
     "status": {
       "open": "Open",
@@ -251,8 +256,6 @@
       "acceptedDays": "An agreed price can be used for {{days}} days.",
       "expireNow": "Expire inactive now",
       "expired": "Counter-offers lapsed: {{lapsed}}. Threads expired: {{expired}}.",
-      "restoreDemo": "Restore demo data",
-      "demoRestored": "Demo data restored",
       "optionsTitle": "Options from medusa-config",
       "optionsHint": "Read-only. Change them in medusa-config.ts and restart Medusa.",
       "storeCurrency": "store default",

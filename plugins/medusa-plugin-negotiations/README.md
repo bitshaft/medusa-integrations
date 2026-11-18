@@ -92,7 +92,7 @@ values keep the plugin disabled and log one line (`[negotiations] Disabled:
 | `limits.messagesPerHour` | `30`                | Customer messages per hour, across their threads                                                               |
 | `limits.messageLength`   | `2000`              | Characters per message                                                                                         |
 | `limits.maxQuantity`     | `10000`             | Quantity of one line                                                                                           |
-| `demo`                   | `false`             | Sample threads in every state on the admin page; they never expire and never write. "Restore demo data" button |
+| `demo`                   | `false`             | Sample threads on the admin page (see [Demo mode](#demo-mode)); they never expire and never write              |
 
 Admin settings (Negotiations → Settings, stored in the database): which
 counter-offer modes the team may use on whole carts (one amount, a price
@@ -256,7 +256,7 @@ All under `/admin/negotiations`.
 | `POST /:id/draft-order/plan`, `/dry-run`                | `{ region_id?, sales_channel_id?, address_id? }` (`address_id: null` = e-mail only) |
 | `POST /:id/draft-order/commit`                          | `{ dry_run_id }`: valid for 30 minutes, with the same data                          |
 | `POST /expire`                                          | "Expire inactive now"                                                               |
-| `POST /demo/reset`                                      | "Restore demo data" (demo mode only)                                                |
+| `POST /demo/reset`                                      | "Restore test data" (demo mode only)                                                |
 | `GET /settings`, `POST /settings`                       | Options (read-only) and settings                                                    |
 | `GET /runs`                                             | Writer history                                                                      |
 | `GET /guide`                                            | Rollout steps with their detected status                                            |
@@ -288,6 +288,29 @@ All under `/admin/negotiations`.
 
 Widgets: threads on the product page and on the customer page, a minimum
 price on the variant page, and a line above the order list.
+
+### Demo mode
+
+With `demo: true` the admin shows ten sample negotiations instead of the
+real ones, seeded the first time the page opens. They are built from the
+store's own published products (one variant each, with its price in the
+store's default currency and its thumbnail); a store without products gets
+built-in sample products in PLN. Together they show every feature:
+
+- every status: open, with a counter-offer, accepted, rejected, expired and
+  withdrawn, spread over the last 30 days for the dashboard;
+- product and cart threads, offers per unit, per line and for the whole
+  cart, several rounds of offers and targets;
+- a counter-offer that lapsed, an offer that expires tomorrow, a cart
+  waiting days for a reply (the oldest on the list), an accepted offer added
+  to the cart, a price the team accepted straight away;
+- internal notes, and threads assigned to the admin who restored them.
+
+**Restore test data** in the demo bar at the top of the page (and in
+Settings) replaces every demo thread with a fresh set, after a
+confirmation; the admin can try every move on them first. Real threads are
+never touched. Demo threads never expire, never create draft orders or carts
+and never send anything.
 
 ## Limitations
 

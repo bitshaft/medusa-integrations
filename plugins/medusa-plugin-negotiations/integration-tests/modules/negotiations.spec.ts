@@ -42,6 +42,8 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
     let events: Array<{ name: string; data: Row }>
     /** Whether the catalog price includes tax, as Medusa's pricing would report it. */
     let catalogGross: boolean
+    /** Variants a catalog-wide query (no `id` filter) returns, as the demo seed reads them. */
+    let catalogVariants: Row[]
 
     const customers: Record<string, Row> = {
       cus_a: {
@@ -67,6 +69,7 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
     beforeEach(() => {
       events = []
       catalogGross = false
+      catalogVariants = []
       container = createMedusaContainer()
       container.register(NEGOTIATIONS_MODULE, asValue(service))
       container.register(
@@ -82,6 +85,7 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
         asValue({
           graph: async ({ entity, filters }: Row) => {
             if (entity === "customer") return { data: customers[filters.id] ? [customers[filters.id]] : [] }
+            if (entity === "variant" && !filters?.id) return { data: catalogVariants }
             if (entity === "variant") {
               return {
                 data: [
@@ -144,6 +148,7 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
       expect(gross.tax_inclusive).toBe(true)
       // The catalog changing later does not change what was agreed on.
       catalogGross = false
+      catalogVariants = []
       const countered = await teamCounter(ctx(), "user_1", gross.id, {
         version: gross.version,
         price: { mode: "unit", unit_price: 40_000 },
@@ -288,10 +293,36 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
     })
 
     it("demo threads: every state, never expire, never write", async () => {
-      await resetDemo(container)
+      await resetDemo(container, { assigneeId: "user_demo_admin" })
       const { threads } = await service.listThreads({ is_demo: true, limit: 50 })
       expect(new Set(threads.map((t) => t.status))).toEqual(
         new Set(["open", "countered", "accepted", "rejected", "expired", "withdrawn"])
+      )
+      // Everything the plugin can show: both kinds, every offer mode, team and customer acceptance, assignees.
+      expect(new Set(threads.map((t) => t.kind))).toEqual(new Set(["product", "cart"]))
+      expect(new Set(threads.flatMap((t) => (t.offer ? [t.offer.mode] : [])))).toEqual(new Set(["lines", "unit"]))
+      expect(new Set(threads.flatMap((t) => (t.accepted_by ? [t.accepted_by] : [])))).toEqual(
+        new Set(["customer", "team"])
+      )
+      expect(threads.filter((t) => t.assignee_id === "user_demo_admin").length).toBeGreaterThan(0)
+      const types = new Set(
+        (await Promise.all(threads.map((t) => service.listMessages(t.id, { internal: true }))))
+          .flat()
+          .map((m) => m.type)
+      )
+      for (const type of [
+        "target_price",
+        "counter_offer",
+        "internal_note",
+        "offer_expired",
+        "added_to_cart",
+        "expiry",
+      ]) {
+        expect(types).toContain(type)
+      }
+      // Without products in the store, the built-in sample products in PLN.
+      expect(threads.every((t) => t.currency_code === "pln" && t.lines[0].variant_id.startsWith("variant_demo_"))).toBe(
+        true
       )
       const result = await service.expire({ now: new Date(Date.now() + 365 * DAY), expiryDays: 14 })
       expect(result.expired.filter((t) => t.is_demo)).toHaveLength(0)
@@ -303,6 +334,57 @@ moduleIntegrationTestRunner<NegotiationsModuleService>({
       // Restoring replaces them instead of adding more.
       await resetDemo(container)
       expect((await service.listThreads({ is_demo: true, limit: 50 })).count).toBe(threads.length)
+    })
+
+    it("demo threads use the store's published products and prices", async () => {
+      catalogVariants = [
+        {
+          id: "variant_x",
+          title: "M",
+          sku: "X-M",
+          product: { id: "prod_x", title: "Shirt", status: "published", thumbnail: "x.png" },
+          prices: [{ amount: 59.9, currency_code: "pln" }],
+        },
+        {
+          id: "variant_x2",
+          title: "L",
+          sku: "X-L",
+          product: { id: "prod_x", title: "Shirt", status: "published" },
+          prices: [{ amount: 59.9, currency_code: "pln" }],
+        },
+        {
+          id: "variant_y",
+          title: "One",
+          sku: "Y",
+          product: { id: "prod_y", title: "Mug", status: "published" },
+          prices: [{ amount: 25, currency_code: "pln" }],
+        },
+        {
+          id: "variant_z",
+          title: "One",
+          sku: "Z",
+          product: { id: "prod_z", title: "Draft", status: "draft" },
+          prices: [{ amount: 10, currency_code: "pln" }],
+        },
+        {
+          id: "variant_w",
+          title: "One",
+          sku: "W",
+          product: { id: "prod_w", title: "Euro only", status: "published" },
+          prices: [{ amount: 10, currency_code: "eur" }],
+        },
+      ]
+      await resetDemo(container)
+      const { threads } = await service.listThreads({ is_demo: true, limit: 50 })
+      const variants = new Set(threads.flatMap((t) => t.lines.map((l) => l.variant_id)))
+      // One variant per published product with a PLN price; drafts and other currencies are left out.
+      expect(variants).toEqual(new Set(["variant_x", "variant_y"]))
+      const shirt = threads.flatMap((t) => t.lines).find((l) => l.variant_id === "variant_x")!
+      expect(shirt).toMatchObject({ catalog_unit_price: 5990, thumbnail: "x.png", product_title: "Shirt" })
+      // A three-line cart over a two-product catalog keeps each variant once.
+      for (const thread of threads) {
+        expect(new Set(thread.lines.map((l) => l.variant_id)).size).toBe(thread.lines.length)
+      }
     })
   },
 })

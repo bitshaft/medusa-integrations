@@ -37,4 +37,5 @@ First release.
   and a customer-safe part, customer group and rate limits.
 - Admin page "Negotiations" (dashboard, thread page, rollout guide,
   settings), widgets on products, variants, customers and the order list,
-  demo mode; Polish and English.
+  demo mode with sample negotiations built from the store's products and a
+  "Restore test data" button; Polish and English.

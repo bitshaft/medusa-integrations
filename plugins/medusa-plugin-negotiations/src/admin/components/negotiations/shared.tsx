@@ -1,21 +1,21 @@
 import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
-import { Badge, StatusBadge, Text } from "@medusajs/ui"
+import { Badge, Button, StatusBadge, Text, toast, usePrompt } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
-import { apiError, type FloorCheck, type Status, type Thread } from "../../lib/negotiations/api"
+import { apiError, type FloorCheck, type Status, type Thread, useResetDemo } from "../../lib/negotiations/api"
 import { money, percent } from "../../lib/negotiations/format"
 
-/** Shown on every page while demo mode is on. */
-export const DemoBar = () => {
+/** Shown on every page while demo mode is on; with `reset`, it has the "Restore test data" button. */
+export const DemoBar = ({ reset = false }: { reset?: boolean }) => {
   const { t } = useTranslation()
   return (
     <div
       role="status"
-      className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
+      className="flex flex-wrap items-start gap-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
     >
       <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
-      <div>
+      <div className="min-w-0 flex-1">
         <Text size="small" weight="plus" className="text-ui-tag-orange-text">
           {t("negotiations.demo.title")}
         </Text>
@@ -23,7 +23,38 @@ export const DemoBar = () => {
           {t("negotiations.demo.body")}
         </Text>
       </div>
+      {reset && <ResetDemoButton />}
     </div>
+  )
+}
+
+/** Replaces the demo threads with a fresh set, after a confirmation. */
+export const ResetDemoButton = () => {
+  const { t } = useTranslation()
+  const prompt = usePrompt()
+  const reset = useResetDemo()
+  const errorText = useErrorText()
+  return (
+    <Button
+      size="small"
+      variant="secondary"
+      isLoading={reset.isPending}
+      onClick={async () => {
+        const confirmed = await prompt({
+          title: t("negotiations.demo.resetTitle"),
+          description: t("negotiations.demo.resetBody"),
+          confirmText: t("negotiations.demo.reset"),
+          cancelText: t("negotiations.demo.cancel"),
+        })
+        if (!confirmed) return
+        reset.mutate(undefined, {
+          onSuccess: () => toast.success(t("negotiations.demo.restored")),
+          onError: (e) => toast.error(errorText(e)),
+        })
+      }}
+    >
+      {t("negotiations.demo.reset")}
+    </Button>
   )
 }
 

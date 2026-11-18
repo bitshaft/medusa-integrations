@@ -7,12 +7,13 @@ import { ensureDemo } from "../server/demo"
 import { resolveNegotiations } from "../server/runtime"
 import { floorsOf } from "../server/threads"
 import { teamMessage, teamView, type ThreadRecord } from "../views"
+import { actorId } from "./utils"
 
 /** Demo mode shows the demo threads only (seeded on first use); otherwise the real ones. */
 export async function demoMode(req: MedusaRequest): Promise<boolean> {
   const service = resolveNegotiations(req.scope)
   const demo = (await service.getOptions()).demo
-  if (demo) await ensureDemo(req.scope)
+  if (demo) await ensureDemo(req.scope, { assigneeId: actorId(req) })
   return demo
 }
 

@@ -1,6 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-import { adminRoute } from "../../../../../lib/negotiations/api/utils"
+import { actorId, adminRoute } from "../../../../../lib/negotiations/api/utils"
 import { NegotiationError } from "../../../../../lib/negotiations/messages"
 import { resetDemo } from "../../../../../lib/negotiations/server/demo"
 import { resolveNegotiations } from "../../../../../lib/negotiations/server/runtime"
@@ -10,6 +10,6 @@ import { requireEnabled } from "../../../../../lib/negotiations/server/threads"
 export const POST = adminRoute(async (req: MedusaRequest, res: MedusaResponse) => {
   await requireEnabled(req.scope)
   if (!(await resolveNegotiations(req.scope).getOptions()).demo) throw new NegotiationError("demo_thread")
-  await resetDemo(req.scope)
+  await resetDemo(req.scope, { assigneeId: actorId(req) })
   res.json({ ok: true })
 })

@@ -21,12 +21,11 @@ import {
   type Settings as SettingsType,
   type SettingsResponse,
   useExpireNow,
-  useResetDemo,
   useRuns,
   useSaveSettings,
 } from "../../lib/negotiations/api"
 import { dateTime, money } from "../../lib/negotiations/format"
-import { Note, useErrorText } from "./shared"
+import { Note, ResetDemoButton, useErrorText } from "./shared"
 
 const OptionRow = ({ name, value }: { name: string; value: string }) => (
   <div className="flex items-center justify-between gap-3 px-6 py-2">
@@ -92,7 +91,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
   const o = data.options
   const save = useSaveSettings()
   const expire = useExpireNow()
-  const resetDemo = useResetDemo()
   const errorText = useErrorText()
   const [form, setForm] = useState<SettingsType>(data.settings)
   const [discount, setDiscount] = useState(
@@ -235,21 +233,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
           >
             {t("negotiations.settings.expireNow")}
           </Button>
-          {o.demo && (
-            <Button
-              size="small"
-              variant="secondary"
-              isLoading={resetDemo.isPending}
-              onClick={() =>
-                resetDemo.mutate(undefined, {
-                  onSuccess: () => toast.success(t("negotiations.settings.demoRestored")),
-                  onError: (e) => toast.error(errorText(e)),
-                })
-              }
-            >
-              {t("negotiations.settings.restoreDemo")}
-            </Button>
-          )}
+          {o.demo && <ResetDemoButton />}
         </div>
       </Container>
 

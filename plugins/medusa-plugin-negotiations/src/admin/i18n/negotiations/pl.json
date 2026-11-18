@@ -19,8 +19,13 @@
     },
     "demo": {
       "title": "Tryb demo",
-      "body": "Przykładowe negocjacje we wszystkich stanach. Nie wygasają i nigdy nie tworzą szkiców zamówień ani koszyków. Przed startem wyłącz opcję demo w medusa-config.ts.",
-      "badge": "Demo"
+      "body": "Przykładowe negocjacje na produktach z Twojego sklepu, we wszystkich stanach. Nie wygasają i nigdy nie tworzą szkiców zamówień ani koszyków. „Przywróć dane testowe” wczytuje świeży zestaw. Przed startem wyłącz opcję demo w medusa-config.ts.",
+      "badge": "Demo",
+      "reset": "Przywróć dane testowe",
+      "resetTitle": "Przywrócić dane testowe?",
+      "resetBody": "Wszystkie negocjacje demo zostaną zastąpione świeżym zestawem, który pokazuje wszystkie funkcje: każdy status, negocjacje produktu i koszyka, kilka rund ofert, wygasłą ofertę, ofertę dodaną do koszyka, notatki i przypisania. Prawdziwe negocjacje nie zostaną zmienione.",
+      "cancel": "Anuluj",
+      "restored": "Przywrócono dane testowe"
     },
     "status": {
       "open": "Otwarte",
@@ -253,8 +258,6 @@
       "acceptedDays": "Uzgodnioną cenę można wykorzystać przez {{days}} dni.",
       "expireNow": "Wygaś nieaktywne teraz",
       "expired": "Wygasłe kontroferty: {{lapsed}}. Wygasłe wątki: {{expired}}.",
-      "restoreDemo": "Przywróć dane demo",
-      "demoRestored": "Przywrócono dane demo",
       "optionsTitle": "Opcje z medusa-config",
       "optionsHint": "Tylko do odczytu. Zmień je w medusa-config.ts i uruchom Medusę ponownie.",
       "storeCurrency": "domyślna waluta sklepu",

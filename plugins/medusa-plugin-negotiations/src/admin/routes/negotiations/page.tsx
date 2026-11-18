@@ -26,7 +26,7 @@ const NegotiationsPage = () => {
   const s = status.data
   return (
     <div className="flex flex-col gap-y-3">
-      {s?.options.demo && <DemoBar />}
+      {s?.options.demo && <DemoBar reset />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
