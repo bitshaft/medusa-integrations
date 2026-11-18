@@ -1,5 +1,7 @@
-import type { Logger } from "@medusajs/framework/types"
-import { MedusaService } from "@medusajs/framework/utils"
+import type { Context, Logger } from "@medusajs/framework/types"
+import { InjectTransactionManager, MedusaContext, MedusaService } from "@medusajs/framework/utils"
+
+import { DEMO_KEY_PREFIX, type DemoMessage } from "../../lib/emails/demo-data"
 
 import { logPluginDisabled, pluginDisabledError } from "../../lib/emails/kit/options"
 import { type EmailsPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/emails/options"
@@ -144,6 +146,29 @@ export default class EmailsModuleService extends MedusaService({
       }
       throw error
     }
+  }
+
+  /**
+   * Replaces the demo rows of the send log (dedupe key `demo-data:…`) with
+   * new ones, back-dated as given. Real log rows are never touched.
+   */
+  @InjectTransactionManager()
+  async replaceDemoMessages(rows: DemoMessage[], @MedusaContext() context: Context = {}): Promise<number> {
+    const manager = context.transactionManager as unknown as {
+      execute(sql: string, params?: unknown[]): Promise<unknown[]>
+    }
+    await manager.execute(`delete from "emails_message" where "dedupe_key" like ?`, [`${DEMO_KEY_PREFIX}%`])
+    for (const row of rows) {
+      const values: Record<string, unknown> = { ...row, updated_at: row.sent_at ?? row.created_at }
+      const columns = Object.keys(values)
+      await manager.execute(
+        `insert into "emails_message" (${columns.map((c) => `"${c}"`).join(", ")}) values (${columns
+          .map((c) => (c === "input" ? "?::jsonb" : "?"))
+          .join(", ")})`,
+        columns.map((c) => (c === "input" && values[c] != null ? JSON.stringify(values[c]) : (values[c] ?? null)))
+      )
+    }
+    return rows.length
   }
 
   private async findByDedupeKey_(dedupeKey: string): Promise<MessageRecord | null> {

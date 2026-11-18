@@ -2,6 +2,7 @@ import path from "node:path"
 
 import { moduleIntegrationTestRunner } from "@medusajs/test-utils"
 
+import { buildDemoMessages } from "../../src/lib/emails/demo-data"
 import { copyKey, GENERAL_KEY, typeKey } from "../../src/lib/emails/settings"
 import { EMAILS_MODULE } from "../../src/modules/emails"
 import type EmailsModuleService from "../../src/modules/emails/service"
@@ -24,6 +25,48 @@ moduleIntegrationTestRunner<EmailsModuleService>({
       it("matches the data models exactly", async () => {
         const diff = await MikroOrmWrapper.getOrm().getSchemaGenerator().getUpdateSchemaSQL({ wrap: false })
         expect(diff.trim()).toBe("")
+      })
+    })
+
+    describe("demo send log", () => {
+      it("replaces only demo rows, back-dated, and keeps real ones", async () => {
+        const real = await service.claimMessage({
+          type: "welcome",
+          locale: "pl",
+          recipient: "real@example.com",
+          dedupe_key: "welcome:cus_real",
+        } as never)
+        let n = 0
+        const build = () =>
+          buildDemoMessages({
+            now: new Date(),
+            orders: [1, 2, 3, 4, 5].map((i) => ({
+              id: `order_${i}`,
+              display_id: 1000 + i,
+              email: `b${i}@example.com`,
+              customer_id: null,
+              total: "10,00 zł",
+              locale: "pl",
+              real: true,
+            })),
+            customers: [{ id: "cus_1", email: "c1@example.com", locale: "pl" }],
+            team: ["team@shop.test"],
+            storeName: "Test Shop",
+            defaultLocale: "pl",
+            id: (prefix) => `${prefix}_demo_${++n}`,
+          })
+        await service.replaceDemoMessages(build())
+        const second = build()
+        await service.replaceDemoMessages(second)
+
+        const rows = await service.listEmailsMessages({}, { take: null })
+        expect(rows).toHaveLength(second.length + 1)
+        expect(rows.find((r) => r.id === real.message.id)).toBeTruthy()
+        const oldest = Math.min(...rows.map((r) => new Date(r.created_at).getTime()))
+        expect(Date.now() - oldest).toBeGreaterThan(20 * 86_400_000)
+        const withInput = rows.find((r) => r.type === "order-confirmation" && r.input)
+        expect(withInput?.input).toMatchObject({ order_id: expect.stringMatching(/^order_/) })
+        expect(rows.filter((r) => r.type === "password-reset").every((r) => r.input === null)).toBe(true)
       })
     })
 

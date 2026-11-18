@@ -36,7 +36,9 @@ First release.
   defaults, live preview with a real order, test sends, store team
   recipients and low stock threshold, and a send log per order and customer
   with resend.
-- Demo mode that renders and logs emails without sending.
+- Demo mode that renders and logs emails without sending, with "Restore test
+  data": a month of sample send history over the store's orders and
+  customers, in every type and status.
 - `send-emails-message` and `resend-emails-message` workflows and
   `emails.*` events.
 - An "Unsubscribe" footer link and `List-Unsubscribe` headers for emails whose

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router-dom"
 
 import { Appearance } from "../../components/emails/appearance"
+import { DemoBar } from "../../components/emails/demo-bar"
 import { Guide } from "../../components/emails/guide"
 import { MessageLog } from "../../components/emails/message-log"
 import { Settings } from "../../components/emails/settings"
@@ -44,6 +45,7 @@ const EmailsPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
+      {s?.enabled && s.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">

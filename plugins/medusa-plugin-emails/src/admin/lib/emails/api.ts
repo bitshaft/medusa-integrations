@@ -324,3 +324,15 @@ export function useEmailsGuide() {
     queryFn: () => sdk.client.fetch<{ steps: GuideStep[] }>("/admin/emails/guide"),
   })
 }
+
+/** "Restore test data" (demo mode only): replaces the demo rows of the send history. */
+export function useResetEmailsDemo() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: () =>
+      sdk.client.fetch<{ messages: number; orders: number; customers: number }>("/admin/emails/demo/reset", {
+        method: "POST",
+      }),
+    onSuccess: () => invalidate(),
+  })
+}

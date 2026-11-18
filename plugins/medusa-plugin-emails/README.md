@@ -298,6 +298,24 @@ and a log line says what would have been sent. Nothing reaches the
 notification module, so no provider is needed. Previews, test sends and
 resends work the same way.
 
+The admin page shows a demo bar with **Restore test data**, so the History
+tab has something to show before any real email exists. It fills the send
+log with a month of sample emails for the store's latest twelve orders and
+registered customers (built-in sample orders when there are none):
+
+- every email type: order confirmations and team alerts, payments,
+  fulfilment, shipping and delivery, a cancellation, a return with its
+  refund, welcome emails, a verification code, a password reset, a low
+  stock alert and a failed payment;
+- every status: sent, failed with the transport's reason (unknown mailbox,
+  full mailbox, a timeout after three attempts), pending, demo (a test
+  send), and a failed confirmation resent after the address was fixed.
+
+Emails of real orders can be previewed and resent (in demo mode a resend
+is only logged). Sample rows are marked by their dedupe key
+(`demo-data:…`): a restore replaces them and never touches real log
+entries, and the retry job never picks them up. Nothing is sent.
+
 ## Admin
 
 **Emails** in the main menu, with five tabs:
@@ -461,6 +479,7 @@ Admin routes, all under `/admin/emails` and behind admin authentication:
 | Route                         |                                                               |
 | ----------------------------- | ------------------------------------------------------------- |
 | `GET /status`                 | Enabled or the reason it is not, demo mode, sender.           |
+| `POST /demo/reset`            | "Restore test data" for the send history (demo mode only).     |
 | `GET, POST /settings`         | Store team recipients and low stock threshold.                |
 | `GET, POST /theme`            | Appearance; `{ theme: null }` restores the plugin options.    |
 | `GET /guide`                  | Rollout steps with their detected status.                     |
