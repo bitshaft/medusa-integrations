@@ -33,7 +33,7 @@ export type SettingsResponse =
   | {
       enabled: true
       version: string
-      options: { timeZone: string; defaultLocale: "pl" | "en" }
+      options: { timeZone: string; defaultLocale: "pl" | "en"; demo: boolean }
       settings: Settings
       defaults: Settings
       /** The store's currencies, the default first. */
@@ -320,3 +320,16 @@ export const useVariantLabel = (id: string | null) =>
       return v ? `${v.product?.title ?? ""} – ${v.title ?? v.sku ?? v.id}` : id
     },
   })
+
+/** "Restore test data" (demo mode only): replaces the whole program with the demo set. */
+export function useResetDemo() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: () =>
+      sdk.client.fetch<{ customers: number; created_customers: number; entries: number; rewards: number }>(
+        "/admin/loyalty/demo/reset",
+        { method: "POST" }
+      ),
+    onSuccess: invalidate,
+  })
+}

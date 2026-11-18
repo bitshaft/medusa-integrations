@@ -68,6 +68,10 @@ export const REASONS = {
     pl: "Gratis z programu lojalnościowego w koszyku jest nieważny. Usuń go z koszyka i wymień nagrodę ponownie.",
     en: "The loyalty gift in the cart is no longer valid. Remove it from the cart and redeem the reward again.",
   },
+  demo_only: {
+    pl: "Dane testowe można przywrócić tylko w trybie demo (opcja demo: true w medusa-config.ts).",
+    en: "Test data can only be restored in demo mode (the demo: true option in medusa-config.ts).",
+  },
   reserved_metadata: {
     pl: 'Klucze metadanych zaczynające się od "loyalty_" są zarezerwowane dla programu lojalnościowego. Usuń je z żądania.',
     en: 'Metadata keys starting with "loyalty_" are reserved for the loyalty program. Remove them from the request.',

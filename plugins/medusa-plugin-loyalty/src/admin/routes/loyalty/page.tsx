@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 
 import { Customers } from "../../components/loyalty/customers"
 import { Dashboard } from "../../components/loyalty/dashboard"
+import { DemoBar } from "../../components/loyalty/demo-bar"
 import { Guide } from "../../components/loyalty/guide"
 import { Rewards } from "../../components/loyalty/rewards"
 import { Settings } from "../../components/loyalty/settings"
@@ -28,6 +29,7 @@ const LoyaltyPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
+      {s?.enabled && s.options.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">

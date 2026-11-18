@@ -71,6 +71,7 @@ every customer page.
 | --------------- | --------------- | ----------------------------------------------------------------------- |
 | `timeZone`      | `Europe/Warsaw` | "Today" for birthdays, and dates in exports.                            |
 | `defaultLocale` | `pl`            | Language of customer messages when the request names none (`pl`, `en`). |
+| `demo`          | `false`         | "Restore test data" in the admin (see [Demo mode](#demo-mode)). Demo stores only. |
 
 Invalid options never stop Medusa: the plugin stays disabled and logs one
 line (`[loyalty] Disabled: …`).
@@ -208,7 +209,34 @@ The plugin sends no e-mails; an e-mail plugin can listen to these.
 
 Admin endpoints are under `/admin/loyalty` (`settings`, `dashboard`,
 `rewards`, `customers`, `customers/:id/entries?format=csv`,
-`customers/:id/adjust`, `customers/:id/newsletter`, `preview`).
+`customers/:id/adjust`, `customers/:id/newsletter`, `preview`, and
+`demo/reset` in demo mode).
+
+### Demo mode
+
+With `demo: true` the admin page shows a demo bar with **Restore test
+data**. After a confirmation it **deletes every loyalty record** and fills
+the program with test data that shows every feature:
+
+- settings with every rule on: 1 point per 1 of the currency, sign-up,
+  first order, birthday and newsletter bonuses, three tiers (Brąz, Srebro,
+  Złoto) with multipliers and bonuses, expiry after 12 months;
+- rewards of every kind (amount, percentage for Srebro and up, free
+  shipping, a gift with the store's first published variant) and one
+  switched off;
+- a year of history for up to eight of the store's registered customers
+  (oldest first): orders and tier changes, a return and a cancellation,
+  codes issued, used and expired, gifts in a cart, ordered and released,
+  points expired after a year, points expiring within two weeks, an
+  upcoming birthday and manual corrections by the admin who restored it.
+
+A store with fewer than six registered customers gets sample customers
+(`demo.…@example.com`, `metadata.loyalty_demo: true`), reused on every
+restore. The ledger stays append-only: the reset may delete entries only
+inside its own transaction. Entries use the plugin's own keys, so the real
+program keeps working on top of the demo without paying anything twice.
+Demo codes (`DEMO-…`) are not Medusa promotions and cannot be used at
+checkout; promotions created by earlier real redemptions are not removed.
 
 ## Workflows and hooks
 

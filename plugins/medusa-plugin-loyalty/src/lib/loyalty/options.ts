@@ -24,6 +24,12 @@ export const pluginOptionsSchema = z.object({
   timeZone: timeZone.default(DEFAULT_TIME_ZONE),
   /** Language of customer messages when the request names none. */
   defaultLocale: z.enum(["pl", "en"]).default("pl"),
+  /**
+   * Demo mode: the admin gets "Restore test data", which replaces the whole
+   * program with sample settings, rewards and a year of history. For demo
+   * stores only: it deletes every loyalty record.
+   */
+  demo: z.boolean().default(false),
 })
 export type LoyaltyPluginOptions = z.output<typeof pluginOptionsSchema>
 

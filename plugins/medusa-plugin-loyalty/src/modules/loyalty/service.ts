@@ -12,6 +12,7 @@ import { logPluginDisabled, pluginDisabledError } from "../../lib/loyalty/kit/op
 import { LoyaltyError } from "../../lib/loyalty/messages"
 import { type LoyaltyPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/loyalty/options"
 import { type LoyaltySettings, readSettings, settingsSchema } from "../../lib/loyalty/settings"
+import type { DemoData } from "../../lib/loyalty/demo"
 import type { ActorType, EntryReason, EntryType, RedemptionStatus, RewardKind } from "../../lib/loyalty/types"
 import {
   LoyaltyAccount,
@@ -207,6 +208,69 @@ export default class LoyaltyModuleService extends MedusaService({
     if (row) await this.deleteLoyaltySettings(row.id)
     await this.createLoyaltySettings({ key: SETTINGS_KEY, value: settings as unknown as Record<string, unknown> })
     return settings
+  }
+
+  /* Demo ------------------------------------------------------------------ */
+
+  /**
+   * Replaces the whole program (settings, rewards, accounts, ledger,
+   * redemptions, tier history) with demo data, in one transaction. Only for
+   * demo mode: the ledger trigger lets entries go only while this
+   * transaction runs.
+   */
+  @InjectManager()
+  async replaceWithDemo(data: DemoData, @MedusaContext() context: Context = {}): Promise<void> {
+    if (!(await this.getOptions()).demo) throw new LoyaltyError("demo_only")
+    await this.replaceWithDemo_(data, context)
+  }
+
+  @InjectTransactionManager()
+  protected async replaceWithDemo_(data: DemoData, @MedusaContext() context: Context = {}): Promise<void> {
+    const manager = context.transactionManager as unknown as SqlManager
+    await manager.execute(`select set_config('loyalty.demo_reset', 'on', true)`)
+    for (const table of [
+      "loyalty_entry",
+      "loyalty_redemption",
+      "loyalty_tier_change",
+      "loyalty_account",
+      "loyalty_reward",
+    ]) {
+      await manager.execute(`delete from "${table}"`)
+    }
+    await manager.execute(`delete from "loyalty_setting" where "key" = ?`, [SETTINGS_KEY])
+    await manager.execute(`select set_config('loyalty.demo_reset', 'off', true)`)
+
+    const insert = async (table: string, rows: Array<Record<string, unknown>>, json: string[] = []) => {
+      for (const row of rows) {
+        const values: Record<string, unknown> = { updated_at: row.created_at ?? new Date(), ...row }
+        const columns = Object.keys(values)
+        await manager.execute(
+          `insert into "${table}" (${columns.map((c) => `"${c}"`).join(", ")}) values (${columns
+            .map((c) => (json.includes(c) ? "?::jsonb" : "?"))
+            .join(", ")})`,
+          columns.map((c) => (json.includes(c) ? JSON.stringify(values[c]) : (values[c] ?? null)))
+        )
+      }
+    }
+    const raw = (value: number | null) => (value == null ? null : { value: String(value), precision: 20 })
+    await insert(
+      "loyalty_setting",
+      [{ id: generateEntityId(undefined, "lset"), key: SETTINGS_KEY, value: data.settings, created_at: new Date() }],
+      ["value"]
+    )
+    await insert(
+      "loyalty_reward",
+      data.rewards.map((r) => ({ ...r, raw_value: raw(r.value) })),
+      ["raw_value"]
+    )
+    await insert("loyalty_account", data.accounts)
+    await insert("loyalty_entry", data.entries, ["metadata"])
+    await insert("loyalty_redemption", data.redemptions)
+    await insert(
+      "loyalty_tier_change",
+      data.tier_changes.map((c) => ({ ...c, raw_spend: raw(c.spend) })),
+      ["raw_spend"]
+    )
   }
 
   /* Reading --------------------------------------------------------------- */

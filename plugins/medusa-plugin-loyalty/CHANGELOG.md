@@ -25,6 +25,8 @@ First release.
   birthday; bilingual refusals.
 - Admin page (panel, rewards, customers with ledger and CSV, settings with a
   customer preview, guide) and a customer widget, in Polish and English.
+- Demo mode (`demo: true`): "Restore test data" replaces the program with
+  sample settings, rewards and a year of history for the store's customers.
 - Events: `loyalty.points_earned`, `points_redeemed`, `points_reverted`,
   `points_expiring`, `points_expired`, `tier_changed`, `reward_redeemed`.
 
