@@ -208,6 +208,11 @@
       "warningTitle_other": "{{count}} produktów nie ma wagi: każdy liczy się jako {{weight}} kg za sztukę.",
       "warningHint": "Sprawdź wagę paczki poniżej przed utworzeniem przesyłki; zła waga może oznaczać dopłatę u kuriera.",
       "held": "Czeka: produkt nie ma wagi. Sprawdź wagę paczki i utwórz przesyłkę."
+    },
+    "signals": {
+      "pending": "do utworzenia: {{count}}",
+      "noWeight": "bez wagi: {{count}}",
+      "variantsNoWeight": "Warianty bez wagi: {{count}}; paczki liczą je wagą domyślną."
     }
   }
 }

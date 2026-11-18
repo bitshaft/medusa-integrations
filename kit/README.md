@@ -4,11 +4,11 @@ Shared code for the plugins in this repo. It is **not** an npm package.
 `npm run kit:sync` copies it into every plugin, so each published package is
 self-contained and has no extra runtime dependency.
 
-| Source        | Copied to (in each plugin)       | Contents                                                                                                           |
-| ------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `kit/server/` | `src/lib/<namespace>/kit/`       | HTTP client (timeouts, safe retries, secret masking), option helpers (disabled mode), package version, API helpers |
-| `kit/admin/`  | `src/admin/lib/<namespace>/kit/` | Admin JS SDK instance, formatting helpers, sidebar icon tile (`navIcon`)                                           |
-| `kit/build/`  | `scripts/kit/`                   | Build helpers used by the plugin's npm scripts (`strip-source-maps.mjs`); not published                            |
+| Source        | Copied to (in each plugin)       | Contents                                                                                                                                                                                 |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kit/server/` | `src/lib/<namespace>/kit/`       | HTTP client (timeouts, safe retries, secret masking), option helpers (disabled mode), package version, API helpers                                                                       |
+| `kit/admin/`  | `src/admin/lib/<namespace>/kit/` | Admin JS SDK instance, formatting helpers, sidebar icon tile (`navIcon`), page icon and tabs (`ui.tsx`), integrations on Medusa's pages (`integrations.tsx`, `overview.tsx`, `texts.ts`) |
+| `kit/build/`  | `scripts/kit/`                   | Build helpers used by the plugin's npm scripts (`strip-source-maps.mjs`); not published                                                                                                  |
 
 `<namespace>` is the plugin folder name without `medusa-plugin-`, e.g.
 `apaczka`.
@@ -24,3 +24,37 @@ Rules:
   Medusa, so API clients built on them stay framework-free.
 - Tests in `__tests__/` are copied too and run as part of each plugin's
   `npm test`.
+
+## Integrations on Medusa's pages
+
+`integrations.tsx` and `overview.tsx` put every installed plugin into one
+card per Medusa page, the way a suite of integrations should look:
+
+| Page         | Zone                      | Card                                                                |
+| ------------ | ------------------------- | ------------------------------------------------------------------- |
+| Order        | `order.details.before`    | Integrations: a tab per plugin that applies to the order            |
+| Customer     | `customer.details.before` | Integrations: a tab per plugin that applies to the customer         |
+| Order list   | `order.list.before`       | Orders to handle: tiles from Medusa's data, plugin tiles and chips  |
+| Product list | `product.list.before`     | Catalog at a glance: stock, drafts, images, sales, plugin chips     |
+| Product      | `product.details.before`  | Product at a glance: status, price, stock, sales, plugin rows/chips |
+
+How it works:
+
+- A plugin registers what it shows at module load of its widget:
+  `registerTab(page, tab)` (brand, a state hook, a panel) or
+  `registerSignals(scope, provider)` (a hook returning tiles, rows or chips).
+  Plugin signals live in `src/admin/lib/<namespace>/signals.tsx`.
+- Every plugin has the same widget in each zone and calls
+  `claimZone(zone, namespace)`. Only the first claimer renders, so a page
+  gets one card whatever plugins are installed.
+- The registry is shared through `globalThis` under a versioned key. Add
+  fields without breaking older kits; a breaking change needs a new key.
+- Zones in `defineWidgetConfig` must be string literals (Medusa reads them
+  from the source), not the constants.
+- Colour-coding of states: green ok, orange attention, red error, blue info,
+  grey nothing (`Level`).
+- The overview cards read Medusa's admin API in the browser (latest 50
+  orders; up to 500 products and 500 orders of 90 days for stock and sales)
+  and say when they read only part.
+- `texts.ts` holds the cards' Polish and English texts: the kit has no
+  translation files of its own. Plugin texts stay in each plugin's i18n.

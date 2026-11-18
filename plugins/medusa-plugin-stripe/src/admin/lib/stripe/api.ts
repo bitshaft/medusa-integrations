@@ -182,10 +182,11 @@ export const usePayout = (id: string | null) =>
     enabled: Boolean(id),
   })
 
-export const useDisputes = () =>
+export const useDisputes = (enabled = true) =>
   useQuery({
     queryKey: ["stripe", "disputes"],
     queryFn: () => get<Completeness & { demo: boolean; disputes: Dispute[] }>("/disputes"),
+    enabled,
   })
 
 export const useChecks = () =>

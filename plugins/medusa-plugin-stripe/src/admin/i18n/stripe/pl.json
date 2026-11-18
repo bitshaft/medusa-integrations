@@ -375,6 +375,9 @@
         "title": "Przejdź na live",
         "body": "Powtórz kroki 1–2 w trybie live, ustaw klucz live i mode: \"live\", a potem sprawdź zakładkę Kontrole."
       }
+    },
+    "signals": {
+      "disputes": "otwarte spory: {{count}}"
     }
   }
 }

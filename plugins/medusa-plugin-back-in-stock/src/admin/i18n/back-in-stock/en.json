@@ -179,6 +179,10 @@
       "pending": "{{count}} unconfirmed",
       "lastNotified": "Last email {{date}}",
       "open": "Open back-in-stock"
+    },
+    "signals": {
+      "wanted": "wanted variants: {{count}}",
+      "waiting": "waiting: {{count}}"
     }
   }
 }

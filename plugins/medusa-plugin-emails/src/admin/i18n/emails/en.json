@@ -404,6 +404,9 @@
       "promptHint": "Paste it into Claude Code, Cursor or another assistant in your Medusa backend project.",
       "copy": "Copy",
       "copied": "Copied"
+    },
+    "signals": {
+      "failed": "failed: {{count}}"
     }
   }
 }

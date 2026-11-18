@@ -404,6 +404,9 @@
       "promptHint": "Wklej go w Claude Code, Cursora lub innego asystenta w projekcie backendu Medusy.",
       "copy": "Kopiuj",
       "copied": "Skopiowano"
+    },
+    "signals": {
+      "failed": "nieudane: {{count}}"
     }
   }
 }

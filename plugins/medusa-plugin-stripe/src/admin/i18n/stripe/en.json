@@ -361,6 +361,9 @@
         "title": "Go live",
         "body": "Repeat steps 1–2 in live mode, set the live key and mode: \"live\", and check the Checks tab again."
       }
+    },
+    "signals": {
+      "disputes": "open disputes: {{count}}"
     }
   }
 }

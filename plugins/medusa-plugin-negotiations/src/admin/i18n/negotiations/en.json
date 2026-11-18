@@ -383,6 +383,13 @@
       "dry_run_required": "Run a dry run with the same data first (it is valid for 30 minutes).",
       "no_region": "No region uses {{currency}}. Choose a region.",
       "unknown": "Something went wrong. Reload the page and try again."
+    },
+    "signals": {
+      "waiting": "Waiting for you: {{count}}",
+      "tile": "Price requests",
+      "tileHint": "waiting for an answer",
+      "active": "In progress: {{count}}",
+      "past": "Threads: {{count}}"
     }
   }
 }

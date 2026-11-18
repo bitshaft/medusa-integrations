@@ -206,6 +206,11 @@
       "warningTitle_other": "{{count}} products have no weight: each counts as {{weight}} kg per unit.",
       "warningHint": "Check the parcel weight below before creating the shipment; a wrong weight can mean a carrier surcharge.",
       "held": "Waiting: a product has no weight. Check the parcel weight and create the shipment."
+    },
+    "signals": {
+      "pending": "to create: {{count}}",
+      "noWeight": "no weight: {{count}}",
+      "variantsNoWeight": "Variants without a weight: {{count}}; parcels count them with the default weight."
     }
   }
 }

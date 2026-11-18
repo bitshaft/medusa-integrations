@@ -190,6 +190,9 @@
       "history": "Answers recorded for this record",
       "noHistory": "Nothing recorded yet.",
       "openPanel": "Open the white list"
+    },
+    "signals": {
+      "problem": "businesses with a problem: {{count}}"
     }
   }
 }

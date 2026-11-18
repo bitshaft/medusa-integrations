@@ -385,6 +385,13 @@
       "dry_run_required": "Najpierw wykonaj próbę na sucho z tymi samymi danymi (ważna 30 minut).",
       "no_region": "Żaden region nie używa waluty {{currency}}. Wybierz region.",
       "unknown": "Coś poszło nie tak. Odśwież stronę i spróbuj ponownie."
+    },
+    "signals": {
+      "waiting": "Czeka na Was: {{count}}",
+      "tile": "Prośby o cenę",
+      "tileHint": "czekają na odpowiedź",
+      "active": "W toku: {{count}}",
+      "past": "Wątki: {{count}}"
     }
   }
 }

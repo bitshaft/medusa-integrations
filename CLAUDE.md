@@ -6,9 +6,10 @@ A repository of independent Medusa v2 plugins by Bitshaft. Each folder in
 Everything in this repo is written in English: code, comments, commit
 messages, docs and file contents. The only Polish allowed is text shown to
 Polish-speaking users: the Polish admin translations
-(`src/admin/i18n/<namespace>/pl.json`) and Polish customer-facing copy a
-plugin ships (e.g. default email text in `src/lib/<namespace>/copy/pl.ts`),
-plus tests that assert on that text. Proper nouns in test data (cities,
+(`src/admin/i18n/<namespace>/pl.json`), the shared admin cards' texts in
+`kit/admin/texts.ts` (the kit has no translation files), and Polish
+customer-facing copy a plugin ships (e.g. default email text in
+`src/lib/<namespace>/copy/pl.ts`), plus tests that assert on that text. Proper nouns in test data (cities,
 streets, carrier service names) are fine.
 
 ## Layout

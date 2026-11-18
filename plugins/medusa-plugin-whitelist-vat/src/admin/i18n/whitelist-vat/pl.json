@@ -190,6 +190,9 @@
       "history": "Odpowiedzi zapisane dla tego rekordu",
       "noHistory": "Nic jeszcze nie zapisano.",
       "openPanel": "Otwórz białą listę"
+    },
+    "signals": {
+      "problem": "kontrahenci z problemem: {{count}}"
     }
   }
 }

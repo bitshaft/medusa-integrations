@@ -540,6 +540,13 @@
       "text": "Ostrzeżenia GPSR i treści zgód piszesz dla każdego języka na stronie Zgodność ({{languages}}).",
       "gpsr": "Ostrzeżenia GPSR",
       "consents": "Treści zgód"
+    },
+    "signals": {
+      "overdue": "RODO po terminie: {{count}}",
+      "dueSoon": "RODO blisko terminu: {{count}}",
+      "gpsrIncomplete": "GPSR niekompletne: {{count}}",
+      "gpsrGaps": "Braki w GPSR: {{count}}",
+      "gpsrComplete": "Rekord GPSR kompletny"
     }
   }
 }

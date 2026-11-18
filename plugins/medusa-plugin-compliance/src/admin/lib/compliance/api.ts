@@ -285,10 +285,11 @@ export const useManufacturers = () =>
     queryFn: () => get<{ manufacturers: Manufacturer[] }>("/manufacturers"),
   })
 
-export const useProductSafety = (productId: string) =>
+export const useProductSafety = (productId: string, enabled = true) =>
   useQuery({
     queryKey: ["compliance", "gpsr", "product", productId],
     queryFn: () => get<ProductSafety>(`/gpsr/products/${productId}`),
+    enabled,
   })
 
 export const useConsentTypes = () =>

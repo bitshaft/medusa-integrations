@@ -520,6 +520,13 @@
       "text": "GPSR safety warnings and consent texts are written per language on the Compliance page ({{languages}}).",
       "gpsr": "GPSR warnings",
       "consents": "Consent texts"
+    },
+    "signals": {
+      "overdue": "GDPR overdue: {{count}}",
+      "dueSoon": "GDPR due soon: {{count}}",
+      "gpsrIncomplete": "GPSR incomplete: {{count}}",
+      "gpsrGaps": "GPSR gaps: {{count}}",
+      "gpsrComplete": "GPSR record complete"
     }
   }
 }

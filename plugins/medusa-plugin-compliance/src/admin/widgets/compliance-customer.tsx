@@ -1,21 +1,51 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminCustomer, DetailWidgetProps } from "@medusajs/framework/types"
-import { ArrowDownTray } from "@medusajs/icons"
-import { Badge, Button, Container, Heading, Skeleton, StatusBadge, Text } from "@medusajs/ui"
+import { ArrowDownTray, DocumentText } from "@medusajs/icons"
+import { Badge, Button, Heading, Skeleton, StatusBadge, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
 import { DemoBar, RequestStatusBadge } from "../components/compliance/shared"
 import { exportUrl, useCustomerCompliance } from "../lib/compliance/api"
 import { shortDate } from "../lib/compliance/format"
+import {
+  claimZone,
+  DETAIL_ZONES,
+  DetailIntegrations,
+  type EntityLike,
+  type Level,
+  registerTab,
+} from "../lib/compliance/kit/integrations"
 
-/** Consents, data subject requests and a data export on the customer page. */
-const CustomerComplianceWidget = ({ data: customer }: DetailWidgetProps<AdminCustomer>) => {
+registerTab("customer", {
+  id: "compliance",
+  brand: { label: "compliance.title", icon: DocumentText, color: "#0d9488" },
+  order: 10,
+  useState: (customer) => {
+    const { data, isLoading } = useCustomerCompliance(customer.id)
+    if (!data?.enabled) return { visible: false, level: "none", loading: isLoading }
+    // A data subject request still to handle orange; anonymised grey; otherwise green.
+    const open = data.requests.some((r) => ["unverified", "open", "accepted"].includes(r.status))
+    const level: Level = open ? "warn" : data.anonymized ? "none" : "ok"
+    return { visible: true, level }
+  },
+  Panel: ({ entity }) => <CompliancePanel customerId={entity.id} />,
+})
+claimZone(DETAIL_ZONES.customer, "compliance")
+
+/** The Integrations card at the top of the customer page (rendered by one plugin for all of them). */
+const CustomerComplianceWidget = ({ data: customer }: DetailWidgetProps<AdminCustomer>) => (
+  <DetailIntegrations page="customer" owner="compliance" entity={customer as unknown as EntityLike} />
+)
+
+/** Consents, data subject requests and a data export of the customer. */
+const CompliancePanel = ({ customerId }: { customerId: string }) => {
+  const customer = { id: customerId }
   const { t, i18n } = useTranslation()
   const { data, isLoading } = useCustomerCompliance(customer.id)
   if (!isLoading && !data?.enabled) return null
   const lang = i18n.language
   return (
-    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
+    <div className="flex flex-col gap-y-4 p-6">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <Heading level="h2">{t("compliance.customer.title")}</Heading>
@@ -99,10 +129,10 @@ const CustomerComplianceWidget = ({ data: customer }: DetailWidgetProps<AdminCus
           </div>
         </>
       )}
-    </Container>
+    </div>
   )
 }
 
-export const config = defineWidgetConfig({ zone: "customer.details.after" })
+export const config = defineWidgetConfig({ zone: "customer.details.before" })
 
 export default CustomerComplianceWidget

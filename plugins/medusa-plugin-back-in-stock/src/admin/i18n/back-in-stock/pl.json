@@ -179,6 +179,10 @@
       "pending": "Niepotwierdzeni: {{count}}",
       "lastNotified": "Ostatni e-mail {{date}}",
       "open": "Otwórz powiadomienia o dostępności"
+    },
+    "signals": {
+      "wanted": "wyczekiwane warianty: {{count}}",
+      "waiting": "czekający: {{count}}"
     }
   }
 }
