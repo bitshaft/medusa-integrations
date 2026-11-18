@@ -101,7 +101,13 @@ export type SettingsResponse =
   | {
       enabled: true
       version: string
-      options: { timeZone: string; defaultLocale: "pl" | "en"; maxBatchSize: number; checkRateLimitPerMinute: number }
+      options: {
+        timeZone: string
+        defaultLocale: "pl" | "en"
+        maxBatchSize: number
+        checkRateLimitPerMinute: number
+        demo: boolean
+      }
       settings: Settings
       defaults: Settings
     }
@@ -289,5 +295,17 @@ export function useLabels(kind: OptionKind, ids: string[]) {
     enabled: ids.length > 0,
     queryFn: async () =>
       Object.fromEntries((await fetchOptions(kind, { id: ids, limit: ids.length })).map((o) => [o.value, o.label])),
+  })
+}
+
+/** "Restore test data" (demo mode only): recreates the "[Demo]" coupons. */
+export function useResetCouponsDemo() {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: () =>
+      sdk.client.fetch<{ removed: number; coupons: number; codes: number }>("/admin/coupons/demo/reset", {
+        method: "POST",
+      }),
+    onSuccess: invalidate,
   })
 }

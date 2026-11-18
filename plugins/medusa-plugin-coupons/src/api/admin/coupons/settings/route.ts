@@ -27,6 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       defaultLocale: options.defaultLocale,
       maxBatchSize: options.maxBatchSize,
       checkRateLimitPerMinute: options.checkRateLimitPerMinute,
+      demo: options.demo,
     },
     settings: await service.getSettings(),
     defaults: options.settings,

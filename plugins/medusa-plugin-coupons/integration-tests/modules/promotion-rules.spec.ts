@@ -6,6 +6,8 @@ import { moduleIntegrationTestRunner } from "@medusajs/test-utils"
 
 import { buildPromotionContext, type KnownPromotion, type TierGroup } from "../../src/lib/coupons/context"
 import { buildCampaign, buildPromotions } from "../../src/lib/coupons/promotions"
+import { normalizeDraft } from "../../src/lib/coupons/server/admin"
+import { demoCoupons } from "../../src/lib/coupons/server/demo"
 import { type CouponDraft, EMPTY_EXCLUSIONS } from "../../src/lib/coupons/types"
 
 jest.setTimeout(120_000)
@@ -82,6 +84,22 @@ moduleIntegrationTestRunner<IPromotionModuleService>({
       if (d.tiers && !d.automatic) tierGroups.set(code, { group: code, exclusive: d.exclusive })
       return { code, ids: created.map((p) => p.id) }
     }
+
+    it("creates every demo coupon as real promotions", async () => {
+      const coupons = demoCoupons(new Date(), {
+        categoryId: "pcat_demo",
+        productIds: ["prod_a", "prod_b", "prod_c"],
+        groupId: "cusgroup_demo",
+      })
+      for (const coupon of coupons) {
+        const d = normalizeDraft(
+          coupon.batch ? { ...coupon.draft, code: "DEMO-NLTEST1", usage_limit: 1 } : coupon.draft,
+          "pln"
+        )
+        const { ids } = await create(d, d.code ?? `AUTO-DEMO${++counter}`)
+        expect(ids.length).toBeGreaterThan(0)
+      }
+    })
 
     async function compute(
       codes: string[],

@@ -17,6 +17,8 @@ First release.
 - One-sentence descriptions in Polish and English, used in the list, the
   wizard and the CSV export.
 - Kinds: percentage, amount, free shipping, category, buy X get Y, tiers.
+- Demo mode (`demo: true`): "Restore test data" creates a set of `[Demo]`
+  coupons covering every kind, rule and status, and a batch of codes.
 - Rules: code or automatic, dates, total limit, limit per customer (by
   customer, or e-mail for guests), first order only, groups or chosen
   customers, minimum gross basket, does not combine, exclusions of products,

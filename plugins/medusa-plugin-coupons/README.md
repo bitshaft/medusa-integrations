@@ -72,6 +72,7 @@ disabled, logs one line (`[coupons] Disabled: …`) and the admin page shows why
 | `defaultLocale`           | `pl`            | Language of customer messages when the request names none (`pl` or `en`).             |
 | `maxBatchSize`            | `5000`          | Most codes one batch may create (up to 20 000).                                       |
 | `checkRateLimitPerMinute` | `20`            | Requests per minute one visitor may make to `/store/coupons/check`, against guessing. |
+| `demo`                    | `false`         | "Restore test data" in the admin (see [Demo mode](#demo-mode)).                       |
 | `settings.currencyCode`   | `pln`           | Currency of new fixed-amount coupons and minimum baskets.                             |
 | `settings.codeLength`     | `10`            | Length of random batch codes, without the prefix.                                     |
 | `settings.exportLocale`   | `pl`            | Language of the CSV exports.                                                          |
@@ -130,6 +131,26 @@ automatic or not and the number of tiers cannot change (duplicate instead).
 and lets the owner change the currency, code length and export language.
 
 The admin is in English and Polish and follows the admin language.
+
+### Demo mode
+
+With `demo: true` the page shows a demo bar with **Restore test data**. It
+creates a set of demo coupons through the same path as the wizard, so they
+are real Medusa promotions:
+
+- every kind: percentage, amount (with a minimum basket, a usage limit and
+  an excluded product), free shipping (automatic), a category, buy 2 get 1;
+- tiers (5/10/15% from 200/500/1000), exclusive;
+- a first-order coupon with one use per customer, a customer group coupon;
+- every status: active, ending within 7 days, scheduled, ended, paused;
+- a batch of 25 single-use codes.
+
+Coupons that need store data (a category, published products, a customer
+group) are left out when the store has none. Demo coupons are the ones
+whose name starts with `[Demo]` (codes start with `DEMO-`); a restore
+deletes them with their promotions and campaigns and creates them again,
+and never touches other coupons. Active demo codes work at checkout, so
+orders placed with them fill the usage and revenue columns.
 
 ## Store API
 

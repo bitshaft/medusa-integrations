@@ -11,12 +11,21 @@
     "loading": "Wczytywanie…",
     "loadError": "Nie udało się wczytać kuponów.",
     "cancel": "Anuluj",
-    "tabs": { "panel": "Panel", "guide": "Przewodnik", "settings": "Ustawienia" },
+    "tabs": {
+      "panel": "Panel",
+      "guide": "Przewodnik",
+      "settings": "Ustawienia"
+    },
     "disabled": {
       "title": "Panel kuponów jest wyłączony: {{reason}}",
       "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
     },
-    "status": { "active": "aktywny", "scheduled": "zaplanowany", "paused": "wstrzymany", "ended": "zakończony" },
+    "status": {
+      "active": "aktywny",
+      "scheduled": "zaplanowany",
+      "paused": "wstrzymany",
+      "ended": "zakończony"
+    },
     "filters": {
       "all": "Wszystkie",
       "active": "Aktywne",
@@ -88,24 +97,58 @@
       "total": "Razem"
     },
     "kinds": {
-      "percentage": { "title": "Rabat procentowy", "hint": "na całe zamówienie" },
-      "fixed": { "title": "Rabat kwotowy", "hint": "np. 50 zł od zamówienia" },
-      "free_shipping": { "title": "Darmowa dostawa", "hint": "kurier albo paczkomat" },
-      "category": { "title": "Rabat na kategorię", "hint": "np. tylko kremy" },
-      "buy_get": { "title": "Kup X, dostań Y gratis", "hint": "np. 3 + 1 gratis na wybrane produkty" },
-      "tiers": { "title": "Progi", "hint": "np. 5% od 200 zł, 10% od 500 zł" }
+      "percentage": {
+        "title": "Rabat procentowy",
+        "hint": "na całe zamówienie"
+      },
+      "fixed": {
+        "title": "Rabat kwotowy",
+        "hint": "np. 50 zł od zamówienia"
+      },
+      "free_shipping": {
+        "title": "Darmowa dostawa",
+        "hint": "kurier albo paczkomat"
+      },
+      "category": {
+        "title": "Rabat na kategorię",
+        "hint": "np. tylko kremy"
+      },
+      "buy_get": {
+        "title": "Kup X, dostań Y gratis",
+        "hint": "np. 3 + 1 gratis na wybrane produkty"
+      },
+      "tiers": {
+        "title": "Progi",
+        "hint": "np. 5% od 200 zł, 10% od 500 zł"
+      }
     },
     "audience": {
-      "all": { "title": "Wszyscy", "hint": "goście i zalogowani klienci", "pick": "" },
-      "groups": { "title": "Wybrane grupy", "hint": "zaznacz grupy klientów", "pick": "Grupy klientów" },
-      "customers": { "title": "Wybrani klienci", "hint": "jeden salon albo kilku klientów", "pick": "Klienci" }
+      "all": {
+        "title": "Wszyscy",
+        "hint": "goście i zalogowani klienci",
+        "pick": ""
+      },
+      "groups": {
+        "title": "Wybrane grupy",
+        "hint": "zaznacz grupy klientów",
+        "pick": "Grupy klientów"
+      },
+      "customers": {
+        "title": "Wybrani klienci",
+        "hint": "jeden salon albo kilku klientów",
+        "pick": "Klienci"
+      }
     },
     "wizard": {
       "newTitle": "Nowy kupon",
       "editTitle": "Edycja {{code}}",
       "batchTitle": "Nowa paczka kodów jednorazowych",
       "editHint": "Kodu, rodzaju rabatu i trybu automatycznego nie można zmienić. Aby je zmienić, zduplikuj kupon.",
-      "steps": { "kind": "Rodzaj", "who": "Dla kogo", "rules": "Zasady" },
+      "steps": {
+        "kind": "Rodzaj",
+        "who": "Dla kogo",
+        "rules": "Zasady"
+      },
       "next": "Dalej",
       "save": "Zapisz kupon",
       "createBatch": "Utwórz kody",
@@ -178,7 +221,11 @@
       "exclusiveLabel": "Nie łączy się z innymi kuponami",
       "exclusions": "Wykluczenia",
       "exclusionsHint": "Te produkty nigdy nie dostaną tego rabatu.",
-      "exclude": { "products": "Produkty", "collections": "Kolekcje", "categories": "Kategorie" },
+      "exclude": {
+        "products": "Produkty",
+        "collections": "Kolekcje",
+        "categories": "Kategorie"
+      },
       "skipDiscounted": "Pomijaj produkty już przecenione",
       "name": "Nazwa (opcjonalnie)",
       "nameHint": "Tylko dla Ciebie, na liście. Klienci jej nie widzą."
@@ -316,6 +363,16 @@
         "maxBatchSize": "Najwięcej kodów w paczce",
         "checkRateLimitPerMinute": "Sprawdzeń kodu na odwiedzającego na minutę"
       }
+    },
+    "demo": {
+      "title": "Tryb demo",
+      "body": "„Przywróć dane testowe” tworzy zestaw kuponów demo jako prawdziwe promocje Medusy: każdy rodzaj, progi, kupon automatyczny, limity, kupon na pierwsze zamówienie, grupę klientów, wykluczenia, każdy status i partię kodów jednorazowych. Ich nazwy zaczynają się od [Demo], a kody od DEMO-. Przed startem wyłącz opcję demo w medusa-config.ts.",
+      "reset": "Przywróć dane testowe",
+      "resetTitle": "Przywrócić dane testowe?",
+      "resetBody": "Kupony z nazwą [Demo] zostaną usunięte razem z promocjami i utworzone od nowa. To prawdziwe promocje: aktywne kody działają przy zamówieniu. Twoje własne kupony nie zostaną zmienione.",
+      "cancel": "Anuluj",
+      "restored": "Przywrócono dane testowe",
+      "restoredHint": "Kupony demo: {{coupons}}, kody: {{codes}}."
     }
   }
 }

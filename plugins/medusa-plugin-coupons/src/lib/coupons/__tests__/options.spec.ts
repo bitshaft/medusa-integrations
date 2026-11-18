@@ -10,6 +10,7 @@ describe("plugin options", () => {
         maxBatchSize: 5000,
         checkRateLimitPerMinute: 20,
         settings: { currencyCode: "pln", codeLength: 10, exportLocale: "pl" },
+        demo: false,
       },
     })
   })

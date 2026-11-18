@@ -11,12 +11,21 @@
     "loading": "Loading…",
     "loadError": "Could not load the coupons.",
     "cancel": "Cancel",
-    "tabs": { "panel": "Panel", "guide": "Guide", "settings": "Settings" },
+    "tabs": {
+      "panel": "Panel",
+      "guide": "Guide",
+      "settings": "Settings"
+    },
     "disabled": {
       "title": "The coupon panel is off: {{reason}}",
       "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
     },
-    "status": { "active": "active", "scheduled": "scheduled", "paused": "paused", "ended": "ended" },
+    "status": {
+      "active": "active",
+      "scheduled": "scheduled",
+      "paused": "paused",
+      "ended": "ended"
+    },
     "filters": {
       "all": "All",
       "active": "Active",
@@ -82,24 +91,58 @@
       "total": "Total"
     },
     "kinds": {
-      "percentage": { "title": "Percentage off", "hint": "on the whole order" },
-      "fixed": { "title": "Amount off", "hint": "e.g. 50 zł off the order" },
-      "free_shipping": { "title": "Free shipping", "hint": "courier or parcel locker" },
-      "category": { "title": "Category discount", "hint": "e.g. creams only" },
-      "buy_get": { "title": "Buy X, get Y free", "hint": "e.g. 3 + 1 free on chosen products" },
-      "tiers": { "title": "Tiers", "hint": "e.g. 5% from 200 zł, 10% from 500 zł" }
+      "percentage": {
+        "title": "Percentage off",
+        "hint": "on the whole order"
+      },
+      "fixed": {
+        "title": "Amount off",
+        "hint": "e.g. 50 zł off the order"
+      },
+      "free_shipping": {
+        "title": "Free shipping",
+        "hint": "courier or parcel locker"
+      },
+      "category": {
+        "title": "Category discount",
+        "hint": "e.g. creams only"
+      },
+      "buy_get": {
+        "title": "Buy X, get Y free",
+        "hint": "e.g. 3 + 1 free on chosen products"
+      },
+      "tiers": {
+        "title": "Tiers",
+        "hint": "e.g. 5% from 200 zł, 10% from 500 zł"
+      }
     },
     "audience": {
-      "all": { "title": "Everyone", "hint": "guests and signed-in customers", "pick": "" },
-      "groups": { "title": "Chosen groups", "hint": "tick customer groups", "pick": "Customer groups" },
-      "customers": { "title": "Chosen customers", "hint": "one salon or a few customers", "pick": "Customers" }
+      "all": {
+        "title": "Everyone",
+        "hint": "guests and signed-in customers",
+        "pick": ""
+      },
+      "groups": {
+        "title": "Chosen groups",
+        "hint": "tick customer groups",
+        "pick": "Customer groups"
+      },
+      "customers": {
+        "title": "Chosen customers",
+        "hint": "one salon or a few customers",
+        "pick": "Customers"
+      }
     },
     "wizard": {
       "newTitle": "New coupon",
       "editTitle": "Edit {{code}}",
       "batchTitle": "New batch of single-use codes",
       "editHint": "The code, the kind of discount and automatic or not cannot change. Duplicate the coupon to change them.",
-      "steps": { "kind": "Kind", "who": "Who for", "rules": "Rules" },
+      "steps": {
+        "kind": "Kind",
+        "who": "Who for",
+        "rules": "Rules"
+      },
       "next": "Next",
       "save": "Save coupon",
       "createBatch": "Create codes",
@@ -168,7 +211,11 @@
       "exclusiveLabel": "Does not combine with other coupons",
       "exclusions": "Exclusions",
       "exclusionsHint": "These products never get this discount.",
-      "exclude": { "products": "Products", "collections": "Collections", "categories": "Categories" },
+      "exclude": {
+        "products": "Products",
+        "collections": "Collections",
+        "categories": "Categories"
+      },
       "skipDiscounted": "Skip products that are already on sale",
       "name": "Name (optional)",
       "nameHint": "Only for you, in the list. Customers do not see it."
@@ -300,6 +347,16 @@
         "maxBatchSize": "Most codes in a batch",
         "checkRateLimitPerMinute": "Code checks per visitor per minute"
       }
+    },
+    "demo": {
+      "title": "Demo mode",
+      "body": "\"Restore test data\" creates a set of demo coupons as real Medusa promotions: every kind, tiers, an automatic coupon, limits, a first-order coupon, a customer group, exclusions, every status and a batch of single-use codes. Their names start with [Demo] and their codes with DEMO-. Turn the demo option off in medusa-config.ts before going live.",
+      "reset": "Restore test data",
+      "resetTitle": "Restore test data?",
+      "resetBody": "Coupons named [Demo] are deleted with their promotions and created again. They are real promotions: their codes work at checkout while they are active. Your own coupons are not touched.",
+      "cancel": "Cancel",
+      "restored": "Test data restored",
+      "restoredHint": "{{coupons}} demo coupons, {{codes}} codes."
     }
   }
 }

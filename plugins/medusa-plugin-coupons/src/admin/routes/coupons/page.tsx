@@ -20,6 +20,7 @@ import { Dashboard } from "../../components/coupons/dashboard"
 import { Guide } from "../../components/coupons/guide"
 import { Settings } from "../../components/coupons/settings"
 import { CouponWizard } from "../../components/coupons/wizard"
+import { DemoBar } from "../../components/coupons/demo-bar"
 import { type CouponView, exportUrl, useSettings } from "../../lib/coupons/api"
 import { adminLocale } from "../../lib/coupons/draft"
 import { navIcon } from "../../lib/coupons/kit/nav-icon"
@@ -44,6 +45,7 @@ const CouponsPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
+      {s?.enabled && s.options.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">

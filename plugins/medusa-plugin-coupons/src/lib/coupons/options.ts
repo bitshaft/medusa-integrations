@@ -43,6 +43,12 @@ export const pluginOptionsSchema = z.object({
   checkRateLimitPerMinute: z.number().int().min(1).max(1_000).default(20),
   // `prefault`, not `default`: zod 4 returns a `default` value as-is, without the inner defaults.
   settings: settingsSchema.prefault({}),
+  /**
+   * Demo mode: the admin gets "Restore test data", which (re)creates a set
+   * of demo coupons (names starting with "[Demo]", codes with "DEMO-") as
+   * real Medusa promotions. Real coupons are never touched.
+   */
+  demo: z.boolean().default(false),
 })
 export type CouponsPluginOptions = z.output<typeof pluginOptionsSchema>
 
