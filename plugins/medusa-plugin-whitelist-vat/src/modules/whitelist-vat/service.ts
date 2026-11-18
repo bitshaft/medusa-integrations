@@ -10,6 +10,7 @@ import {
   PLUGIN_NAME,
   type WhitelistVatPluginOptions,
 } from "../../lib/whitelist-vat/options"
+import { DemoGusClient } from "../../lib/whitelist-vat/registers/demo-gus"
 import { GusClient } from "../../lib/whitelist-vat/registers/gus"
 import { type BankAccountCheck, MfClient } from "../../lib/whitelist-vat/registers/mf"
 import type { Source } from "../../lib/whitelist-vat/registers/types"
@@ -55,7 +56,7 @@ export default class WhitelistVatModuleService
       return
     }
 
-    const { mf, vies, gus, timeoutMs } = parsed.options
+    const { mf, vies, gus, timeoutMs, demo } = parsed.options
     const common = {
       timeoutMs,
       logger: container.logger,
@@ -72,9 +73,12 @@ export default class WhitelistVatModuleService
         vies: vies.enabled
           ? new ViesClient({ ...common, requesterVatNumber: vies.requesterVatNumber, baseUrl: vies.baseUrl })
           : undefined,
-        gus: gus.apiKey
-          ? new GusClient({ ...common, apiKey: gus.apiKey, environment: gus.environment, url: gus.url })
-          : undefined,
+        // Demo mode answers from sample data, even when a key is set.
+        gus: demo
+          ? new DemoGusClient()
+          : gus.apiKey
+            ? new GusClient({ ...common, apiKey: gus.apiKey, environment: gus.environment, url: gus.url })
+            : undefined,
       },
     }
   }

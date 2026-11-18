@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { Lookup } from "../../components/whitelist-vat/lookup"
 import { Overview } from "../../components/whitelist-vat/overview"
 import { Settings } from "../../components/whitelist-vat/settings"
+import { DemoBar } from "../../components/whitelist-vat/shared"
 import { useWhitelistVatStatus } from "../../lib/whitelist-vat/api"
 import { navIcon } from "../../lib/whitelist-vat/kit/nav-icon"
 import { PageIcon, TabTrigger } from "../../lib/whitelist-vat/kit/ui"
@@ -37,6 +38,7 @@ const WhitelistVatPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
+      {s?.enabled && s.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex items-center justify-between gap-x-4 px-6 py-4">
           <div className="flex items-center gap-x-3">

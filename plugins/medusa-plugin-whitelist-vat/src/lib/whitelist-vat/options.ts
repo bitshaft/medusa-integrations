@@ -50,7 +50,13 @@ export const pluginOptionsSchema = z.object({
       baseUrl: z.string().url().optional(),
     })
     .default({ enabled: true }),
-  /** GUS REGON register (BIR1.1). Used only when `apiKey` is set; each store needs its own key. */
+  /**
+   * Demo mode: GUS answers from sample businesses, without a key and without
+   * any request to GUS (see `DEMO_GUS_NIPS` for the fixed answers). The white
+   * list and VIES are asked as usual: they need no key.
+   */
+  demo: z.boolean().default(false),
+  /** GUS REGON register (BIR1.1). Used only when `apiKey` is set (or in demo mode); each store needs its own key. */
   gus: z
     .object({
       apiKey: z.string().min(1).optional(),

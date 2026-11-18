@@ -1,3 +1,4 @@
+import { ExclamationCircle } from "@medusajs/icons"
 import { Badge, Button, Copy, StatusBadge, Text, Tooltip } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
@@ -219,6 +220,27 @@ export const Pager = ({
         >
           {t("whitelist-vat.paging.next")}
         </Button>
+      </div>
+    </div>
+  )
+}
+
+/** Shown above the page in demo mode: GUS answers are sample data. */
+export const DemoBar = () => {
+  const { t } = useTranslation()
+  return (
+    <div
+      role="status"
+      className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
+    >
+      <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
+      <div>
+        <Text size="small" weight="plus" className="text-ui-tag-orange-text">
+          {t("whitelist-vat.demo.title")}
+        </Text>
+        <Text size="xsmall" className="text-ui-tag-orange-text">
+          {t("whitelist-vat.demo.body")}
+        </Text>
       </div>
     </div>
   )

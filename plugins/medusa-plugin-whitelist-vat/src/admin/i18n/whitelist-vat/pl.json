@@ -170,7 +170,10 @@
       "rejectStatuses": "Odrzucane statusy",
       "storeRoute": "Sprawdzanie numeru w sklepie",
       "storeLimit": "{{count}} sprawdzeń na odwiedzającego na minutę",
-      "version": "Wersja"
+      "version": "Wersja",
+      "gusDemo": "Tryb demo: odpowiedzi pochodzą z przykładowych firm, bez klucza i bez pytania GUS.",
+      "demo": "Demo",
+      "demoNips": "Stałe odpowiedzi demo"
     },
     "record": {
       "title": "Weryfikacja numeru podatkowego",
@@ -193,6 +196,10 @@
     },
     "signals": {
       "problem": "kontrahenci z problemem: {{count}}"
+    },
+    "demo": {
+      "title": "Tryb demo",
+      "body": "GUS odpowiada przykładowymi firmami (nazwy zaczynają się od [DEMO]); klucz nie jest potrzebny i żadne zapytanie nie trafia do GUS. Biała lista i VIES są pytane normalnie. Usuń demo: true z opcji, żeby korzystać z prawdziwego GUS."
     }
   }
 }

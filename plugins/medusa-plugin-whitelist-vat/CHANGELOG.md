@@ -24,6 +24,9 @@ First release.
   settings) and panels on order and customer pages, in Polish and English.
 - `verify-whitelist-vat-tax-id` and `verify-whitelist-vat-order` workflows
   and the `whitelist-vat.tax_id.verified` event.
+- Demo mode (`demo: true`): GUS answers from sample businesses without a
+  key or any request to GUS, with fixed NIPs for the closed and not-found
+  states; the admin page shows a demo bar.
 - Works without options; invalid options leave the plugin disabled with one
   log line instead of stopping Medusa.
 

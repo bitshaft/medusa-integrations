@@ -35,6 +35,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   res.json({
     enabled: true,
     version,
+    demo: options.demo,
     registers: {
       mf: {
         enabled: options.mf.enabled,
@@ -43,8 +44,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         daily_limit: options.mf.dailyLimit,
       },
       gus: {
-        enabled: Boolean(options.gus.apiKey),
+        enabled: options.demo || Boolean(options.gus.apiKey),
         environment: options.gus.environment,
+        demo: options.demo,
         // The key is a secret: not even a part of it leaves the server.
       },
       vies: {

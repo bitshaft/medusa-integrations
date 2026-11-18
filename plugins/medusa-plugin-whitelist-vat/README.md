@@ -82,6 +82,7 @@ That is a working setup: every option has a default.
 | `mf.dailyLimit`               | `95`                                        | Requests per day the plugin allows itself (the ministry permits about 100).                 |
 | `vies.enabled`                | `true`                                      | EU VAT number validation.                                                                   |
 | `vies.requesterVatNumber`     |                                             | Your EU VAT number, for consultation numbers.                                               |
+| `demo`                        | `false`                                     | GUS answers from sample businesses, without a key (see [Demo mode](#demo-mode)).            |
 | `gus.apiKey`                  |                                             | Turns the GUS REGON register on.                                                            |
 | `gus.environment`             | `"production"`                              | `"test"` with GUS's public test key (see [Testing](#testing)).                              |
 | `taxIdKeys`                   | `["vat_number", "nip", "tax_id", "vat_id"]` | Metadata keys that may hold the tax ID, in order.                                           |
@@ -265,7 +266,7 @@ your own code.
   said, the company's data and its white list bank accounts; check whether
   a bank account belongs to a NIP.
 - **Settings:** the registers and options in use, read-only (they are set
-  in `medusa-config.ts`). The GUS key is shown masked.
+  in `medusa-config.ts`). The GUS key is never shown, not even in part.
 
 **Order and customer pages** get a panel with the record's tax ID, the
 verdict, the business's data, the answers recorded for that record and a
@@ -310,6 +311,24 @@ Admin routes, all under `/admin/whitelist-vat` and behind admin authentication:
 | `GET /checks`                                           | History; filter by `number`, `order_id`, `customer_id`, `source`. |
 | `GET /orders/:id`, `GET /customers/:id`                 | Tax ID, verdict and history of a record.                          |
 | `POST /orders/:id/verify`, `POST /customers/:id/verify` | Verify a record's tax ID now.                                     |
+
+## Demo mode
+
+`demo: true` shows what GUS adds without a key: GUS answers at once from
+made-up businesses (their names start with `[DEMO]`), and no request goes
+to GUS. The same NIP always gets the same business, with a valid REGON.
+Two NIPs have fixed answers so every state can be shown:
+
+| NIP          | GUS answer                         |
+| ------------ | ---------------------------------- |
+| `1112223332` | `inactive` (business closed)       |
+| `9876543210` | `not_found`                        |
+
+The white list and VIES are still asked for real (they need no key), so a
+real NIP shows its real white list data next to the sample GUS data. The
+admin page shows a "Demo mode" bar. The history keeps demo answers with
+request IDs starting with `demo-`. Don't use demo mode in production: the
+GUS data is not real.
 
 ## Testing
 

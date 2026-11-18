@@ -79,7 +79,7 @@ export type VerificationStore = {
   countRequestsSince(source: Source, since: Date): Promise<number>
 }
 
-export type Registers = { mf?: MfClient; gus?: GusClient; vies?: ViesClient }
+export type Registers = { mf?: MfClient; gus?: Pick<GusClient, "searchNip">; vies?: ViesClient }
 
 export type VerifyDependencies = {
   store: VerificationStore

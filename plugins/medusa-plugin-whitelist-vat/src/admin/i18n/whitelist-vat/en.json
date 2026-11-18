@@ -170,7 +170,10 @@
       "rejectStatuses": "Rejected verdicts",
       "storeRoute": "Storefront lookup route",
       "storeLimit": "{{count}} lookups per visitor a minute",
-      "version": "Version"
+      "version": "Version",
+      "gusDemo": "Demo mode: answers come from sample businesses, without a key and without asking GUS.",
+      "demo": "Demo",
+      "demoNips": "Fixed demo answers"
     },
     "record": {
       "title": "Tax ID verification",
@@ -193,6 +196,10 @@
     },
     "signals": {
       "problem": "businesses with a problem: {{count}}"
+    },
+    "demo": {
+      "title": "Demo mode",
+      "body": "GUS answers with sample businesses (names start with [DEMO]); no key is needed and no request goes to GUS. The white list and VIES are asked as usual. Remove demo: true from the options to use the real GUS."
     }
   }
 }

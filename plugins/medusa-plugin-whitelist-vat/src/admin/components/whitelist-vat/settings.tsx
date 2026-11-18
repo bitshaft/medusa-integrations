@@ -45,10 +45,24 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
 
         <Register
           name={t("whitelist-vat.source.gus")}
-          hint={gus.enabled ? t("whitelist-vat.settings.gusHint") : t("whitelist-vat.settings.gusOff")}
-          state={onOff(gus.enabled)}
+          hint={
+            gus.demo
+              ? t("whitelist-vat.settings.gusDemo")
+              : gus.enabled
+                ? t("whitelist-vat.settings.gusHint")
+                : t("whitelist-vat.settings.gusOff")
+          }
+          state={
+            gus.demo ? <StatusBadge color="orange">{t("whitelist-vat.settings.demo")}</StatusBadge> : onOff(gus.enabled)
+          }
         >
-          {gus.enabled && (
+          {gus.demo && (
+            <Detail label={t("whitelist-vat.settings.demoNips")}>
+              <span className="font-mono">1112223332</span> {t("whitelist-vat.status.inactive")},{" "}
+              <span className="font-mono">9876543210</span> {t("whitelist-vat.status.not_found")}
+            </Detail>
+          )}
+          {gus.enabled && !gus.demo && (
             <>
               <Detail label={t("whitelist-vat.settings.environment")}>{gus.environment}</Detail>
             </>
