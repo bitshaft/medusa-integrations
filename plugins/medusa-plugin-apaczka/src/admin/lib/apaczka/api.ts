@@ -154,7 +154,8 @@ export type ApaczkaStatus = ApaczkaDisabledStatus | ApaczkaEnabledStatus
 export type ApaczkaEnabledStatus = {
   enabled: true
   version: string
-  environment: "production" | "sandbox" | "custom"
+  environment: "production" | "sandbox" | "custom" | "demo"
+  demo: boolean
   base_url: string
   app_id: string
   connection: { ok: boolean; services?: number; error?: string; authentication_error?: boolean }

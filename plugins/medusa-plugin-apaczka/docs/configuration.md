@@ -14,8 +14,9 @@ converts.
 
 | Option        | Type                        | Default        |                                                                                                   |
 | ------------- | --------------------------- | -------------- | ------------------------------------------------------------------------------------------------- |
-| `appId`       | `string`                    | **required**   | Apaczka panel → Settings → API                                                                    |
-| `appSecret`   | `string`                    | **required**   | Keep it in an environment variable                                                                |
+| `demo`        | `boolean`                   | `false`        | No credentials, no requests: sample data (see the README's "Demo mode")                          |
+| `appId`       | `string`                    | **required**   | Apaczka panel → Settings → API (not needed with `demo`)                                           |
+| `appSecret`   | `string`                    | **required**   | Keep it in an environment variable (not needed with `demo`)                                       |
 | `environment` | `"production" \| "sandbox"` | `"production"` | Sandbox and production credentials are different                                                  |
 | `baseUrl`     | `string`                    | —              | Override the API URL (rarely needed)                                                              |
 | `timeoutMs`   | `number`                    | `15000`        | Per request                                                                                       |

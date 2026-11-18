@@ -3,13 +3,13 @@ import { createHash } from "node:crypto"
 import type { Logger } from "@medusajs/framework/types"
 import { MedusaService } from "@medusajs/framework/utils"
 
-import { ApaczkaClient } from "../../lib/apaczka/client"
+import type { ApaczkaClient } from "../../lib/apaczka/client"
+import { createApaczkaClient } from "../../lib/apaczka/client-factory"
 import type { ShipmentStatus } from "../../lib/apaczka/client/statuses"
 import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
 import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
 import { type ApaczkaPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
 import { type ApaczkaSettings, readSettings, settingsSchema } from "../../lib/apaczka/settings"
-import { userAgent } from "../../lib/apaczka/version"
 import { ApaczkaShipment } from "./models/shipment"
 import { ApaczkaSetting } from "./models/setting"
 import { ApaczkaTrackingEvent } from "./models/tracking-event"
@@ -51,16 +51,7 @@ export default class ApaczkaModuleService extends MedusaService({
       return
     }
 
-    const client = new ApaczkaClient({
-      appId: parsed.options.appId,
-      appSecret: parsed.options.appSecret,
-      environment: parsed.options.environment,
-      baseUrl: parsed.options.baseUrl,
-      timeoutMs: parsed.options.timeoutMs,
-      maxRetries: parsed.options.maxRetries,
-      userAgent: userAgent(),
-      logger: container.logger,
-    })
+    const client = createApaczkaClient(parsed.options, container.logger)
     const catalog = new ApaczkaCatalog(client, {
       serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
       pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,

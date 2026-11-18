@@ -96,9 +96,11 @@ export const SettingsPanel = () => {
                 <Badge size="2xsmall" color={s.environment === "production" ? "green" : "orange"}>
                   {s.environment}
                 </Badge>
-                <Text size="small" className="text-ui-fg-subtle font-mono">
-                  {s.base_url}
-                </Text>
+                {!s.demo && (
+                  <Text size="small" className="text-ui-fg-subtle font-mono">
+                    {s.base_url}
+                  </Text>
+                )}
               </Row>
               <Row label={t("apaczka.settings.appId")}>
                 <Text size="small" className="font-mono">

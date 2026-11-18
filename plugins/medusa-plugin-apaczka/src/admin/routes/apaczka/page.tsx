@@ -3,6 +3,7 @@ import { Container, Heading, Tabs, Text } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { DemoBar } from "../../components/apaczka/demo-bar"
 import { SettingsPanel } from "../../components/apaczka/settings-panel"
 import { ShipmentsList } from "../../components/apaczka/shipments-list"
 import apaczkaLogo from "../../lib/apaczka/apaczka-logo.png"
@@ -29,6 +30,7 @@ const ApaczkaPage = () => {
 
   return (
     <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="flex flex-col gap-y-3">
+      <DemoBar />
       <Container className="overflow-hidden p-0">
         <div className="flex items-center gap-x-3 px-6 py-4">
           <PageLogo src={apaczkaLogo} />

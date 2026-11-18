@@ -17,6 +17,7 @@
   <a href="#configuration">Configuration</a> ·
   <a href="./docs/configuration.md">All options</a> ·
   <a href="#what-it-does">What it does</a> ·
+  <a href="#demo-mode">Demo mode</a> ·
   <a href="#testing-against-the-apaczka-sandbox">Sandbox</a> ·
   <a href="./storefront/README.md">Storefront</a>
 </p>
@@ -306,6 +307,41 @@ adjusts the shipment.
 | `POST /admin/apaczka/turn-in`                              | Hand-over (turn-in) confirmation PDF for several shipments |
 | `GET /admin/apaczka/pickup-hours?postal_code=&service_id=` | Available courier pickup days                              |
 | `POST /admin/apaczka/pickups`                              | Book a courier pickup                                      |
+
+## Demo mode
+
+To show the plugin without an Apaczka account, set `demo: true` (no
+`appId` or `appSecret` needed):
+
+```ts
+{ resolve: "@bitshaft/medusa-plugin-apaczka", options: { demo: true } }
+```
+
+A built-in client then answers every call itself and nothing is sent to
+Apaczka:
+
+- **Services:** five sample services (InPost Paczkomat and Kurier, DPD
+  Classic and Pickup, Pocztex Kurier, IDs 9101–9105) that become shipping
+  options as usual, with COD and return variants.
+- **Prices:** a base price per parcel, more per started kilogram above
+  1 kg and for COD; gross is net + 23% VAT.
+- **Parcel points:** eight sample InPost and DPD points in Polish cities,
+  for the storefront point picker.
+- **Shipments:** created from fulfillments or the order page, with a
+  `DEMO…` waybill number, a price, a PDF (or ZPL) label marked as a demo,
+  a drop-off code, courier pickups and hand-over protocols.
+- **Tracking** moves on by itself: picked up after 2 minutes, at the
+  sorting centre after 5, on the way after 10, delivered after 20. Every
+  fifth shipment has a failed delivery attempt first and is delivered
+  10 minutes later. "Refresh tracking" shows the progress at once; the
+  fulfillment is marked shipped and delivered like with real tracking.
+- **Cancellation** works only in the first 2 minutes, before the carrier
+  takes the parcel.
+
+The admin page shows a "Demo mode" bar and the Settings tab shows the
+`demo` environment. Demo orders are kept in memory; after a restart their
+details are rebuilt from the order ID, so existing shipments keep working.
+Don't use demo mode in production: the shipments are not real.
 
 ## Testing against the Apaczka sandbox
 

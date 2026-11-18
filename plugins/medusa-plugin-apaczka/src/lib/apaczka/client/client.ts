@@ -78,6 +78,8 @@ type CallOptions = {
 export class ApaczkaClient {
   readonly baseUrl: string
   readonly environment: ApaczkaEnvironment | "custom"
+  /** True for `DemoApaczkaClient`, which answers itself instead of calling Apaczka. */
+  readonly demo: boolean = false
 
   private readonly appId: string
   private readonly appSecret: string

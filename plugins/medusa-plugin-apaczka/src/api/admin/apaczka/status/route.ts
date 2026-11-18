@@ -37,7 +37,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   res.json({
     enabled: true,
     version: packageVersion(),
-    environment: client.environment,
+    environment: client.demo ? "demo" : client.environment,
+    demo: client.demo,
     base_url: client.baseUrl,
     app_id: maskIdentifier(options.appId),
     connection,

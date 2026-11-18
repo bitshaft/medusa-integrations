@@ -21,6 +21,9 @@ First release.
   panel on the order page. In Polish and English.
 - Missing or invalid options leave the plugin disabled with one log line
   instead of stopping Medusa.
+- Demo mode (`demo: true`): no credentials and no requests to Apaczka;
+  sample services, prices, parcel points, labels, pickups and tracking that
+  moves on by itself, with a demo bar on the admin page.
 
 ### Security
 

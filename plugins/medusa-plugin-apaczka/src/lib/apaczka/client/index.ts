@@ -1,4 +1,5 @@
 export * from "./client"
+export * from "./demo"
 export * from "./errors"
 export * from "./signing"
 export * from "./statuses"

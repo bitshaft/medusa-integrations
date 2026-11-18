@@ -12,7 +12,8 @@ import type {
 } from "@medusajs/framework/types"
 import { AbstractFulfillmentProviderService, MedusaError } from "@medusajs/framework/utils"
 
-import { ApaczkaApiError, ApaczkaClient, ApaczkaError, type ApaczkaAddress } from "../../lib/apaczka/client"
+import { ApaczkaApiError, type ApaczkaClient, ApaczkaError, type ApaczkaAddress } from "../../lib/apaczka/client"
+import { createApaczkaClient } from "../../lib/apaczka/client-factory"
 import {
   assertCompleteAddress,
   customerAddress,
@@ -39,7 +40,6 @@ import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/op
 import { type ApaczkaPluginOptions, optionsForService, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
 import { missingWeights, type ParcelItem } from "../../lib/apaczka/parcels"
 import { createShipment, labelsFor } from "../../lib/apaczka/shipments"
-import { userAgent } from "../../lib/apaczka/version"
 
 type InjectedDependencies = { logger: Logger }
 
@@ -100,16 +100,7 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
       return
     }
 
-    const client = new ApaczkaClient({
-      appId: parsed.options.appId,
-      appSecret: parsed.options.appSecret,
-      environment: parsed.options.environment,
-      baseUrl: parsed.options.baseUrl,
-      timeoutMs: parsed.options.timeoutMs,
-      maxRetries: parsed.options.maxRetries,
-      userAgent: userAgent(),
-      logger,
-    })
+    const client = createApaczkaClient(parsed.options, logger)
     const catalog = new ApaczkaCatalog(client, {
       serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
       pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,

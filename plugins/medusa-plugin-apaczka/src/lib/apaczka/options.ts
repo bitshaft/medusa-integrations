@@ -99,6 +99,13 @@ const serviceOverrideSchema = z.object({
 })
 
 export const pluginOptionsSchema = z.object({
+  /**
+   * Demo mode: no credentials and no requests to Apaczka. A built-in client
+   * answers with sample services, prices, parcel points, labels and
+   * tracking that moves on by itself (see `DemoApaczkaClient`).
+   */
+  demo: z.boolean().default(false),
+
   /* Credentials ----------------------------------------------------------- */
   appId: z.string().min(1, "appId is required (Apaczka panel → Settings → API)"),
   appSecret: z.string().min(1, "appSecret is required (Apaczka panel → Settings → API)"),
@@ -242,6 +249,11 @@ export const PLUGIN_NAME = "apaczka"
  * reason is safe to log (it never contains option values).
  */
 export function parseOptions(raw: unknown): PluginOptionsResult<ApaczkaPluginOptions> {
+  const input = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>
+  if (input.demo === true) {
+    // The demo client never signs anything, so the credentials are placeholders.
+    return parsePluginOptions(pluginOptionsSchema, { appId: "demo", appSecret: "demo", ...input })
+  }
   return parsePluginOptions(pluginOptionsSchema, raw, { required: ["appId", "appSecret"] })
 }
 
