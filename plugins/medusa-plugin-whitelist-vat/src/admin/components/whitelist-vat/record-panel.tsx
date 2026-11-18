@@ -11,7 +11,16 @@ import { CompanyDetails, OutcomeBadge, TaxId, VerdictBadge } from "./shared"
  * with the business's data, the answers recorded for this record, and a
  * button to verify now. Hidden while the plugin is disabled.
  */
-export const RecordPanel = ({ kind, id }: { kind: "orders" | "customers"; id: string }) => {
+export const RecordPanel = ({
+  kind,
+  id,
+  bare = false,
+}: {
+  kind: "orders" | "customers"
+  id: string
+  /** Inside another card (the order page's Integrations tab): no card of its own. */
+  bare?: boolean
+}) => {
   const { t, i18n } = useTranslation()
   const status = useWhitelistVatStatus()
   const enabled = status.data?.enabled === true
@@ -36,8 +45,9 @@ export const RecordPanel = ({ kind, id }: { kind: "orders" | "customers"; id: st
       onError: (error) => toast.error(t("whitelist-vat.record.failed", { error: errorMessage(error) })),
     })
 
+  const Wrapper = bare ? "div" : Container
   return (
-    <Container className="overflow-hidden divide-y p-0">
+    <Wrapper className={bare ? "divide-y" : "overflow-hidden divide-y p-0"}>
       <div className="flex items-center justify-between gap-x-4 px-6 py-4">
         <Heading level="h2">{t("whitelist-vat.record.title")}</Heading>
         {taxId && (
@@ -147,6 +157,6 @@ export const RecordPanel = ({ kind, id }: { kind: "orders" | "customers"; id: st
           </div>
         </div>
       )}
-    </Container>
+    </Wrapper>
   )
 }

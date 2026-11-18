@@ -1,50 +1,89 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types"
-import { Container, Heading, Skeleton, Text } from "@medusajs/ui"
+import { Skeleton, Text } from "@medusajs/ui"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ShipmentCard } from "../components/apaczka/shipment-card"
 import { type Shipment, useOrderShipments } from "../lib/apaczka/api"
+import apaczkaLogo from "../lib/apaczka/apaczka-logo.png"
+import {
+  claimZone,
+  type Level,
+  ORDER_ZONE,
+  OrderIntegrations,
+  type OrderLike,
+  registerOrderTab,
+} from "../lib/apaczka/kit/integrations"
+
+type OrderFulfillment = { id: string; provider_id?: string | null; canceled_at?: string | null }
 
 /**
- * Order page panel: one card per Apaczka fulfillment, with label download,
- * tracking history, courier booking and — for shipments not created yet —
- * a form to create them.
+ * The order's Apaczka shipments. Fulfillments that have no shipment record
+ * yet (e.g. created before the plugin was installed) still get a "Create
+ * shipment" card.
  */
-const OrderApaczkaShipments = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
-  const { t } = useTranslation()
-  const { data, isLoading, isError } = useOrderShipments(order.id)
-
-  // Apaczka fulfillments that have no shipment record yet (e.g. created
-  // before the plugin was installed) still get a "Create shipment" card.
+const useOrderApaczka = (order: OrderLike) => {
+  const query = useOrderShipments(order.id)
   const shipments = useMemo<Shipment[]>(() => {
-    const known = data?.shipments ?? []
+    const known = query.data?.shipments ?? []
     const knownIds = new Set(known.map((s) => s.fulfillment_id))
-    const orphans = (order.fulfillments ?? [])
+    const orphans = ((order.fulfillments ?? []) as OrderFulfillment[])
       .filter((f) => f.provider_id?.startsWith("apaczka_") && !f.canceled_at && !knownIds.has(f.id))
       .map((f) => placeholder(f.id, order.id))
     return [...known, ...orphans]
-  }, [data, order])
-
+  }, [query.data, order])
   const hasApaczka =
-    shipments.length > 0 || (order.shipping_methods ?? []).some((m) => m.shipping_option_id && isApaczkaMethod(m))
+    shipments.length > 0 ||
+    (
+      (order.shipping_methods ?? []) as Array<{
+        shipping_option_id?: string | null
+        data?: Record<string, unknown> | null
+      }>
+    ).some((m) => m.shipping_option_id && isApaczkaMethod(m))
+  return { ...query, shipments, hasApaczka }
+}
 
-  if (!isLoading && !hasApaczka) {
-    return null
+/** Problems red, shipments still to create or returned orange, on the way blue, delivered green. */
+function levelOf(shipments: Shipment[]): Level {
+  const live = shipments.filter((s) => s.status !== "canceled")
+  if (
+    live.some((s) => s.status === "exception" || (s.status === "pending" && s.error && s.error !== "missing_weight"))
+  ) {
+    return "error"
   }
+  if (live.some((s) => s.status === "pending" || s.status === "returned")) return "warn"
+  if (live.length && live.every((s) => s.status === "delivered")) return "ok"
+  return live.length ? "info" : "none"
+}
+
+registerOrderTab({
+  id: "apaczka",
+  brand: { label: "Apaczka", logo: apaczkaLogo },
+  order: 20,
+  useState: (order) => {
+    const { shipments, hasApaczka, isLoading } = useOrderApaczka(order)
+    return { visible: hasApaczka, level: levelOf(shipments), loading: isLoading }
+  },
+  Panel: ({ order }) => <ApaczkaPanel order={order} />,
+})
+claimZone(ORDER_ZONE, "apaczka")
+
+/** The Integrations card at the top of the order page (rendered by one plugin for all of them). */
+const OrderApaczkaShipments = ({ data: order }: DetailWidgetProps<AdminOrder>) => (
+  <OrderIntegrations owner="apaczka" order={order as unknown as OrderLike} />
+)
+
+/**
+ * One card per Apaczka fulfillment, with label download, tracking history,
+ * courier booking and, for shipments not created yet, a form to create them.
+ */
+const ApaczkaPanel = ({ order }: { order: OrderLike }) => {
+  const { t } = useTranslation()
+  const { shipments, isLoading, isError } = useOrderApaczka(order)
 
   return (
-    <Container className="overflow-hidden divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div>
-          <Heading level="h2">{t("apaczka.title")}</Heading>
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("apaczka.subtitle")}
-          </Text>
-        </div>
-      </div>
-
+    <div className="divide-y">
       {isLoading && (
         <div className="px-6 py-4">
           <Skeleton className="h-16 w-full" />
@@ -66,7 +105,7 @@ const OrderApaczkaShipments = ({ data: order }: DetailWidgetProps<AdminOrder>) =
       {shipments.map((shipment) => (
         <ShipmentCard key={shipment.id} shipment={shipment} />
       ))}
-    </Container>
+    </div>
   )
 }
 
@@ -108,7 +147,7 @@ function placeholder(fulfillmentId: string, orderId: string): Shipment {
 }
 
 export const config = defineWidgetConfig({
-  zone: "order.details.after",
+  zone: "order.details.before",
 })
 
 export default OrderApaczkaShipments

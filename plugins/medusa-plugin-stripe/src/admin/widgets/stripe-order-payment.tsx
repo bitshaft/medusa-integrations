@@ -1,28 +1,71 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types"
-import { Badge, Container, Heading, Skeleton, Text } from "@medusajs/ui"
+import { Badge, Skeleton, Text } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import { DemoBar, ExternalLink, Incomplete, Risk, StripeStatus } from "../components/stripe/shared"
 import { type OrderPayment, useOrderPayments, useStatus } from "../lib/stripe/api"
 import { date, money } from "../lib/stripe/format"
+import {
+  claimZone,
+  type Level,
+  ORDER_ZONE,
+  OrderIntegrations,
+  type OrderLike,
+  registerOrderTab,
+} from "../lib/stripe/kit/integrations"
+import stripeLogo from "../lib/stripe/stripe-logo.png"
+
+// Medusa reloads the order after a capture or refund; its payment state is
+// part of the query key, so the tab then reads Stripe again too.
+const versionOf = (order: OrderLike) =>
+  `${order.payment_status}|${((order.payment_collections ?? []) as Array<Record<string, unknown>>).map((c) => `${c.captured_amount}:${c.refunded_amount}`).join(",")}`
+
+const useOrderStripe = (order: OrderLike) => {
+  const status = useStatus()
+  const payments = useOrderPayments(order.id, versionOf(order))
+  return { status, payments }
+}
+
+/** Open disputes and failed payments are red; money waiting to be captured or an action is orange. */
+function levelOf(list: OrderPayment[]): Level {
+  if (list.some((p) => p.disputes.length > 0 || p.status === "requires_payment_method" || p.status === "canceled")) {
+    return "error"
+  }
+  if (
+    list.some((p) => p.status === "requires_capture" || p.status === "requires_action" || p.status === "processing")
+  ) {
+    return "warn"
+  }
+  return list.some((p) => p.status === "succeeded") ? "ok" : "none"
+}
+
+registerOrderTab({
+  id: "stripe",
+  brand: { label: "Stripe", logo: stripeLogo, logoFill: true },
+  order: 10,
+  useState: (order) => {
+    const { status, payments } = useOrderStripe(order)
+    const list = payments.data?.payments ?? []
+    if (!status.data?.enabled) return { visible: false, level: "none", loading: status.isLoading }
+    return { visible: list.length > 0 || payments.isError, level: levelOf(list), loading: payments.isLoading }
+  },
+  Panel: ({ order }) => <StripePanel order={order} />,
+})
+claimZone(ORDER_ZONE, "stripe")
+
+/** The Integrations card at the top of the order page (rendered by one plugin for all of them). */
+const StripeOrderWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => (
+  <OrderIntegrations owner="stripe" order={order as unknown as OrderLike} />
+)
 
 /** The Stripe side of an order's payment: method, fee, net, 3D Secure, Radar, refunds, disputes, payout. */
-const StripeOrderWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
-  const { t } = useTranslation()
-  const status = useStatus()
-  // Medusa reloads the order after a capture or refund; its payment state is
-  // part of the query key, so the widget then reads Stripe again too.
-  const version = `${order.payment_status}|${(order.payment_collections ?? []).map((c) => `${c.captured_amount}:${c.refunded_amount}`).join(",")}`
-  const payments = useOrderPayments(order.id, version)
-  if (!status.data?.enabled) return null
+const StripePanel = ({ order }: { order: OrderLike }) => {
+  const { payments } = useOrderStripe(order)
   const list = payments.data?.payments ?? []
-  if (!payments.isLoading && !list.length && !payments.isError) return null
-
   return (
-    <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
-      <Heading level="h2">{t("stripe.widget.title")}</Heading>
+    <div className="flex flex-col gap-y-4 p-6">
       {payments.data?.demo && <DemoBar />}
       <Incomplete data={payments.data} />
       {payments.isLoading ? (
@@ -30,7 +73,7 @@ const StripeOrderWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
       ) : (
         list.map((p) => <PaymentCard key={p.id} payment={p} />)
       )}
-    </Container>
+    </div>
   )
 }
 
@@ -47,7 +90,7 @@ const PaymentCard = ({ payment: p }: { payment: OrderPayment }) => {
         </Text>
         <ExternalLink href={p.dashboard_url}>{t("stripe.widget.openStripe")}</ExternalLink>
       </div>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-4">
         <Field label={t("stripe.amount")} value={money(p.amount, p.currency, lang)} />
         <Field label={t("stripe.fee")} value={s ? money(s.fee, s.currency, lang) : "—"} />
         <Field label={t("stripe.net")} value={s ? money(s.net, s.currency, lang) : "—"} />
@@ -134,6 +177,6 @@ const Field = ({ label, value }: { label: string; value: ReactNode }) => (
   </div>
 )
 
-export const config = defineWidgetConfig({ zone: "order.details.side.after" })
+export const config = defineWidgetConfig({ zone: "order.details.before" })
 
 export default StripeOrderWidget

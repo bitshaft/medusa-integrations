@@ -1,36 +1,53 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types"
-import { Container, Heading, Text } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
+import { Envelope } from "@medusajs/icons"
 
 import { MessageLog } from "../components/emails/message-log"
-import { useEmailsStatus } from "../lib/emails/api"
+import { useEmailMessages, useEmailsStatus } from "../lib/emails/api"
+import {
+  claimZone,
+  type Level,
+  ORDER_ZONE,
+  OrderIntegrations,
+  type OrderLike,
+  registerOrderTab,
+} from "../lib/emails/kit/integrations"
 
-/** Order page panel: every email sent for the order, with the option to resend. */
-const EmailsOrderLog = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
-  const { t } = useTranslation()
-  const status = useEmailsStatus()
+const PAGE = 5
 
-  // Nothing to show while the plugin is not configured; the settings page explains why.
-  if (!status.data?.enabled) {
-    return null
-  }
+registerOrderTab({
+  id: "emails",
+  brand: { label: "emails.title", icon: Envelope, color: "#2563eb" },
+  order: 40,
+  useState: (order) => {
+    const status = useEmailsStatus()
+    const enabled = status.data?.enabled === true
+    // Same query as the log in the tab, so it is read once.
+    const messages = useEmailMessages({ order_id: order.id, limit: PAGE, offset: 0 }, enabled)
+    if (!enabled) return { visible: false, level: "none", loading: status.isLoading }
+    const list = messages.data?.messages ?? []
+    // A failed send is red, one still waiting orange, sent green.
+    const level: Level = list.some((m) => m.status === "failed")
+      ? "error"
+      : list.some((m) => m.status === "pending")
+        ? "warn"
+        : list.length
+          ? "ok"
+          : "none"
+    return { visible: true, level, loading: messages.isLoading }
+  },
+  // Every email sent for the order, with the option to resend.
+  Panel: ({ order }) => <MessageLog orderId={order.id} pageSize={PAGE} />,
+})
+claimZone(ORDER_ZONE, "emails")
 
-  return (
-    <Container className="overflow-hidden divide-y p-0">
-      <div className="px-6 py-4">
-        <Heading level="h2">{t("emails.log.title")}</Heading>
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("emails.log.subtitle")}
-        </Text>
-      </div>
-      <MessageLog orderId={order.id} pageSize={5} />
-    </Container>
-  )
-}
+/** The Integrations card at the top of the order page (rendered by one plugin for all of them). */
+const EmailsOrderLog = ({ data: order }: DetailWidgetProps<AdminOrder>) => (
+  <OrderIntegrations owner="emails" order={order as unknown as OrderLike} />
+)
 
 export const config = defineWidgetConfig({
-  zone: "order.details.after",
+  zone: "order.details.before",
 })
 
 export default EmailsOrderLog
