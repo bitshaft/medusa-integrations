@@ -150,7 +150,11 @@
       "noteSend": "Add note",
       "rejectSend": "Reject the negotiation",
       "noteHint": "Internal notes never reach the customer: not in the Store API, not in customer events.",
-      "rejectHint": "Rejecting ends the negotiation. The customer sees the reason."
+      "rejectHint": "Rejecting ends the negotiation. The customer sees the reason.",
+      "rejectConfirmTitle": "Reject negotiation {{number}}?",
+      "acceptConfirmTitle": "Accept {{price}}?",
+      "acceptConfirmText": "The negotiation closes at this price and the customer can buy at it. This cannot be undone.",
+      "acceptConfirm": "Accept"
     },
     "counter": {
       "mode": {
@@ -255,7 +259,9 @@
       "optionsTitle": "Options from medusa-config",
       "optionsHint": "Read-only. Change them in medusa-config.ts and restart Medusa.",
       "storeCurrency": "store default",
-      "everyone": "every signed-in customer"
+      "everyone": "every signed-in customer",
+      "armConfirmTitle": "Arm: {{writer}}?",
+      "armConfirm": "Arm"
     },
     "guide": {
       "whatTitle": "What the plugin does",

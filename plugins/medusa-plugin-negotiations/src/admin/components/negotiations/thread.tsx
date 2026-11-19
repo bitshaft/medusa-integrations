@@ -1,5 +1,5 @@
 import { ArrowUpRightOnBox, Check, XMark } from "@medusajs/icons"
-import { Badge, Button, Container, Heading, Prompt, Select, Text, Textarea, toast } from "@medusajs/ui"
+import { Badge, Button, Container, Heading, Prompt, Select, Text, Textarea, toast, usePrompt } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
@@ -382,7 +382,9 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
     price: number
     confirm_below_floor?: boolean
   }>(thread.id, "accept")
+  // Accepting closes the deal: always asked, with the minimum-price warnings when there are any.
   const [confirm, setConfirm] = useState<null | { basis: "target" | "offer"; price: number; warnings: string[] }>(null)
+  const prompt = usePrompt()
 
   const onError = (e: unknown) => {
     const body = apiError(e)
@@ -390,7 +392,18 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
   }
   const done = () => setText("")
 
-  const send = () => {
+  const send = async () => {
+    if (
+      mode === "reject" &&
+      !(await prompt({
+        title: t("negotiations.move.rejectConfirmTitle", { number: thread.number }),
+        description: t("negotiations.move.rejectHint"),
+        confirmText: t("negotiations.move.rejectSend"),
+        cancelText: t("negotiations.cancel"),
+        variant: "danger",
+      }))
+    )
+      return
     if (mode === "reply")
       reply.mutate({ type: "message", message: text, version: thread.version }, { onSuccess: done, onError })
     if (mode === "note") reply.mutate({ type: "internal_note", message: text }, { onSuccess: done, onError })
@@ -405,8 +418,7 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
       lang,
       t
     )
-    if (warnings) return setConfirm({ basis, price, warnings })
-    accept.mutate({ version: thread.version, basis, price }, { onError })
+    setConfirm({ basis, price, warnings: warnings ?? [] })
   }
 
   const modes: Mode[] = ["reply", "counter", "note", "reject"]
@@ -481,16 +493,27 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
         </div>
       )}
 
-      <Prompt open={confirm !== null} onOpenChange={(open) => !open && setConfirm(null)}>
+      <Prompt
+        open={confirm !== null}
+        onOpenChange={(open) => !open && setConfirm(null)}
+        variant={confirm?.warnings.length ? "danger" : "confirmation"}
+      >
         <Prompt.Content>
           <Prompt.Header>
-            <Prompt.Title>{t("negotiations.floor.title")}</Prompt.Title>
+            <Prompt.Title>
+              {confirm?.warnings.length
+                ? t("negotiations.floor.title")
+                : t("negotiations.move.acceptConfirmTitle", {
+                    price: confirm ? basisMoney(confirm.price, thread.currency_code, thread.tax_inclusive) : "",
+                  })}
+            </Prompt.Title>
             <Prompt.Description>
               {confirm?.warnings.map((w) => (
                 <span key={w} className="block">
                   {w}
                 </span>
               ))}
+              <span className="block">{t("negotiations.move.acceptConfirmText")}</span>
             </Prompt.Description>
           </Prompt.Header>
           <Prompt.Footer>
@@ -499,13 +522,18 @@ const YourMove = ({ detail }: { detail: ThreadDetail }) => {
               onClick={() => {
                 if (!confirm) return
                 accept.mutate(
-                  { version: thread.version, basis: confirm.basis, price: confirm.price, confirm_below_floor: true },
+                  {
+                    version: thread.version,
+                    basis: confirm.basis,
+                    price: confirm.price,
+                    ...(confirm.warnings.length ? { confirm_below_floor: true } : {}),
+                  },
                   { onError }
                 )
                 setConfirm(null)
               }}
             >
-              {t("negotiations.floor.confirmAccept")}
+              {confirm?.warnings.length ? t("negotiations.floor.confirmAccept") : t("negotiations.move.acceptConfirm")}
             </Prompt.Action>
           </Prompt.Footer>
         </Prompt.Content>

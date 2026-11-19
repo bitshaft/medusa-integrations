@@ -152,7 +152,11 @@
       "noteSend": "Dodaj notatkę",
       "rejectSend": "Odrzuć negocjację",
       "noteHint": "Notatki wewnętrzne nigdy nie trafiają do klienta: ani przez Store API, ani w zdarzeniach dla klienta.",
-      "rejectHint": "Odrzucenie kończy negocjację. Klient zobaczy powód."
+      "rejectHint": "Odrzucenie kończy negocjację. Klient zobaczy powód.",
+      "rejectConfirmTitle": "Odrzucić negocjację {{number}}?",
+      "acceptConfirmTitle": "Zaakceptować {{price}}?",
+      "acceptConfirmText": "Negocjacja zamknie się z tą ceną, a klient będzie mógł po niej kupić. Tego nie można cofnąć.",
+      "acceptConfirm": "Akceptuj"
     },
     "counter": {
       "mode": {
@@ -257,7 +261,9 @@
       "optionsTitle": "Opcje z medusa-config",
       "optionsHint": "Tylko do odczytu. Zmień je w medusa-config.ts i uruchom Medusę ponownie.",
       "storeCurrency": "domyślna waluta sklepu",
-      "everyone": "każdy zalogowany klient"
+      "everyone": "każdy zalogowany klient",
+      "armConfirmTitle": "Uzbroić: {{writer}}?",
+      "armConfirm": "Uzbrój"
     },
     "guide": {
       "whatTitle": "Co robi wtyczka",

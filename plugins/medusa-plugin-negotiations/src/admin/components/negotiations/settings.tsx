@@ -11,6 +11,7 @@ import {
   Table,
   Text,
   toast,
+  usePrompt,
 } from "@medusajs/ui"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -84,6 +85,7 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
   const expire = useExpireNow()
   const errorText = useErrorText()
   const [form, setForm] = useState<SettingsType>(data.settings)
+  const prompt = usePrompt()
   const [discount, setDiscount] = useState(
     data.settings.max_discount_bp === null ? "" : String(data.settings.max_discount_bp / 100)
   )
@@ -190,7 +192,22 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
             <Switch
               checked={form.armed[key]}
               disabled={!on || o.demo}
-              onCheckedChange={(checked) => submit({ ...form, armed: { ...form.armed, [key]: checked } })}
+              onCheckedChange={async (checked) => {
+                if (
+                  checked &&
+                  !(await prompt({
+                    title: t("negotiations.settings.armConfirmTitle", {
+                      writer: t(`negotiations.settings.writer.${key}`),
+                    }),
+                    description: t(`negotiations.settings.writer.${key}Hint`),
+                    confirmText: t("negotiations.settings.armConfirm"),
+                    cancelText: t("negotiations.cancel"),
+                    variant: "confirmation",
+                  }))
+                )
+                  return
+                submit({ ...form, armed: { ...form.armed, [key]: checked } })
+              }}
             />
           </div>
         ))}
