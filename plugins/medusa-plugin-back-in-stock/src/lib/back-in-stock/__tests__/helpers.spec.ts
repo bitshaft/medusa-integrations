@@ -268,6 +268,10 @@ describe("emails plugin template", () => {
   it("registers both email types with the copy keys the emails plugin edits", () => {
     expect(Object.keys(backInStockEmailTemplate)).toEqual(["back-in-stock", "back-in-stock-confirm"])
     for (const template of Object.values(backInStockEmailTemplate)) {
+      // Named in the emails admin in both languages, under this plugin's name.
+      expect(Object.keys(template.name)).toEqual(["en", "pl"])
+      expect(Object.keys(template.description)).toEqual(["en", "pl"])
+      expect(template.source).toEqual({ en: "Back in stock", pl: "Alert dostępności" })
       expect(Object.keys(template.copy)).toEqual(["en", "pl"])
       expect(Object.keys(template.copy.pl).sort()).toEqual([
         "body",

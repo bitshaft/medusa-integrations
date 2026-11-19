@@ -36,14 +36,29 @@ const preview = (locale: string, kind: "restock" | "confirm") => ({
   unsubscribe_url: "https://example.com/unsubscribe",
 })
 
+/** The plugin's name in the emails admin, next to each of its emails. */
+const SOURCE = { en: "Back in stock", pl: "Alert dostępności" }
+
 export const backInStockEmailTemplate = {
   [EMAILS_RESTOCK_TYPE]: {
+    name: { en: "Back in stock", pl: "Produkt znów dostępny" },
+    description: {
+      en: "To everyone waiting, when a sold-out variant can be ordered again.",
+      pl: "Do wszystkich czekających, gdy wyprzedany wariant znów da się zamówić.",
+    },
+    source: SOURCE,
     audience: "customer" as const,
     copy: copyFor("restock"),
     variables: VARIABLES,
     previewData: (locale: string) => preview(locale, "restock"),
   },
   [EMAILS_CONFIRM_TYPE]: {
+    name: { en: "Confirm back-in-stock alert", pl: "Potwierdzenie zapisu na alert" },
+    description: {
+      en: "Right after signing up, when double opt-in is on: a link that confirms the address.",
+      pl: "Zaraz po zapisie, gdy włączone jest potwierdzenie e-mailem: link potwierdzający adres.",
+    },
+    source: SOURCE,
     audience: "customer" as const,
     copy: copyFor("confirm"),
     variables: VARIABLES,
