@@ -42,7 +42,7 @@ Install and configure @bitshaft/medusa-plugin-stripe in this Medusa v2 project.
    Method Configurations, Account; and None on everything else.
 5. Run the type check and build the project. Do not run migrations for this
    plugin: it has none.
-Then tell me to open Admin → Stripe → Checks.
+Then tell me to open Admin → Stripe → Settings (the checks are there).
 ```
 
 ## Installation
@@ -70,7 +70,8 @@ Then tell me to open Admin → Stripe → Checks.
    ```
 
 3. Create a restricted key (below), put it in `STRIPE_INSIGHTS_API_KEY`,
-   restart Medusa and open **Stripe → Checks** in the admin.
+   restart Medusa and open **Stripe → Settings** in the admin: the
+   checks are at the top.
 
 No migrations: the plugin stores nothing.
 
@@ -89,12 +90,12 @@ No migrations: the plugin stores nothing.
 
 Without a key (and without `demo`) the plugin stays disabled and logs one
 line (`[stripe] Disabled: missing option apiKey`); Medusa starts normally and
-the admin page shows the Checks and the Guide. A wrong key is a failed check,
+the admin page shows Settings (with the checks) and the Guide. A wrong key is a failed check,
 not an error.
 
 ## Key permissions
 
-Use a **restricted key**, not the full secret key. The Checks tab warns when
+Use a **restricted key**, not the full secret key. The checks on the Settings tab warn when
 an `sk_` key is used. Set **Read** on:
 
 | Stripe resource               | Used for                                    |
@@ -179,7 +180,7 @@ The client refuses any method other than GET and any path not listed here
 - **Disputes**: open disputes with amount, reason, evidence deadline, days
   left, urgency (under 3 days), links to the order and to the dispute in
   Stripe (where you respond).
-- **Checks**: OK / warning / error, each with how to fix it:
+- **Settings**: the checks, OK / warning / error, each with how to fix it:
   provider registered as `pp_stripe_<providerId>`; key present, valid and
   restricted; account active with payments and payouts; payment methods on
   (cards, BLIK, Przelewy24, Apple Pay, Google Pay); the provider's webhook

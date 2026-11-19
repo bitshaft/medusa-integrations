@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { BookOpen, Cash, ChartBar, CreditCard, ExclamationCircle, ListCheckbox } from "@medusajs/icons"
+import { BookOpen, Cash, ChartBar, CreditCard, ExclamationCircle, CogSixTooth } from "@medusajs/icons"
 import { Badge, Container, Text, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
@@ -17,7 +17,7 @@ import stripeLogo from "../../lib/stripe/stripe-logo.png"
 import { DisabledNotice, LoadingBlock, OptionsCard, PageHeader, PageTabs, useTabParam } from "../../lib/stripe/kit/page"
 import { PageLogo } from "../../lib/stripe/kit/ui"
 
-const TABS = ["panel", "payments", "payouts", "disputes", "checks", "guide"] as const
+const TABS = ["panel", "payments", "payouts", "disputes", "settings", "guide"] as const
 
 /** The "Stripe" page in the main menu. Read-only: payments and refunds stay with the official provider. */
 const StripePage = () => {
@@ -26,7 +26,7 @@ const StripePage = () => {
   const refresh = useRefresh()
   const s = status.data
   // Without data to show, open on Checks: that is where the setup is explained.
-  const [current, setTab] = useTabParam(TABS, s && !s.enabled ? "checks" : "panel")
+  const [current, setTab] = useTabParam(TABS, s && !s.enabled ? "settings" : "panel")
   const ready = Boolean(s?.enabled)
 
   return (
@@ -61,8 +61,8 @@ const StripePage = () => {
           <TabTrigger value="disputes" icon={ExclamationCircle} color="#dc2626">
             {t("stripe.tabs.disputes")}
           </TabTrigger>
-          <TabTrigger value="checks" icon={ListCheckbox} color="#ea580c">
-            {t("stripe.tabs.checks")}
+          <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
+            {t("stripe.tabs.settings")}
           </TabTrigger>
           <TabTrigger value="guide" icon={BookOpen} color="#db2777">
             {t("stripe.tabs.guide")}
@@ -78,7 +78,7 @@ const StripePage = () => {
       )}
       {ready && current === "payouts" && <Payouts demo={Boolean(s?.demo)} />}
       {ready && current === "disputes" && <Disputes demo={Boolean(s?.demo)} />}
-      {s && current === "checks" && (
+      {s && current === "settings" && (
         <>
           <Checks status={s} />
           <OptionsCard
@@ -97,7 +97,7 @@ const StripePage = () => {
         </>
       )}
       {current === "guide" && <Guide />}
-      {s && !ready && !["checks", "guide"].includes(current) && (
+      {s && !ready && !["settings", "guide"].includes(current) && (
         <Container className="overflow-hidden p-6">
           <Text size="small" className="text-ui-fg-subtle">
             {t("stripe.disabled.hint")}

@@ -15,7 +15,7 @@
       "payments": "Payments",
       "payouts": "Payouts",
       "disputes": "Disputes",
-      "checks": "Checks",
+      "settings": "Settings",
       "guide": "Guide"
     },
     "keyKind": {
@@ -26,7 +26,7 @@
     },
     "disabled": {
       "title": "The plugin is disabled: {{reason}}",
-      "hint": "Set the apiKey option in medusa-config.ts (or demo: true) and restart Medusa. The Checks and Guide tabs show what to set up."
+      "hint": "Set the apiKey option in medusa-config.ts (or demo: true) and restart Medusa. The Settings (checks) and Guide tabs show what to set up."
     },
     "demo": {
       "body": "You are looking at sample data. The plugin sends no requests to Stripe in demo mode. Remove demo: true from the options to see your account."
@@ -366,7 +366,7 @@
       },
       "live": {
         "title": "Go live",
-        "body": "Repeat steps 1–2 in live mode, set the live key and mode: \"live\", and check the Checks tab again."
+        "body": "Repeat steps 1–2 in live mode, set the live key and mode: \"live\", and check the Settings tab again."
       }
     }
   }

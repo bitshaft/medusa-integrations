@@ -17,7 +17,7 @@
       "payments": "Płatności",
       "payouts": "Wypłaty",
       "disputes": "Spory",
-      "checks": "Kontrole",
+      "settings": "Ustawienia",
       "guide": "Przewodnik"
     },
     "keyKind": {
@@ -28,7 +28,7 @@
     },
     "disabled": {
       "title": "Wtyczka jest wyłączona: {{reason}}",
-      "hint": "Ustaw opcję apiKey w medusa-config.ts (albo demo: true) i uruchom ponownie Medusę. Zakładki Kontrole i Przewodnik pokazują, co skonfigurować."
+      "hint": "Ustaw opcję apiKey w medusa-config.ts (albo demo: true) i uruchom ponownie Medusę. Zakładki Ustawienia (kontrole) i Przewodnik pokazują, co skonfigurować."
     },
     "demo": {
       "body": "Oglądasz dane pokazowe. W trybie demo wtyczka nie wysyła żadnych zapytań do Stripe. Usuń demo: true z opcji, żeby zobaczyć swoje konto."
@@ -380,7 +380,7 @@
       },
       "live": {
         "title": "Przejdź na live",
-        "body": "Powtórz kroki 1–2 w trybie live, ustaw klucz live i mode: \"live\", a potem sprawdź zakładkę Kontrole."
+        "body": "Powtórz kroki 1–2 w trybie live, ustaw klucz live i mode: \"live\", a potem sprawdź zakładkę Ustawienia."
       }
     }
   }
