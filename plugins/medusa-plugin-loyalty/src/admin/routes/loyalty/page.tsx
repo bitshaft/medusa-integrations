@@ -80,17 +80,21 @@ const LoyaltyPage = () => {
       {s?.enabled && tab === "rewards" && <Rewards tiers={s.settings.tiers.levels} currencyCode={s.currency_code} />}
       {s?.enabled && tab === "customers" && <Customers />}
       {s?.enabled && tab === "settings" && (
-        <>
-          <Settings settings={s.settings} defaults={s.defaults} storeCurrencies={s.store_currencies} />
-          <OptionsCard
-            version={s.version}
-            rows={[
-              ["timeZone", s.options.timeZone],
-              ["defaultLocale", s.options.defaultLocale],
-              ["demo", s.options.demo],
-            ]}
-          />
-        </>
+        <Settings
+          settings={s.settings}
+          defaults={s.defaults}
+          storeCurrencies={s.store_currencies}
+          footer={
+            <OptionsCard
+              version={s.version}
+              rows={[
+                ["timeZone", s.options.timeZone],
+                ["defaultLocale", s.options.defaultLocale],
+                ["demo", s.options.demo],
+              ]}
+            />
+          }
+        />
       )}
       {tab === "guide" && <Guide />}
     </div>

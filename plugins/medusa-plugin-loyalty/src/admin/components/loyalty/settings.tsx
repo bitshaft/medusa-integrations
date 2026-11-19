@@ -20,13 +20,15 @@ type Props = {
   defaults: SettingsValues
   /** The store's currencies, the default first. */
   storeCurrencies: string[]
+  /** Under the form, in its column (the "Options from medusa-config.ts" card). */
+  footer?: ReactNode
 }
 
 /** Select value for "follow the store's default currency". */
 const STORE_DEFAULT = "__store__"
 
 /** "Settings": every rule of the program, saved together; and a preview of what customers read. */
-export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
+export const Settings = ({ settings, defaults, storeCurrencies, footer }: Props) => {
   const { t } = useTranslation()
   const save = useSaveSettings()
   const [form, setForm] = useState<SettingsValues>(settings)
@@ -84,6 +86,7 @@ export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
 
   return (
     <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_360px]">
+      <div className="flex min-w-0 flex-col gap-y-3">
       <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -433,6 +436,8 @@ export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
           />
         </Section>
       </Container>
+      {footer}
+      </div>
 
       <Preview settings={settings} currency={(settings.currency_code ?? storeDefault).toUpperCase()} />
     </div>
