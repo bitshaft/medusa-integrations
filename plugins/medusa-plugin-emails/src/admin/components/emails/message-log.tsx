@@ -6,6 +6,7 @@ import { type EmailMessage, type MessageStatus, useEmailMessages, useResendEmail
 import { errorMessage, formatDateTime } from "../../lib/emails/kit/format"
 import { Empty, Pager } from "../../lib/emails/kit/page"
 import { useDebounced } from "../../lib/emails/kit/hooks"
+import { useEmailConfirm } from "./confirm"
 
 const STATUS_COLORS: Record<MessageStatus, "green" | "red" | "orange" | "blue"> = {
   sent: "green",
@@ -43,8 +44,10 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
     offset,
   })
   const resend = useResendEmail()
+  const confirm = useEmailConfirm()
 
-  const onResend = (message: EmailMessage) => {
+  const onResend = async (message: EmailMessage) => {
+    if (!(await confirm.resend(message))) return
     resend.mutate(message.id, {
       onSuccess: (outcome) => {
         if (outcome.status === "sent") {

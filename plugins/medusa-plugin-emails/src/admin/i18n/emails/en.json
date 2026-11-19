@@ -406,6 +406,14 @@
         "title": "Go live",
         "body": "Demo mode off, a verified sending domain, and a look at the History tab after the first orders."
       }
+    },
+    "confirm": {
+      "resendTitle": "Send this email again?",
+      "resendText": "\"{{subject}}\" goes to {{to}} once more.",
+      "resendTextNoSubject": "The email goes to {{to}} once more.",
+      "disableTitle": "Switch off \"{{name}}\"?",
+      "disableText": "From now on nobody gets it until you switch it on again. Emails already sent stay in the history.",
+      "disable": "Switch off"
     }
   }
 }

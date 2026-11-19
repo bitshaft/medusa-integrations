@@ -10,6 +10,7 @@ import {
   useUpdateEmailType,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { useEmailConfirm } from "./confirm"
 
 const AUDIENCES: EmailAudience[] = ["customer", "account", "team"]
 
@@ -78,6 +79,7 @@ export const Templates = () => {
 const TypeRow = ({ type, hasRecipients }: { type: EmailTypeSummary; hasRecipients: boolean }) => {
   const { t } = useTranslation()
   const update = useUpdateEmailType(type.type)
+  const confirm = useEmailConfirm()
 
   return (
     <div className="flex items-center justify-between gap-x-4 px-6 py-3">
@@ -104,12 +106,14 @@ const TypeRow = ({ type, hasRecipients }: { type: EmailTypeSummary; hasRecipient
           checked={type.enabled}
           disabled={update.isPending}
           aria-label={t(`emails.types.${type.type}.name`, { defaultValue: type.type })}
-          onCheckedChange={(checked) =>
+          onCheckedChange={async (checked) => {
+            if (!checked && !(await confirm.disable(t(`emails.types.${type.type}.name`, { defaultValue: type.type }))))
+              return
             update.mutate(
               { enabled: checked },
               { onError: (error) => toast.error(`${t("emails.list.toggleError")} ${errorMessage(error)}`) }
             )
-          }
+          }}
         />
         <Button size="small" variant="secondary" asChild>
           <Link to={`/emails/${type.type}`}>{t("emails.list.edit")}</Link>

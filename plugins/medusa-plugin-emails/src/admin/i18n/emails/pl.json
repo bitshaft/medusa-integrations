@@ -406,6 +406,14 @@
         "title": "Start produkcyjny",
         "body": "Tryb demo wyłączony, zweryfikowana domena nadawcy i rzut oka na Historię po pierwszych zamówieniach."
       }
+    },
+    "confirm": {
+      "resendTitle": "Wysłać ten e-mail ponownie?",
+      "resendText": "„{{subject}}” trafi jeszcze raz na {{to}}.",
+      "resendTextNoSubject": "E-mail trafi jeszcze raz na {{to}}.",
+      "disableTitle": "Wyłączyć e-mail „{{name}}”?",
+      "disableText": "Od teraz nikt go nie dostanie, dopóki znowu go nie włączysz. E-maile już wysłane zostają w historii.",
+      "disable": "Wyłącz"
     }
   }
 }

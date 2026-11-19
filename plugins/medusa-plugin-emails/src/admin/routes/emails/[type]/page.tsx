@@ -17,6 +17,7 @@ import { useMemo, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { Link, useParams } from "react-router-dom"
 
+import { useEmailConfirm } from "../../../components/emails/confirm"
 import { formatRecipients, parseRecipients } from "../../../components/emails/recipients"
 import {
   VariableInput,
@@ -108,6 +109,7 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
   const isOriginal = locale === detail.base_locale
 
   const update = useUpdateEmailType(type)
+  const confirm = useEmailConfirm()
   const reset = useResetEmailType(type)
 
   const dirty = detail.locales.some((l) => detail.fields.some(({ key }) => draft[l][key] !== saved[l][key]))
@@ -180,12 +182,14 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
                   id="emails-type-enabled"
                   checked={summary.enabled}
                   disabled={update.isPending}
-                  onCheckedChange={(checked) =>
+                  onCheckedChange={async (checked) => {
+                    if (!checked && !(await confirm.disable(t(`emails.types.${type}.name`, { defaultValue: type }))))
+                      return
                     update.mutate(
                       { enabled: checked },
                       { onError: (error) => toast.error(`${t("emails.list.toggleError")} ${errorMessage(error)}`) }
                     )
-                  }
+                  }}
                 />
               </div>
             )}
