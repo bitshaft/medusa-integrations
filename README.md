@@ -15,6 +15,7 @@ with its own version, changelog and release.
 | [Compliance](./plugins/medusa-plugin-compliance/README.md)        | [`@bitshaft/medusa-plugin-compliance`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-compliance)       | Store feature |
 | [Stripe insights](./plugins/medusa-plugin-stripe/README.md)       | [`@bitshaft/medusa-plugin-stripe`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-stripe)               | Payment       |
 | [Negotiations](./plugins/medusa-plugin-negotiations/README.md)    | [`@bitshaft/medusa-plugin-negotiations`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-negotiations)   | Store feature |
+| [Currencies](./plugins/medusa-plugin-currency/README.md)          | [`@bitshaft/medusa-plugin-currency`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-currency)           | Store feature |
 
 ## Using a plugin
 

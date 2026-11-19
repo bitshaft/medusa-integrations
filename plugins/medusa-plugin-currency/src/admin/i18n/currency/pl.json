@@ -1,0 +1,321 @@
+{
+  "currency": {
+    "title": "Waluty",
+    "description": "Uzupełniaj ceny wariantów w pozostałych walutach z waluty bazowej: kurs NBP lub stały, marża, zaokrąglenie, VAT. Zawsze z podglądem, nigdy w tle.",
+    "demo": "Demo",
+    "demoMode": "Kursy i produkty pokazowe. Plugin nie pyta NBP i nie zapisuje żadnej ceny; zapisy trafiają do historii z oznaczeniem demo.",
+    "loadError": "Nie udało się wczytać stanu pluginu. Odśwież stronę.",
+    "loading": "Wczytywanie…",
+    "cancel": "Anuluj",
+    "previous": "Poprzednie",
+    "next": "Następne",
+    "disabled": {
+      "hint": "Popraw opcje pluginu w medusa-config.ts i uruchom Medusę ponownie."
+    },
+    "tabs": {
+      "fill": "Uzupełnij ceny",
+      "rates": "Kursy",
+      "history": "Historia",
+      "settings": "Ustawienia",
+      "guide": "Przewodnik"
+    },
+    "provider": {
+      "nbp": "NBP, tabela A (kursy średnie)"
+    },
+    "scope": {
+      "products": "Produkty",
+      "collection": "Cała kolekcja",
+      "category": "Cała kategoria",
+      "demo": "Produkty pokazowe",
+      "demoHint": "Pięć pokazowych wariantów: jeden bez ceny bazowej, jeden z już ustawioną ceną.",
+      "chooseProducts": "Wybierz produkty",
+      "productsCount_one": "{{count}} produkt",
+      "productsCount_few": "{{count}} produkty",
+      "productsCount_many": "{{count}} produktów",
+      "productsCount_other": "{{count}} produkty",
+      "searchProducts": "Szukaj produktów",
+      "noProducts": "Nie znaleziono produktów",
+      "remove": "Usuń",
+      "chooseCollection": "Wybierz kolekcję",
+      "chooseCategory": "Wybierz kategorię",
+      "categoryHint": "Razem z podkategoriami."
+    },
+    "fill": {
+      "title": "Uzupełnij ceny",
+      "subtitle": "Wpisujesz ceny w walucie bazowej, a pozostałe waluty uzupełniasz z nich według zasad z Ustawień. Nic się nie zapisze, zanim nie zobaczysz podglądu.",
+      "currencies": "Waluty",
+      "which": "Które ceny",
+      "onlyEmpty": "Tylko puste ceny",
+      "overwrite": "Nadpisz także ustawione ceny",
+      "overwriteHint": "Zastępuje też ceny wpisane ręcznie. Potwierdzasz to przed zapisem.",
+      "priceLists": "Ceny w cennikach",
+      "priceListsHint": "Uzupełnia waluty cennika z ceny bazowej tego samego cennika.",
+      "regionPrices": "Ceny regionów",
+      "regionPricesHint": "Uzupełnia ceny regionów waluty docelowej z ceny regionu waluty bazowej.",
+      "previewHint": "Podgląd pokazuje każdą cenę: cenę bazową w {{base}}, kurs z datą, nową i obecną cenę oraz co się stanie.",
+      "chooseScope": "Wybierz, co uzupełnić.",
+      "showPreview": "Pokaż podgląd",
+      "refreshPreview": "Odśwież podgląd",
+      "previewFailed": "Nie udało się przygotować podglądu",
+      "ratesTitle": "Użyte kursy",
+      "staleBody": "NBP nie odpowiada. Ostatnie zapisane kursy pochodzą z tabeli {{table}} z {{date}}. Użyj ich tylko, jeśli to dla Ciebie w porządku.",
+      "useStale": "Użyj kursów z {{date}}",
+      "usingStale": "Używasz ostatnich zapisanych kursów: tabela {{table}} z {{date}} (NBP nie odpowiada).",
+      "unavailable": "NBP nie odpowiada, a żadne kursy nie są jeszcze zapisane. Waluty ze stałym kursem możesz uzupełnić; pozostałe spróbuj później.",
+      "filter": {
+        "all": "Wszystkie",
+        "write": "Do zapisu",
+        "skip": "Pominięte"
+      },
+      "countAdd_one": "{{count}} do dodania",
+      "countAdd_few": "{{count}} do dodania",
+      "countAdd_many": "{{count}} do dodania",
+      "countAdd_other": "{{count}} do dodania",
+      "countOverwrite_one": "{{count}} do nadpisania",
+      "countOverwrite_few": "{{count}} do nadpisania",
+      "countOverwrite_many": "{{count}} do nadpisania",
+      "countOverwrite_other": "{{count}} do nadpisania",
+      "countSkip_one": "{{count}} pominięta",
+      "countSkip_few": "{{count}} pominięte",
+      "countSkip_many": "{{count}} pominiętych",
+      "countSkip_other": "{{count}} pominięte",
+      "page": "{{from}}–{{to}} z {{count}}",
+      "inList": "Cennik: {{title}}",
+      "inRegion": "Region: {{name}}",
+      "quantity": "Ilość {{min}}–{{max}}",
+      "exactNote": "Zapisze się dokładnie to, co w podglądzie. Jeśli w międzyczasie zmieni się cena bazowa albo kurs, nic się nie zapisze, a podgląd się odświeży.",
+      "demoNote": "Tryb demo: zapis trafi tylko do historii, żadna cena się nie zmieni.",
+      "saveCount_one": "Zapisz {{count}} cenę",
+      "saveCount_few": "Zapisz {{count}} ceny",
+      "saveCount_many": "Zapisz {{count}} cen",
+      "saveCount_other": "Zapisz {{count}} ceny",
+      "save": "Zapisz ceny",
+      "confirmTitle": "Zapisać ceny?",
+      "confirmOverwriteTitle": "Nadpisać ustawione ceny?",
+      "confirmBody": "Dodanych zostanie {{add}}, nadpisanych {{overwrite}} cen, dokładnie jak w podglądzie.",
+      "confirmOverwriteBody_one": "{{count}} ustawiona cena zostanie zastąpiona, także jeśli wpisano ją ręcznie.",
+      "confirmOverwriteBody_few": "{{count}} ustawione ceny zostaną zastąpione, także jeśli wpisano je ręcznie.",
+      "confirmOverwriteBody_many": "{{count}} ustawionych cen zostanie zastąpionych, także jeśli wpisano je ręcznie.",
+      "confirmOverwriteBody_other": "{{count}} ustawione ceny zostaną zastąpione, także jeśli wpisano je ręcznie.",
+      "confirmOverwrite": "Nadpisz i zapisz",
+      "confirmDemo": "Tryb demo: żadna cena się nie zmieni.",
+      "saved": "Ceny zapisane",
+      "savedDemo": "Demo: zapisano w historii, żadna cena się nie zmieniła",
+      "savedBody": "Dodane: {{add}}, nadpisane: {{overwrite}}.",
+      "saveFailed": "Nie udało się zapisać cen",
+      "changed": "Zmieniły się ceny lub kursy",
+      "changedBody": "Nic nie zostało zapisane. Podgląd jest odświeżony; sprawdź go i zapisz ponownie.",
+      "noTargets": "Nie ma czego uzupełniać: sklep ma jedną walutę albo pozostałe są wyłączone w Ustawieniach.",
+      "fromBase": "Uzupełnij z {{base}}",
+      "modalTitle": "Uzupełnij ceny z {{base}}: {{name}}"
+    },
+    "col": {
+      "variant": "Wariant",
+      "base": "Cena bazowa",
+      "currency": "Waluta",
+      "rate": "Kurs",
+      "margin": "Marża",
+      "new": "Nowa cena",
+      "current": "Obecna cena",
+      "action": "Akcja",
+      "mode": "Tryb",
+      "effective": "Kurs po marży"
+    },
+    "action": {
+      "add": "Dodaj",
+      "overwrite": "Nadpisz",
+      "skip": "Pomiń"
+    },
+    "reason": {
+      "no_price_set": "Wariant nie ma cen",
+      "no_base_price": "Brak ceny bazowej",
+      "already_set": "Cena już ustawiona",
+      "same_amount": "Cena już taka sama",
+      "tax_rate_missing": "Brak stawki VAT dla kraju",
+      "rates_unavailable": "Brak aktualnych kursów",
+      "rate_missing": "Waluty nie ma w tabeli kursów",
+      "fixed_rate_missing": "Nie wpisano stałego kursu"
+    },
+    "warning": {
+      "tax_differs": "VAT {{base}} % → {{target}} %",
+      "tax_differsHint": "Brutto przeliczone 1:1 między stawkami {{base}} % i {{target}} %: zmienia się cena netto. Żeby ją zachować, wybierz w Ustawieniach „Przez netto”.",
+      "rounding_fallback": "Pełne jednostki",
+      "rounding_fallbackHint": "Ta waluta nie ma groszy, więc zamiast końcówki cena jest zaokrąglona do pełnych jednostek.",
+      "stale_rate": "Stary kurs",
+      "stale_rateHint": "NBP nie odpowiedział; użyto ostatniego zapisanego kursu."
+    },
+    "tax": {
+      "gross": "brutto",
+      "net": "netto",
+      "mode": {
+        "gross": "Brutto 1:1",
+        "net": "Przez netto"
+      },
+      "step": {
+        "net": "Netto: −{{base}} % / +{{target}} %",
+        "strip": "Zdjęto VAT {{base}} %",
+        "add": "Doliczono VAT {{target}} %"
+      }
+    },
+    "rate": {
+      "source": "tabela {{table}} z {{date}}",
+      "fixed": "kurs stały",
+      "margin": "marża {{margin}}"
+    },
+    "mode": {
+      "api": "Kurs NBP 1:1",
+      "api_margin": "Kurs NBP ± marża",
+      "fixed": "Stały kurs",
+      "off": "Wyłączona",
+      "apiHint": "Kurs średni NBP z najnowszej tabeli.",
+      "api_marginHint": "Kurs NBP, a przeliczona cena podniesiona o marżę (z minusem obniżona).",
+      "fixedHint": "Kurs, który wpisujesz; nie zmienia się razem z NBP."
+    },
+    "rounding": {
+      "none": "Bez zaokrąglania (do grosza)",
+      "whole": "Do pełnych",
+      "x99": "Do ,99",
+      "x49_99": "Do ,49 lub ,99",
+      "five": "Do pełnych 5",
+      "ten": "Do pełnych 10"
+    },
+    "rates": {
+      "status": {
+        "fresh": "Aktualne",
+        "stale": "Nieaktualne",
+        "unavailable": "Niedostępne",
+        "demo": "Demo"
+      },
+      "table": "Tabela {{table}} z {{date}}",
+      "none": "Nie zapisano jeszcze żadnej tabeli.",
+      "checked": "sprawdzono {{date}}",
+      "next": "następna tabela spodziewana {{date}}",
+      "refresh": "Odśwież kursy",
+      "refreshed": "Kursy odświeżone: tabela {{table}}",
+      "refreshFailed": "NBP nie odpowiedział",
+      "staleBody": "NBP nie odpowiada ({{error}}). Ostatnia zapisana tabela jest z {{date}}; uzupełnianie może jej użyć po Twoim potwierdzeniu.",
+      "unavailableBody": "NBP nie odpowiada ({{error}}), a żadna tabela nie jest jeszcze zapisana.",
+      "demoBody": "Tryb demo: kursy pokazowe, plugin nie pyta NBP.",
+      "noCurrencies": "Sklep nie ma innej waluty niż bazowa."
+    },
+    "settings": {
+      "baseTitle": "Waluta bazowa",
+      "baseHint": "W tej walucie wpisujesz ceny; pozostałe są z niej uzupełniane.",
+      "baseCurrency": "Waluta bazowa",
+      "storeDefault": "Domyślna waluta sklepu ({{code}})",
+      "baseTaxCountry": "Kraj VAT cen bazowych",
+      "baseTaxHint": "Ceny bazowe są {{state}} (Medusa: ceny z podatkiem). Stawka służy do przeliczenia przez netto.",
+      "countryAuto": "Automatycznie (pierwszy kraj regionu)",
+      "noRate": "brak stawki VAT",
+      "enabled": "Uzupełniaj",
+      "mode": "Kurs",
+      "rounding": "Zaokrąglenie",
+      "tax": "VAT",
+      "taxHint": "Ceny bazowe są {{base}}, te {{target}}. Wybierz kraj, którego VAT mają te ceny.",
+      "sample": "Podgląd",
+      "enterRate": "Wpisz kurs, żeby zobaczyć podgląd.",
+      "taxDiffers": "Ceny po obu stronach są brutto, a VAT się różni ({{base}} % i {{target}} %). „Brutto 1:1” zachowuje cenę brutto, więc zmienia się netto; „Przez netto” zachowuje cenę netto.",
+      "noOthers": "Sklep nie ma innej waluty. Dodaj waluty w Ustawienia → Sklep.",
+      "save": "Zapisz ustawienia",
+      "saved": "Ustawienia zapisane. Ceny się nie zmieniły.",
+      "saveFailed": "Nie udało się zapisać ustawień",
+      "invalidRate": "{{code}}: stały kurs musi być liczbą dodatnią, np. 4,25.",
+      "invalidMargin": "{{code}}: marża musi być liczbą, np. 3 albo -1,5.",
+      "fixedRequired": "{{code}}: wpisz stały kurs."
+    },
+    "history": {
+      "title": "Historia",
+      "subtitle": "Każdy zapis: kto, kiedy, co, po jakich kursach i z jakim wynikiem.",
+      "empty": "Nie uzupełniono jeszcze żadnych cen.",
+      "when": "Kiedy",
+      "who": "Kto",
+      "scope": "Co",
+      "rates": "Kursy",
+      "result": "Wynik",
+      "counts": "+{{add}} · ↻{{overwrite}} · pominięte {{skip}}",
+      "detail": "Szczegóły uzupełnienia",
+      "demoRun": "Demo: żadna cena nie została zmieniona."
+    },
+    "origin": {
+      "manual": "ręcznie",
+      "manualHint": "Wpisana ręcznie (albo zmieniona po uzupełnieniu).",
+      "filled": "uzupełniona {{date}} kursem {{rate}}",
+      "filledShort": "uzupełniona {{date}}"
+    },
+    "widget": {
+      "title": "Ceny w walutach",
+      "targets": "Waluty do uzupełnienia: {{codes}}",
+      "complete": "komplet",
+      "missingCount_one": "brak w {{count}} z {{total}}",
+      "missingCount_few": "brak w {{count}} z {{total}}",
+      "missingCount_many": "brak w {{count}} z {{total}}",
+      "missingCount_other": "brak w {{count}} z {{total}}",
+      "noBase_one": "{{count}} wariant nie ma ceny w {{base}}.",
+      "noBase_few": "{{count}} warianty nie mają ceny w {{base}}.",
+      "noBase_many": "{{count}} wariantów nie ma ceny w {{base}}.",
+      "noBase_other": "{{count}} warianty nie mają ceny w {{base}}.",
+      "subtitle": "Ceny każdego wariantu i ich pochodzenie: wpisana ręcznie albo uzupełniona z {{base}} danego dnia danym kursem.",
+      "noVariants": "Ten produkt nie ma wariantów.",
+      "openHistory": "Otwórz historię",
+      "missing": "brak",
+      "more_one": "+{{count}} kolejna (cennik, region)",
+      "more_few": "+{{count}} kolejne (cenniki, regiony)",
+      "more_many": "+{{count}} kolejnych (cenniki, regiony)",
+      "more_other": "+{{count}} kolejne (cenniki, regiony)",
+      "originTitle": "Skąd są ceny",
+      "originSubtitle": "Uzupełnione z {{base}} przez plugin Waluty albo wpisane ręcznie.",
+      "collectionTitle": "Ceny w walutach dla kolekcji",
+      "categoryTitle": "Ceny w walutach dla kategorii"
+    },
+    "signals": {
+      "missing_one": "{{count}} wariant bez ceny w {{code}}",
+      "missing_few": "{{count}} warianty bez ceny w {{code}}",
+      "missing_many": "{{count}} wariantów bez ceny w {{code}}",
+      "missing_other": "{{count}} warianty bez ceny w {{code}}"
+    },
+    "guide": {
+      "title": "Jak to działa",
+      "subtitle": "Ceny w innych walutach z jednej ceny bazowej, po kursie, nad którym masz kontrolę.",
+      "what": {
+        "title": "Co robi",
+        "text": "Wpisujesz ceny w walucie bazowej (np. PLN). „Uzupełnij ceny” wylicza pozostałe waluty sklepu według zasad z Ustawień i zapisuje je po sprawdzeniu podglądu. Plugin nigdy sam nie zmienia cen."
+      },
+      "where": {
+        "title": "Gdzie",
+        "text": "Na stronie produktu: karta „Ceny w walutach” obok wariantów, z przyciskiem „Uzupełnij z PLN” dla wszystkich wariantów.\nNa stronie kolekcji lub kategorii: przycisk dla wszystkich jej produktów (kategoria razem z podkategoriami).\nTutaj, w „Uzupełnij ceny”: dowolne produkty, kolekcja albo kategoria.\nLista produktów w Medusie nie ma miejsca na akcje zbiorcze, dlatego wiele produktów uzupełniasz tutaj."
+      },
+      "rates": {
+        "title": "Kursy",
+        "text": "Tabela A NBP (kursy średnie) jest pobierana raz i trzymana do czasu, aż powinna pojawić się następna (kolejny dzień roboczy po południu). Przy każdym kursie widać numer i datę tabeli. Inne waluty bazowe są liczone przez PLN (kurs krzyżowy). Gdy NBP nie odpowiada, możesz po potwierdzeniu użyć ostatniej zapisanej tabeli; jest wyraźnie oznaczona datą."
+      },
+      "rounding": {
+        "title": "Marża i zaokrąglenie",
+        "text": "Marża podnosi przeliczoną cenę o procent (z minusem obniża). Zaokrąglenie jest ostatnim krokiem: do grosza, do pełnych, do ,99, do ,49 lub ,99, do pełnych 5 lub 10, zawsze do najbliższej dozwolonej ceny."
+      },
+      "tax": {
+        "title": "VAT",
+        "text": "Medusa oznacza ceny każdej waluty (i regionu) jako brutto albo netto. Gdy obie są brutto, a VAT się różni (PL 23 %, DE 19 %), „Brutto 1:1” zachowuje kwotę brutto i zmienia się cena netto; „Przez netto” zdejmuje VAT bazowy, przelicza i dolicza VAT docelowy. Przy bazie brutto i celu netto VAT jest zawsze zdejmowany."
+      },
+      "preview": {
+        "title": "Podgląd i zapis",
+        "text": "Podgląd pokazuje każdą cenę: cenę bazową, walutę, kurs z datą, marżę, nową cenę, obecną cenę i akcję (dodaj, nadpisz, pomiń z powodem). Domyślnie uzupełniane są tylko puste ceny; nadpisanie trzeba wybrać i potwierdzić. Zapis jest dokładnie tym, co w podglądzie: jeśli zmieniła się cena bazowa albo kurs, nic się nie zapisuje, a podgląd się odświeża."
+      },
+      "origin": {
+        "title": "Skąd jest cena",
+        "text": "Każda zapisana cena jest odnotowana. Cena wciąż równa zapisanej pokazuje „uzupełniona dnia … kursem …”; cena zmieniona później albo nigdy nieuzupełniona pokazuje „ręcznie”. Historia pokazuje każdy zapis: kto, kiedy, kursy i liczby."
+      },
+      "events": {
+        "title": "Dla innych pluginów",
+        "text": "Każdy zapis emituje zdarzenie currency.prices_filled z każdą zapisaną ceną i kursami. Plugin śledzący historię cen (np. Omnibus w Zgodności) może traktować te zmiany jako zmianę kursu, a nie promocję."
+      },
+      "demo": {
+        "title": "Tryb demo",
+        "text": "Z opcją demo kursy i produkty pokazowe pozwalają przejść cały proces. Plugin nie pyta NBP i nie zapisuje cen."
+      },
+      "limits": {
+        "title": "Ograniczenia",
+        "text": "Ceny z regułami innymi niż region (np. grupy klientów) nie są ruszane. Jedno uzupełnienie obejmuje najwyżej tyle wariantów, ile opcja maxVariants. Kursy nie aktualizują się jeszcze automatycznie."
+      }
+    }
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "currency": {
+    "title": "Currencies",
+    "description": "Fill variant prices in your other currencies from the base currency: NBP rates or a fixed rate, margin, rounding, VAT. Always with a preview, never in the background.",
+    "demo": "Demo",
+    "demoMode": "Sample rates and sample products. NBP is not asked and no price is saved; fills are recorded in the history marked as demo.",
+    "loadError": "The plugin's status could not be loaded. Refresh the page.",
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "previous": "Previous",
+    "next": "Next",
+    "disabled": {
+      "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
+    },
+    "tabs": {
+      "fill": "Fill prices",
+      "rates": "Rates",
+      "history": "History",
+      "settings": "Settings",
+      "guide": "Guide"
+    },
+    "provider": {
+      "nbp": "NBP, table A (average rates)"
+    },
+    "scope": {
+      "products": "Products",
+      "collection": "Whole collection",
+      "category": "Whole category",
+      "demo": "Sample products",
+      "demoHint": "Five sample variants: one without a base price, one with a price already set.",
+      "chooseProducts": "Choose products",
+      "productsCount_one": "{{count}} product",
+      "productsCount_other": "{{count}} products",
+      "searchProducts": "Search products",
+      "noProducts": "No products found",
+      "remove": "Remove",
+      "chooseCollection": "Choose a collection",
+      "chooseCategory": "Choose a category",
+      "categoryHint": "Subcategories are included."
+    },
+    "fill": {
+      "title": "Fill prices",
+      "subtitle": "Enter prices in the base currency, and fill the other currencies from them under the rules in Settings. Nothing is saved before you see the preview.",
+      "currencies": "Currencies",
+      "which": "Which prices",
+      "onlyEmpty": "Only empty prices",
+      "overwrite": "Also overwrite prices that are set",
+      "overwriteHint": "Replaces prices entered by hand too. You confirm it before saving.",
+      "priceLists": "Prices in price lists",
+      "priceListsHint": "Fills a list's currencies from the same list's base price.",
+      "regionPrices": "Region prices",
+      "regionPricesHint": "Fills prices of the target currency's regions from the base currency's region price.",
+      "previewHint": "The preview shows every price: base price in {{base}}, rate with its date, new and current price, and what will happen.",
+      "chooseScope": "Choose what to fill.",
+      "showPreview": "Show preview",
+      "refreshPreview": "Refresh preview",
+      "previewFailed": "The preview could not be prepared",
+      "ratesTitle": "Rates used",
+      "staleBody": "NBP is not answering. The last saved rates are from table {{table}} of {{date}}. Use them only if that is fine for you.",
+      "useStale": "Use the rates of {{date}}",
+      "usingStale": "Using the last saved rates: table {{table}} of {{date}} (NBP is not answering).",
+      "unavailable": "NBP is not answering and no rates are saved yet. Currencies with a fixed rate can still be filled; try again later for the others.",
+      "filter": {
+        "all": "All",
+        "write": "To save",
+        "skip": "Skipped"
+      },
+      "countAdd_one": "{{count}} to add",
+      "countAdd_other": "{{count}} to add",
+      "countOverwrite_one": "{{count}} to overwrite",
+      "countOverwrite_other": "{{count}} to overwrite",
+      "countSkip_one": "{{count}} skipped",
+      "countSkip_other": "{{count}} skipped",
+      "page": "{{from}}–{{to}} of {{count}}",
+      "inList": "Price list: {{title}}",
+      "inRegion": "Region: {{name}}",
+      "quantity": "Quantity {{min}}–{{max}}",
+      "exactNote": "Exactly these prices are saved. If a base price or a rate changes in the meantime, nothing is saved and the preview is refreshed.",
+      "demoNote": "Demo mode: the save is only recorded in the history, no price changes.",
+      "saveCount_one": "Save {{count}} price",
+      "saveCount_other": "Save {{count}} prices",
+      "save": "Save prices",
+      "confirmTitle": "Save the prices?",
+      "confirmOverwriteTitle": "Overwrite prices that are set?",
+      "confirmBody": "{{add}} prices will be added and {{overwrite}} overwritten, exactly as in the preview.",
+      "confirmOverwriteBody_one": "{{count}} price that is already set will be replaced, also if it was entered by hand.",
+      "confirmOverwriteBody_other": "{{count}} prices that are already set will be replaced, also if they were entered by hand.",
+      "confirmOverwrite": "Overwrite and save",
+      "confirmDemo": "Demo mode: no price will change.",
+      "saved": "Prices saved",
+      "savedDemo": "Demo: recorded, no price changed",
+      "savedBody": "Added {{add}}, overwritten {{overwrite}}.",
+      "saveFailed": "The prices could not be saved",
+      "changed": "Prices or rates changed",
+      "changedBody": "Nothing was saved. The preview was refreshed; check it and save again.",
+      "noTargets": "There is nothing to fill: the store has one currency, or the others are switched off in Settings.",
+      "fromBase": "Fill from {{base}}",
+      "modalTitle": "Fill prices from {{base}}: {{name}}"
+    },
+    "col": {
+      "variant": "Variant",
+      "base": "Base price",
+      "currency": "Currency",
+      "rate": "Rate",
+      "margin": "Margin",
+      "new": "New price",
+      "current": "Current price",
+      "action": "Action",
+      "mode": "Mode",
+      "effective": "Rate after margin"
+    },
+    "action": {
+      "add": "Add",
+      "overwrite": "Overwrite",
+      "skip": "Skip"
+    },
+    "reason": {
+      "no_price_set": "Variant has no prices",
+      "no_base_price": "No base price",
+      "already_set": "Price already set",
+      "same_amount": "Price already equal",
+      "tax_rate_missing": "No VAT rate for the country",
+      "rates_unavailable": "No current rates",
+      "rate_missing": "Currency not in the rate table",
+      "fixed_rate_missing": "Fixed rate not entered"
+    },
+    "warning": {
+      "tax_differs": "VAT {{base}} % → {{target}} %",
+      "tax_differsHint": "Gross converted 1:1 between VAT rates {{base}} % and {{target}} %: the net price changes. Choose \"through net\" in Settings to keep it.",
+      "rounding_fallback": "Whole units",
+      "rounding_fallbackHint": "This currency has no minor units, so the price ending was replaced by rounding to whole units.",
+      "stale_rate": "Old rate",
+      "stale_rateHint": "NBP did not answer; the last saved rate is used."
+    },
+    "tax": {
+      "gross": "gross",
+      "net": "net",
+      "mode": {
+        "gross": "Gross 1:1",
+        "net": "Through net"
+      },
+      "step": {
+        "net": "Net: −{{base}} % / +{{target}} %",
+        "strip": "VAT {{base}} % taken off",
+        "add": "VAT {{target}} % added"
+      }
+    },
+    "rate": {
+      "source": "table {{table}} of {{date}}",
+      "fixed": "fixed rate",
+      "margin": "margin {{margin}}"
+    },
+    "mode": {
+      "api": "NBP rate 1:1",
+      "api_margin": "NBP rate ± margin",
+      "fixed": "Fixed rate",
+      "off": "Off",
+      "apiHint": "The average NBP rate of the newest table.",
+      "api_marginHint": "The NBP rate, with the converted price raised (or lowered, with a minus) by the margin.",
+      "fixedHint": "A rate you enter; it does not change with NBP."
+    },
+    "rounding": {
+      "none": "No rounding (to the cent)",
+      "whole": "To whole units",
+      "x99": "To ,99",
+      "x49_99": "To ,49 or ,99",
+      "five": "To full 5",
+      "ten": "To full 10"
+    },
+    "rates": {
+      "status": {
+        "fresh": "Current",
+        "stale": "Not current",
+        "unavailable": "Unavailable",
+        "demo": "Demo"
+      },
+      "table": "Table {{table}} of {{date}}",
+      "none": "No table saved yet.",
+      "checked": "checked {{date}}",
+      "next": "next table expected {{date}}",
+      "refresh": "Refresh rates",
+      "refreshed": "Rates refreshed: table {{table}}",
+      "refreshFailed": "NBP did not answer",
+      "staleBody": "NBP is not answering ({{error}}). The last saved table is from {{date}}; a fill can use it after you confirm it.",
+      "unavailableBody": "NBP is not answering ({{error}}) and no table is saved yet.",
+      "demoBody": "Demo mode: sample rates, NBP is not asked.",
+      "noCurrencies": "The store has no other currency than the base one."
+    },
+    "settings": {
+      "baseTitle": "Base currency",
+      "baseHint": "Prices are entered in this currency; the others are filled from it.",
+      "baseCurrency": "Base currency",
+      "storeDefault": "Store default ({{code}})",
+      "baseTaxCountry": "VAT country of base prices",
+      "baseTaxHint": "Base prices are {{state}} (Medusa: tax inclusive pricing). The rate is used for net conversion.",
+      "countryAuto": "Automatic (first country of the region)",
+      "noRate": "no VAT rate",
+      "enabled": "Fill",
+      "mode": "Rate",
+      "rounding": "Rounding",
+      "tax": "VAT",
+      "taxHint": "Base prices are {{base}}, these are {{target}}. Choose the country whose VAT these prices carry.",
+      "sample": "Preview",
+      "enterRate": "Enter the rate to see the preview.",
+      "taxDiffers": "Prices are gross on both sides and VAT differs ({{base}} % and {{target}} %). Gross 1:1 keeps the gross price, so the net price differs; \"Through net\" keeps the net price.",
+      "noOthers": "The store has no other currency. Add currencies in Settings → Store.",
+      "save": "Save settings",
+      "saved": "Settings saved. Prices were not changed.",
+      "saveFailed": "The settings could not be saved",
+      "invalidRate": "{{code}}: the fixed rate must be a positive number, e.g. 4,25.",
+      "invalidMargin": "{{code}}: the margin must be a number, e.g. 3 or -1,5.",
+      "fixedRequired": "{{code}}: enter the fixed rate."
+    },
+    "history": {
+      "title": "History",
+      "subtitle": "Every save: who, when, what, at which rates, and the result.",
+      "empty": "No prices filled yet.",
+      "when": "When",
+      "who": "Who",
+      "scope": "What",
+      "rates": "Rates",
+      "result": "Result",
+      "counts": "+{{add}} · ↻{{overwrite}} · skipped {{skip}}",
+      "detail": "Fill details",
+      "demoRun": "Demo: no price was changed."
+    },
+    "origin": {
+      "manual": "manual",
+      "manualHint": "Entered by hand (or changed since it was filled).",
+      "filled": "filled {{date}} at {{rate}}",
+      "filledShort": "filled {{date}}"
+    },
+    "widget": {
+      "title": "Prices in currencies",
+      "targets": "Currencies to fill: {{codes}}",
+      "complete": "complete",
+      "missingCount_one": "missing in {{count}} of {{total}}",
+      "missingCount_other": "missing in {{count}} of {{total}}",
+      "noBase_one": "{{count}} variant has no {{base}} price.",
+      "noBase_other": "{{count}} variants have no {{base}} price.",
+      "subtitle": "Prices of each variant and where they came from: entered by hand, or filled from {{base}} on a day at a rate.",
+      "noVariants": "This product has no variants.",
+      "openHistory": "Open the history",
+      "missing": "missing",
+      "more_one": "+{{count}} more (list, region)",
+      "more_other": "+{{count}} more (lists, regions)",
+      "originTitle": "Where the prices come from",
+      "originSubtitle": "Filled from {{base}} by the Currencies plugin, or entered by hand.",
+      "collectionTitle": "Prices in currencies for the collection",
+      "categoryTitle": "Prices in currencies for the category"
+    },
+    "signals": {
+      "missing_one": "{{count}} variant without a {{code}} price",
+      "missing_other": "{{count}} variants without a {{code}} price"
+    },
+    "guide": {
+      "title": "How it works",
+      "subtitle": "Prices in other currencies from one base price, at a rate you control.",
+      "what": {
+        "title": "What it does",
+        "text": "You enter prices in the base currency (e.g. PLN). \"Fill prices\" works out the other currencies of the store under the rules in Settings and saves them after you check a preview. The plugin never changes prices on its own."
+      },
+      "where": {
+        "title": "Where",
+        "text": "On a product page: the \"Prices in currencies\" card beside the variants, with \"Fill from PLN\" for all variants.\nOn a collection or category page: a button for all of its products (a category includes subcategories).\nHere, in \"Fill prices\": any products, a collection or a category.\nMedusa's product list has no place for bulk actions, so several products are filled here."
+      },
+      "rates": {
+        "title": "Rates",
+        "text": "NBP table A (average rates) is fetched once and kept until the next table is due (the next working day after noon). The table number and date are shown with every rate. Other currencies are converted through PLN (cross rate). If NBP does not answer, the last saved table can be used after you confirm it; it is marked with its date."
+      },
+      "rounding": {
+        "title": "Margin and rounding",
+        "text": "A margin raises the converted price by a percentage (a minus lowers it). Rounding is the last step: to the cent, to whole units, to ,99, to ,49 or ,99, or to full 5 or 10, always to the nearest allowed price."
+      },
+      "tax": {
+        "title": "VAT",
+        "text": "Medusa marks each currency's (and region's) prices as gross or net. When both are gross and VAT differs (PL 23 %, DE 19 %), \"Gross 1:1\" keeps the gross amount and the net price changes; \"Through net\" takes the base VAT off, converts, and adds the target VAT. Gross base and net target always take the VAT off."
+      },
+      "preview": {
+        "title": "Preview and save",
+        "text": "The preview lists every price: base price, currency, rate with its date, margin, new price, current price and what happens (add, overwrite, skip with the reason). Only empty prices are filled unless you choose to overwrite, which you confirm. The save writes exactly the preview: if a base price or the rate changed since, nothing is saved and the preview is refreshed."
+      },
+      "origin": {
+        "title": "Where a price came from",
+        "text": "Every price written is recorded. A price still at the written amount shows \"filled on … at …\"; a price changed since, or never filled, shows \"manual\". The history lists every save with who, when, the rates and the counts."
+      },
+      "events": {
+        "title": "For other plugins",
+        "text": "Each save emits currency.prices_filled with every price written and the rates. A plugin that tracks price history (e.g. Omnibus in Compliance) can treat these changes as exchange-rate changes, not promotions."
+      },
+      "demo": {
+        "title": "Demo mode",
+        "text": "With the demo option, sample rates and sample products show the whole flow. NBP is not asked and prices are not written."
+      },
+      "limits": {
+        "title": "Limits",
+        "text": "Prices with rules other than region (e.g. customer groups) are not touched. A fill covers at most the maxVariants option of variants. Rates are not updated automatically yet."
+      }
+    }
+  }
+}
