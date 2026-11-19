@@ -475,13 +475,20 @@ export function refuseReservedMetadata(metadata: unknown): void {
   }
 }
 
-/** A negotiated line keeps its quantity; removing it is fine. */
+/**
+ * A negotiated line keeps its quantity and its metadata; removing it is
+ * fine. Metadata is locked as a whole: Medusa merges an object into it, but
+ * `metadata: null` clears it, which would drop the `negotiation_id` tag and
+ * leave an ordinary line at the agreed price, free of the checkout checks.
+ */
 export async function guardLineItemUpdate(container: MedusaContainer, cartId: string, lineId: string, body: Row) {
   refuseReservedMetadata(body?.metadata)
   const cart = await loadCart(container, cartId)
   const item = cart?.items.find((i) => i.id === lineId)
   if (!item || !isNegotiatedItem(item)) return
-  if (body?.quantity !== undefined && Number(body.quantity) !== Number(item.quantity) && Number(body.quantity) !== 0) {
+  if (body?.quantity !== undefined && Number(body.quantity) === 0) return
+  if (body?.metadata !== undefined) throw new NegotiationError("negotiated_line_locked")
+  if (body?.quantity !== undefined && Number(body.quantity) !== Number(item.quantity)) {
     throw new NegotiationError("negotiated_line_locked")
   }
 }
@@ -492,9 +499,18 @@ export async function guardLineItemUpdate(container: MedusaContainer, cartId: st
  * the plugin, with exactly the agreed variants, quantities and prices.
  */
 export async function validateCartNegotiations(container: MedusaContainer, cart: CartRow): Promise<void> {
+  const s = resolveNegotiations(container)
+  // A line the plugin wrote into this cart must still carry its tag (however it lost it).
+  const written = new Set((await s.cartWritesFor(cart.id)).flatMap((write) => write.line_item_ids ?? []))
+  const untagged = cart.items.find((item) => written.has(item.id) && !isNegotiatedItem(item))
+  if (untagged) {
+    throw new NegotiationError("negotiated_line_invalid", {
+      number: String(untagged.product_title ?? untagged.id),
+      reason: "the line lost its negotiation tag",
+    })
+  }
   const tagged = cart.items.filter(isNegotiatedItem)
   if (!tagged.length) return
-  const s = resolveNegotiations(container)
   const byThread = new Map<string, Row[]>()
   for (const item of tagged) {
     const key = String(item.metadata.negotiation_id)

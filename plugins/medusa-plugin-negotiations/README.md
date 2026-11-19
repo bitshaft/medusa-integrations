@@ -159,7 +159,7 @@ maximum discount without a confirmation, and arming each writer.
   2. **Cart.** The customer adds the agreed lines to their cart at the agreed
      unit prices, tagged with the thread in their metadata. Again only after
      the lines were removed, while the offer is valid and before an order was
-     placed from it. Their quantity is locked, and checkout checks that the
+     placed from it. Their quantity and metadata are locked, and checkout checks that the
      lines still match the agreed offer. A draft order and the cart exclude
      each other.
 - **Links.** Read-only module links from a thread to its customer
@@ -235,8 +235,10 @@ for the buttons, `offer.expires_at` for the counter-offer's deadline and
 The plugin also guards Medusa's own cart routes: `POST
 /store/carts/:id/line-items` refuses metadata keys starting with
 `negotiation_`, `POST /store/carts/:id/line-items/:line_id` refuses a new
-quantity for a negotiated line, and `POST /store/carts/:id/complete`
-refuses negotiated lines that no longer match the agreed offer.
+quantity or any metadata change for a negotiated line (`metadata: null`
+would clear its tag), and `POST /store/carts/:id/complete` refuses
+negotiated lines that no longer match the agreed offer, and lines the
+plugin added that lost their tag.
 
 ## Admin API
 

@@ -133,8 +133,8 @@ export const REASONS = {
     en: "The same write is in progress. Reload in a moment.",
   },
   negotiated_line_locked: {
-    pl: "Ilości pozycji z wynegocjowaną ceną nie można zmienić. Usuń pozycję albo poproś o nową ofertę.",
-    en: "The quantity of a line with a negotiated price cannot be changed. Remove the line or ask for a new offer.",
+    pl: "Pozycji z wynegocjowaną ceną nie można zmieniać (ani ilości, ani metadanych). Usuń pozycję albo poproś o nową ofertę.",
+    en: "A line with a negotiated price cannot be changed (neither its quantity nor its metadata). Remove the line or ask for a new offer.",
   },
   negotiated_line_invalid: {
     pl: "Pozycje z negocjacji {{number}} nie zgadzają się z uzgodnioną ofertą: {{reason}}. Usuń je z koszyka i dodaj ponownie.",

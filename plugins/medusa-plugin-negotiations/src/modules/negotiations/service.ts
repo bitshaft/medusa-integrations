@@ -857,6 +857,17 @@ class NegotiationsModuleService extends MedusaService({
     return rows.map(toWrite)
   }
 
+  /** Finished cart writes into one cart, whatever their thread (checkout validation). */
+  @InjectManager()
+  async cartWritesFor(cartId: string, @MedusaContext() context: Context = {}): Promise<WriteRecord[]> {
+    const manager = context.manager as unknown as SqlManager
+    const rows = await manager.execute(
+      `select * from "negotiation_write" where "kind" = 'cart' and "status" = 'done' and "deleted_at" is null and "target_id" = ?`,
+      [cartId]
+    )
+    return rows.map(toWrite)
+  }
+
   /** Cart writes whose lines are in this cart, for checkout validation. */
   @InjectManager()
   async liveCartWrites(threadIds: string[], @MedusaContext() context: Context = {}): Promise<WriteRecord[]> {

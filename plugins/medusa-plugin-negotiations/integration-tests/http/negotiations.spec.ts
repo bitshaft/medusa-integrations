@@ -453,6 +453,18 @@ medusaIntegrationTestRunner({
       const locked = await call("post", `/store/carts/${cartId}/line-items/${item.id}`, store(buyer), { quantity: 200 })
       expect(locked.status).toBe(400)
       expect(locked.data.code).toBe("negotiated_line_locked")
+      // `metadata: null` clears a line's metadata in Medusa (an object is merged): it would drop
+      // the tag and leave an ordinary line at the agreed price. Any metadata change is refused.
+      for (const metadata of [null, {}, { note: "x" }]) {
+        const stripped = await call("post", `/store/carts/${cartId}/line-items/${item.id}`, store(buyer), {
+          quantity: 20,
+          metadata,
+        })
+        expect([metadata, stripped.data.code]).toEqual([metadata, "negotiated_line_locked"])
+      }
+      expect((await api.get(`/store/carts/${cartId}`, store(buyer))).data.cart.items[0].metadata).toMatchObject({
+        negotiation_id: thread.id,
+      })
 
       const spoofed = await call("post", `/store/carts/${cartId}/line-items`, store(buyer), {
         variant_id: socket.id,
@@ -466,6 +478,13 @@ medusaIntegrationTestRunner({
       const checkout = await call("post", `/store/carts/${cartId}/complete`, store(buyer))
       expect(checkout.status).toBe(400)
       expect(checkout.data.code).toBe("negotiated_line_invalid")
+      // A line the plugin wrote that lost its tag is refused too, not waved through as an ordinary line.
+      await container.resolve(Modules.CART).updateLineItems(item.id, { quantity: 50, metadata: null } as never)
+      const [stripped2] = await container.resolve(Modules.CART).listLineItems({ id: item.id })
+      expect(stripped2.metadata?.negotiation_id).toBeUndefined()
+      const untagged = await call("post", `/store/carts/${cartId}/complete`, store(buyer))
+      expect(untagged.status).toBe(400)
+      expect(untagged.data.code).toBe("negotiated_line_invalid")
 
       // Removed, it can be added again while the offer is valid.
       await api.delete(`/store/carts/${cartId}/line-items/${item.id}`, store(buyer))
