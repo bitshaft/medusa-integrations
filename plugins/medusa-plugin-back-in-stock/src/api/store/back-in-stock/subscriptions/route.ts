@@ -17,10 +17,15 @@ import { createBackInStockSubscriptionWorkflow } from "../../../../workflows/bac
  * Returns 400 with code `variant_in_stock` when the variant can be ordered
  * now. Subscribing again returns the existing subscription. With double
  * opt-in the subscription stays `pending` until the emailed link is used.
+ *
+ * A guest gets the same answer whether or not the address already had an
+ * alert for the variant (no subscription, `created: true`, and
+ * `confirmation_required` from the double opt-in setting), so the form does
+ * not tell anyone what another address subscribed to.
  */
 export async function POST(req: MedusaRequest<StoreSubscribeBody>, res: MedusaResponse) {
   // Throws the "disabled" error when the plugin is not configured.
-  await resolveEnabled(req)
+  const { service } = await resolveEnabled(req)
   const body = req.validatedBody
   const customer = customerId(req)
 
@@ -49,6 +54,12 @@ export async function POST(req: MedusaRequest<StoreSubscribeBody>, res: MedusaRe
     },
   })
 
+  if (!customer) {
+    res
+      .status(201)
+      .json({ subscription: null, created: true, confirmation_required: (await service.getSettings()).doubleOptIn })
+    return
+  }
   res.status(result.created ? 201 : 200).json({
     subscription: describeForCustomer(result.subscription),
     created: result.created,

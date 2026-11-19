@@ -257,7 +257,7 @@ variant without touching inventory. "Delete demo data" removes them.
 
 | Route                                                     | Auth            |                                                                                               |
 | --------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------- |
-| `POST /store/back-in-stock/subscriptions`                 | publishable key | Subscribe: `{ email, variant_id, consent: true, sales_channel_id?, locale?, country_code? }`. |
+| `POST /store/back-in-stock/subscriptions`                 | publishable key | Subscribe: `{ email, variant_id, consent: true, sales_channel_id?, locale?, country_code? }`. A guest always gets `201 { subscription: null, created: true, confirmation_required }`, whether or not the address had an alert. |
 | `GET /store/back-in-stock/subscriptions`                  | customer        | The customer's open subscriptions.                                                            |
 | `POST /store/back-in-stock/subscriptions/:id/unsubscribe` | customer        | End one of them.                                                                              |
 | `GET /store/back-in-stock/consent?locale=pl`              | publishable key | Consent text and whether double opt-in is on.                                                 |
