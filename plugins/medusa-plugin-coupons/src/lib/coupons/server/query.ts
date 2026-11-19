@@ -306,3 +306,92 @@ export async function loadNames(
   ])
   return { categories, groups, products }
 }
+
+export type OrderCouponCode = {
+  code: string
+  promotion_id: string | null
+  /** Total discount the code gave on this order (items and shipping). */
+  discount: number
+  automatic: boolean
+  /** The coupon of this plugin that the code belongs to; null for promotions made elsewhere. */
+  coupon: { id: string; code: string; name: string | null; kind: string; batch: boolean } | null
+}
+
+/** The promotion codes an order used, with the discount of each and the coupon it belongs to. */
+export async function loadOrderCoupons(
+  container: MedusaContainer,
+  orderId: string
+): Promise<{ currency_code: string | null; codes: OrderCouponCode[] }> {
+  const run = graph(container)
+  const { data } = await run({
+    entity: "order",
+    fields: [
+      "id",
+      "currency_code",
+      "items.adjustments.code",
+      "items.adjustments.amount",
+      "items.adjustments.promotion_id",
+      "shipping_methods.adjustments.code",
+      "shipping_methods.adjustments.amount",
+      "shipping_methods.adjustments.promotion_id",
+    ],
+    filters: { id: orderId },
+  })
+  const order = (data as Array<Record<string, any>>)[0]
+  if (!order) return { currency_code: null, codes: [] }
+
+  const byCode = new Map<string, { promotion_id: string | null; discount: number }>()
+  for (const line of [...(order.items ?? []), ...(order.shipping_methods ?? [])]) {
+    for (const adjustment of (line?.adjustments ?? []) as Array<Record<string, any>>) {
+      if (!adjustment?.code) continue
+      const entry = byCode.get(adjustment.code) ?? { promotion_id: adjustment.promotion_id ?? null, discount: 0 }
+      entry.discount = Math.round((entry.discount + Number(adjustment.amount ?? 0)) * 100) / 100
+      byCode.set(adjustment.code, entry)
+    }
+  }
+  if (!byCode.size) return { currency_code: order.currency_code ?? null, codes: [] }
+
+  const promotionIds = [...byCode.values()].map((entry) => entry.promotion_id).filter(Boolean) as string[]
+  const promotions = promotionIds.length
+    ? ((
+        await run({
+          entity: "promotion",
+          fields: [
+            "id",
+            "code",
+            "is_automatic",
+            "coupons_coupon.id",
+            "coupons_coupon.code",
+            "coupons_coupon.name",
+            "coupons_coupon.kind",
+            "coupons_coupon.batch_size",
+          ],
+          filters: { id: promotionIds },
+        })
+      ).data as Array<Record<string, any>>)
+    : []
+  const promotionById = new Map(promotions.map((promotion) => [promotion.id, promotion]))
+
+  return {
+    currency_code: order.currency_code ?? null,
+    codes: [...byCode].map(([code, entry]) => {
+      const promotion = entry.promotion_id ? promotionById.get(entry.promotion_id) : undefined
+      const coupon = promotion?.coupons_coupon
+      return {
+        code,
+        promotion_id: entry.promotion_id,
+        discount: entry.discount,
+        automatic: Boolean(promotion?.is_automatic),
+        coupon: coupon
+          ? {
+              id: coupon.id,
+              code: coupon.code,
+              name: coupon.name ?? null,
+              kind: coupon.kind,
+              batch: coupon.batch_size !== null && coupon.batch_size !== undefined,
+            }
+          : null,
+      }
+    }),
+  }
+}

@@ -396,6 +396,13 @@
         "title": "Start produkcyjny",
         "body": "Tryb demo wyłączony (demo: false), żeby Panel pokazywał prawdziwe kupony sklepu."
       }
+    },
+    "order": {
+      "automatic": "automatyczny",
+      "fromBatch": "z serii",
+      "external": "Promocja spoza pluginu Kupony",
+      "discount": "−{{amount}}",
+      "open": "Otwórz Kupony"
     }
   }
 }

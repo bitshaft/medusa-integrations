@@ -309,3 +309,21 @@ export function useResetCouponsDemo() {
     onSuccess: invalidate,
   })
 }
+
+export type OrderCouponCode = {
+  code: string
+  promotion_id: string | null
+  discount: number
+  automatic: boolean
+  coupon: { id: string; code: string; name: string | null; kind: string; batch: boolean } | null
+}
+
+/** The codes an order used, with the coupon each belongs to (order page's Integrations card). */
+export function useOrderCoupons(orderId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: [KEY, "by-order", orderId],
+    queryFn: () =>
+      sdk.client.fetch<{ currency_code: string | null; codes: OrderCouponCode[] }>(`/admin/coupons/by-order/${orderId}`),
+    enabled,
+  })
+}

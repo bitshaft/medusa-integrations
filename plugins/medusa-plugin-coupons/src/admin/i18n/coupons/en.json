@@ -380,6 +380,13 @@
         "title": "Go live",
         "body": "Demo mode off (demo: false), so the Panel shows the store's real coupons."
       }
+    },
+    "order": {
+      "automatic": "automatic",
+      "fromBatch": "from a batch",
+      "external": "Promotion not made with Coupons",
+      "discount": "−{{amount}}",
+      "open": "Open Coupons"
     }
   }
 }
