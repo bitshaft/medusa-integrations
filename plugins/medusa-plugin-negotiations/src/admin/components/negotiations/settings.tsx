@@ -244,6 +244,8 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
 
       <PriceBasesCard bases={data.price_bases} />
 
+      <RunsHistory />
+
       <OptionsCard
         version={data.version}
         rows={[
@@ -265,8 +267,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
           ["demo", o.demo],
         ]}
       />
-
-      <RunsHistory />
     </div>
   )
 }

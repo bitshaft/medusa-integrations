@@ -38,8 +38,9 @@ look and behave the same:
   coming back returns to it.
 - `DisabledNotice`: under the tabs when options are missing: why, and what
   to do.
-- `OptionsCard`: the end of every Settings tab: the options from
-  medusa-config.ts by their config names, read-only, and the plugin version.
+- `OptionsCard`: always the last card of the Settings tab: the options
+  from medusa-config.ts by their config names, read-only, and the plugin
+  version. Folded by default (title and version only); a click opens it.
 - `GuideSections`: the Guide tab, section by section.
 - `Empty`, `LoadingBlock`, `Pager` (Medusa's table pagination, translated):
   empty lists, loading and paging look the same everywhere.
