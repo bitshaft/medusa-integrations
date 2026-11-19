@@ -47,6 +47,7 @@ export type Settings = {
     privacy_policy_url: string
     request_notice: string
     rate_limit: { per_email: number; per_ip: number; window_minutes: number }
+    consent_rate_limit: { per_email: number; per_ip: number; window_minutes: number }
     anonymize: {
       placeholder: string
       customer_metadata: boolean

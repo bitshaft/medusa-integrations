@@ -445,7 +445,10 @@
       "timeZone": "Time zone",
       "providers": "Data providers in the export",
       "verifyUrlPlaceholder": "https://shop.example.com/gdpr/confirm?token={token}",
-      "warningLanguagesHint": "The store's languages (Settings → Store). Warnings must be written in the ones switched on."
+      "warningLanguagesHint": "The store's languages (Settings → Store). Warnings must be written in the ones switched on.",
+      "consentLimitHint": "Consents given with only an e-mail address (e.g. a newsletter form, nobody signed in): entries per address and per IP.",
+      "consentPerEmail": "Consents per e-mail",
+      "consentPerIp": "Consents per IP"
     },
     "guide": {
       "title": "Guide",

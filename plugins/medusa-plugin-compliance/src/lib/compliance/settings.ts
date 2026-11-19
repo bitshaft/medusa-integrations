@@ -91,6 +91,17 @@ export const settingsSchema = z
             window_minutes: int(1, 24 * 60, 60),
           })
           .prefault({}),
+        /**
+         * Consents given with only an e-mail (a newsletter form, nobody
+         * signed in): entries per address and per IP in the window.
+         */
+        consent_rate_limit: z
+          .object({
+            per_email: int(1, 1000, 10),
+            per_ip: int(1, 10_000, 50),
+            window_minutes: int(1, 24 * 60, 60),
+          })
+          .prefault({}),
         anonymize: z
           .object({
             /** Replaces names and other text fields. */

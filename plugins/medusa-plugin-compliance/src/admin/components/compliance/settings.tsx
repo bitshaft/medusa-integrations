@@ -200,6 +200,30 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
             onChange={(v) => gdpr({ rate_limit: { ...s.gdpr.rate_limit, window_minutes: v } })}
           />
         </div>
+        <Text size="xsmall" className="text-ui-fg-subtle">
+          {t("compliance.settings.consentLimitHint")}
+        </Text>
+        <div className="flex flex-wrap gap-4">
+          <NumberField
+            label={t("compliance.settings.consentPerEmail")}
+            value={s.gdpr.consent_rate_limit.per_email}
+            min={1}
+            onChange={(v) => gdpr({ consent_rate_limit: { ...s.gdpr.consent_rate_limit, per_email: v } })}
+          />
+          <NumberField
+            label={t("compliance.settings.consentPerIp")}
+            value={s.gdpr.consent_rate_limit.per_ip}
+            min={1}
+            onChange={(v) => gdpr({ consent_rate_limit: { ...s.gdpr.consent_rate_limit, per_ip: v } })}
+          />
+          <NumberField
+            label={t("compliance.settings.window")}
+            value={s.gdpr.consent_rate_limit.window_minutes}
+            min={1}
+            suffix={t("compliance.minutes")}
+            onChange={(v) => gdpr({ consent_rate_limit: { ...s.gdpr.consent_rate_limit, window_minutes: v } })}
+          />
+        </div>
       </Section>
 
       <Section title={t("compliance.settings.anonymizeTitle")} hint={t("compliance.settings.anonymizeHint")}>

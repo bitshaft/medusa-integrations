@@ -260,6 +260,13 @@ so the storefront shows the new text. Required consents cannot be
 withdrawn through the Store API. Consent state is not available by e-mail
 address, so nobody can look up someone else's choices.
 
+A consent given with only an `email` (a newsletter form, nobody signed in)
+is recorded as given; the address is not verified, so keep a newsletter's
+own double opt-in. For such calls the response does not depend on what the
+address chose before (`recorded` is the number of choices sent), and they
+are limited per address and per IP (Settings → GDPR, default 10 per e-mail
+and 50 per IP an hour; over the limit `rate_limited`).
+
 ## Data providers
 
 Other plugins (or your app) can add their data to GDPR exports without

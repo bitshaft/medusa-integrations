@@ -465,7 +465,10 @@
       "timeZone": "Strefa czasowa",
       "providers": "Dostawcy danych w eksporcie",
       "verifyUrlPlaceholder": "https://sklep.pl/rodo/potwierdz?token={token}",
-      "warningLanguagesHint": "Języki sklepu (Ustawienia → Sklep). Ostrzeżenia muszą być napisane we włączonych."
+      "warningLanguagesHint": "Języki sklepu (Ustawienia → Sklep). Ostrzeżenia muszą być napisane we włączonych.",
+      "consentLimitHint": "Zgody podane tylko z adresem e-mail (np. formularz newslettera bez logowania): limit wpisów na adres i na IP.",
+      "consentPerEmail": "Zgód na e-mail",
+      "consentPerIp": "Zgód na IP"
     },
     "guide": {
       "title": "Przewodnik",

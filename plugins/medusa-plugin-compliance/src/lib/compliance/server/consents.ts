@@ -12,7 +12,7 @@ import {
   withPlaceholders,
 } from "../consents"
 import { ComplianceError } from "../messages"
-import { normalizeEmail } from "../requests"
+import { normalizeEmail, rateLimitWait } from "../requests"
 import { type ActorType, type ConsentPlacement, type ConsentSource, type CookieCategory } from "../types"
 import { onlyLanguages, storeLanguages } from "./languages"
 import { ComplianceEvents, emit, resolveCompliance } from "./runtime"
@@ -252,4 +252,39 @@ export async function linkAnonymousConsents(container: MedusaContainer, customer
     placement: "cookies",
     actor: { type: "customer", id: customerId },
   })
+}
+
+/**
+ * Consents given with only an e-mail are limited per address and per IP
+ * (`gdpr.consent_rate_limit`), so nobody can write consents for a list of
+ * addresses. Signed-in customers and the cookie banner are not limited.
+ */
+export async function checkEmailConsentLimit(
+  container: MedusaContainer,
+  input: { email: string; ip_hash: string | null; now?: Date }
+) {
+  const service = resolveCompliance(container)
+  const limits = (await service.getSettings()).gdpr.consent_rate_limit
+  const now = input.now ?? new Date()
+  const email = normalizeEmail(input.email)
+  const or: Row[] = [{ email }]
+  if (input.ip_hash) or.push({ ip_hash: input.ip_hash })
+  const recent = (await service.listComplianceConsentEntries(
+    {
+      $or: or,
+      customer_id: null,
+      source: "storefront",
+      created_at: { $gt: new Date(now.getTime() - limits.window_minutes * 60_000) },
+    },
+    { select: ["email", "ip_hash", "created_at"], take: 10_000 }
+  )) as unknown as Row[]
+  const wait = rateLimitWait(
+    recent
+      .filter((r) => r.email)
+      .map((r) => ({ email: r.email, ip_hash: r.ip_hash ?? null, created_at: new Date(r.created_at) })),
+    { email, ip_hash: input.ip_hash },
+    limits,
+    now
+  )
+  if (wait > 0) throw new ComplianceError("rate_limited", { minutes: wait })
 }

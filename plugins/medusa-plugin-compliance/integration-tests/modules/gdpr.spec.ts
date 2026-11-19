@@ -9,7 +9,12 @@ import { GET as dashboardRoute } from "../../src/api/admin/compliance/dashboard/
 import { GET as requestsRoute } from "../../src/api/admin/compliance/requests/route"
 import { refuseInDemo } from "../../src/lib/compliance/api/utils"
 import { LAWYER_PLACEHOLDER } from "../../src/lib/compliance/settings"
-import { recordConsents, saveConsentType, subjectState } from "../../src/lib/compliance/server/consents"
+import {
+  checkEmailConsentLimit,
+  recordConsents,
+  saveConsentType,
+  subjectState,
+} from "../../src/lib/compliance/server/consents"
 import { purgeBillingData, eraseForRequest } from "../../src/lib/compliance/server/erasure"
 import { collectCustomerData, exportCsvFiles, exportZip } from "../../src/lib/compliance/server/export"
 import { recomputeGpsr } from "../../src/lib/compliance/server/gpsr"
@@ -390,6 +395,50 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
         await expect(service.updateComplianceConsentEntries({ id: entries[0].id, granted: false })).rejects.toThrow(
           /cannot be changed or deleted/
         )
+      })
+
+      it("limits consents given with only an e-mail, per address and per IP", async () => {
+        const { container } = makeStore(service)
+        await service.saveSettings({ gdpr: { consent_rate_limit: { per_email: 2, per_ip: 2 } } })
+        await saveConsentType(
+          container,
+          {
+            key: "newsletter",
+            name: { pl: "Newsletter" },
+            placement: "newsletter",
+            required: false,
+            active: true,
+            cookie_category: null,
+            text: { pl: "Zgoda" },
+          },
+          admin
+        )
+        const give = async (email: string, ip: string, granted: boolean) => {
+          await checkEmailConsentLimit(container, { email, ip_hash: ip })
+          await recordConsents(container, {
+            subject: { email },
+            choices: [{ type_key: "newsletter", granted }],
+            source: "storefront",
+            actor: { type: "customer", id: null },
+            ip_hash: ip,
+          })
+        }
+        await give("a@example.com", "ip1", true)
+        await give("a@example.com", "ip2", false)
+        await expect(give("A@example.com", "ip3", true)).rejects.toMatchObject({ code: "rate_limited" })
+        await give("b@example.com", "ip1", true)
+        await expect(give("c@example.com", "ip1", true)).rejects.toMatchObject({ code: "rate_limited" })
+        // Cookie-banner entries (no e-mail) do not count.
+        await recordConsents(container, {
+          subject: { anonymous_id: "anon_1234567890abcdef" },
+          choices: [{ type_key: "newsletter", granted: true }],
+          source: "storefront",
+          actor: { type: "customer", id: null },
+          ip_hash: "ip9",
+        })
+        await expect(
+          checkEmailConsentLimit(container, { email: "d@example.com", ip_hash: "ip9" })
+        ).resolves.toBeUndefined()
       })
 
       it("refuses a grant to an outdated text and the withdrawal of a required consent", async () => {
