@@ -10,6 +10,14 @@ const paging = {
   offset: z.coerce.number().int().min(0).default(0),
 }
 const booleanQuery = z.enum(["true", "false"]).transform((value) => value === "true")
+/**
+ * One id or several (`product_id[0]=a&product_id[1]=b`). Past 20 items the
+ * query parser returns an object keyed by index instead of an array.
+ */
+const ids = z.preprocess(
+  (value) => (value && typeof value === "object" && !Array.isArray(value) ? Object.values(value) : value),
+  z.union([id, z.array(id).min(1).max(50)]).transform((value) => (Array.isArray(value) ? value : [value]))
+)
 
 export const StoreSubscribe = z.object({
   /** Required for guests. Ignored for logged-in customers: their account email is used. */
@@ -35,7 +43,7 @@ export const StoreConsentQuery = z.object({ locale: z.string().trim().min(2).max
 export const AdminSubscriptionsQuery = z.object({
   status: z.enum(SUBSCRIPTION_STATUSES).optional(),
   variant_id: id.optional(),
-  product_id: id.optional(),
+  product_id: ids.optional(),
   sales_channel_id: id.optional(),
   /** Search by email. */
   q: z.string().trim().min(1).max(200).optional(),
@@ -52,6 +60,7 @@ export const AdminNotificationsQuery = z.object({
 
 export const AdminWantedQuery = z.object({
   demo: booleanQuery.optional(),
+  product_id: ids.optional(),
   ...paging,
 })
 

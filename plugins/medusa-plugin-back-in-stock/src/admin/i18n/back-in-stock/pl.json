@@ -1,6 +1,6 @@
 {
   "back-in-stock": {
-    "title": "Powiadomienia o dostępności",
+    "title": "Alert dostępności",
     "description": "Klienci proszą o powiadomienie, gdy wyprzedany wariant wróci; dostają e-mail, gdy jest znowu dostępny.",
     "loadError": "Nie udało się wczytać danych.",
     "refresh": "Odśwież",
@@ -68,7 +68,9 @@
       "outOfStock": "Brak na stanie",
       "simulate": "Symuluj dostawę",
       "simulated": "Zasymulowano: wyrenderowano e-maile demo: {{count}}.",
-      "simulateFailed": "Nie udało się zasymulować: {{error}}"
+      "simulateFailed": "Nie udało się zasymulować: {{error}}",
+      "emptyFiltered": "Nikt nie czeka na wybrane produkty.",
+      "openWaiting": "Pokaż osoby czekające na ten wariant"
     },
     "subscriptions": {
       "title": "Zapisy",
@@ -173,13 +175,13 @@
       "hint": "Następnie użyj „Symuluj dostawę” w zakładce Najbardziej oczekiwane z filtrem Demo."
     },
     "widget": {
-      "title": "Powiadomienia o dostępności",
+      "title": "Alert dostępności",
       "subtitle": "Osoby czekające na każdy wariant",
       "empty": "Nikt nie czeka na ten produkt.",
       "waiting": "Oczekujący: {{count}}",
       "pending": "Niepotwierdzeni: {{count}}",
       "lastNotified": "Ostatni e-mail {{date}}",
-      "open": "Otwórz powiadomienia o dostępności"
+      "open": "Otwórz Alert dostępności"
     },
     "signals": {
       "wanted": "wyczekiwane warianty: {{count}}",
@@ -189,7 +191,7 @@
       "body": "Wszystkie zapisy demo zostaną usunięte, a na niedostępnych produktach powstanie świeży zestaw: trzech przykładowych subskrybentów, po pięć produktów. Prawdziwe zapisy zostaną, nic nie zostanie wysłane."
     },
     "guide": {
-      "title": "Jak działają powiadomienia o dostępności",
+      "title": "Jak działa Alert dostępności",
       "subtitle": "Od „Powiadom mnie” na produkcie do maila, gdy towar wróci.",
       "start": {
         "title": "Co robi",
@@ -249,6 +251,16 @@
         "title": "Start produkcyjny",
         "body": "Tryb demo wyłączony, żeby maile naprawdę wychodziły."
       }
+    },
+    "filters": {
+      "products": "Produkty",
+      "productsCount": "Produkty: {{count}}",
+      "searchProducts": "Szukaj produktu",
+      "loading": "Ładowanie…",
+      "noProducts": "Nie znaleziono produktów.",
+      "clear": "Wyczyść",
+      "remove": "Usuń filtr",
+      "variant": "Wariant: {{label}}"
     }
   }
 }

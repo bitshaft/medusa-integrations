@@ -7,15 +7,16 @@ import type { AdminWantedQueryParams } from "../../../../lib/back-in-stock/api/v
 
 /**
  * `GET /admin/back-in-stock/wanted` — variants ranked by people waiting,
- * per sales channel, with their current availability. `problem` is set for
+ * per sales channel, with their current availability; `product_id` (one or
+ * several) narrows it to those products. `problem` is set for
  * stock-managed variants without an inventory item: they can never come
  * back in stock until that is fixed.
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { service } = await resolveEnabled(req)
-  const { limit, offset, demo } = req.validatedQuery as unknown as AdminWantedQueryParams
+  const { limit, offset, demo, product_id } = req.validatedQuery as unknown as AdminWantedQueryParams
   const settings = await service.getSettings()
-  const { rows, count } = await service.rankWanted({ limit, offset, demo })
+  const { rows, count } = await service.rankWanted({ limit, offset, demo, productIds: product_id })
 
   const byChannel = new Map<string, string[]>()
   for (const row of rows) {

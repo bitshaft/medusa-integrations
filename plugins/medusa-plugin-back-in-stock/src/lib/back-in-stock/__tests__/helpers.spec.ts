@@ -9,6 +9,7 @@ import { fillUrl, localeCode, normalizeLocale, parseOptions, pluginOptionsSchema
 import { productLabel, renderEmail, renderPage } from "../render"
 import { mergeSettings, parseSettingsUpdate } from "../settings"
 import { createToken, hashToken, isWellFormedToken } from "../tokens"
+import { AdminSubscriptionsQuery, AdminWantedQuery } from "../api/validators"
 import { PRODUCT } from "./fixtures"
 
 describe("options", () => {
@@ -302,5 +303,20 @@ describe("admin translations", () => {
     expect(Object.keys(en)).toEqual(["back-in-stock"])
     expect(Object.keys(pl)).toEqual(["back-in-stock"])
     expect(flatten(pl).sort()).toEqual(flatten(en).sort())
+  })
+})
+
+describe("admin product filter", () => {
+  it("takes one product id or several", () => {
+    expect(AdminWantedQuery.parse({ product_id: "prod_1" }).product_id).toEqual(["prod_1"])
+    expect(AdminWantedQuery.parse({ product_id: ["prod_1", "prod_2"] }).product_id).toEqual(["prod_1", "prod_2"])
+    expect(AdminWantedQuery.parse({}).product_id).toBeUndefined()
+    expect(AdminSubscriptionsQuery.parse({ product_id: ["prod_1"], status: "active" })).toMatchObject({
+      product_id: ["prod_1"],
+      status: "active",
+    })
+    const many = Object.fromEntries(Array.from({ length: 25 }, (_, i) => [String(i), `prod_${i}`]))
+    expect(AdminWantedQuery.parse({ product_id: many }).product_id).toHaveLength(25)
+    expect(AdminWantedQuery.safeParse({ product_id: [] }).success).toBe(false)
   })
 })

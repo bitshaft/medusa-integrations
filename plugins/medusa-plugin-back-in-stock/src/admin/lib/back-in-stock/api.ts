@@ -114,6 +114,11 @@ export type ProductVariantWaiting = {
 
 type Page<K extends string, T> = { [key in K]: T[] } & { count: number; limit: number; offset: number }
 
+export type StatusCounts = Record<SubscriptionStatus | "all", number>
+
+/** A Medusa product as the product filter shows it. */
+export type ProductOption = { id: string; title: string; thumbnail: string | null }
+
 /* Queries ----------------------------------------------------------------- */
 
 const KEY = "back-in-stock"
@@ -131,12 +136,19 @@ export function useSettings(enabled: boolean) {
   })
 }
 
-export function useWanted(params: { limit: number; offset: number; demo?: boolean }, enabled: boolean) {
+export function useWanted(
+  params: { limit: number; offset: number; demo?: boolean; product_id?: string[] },
+  enabled: boolean
+) {
   return useQuery({
     queryKey: [KEY, "wanted", params],
     queryFn: () =>
       sdk.client.fetch<Page<"variants", WantedVariant>>(`${BASE}/wanted`, {
-        query: { ...params, demo: params.demo === undefined ? undefined : String(params.demo) },
+        query: {
+          ...params,
+          product_id: params.product_id?.length ? params.product_id : undefined,
+          demo: params.demo === undefined ? undefined : String(params.demo),
+        },
       }),
     enabled,
     placeholderData: keepPreviousData,
@@ -150,6 +162,7 @@ export function useSubscriptions(
     status?: SubscriptionStatus
     q?: string
     variant_id?: string
+    product_id?: string[]
     demo?: boolean
   },
   enabled: boolean
@@ -157,10 +170,11 @@ export function useSubscriptions(
   return useQuery({
     queryKey: [KEY, "subscriptions", params],
     queryFn: () =>
-      sdk.client.fetch<Page<"subscriptions", Subscription>>(`${BASE}/subscriptions`, {
+      sdk.client.fetch<Page<"subscriptions", Subscription> & { counts: StatusCounts }>(`${BASE}/subscriptions`, {
         query: {
           ...params,
           q: params.q || undefined,
+          product_id: params.product_id?.length ? params.product_id : undefined,
           demo: params.demo === undefined ? undefined : String(params.demo),
         },
       }),
@@ -186,6 +200,51 @@ export function useProductWaiting(productId: string, enabled: boolean) {
     queryKey: [KEY, "product", productId],
     queryFn: () => sdk.client.fetch<{ variants: ProductVariantWaiting[] }>(`${BASE}/products/${productId}`),
     enabled,
+  })
+}
+
+/** Medusa's products matching the search, for the product filter. */
+export function useProductOptions(q: string, enabled: boolean) {
+  return useQuery({
+    queryKey: [KEY, "product-options", q],
+    queryFn: async () =>
+      (
+        await sdk.client.fetch<{ products: ProductOption[] }>("/admin/products", {
+          query: { q: q || undefined, limit: 20, fields: "id,title,thumbnail" },
+        })
+      ).products,
+    enabled,
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** Titles of the products chosen in the filter. */
+export function useProductTitles(ids: string[]) {
+  return useQuery({
+    queryKey: [KEY, "product-titles", ids],
+    queryFn: async () => {
+      const { products } = await sdk.client.fetch<{ products: ProductOption[] }>("/admin/products", {
+        query: { id: ids, limit: ids.length, fields: "id,title,thumbnail" },
+      })
+      return Object.fromEntries(products.map((product) => [product.id, product.title])) as Record<string, string>
+    },
+    enabled: ids.length > 0,
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** "Product · Variant" for the variant filter of the Subscriptions tab. */
+export function useVariantLabel(id: string | null) {
+  return useQuery({
+    queryKey: [KEY, "variant-label", id],
+    queryFn: async () => {
+      const { variants } = await sdk.client.fetch<{
+        variants: Array<{ id: string; title: string | null; product?: { title: string } | null }>
+      }>("/admin/product-variants", { query: { id, limit: 1, fields: "id,title,product.title" } })
+      const variant = variants[0]
+      return variant ? [variant.product?.title, variant.title].filter(Boolean).join(" · ") : null
+    },
+    enabled: Boolean(id),
   })
 }
 

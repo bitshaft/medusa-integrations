@@ -222,13 +222,16 @@ open.
 
 ## Admin
 
-**Extensions → Back in stock**
+**Extensions → Back in stock** (in Polish: Alert dostępności)
 
-- **Most wanted:** variants ranked by people waiting, per sales channel,
-  with current stock. Stock-managed variants without an inventory item are
-  flagged: they can never come back until that is fixed.
-- **Subscriptions:** filter by status, search by email, see how many emails
-  each received and when the last one went out, unsubscribe someone.
+- **Most wanted:** the numbers at a glance, then variants ranked by people
+  waiting, per sales channel, with current stock; filter by products.
+  Stock-managed variants without an inventory item are flagged: they can
+  never come back until that is fixed. Click a row to see the people still
+  waiting for that variant.
+- **Subscriptions:** status tabs with counts, filter by products or one
+  variant, search by email, see how many emails each received and when the
+  last one went out, unsubscribe someone.
 - **Sent history:** every email with its result and how it was sent.
 - **Settings:** the settings above, a guarded "Restore defaults", how
   emails are sent, the demo tools, and the options from `medusa-config.ts`

@@ -68,7 +68,9 @@
       "outOfStock": "Out of stock",
       "simulate": "Simulate restock",
       "simulated": "Simulated: {{count}} demo email(s) rendered.",
-      "simulateFailed": "Could not simulate: {{error}}"
+      "simulateFailed": "Could not simulate: {{error}}",
+      "emptyFiltered": "Nobody is waiting for the chosen products.",
+      "openWaiting": "Show the people waiting for this variant"
     },
     "subscriptions": {
       "title": "Subscriptions",
@@ -249,6 +251,16 @@
         "title": "Go live",
         "body": "Demo mode off, so emails really go out."
       }
+    },
+    "filters": {
+      "products": "Products",
+      "productsCount": "Products: {{count}}",
+      "searchProducts": "Search products",
+      "loading": "Loading…",
+      "noProducts": "No products found.",
+      "clear": "Clear",
+      "remove": "Remove filter",
+      "variant": "Variant: {{label}}"
     }
   }
 }

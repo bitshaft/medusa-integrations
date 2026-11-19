@@ -50,21 +50,6 @@ const BackInStockPage = () => {
         />
 
         {s?.enabled && (
-          <div className="grid grid-cols-2 gap-px md:grid-cols-4">
-            {(["active", "pending", "ended", "pending_checks"] as const).map((key) => (
-              <div key={key} className="px-6 py-3">
-                <Text size="xsmall" className="text-ui-fg-subtle">
-                  {t(`back-in-stock.tiles.${key}`)}
-                </Text>
-                <Text size="xlarge" weight="plus">
-                  {s.counts[key]}
-                </Text>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {s?.enabled && (
           <PageTabs value={tab} onChange={setTab} actions={demo && <ResetDemoButton />}>
             {TABS.map((value) => (
               <TabTrigger key={value} value={value} icon={TAB_ICONS[value].icon} color={TAB_ICONS[value].color}>
@@ -83,7 +68,7 @@ const BackInStockPage = () => {
         {s && !s.enabled && <DisabledNotice reason={s.disabled_reason} hint={t("back-in-stock.disabled.hint")} />}
       </Container>
 
-      {s?.enabled && tab === "wanted" && <Wanted />}
+      {s?.enabled && tab === "wanted" && <Wanted counts={s.counts} />}
       {s?.enabled && tab === "subscriptions" && <Subscriptions />}
       {s?.enabled && tab === "history" && <History />}
       {s?.enabled && tab === "settings" && <Settings status={s} />}

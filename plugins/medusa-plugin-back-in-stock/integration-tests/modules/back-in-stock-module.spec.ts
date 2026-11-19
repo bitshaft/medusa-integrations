@@ -172,6 +172,29 @@ moduleIntegrationTestRunner<BackInStockModuleService>({
         ])
         expect((await service.rankWanted({ limit: 10, offset: 0, demo: true })).rows).toHaveLength(1)
       })
+
+      it("narrows the ranking and the list to chosen products", async () => {
+        await subscription({ email: "a@example.com", product_id: "prod_1" })
+        await subscription({ email: "b@example.com", product_id: "prod_1", status: "pending" })
+        await subscription({ email: "a@example.com", variant_id: "variant_2", product_id: "prod_2" })
+        await subscription({ email: "a@example.com", variant_id: "variant_3", product_id: "prod_3" })
+
+        const one = await service.rankWanted({ limit: 10, offset: 0, productIds: ["prod_1"] })
+        expect(one.count).toBe(1)
+        expect(one.rows).toEqual([
+          { variant_id: "variant_1", sales_channel_id: "sc_1", waiting: 1, pending: 1, notified: 0 },
+        ])
+        const two = await service.rankWanted({ limit: 10, offset: 0, productIds: ["prod_1", "prod_2"] })
+        expect(two.rows.map((row) => row.variant_id)).toEqual(["variant_1", "variant_2"])
+        expect(two.count).toBe(2)
+
+        // The admin list filters the same way.
+        const [, listed] = await service.listAndCountBackInStockSubscriptions({
+          product_id: { $in: ["prod_1", "prod_3"] },
+          status: "active",
+        })
+        expect(listed).toBe(2)
+      })
     })
 
     describe("retention", () => {

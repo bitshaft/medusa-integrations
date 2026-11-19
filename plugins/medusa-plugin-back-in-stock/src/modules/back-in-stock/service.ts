@@ -395,7 +395,7 @@ export default class BackInStockModuleService
    */
   @InjectManager()
   async rankWanted(
-    filter: { limit: number; offset: number; demo?: boolean },
+    filter: { limit: number; offset: number; demo?: boolean; productIds?: string[] },
     @MedusaContext() context: Context = {}
   ): Promise<{
     rows: Array<{ variant_id: string; sales_channel_id: string; waiting: number; pending: number; notified: number }>
@@ -404,8 +404,12 @@ export default class BackInStockModuleService
     // A read: the shared manager is enough, no transaction needed.
     const manager = context.manager as unknown as SqlManager
     const demo = filter.demo === undefined ? "" : ` and "demo" = ${filter.demo ? "true" : "false"}`
+    const products = filter.productIds?.length
+      ? ` and "product_id" in (${filter.productIds.map(() => "?").join(", ")})`
+      : ""
+    const params = filter.productIds ?? []
     const base =
-      `from "back_in_stock_subscription" where "deleted_at" is null and "status" in ('pending', 'active')${demo} ` +
+      `from "back_in_stock_subscription" where "deleted_at" is null and "status" in ('pending', 'active')${demo}${products} ` +
       `group by "variant_id", "sales_channel_id"`
     const rows = await manager.execute(
       `select "variant_id", "sales_channel_id", ` +
@@ -413,9 +417,9 @@ export default class BackInStockModuleService
         `count(*) filter (where "status" = 'pending') as "pending", ` +
         `coalesce(sum("notification_count"), 0) as "notified" ` +
         `${base} order by "waiting" desc, "pending" desc, "variant_id" limit ? offset ?`,
-      [filter.limit, filter.offset]
+      [...params, filter.limit, filter.offset]
     )
-    const [total] = await manager.execute(`select count(*) as "count" from (select 1 ${base}) as "groups"`)
+    const [total] = await manager.execute(`select count(*) as "count" from (select 1 ${base}) as "groups"`, params)
     return {
       rows: rows.map((row) => ({
         variant_id: String(row.variant_id),
