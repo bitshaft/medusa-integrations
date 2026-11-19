@@ -79,7 +79,17 @@ export const Dashboard = ({ onEdit, currencyCode }: { onEdit: (coupon: CouponVie
     })
   }
 
-  const onToggle = (coupon: CouponView) =>
+  const onToggle = async (coupon: CouponView) => {
+    if (coupon.status !== "paused") {
+      const ok = await prompt({
+        title: t("coupons.list.pauseTitle"),
+        description: t("coupons.list.pauseText", { code: coupon.automatic ? coupon.sentence[locale] : coupon.code }),
+        confirmText: t("coupons.list.pause"),
+        cancelText: t("coupons.cancel"),
+        variant: "confirmation",
+      })
+      if (!ok) return
+    }
     setStatus.mutate(
       { id: coupon.id, status: coupon.status === "paused" ? "active" : "paused" },
       {
@@ -87,6 +97,7 @@ export const Dashboard = ({ onEdit, currencyCode }: { onEdit: (coupon: CouponVie
         onError: (error) => toast.error(errorMessage(error)),
       }
     )
+  }
 
   const onDuplicate = (coupon: CouponView) =>
     duplicate.mutate(coupon.id, {

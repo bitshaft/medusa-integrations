@@ -80,7 +80,9 @@
       "deleted": "Kupon usunięty.",
       "paused": "Kupon wstrzymany.",
       "resumed": "Kupon wznowiony.",
-      "duplicated": "Kopia utworzona i wstrzymana. Sprawdź ją i wznów, gdy będzie gotowa."
+      "duplicated": "Kopia utworzona i wstrzymana. Sprawdź ją i wznów, gdy będzie gotowa.",
+      "pauseTitle": "Wstrzymać ten kupon?",
+      "pauseText": "„{{code}}” przestanie działać w koszykach, dopóki go nie wznowisz. Złożone zamówienia zachowają rabat."
     },
     "drawer": {
       "ordersTitle": "Zamówienia z kodem {{code}}",

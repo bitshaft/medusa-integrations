@@ -74,7 +74,9 @@
       "deleted": "Coupon deleted.",
       "paused": "Coupon paused.",
       "resumed": "Coupon resumed.",
-      "duplicated": "Copy created and paused. Check it and resume it when ready."
+      "duplicated": "Copy created and paused. Check it and resume it when ready.",
+      "pauseTitle": "Pause this coupon?",
+      "pauseText": "\"{{code}}\" stops working in carts until you resume it. Orders already placed keep the discount."
     },
     "drawer": {
       "ordersTitle": "Orders with {{code}}",
