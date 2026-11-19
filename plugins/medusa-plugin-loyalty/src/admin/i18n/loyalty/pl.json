@@ -312,13 +312,8 @@
       "title": "Lojalność"
     },
     "demo": {
-      "title": "Tryb demo",
       "body": "„Przywróć dane testowe” zastępuje cały program przykładowym: wszystkie zasady włączone, nagroda każdego rodzaju i rok historii dla maksymalnie ośmiu klientów (poziomy, zamówienia, zwroty, wymiany nagród, wygasłe i wygasające punkty, urodziny, ręczne korekty). Przed startem wyłącz opcję demo w medusa-config.ts.",
-      "reset": "Przywróć dane testowe",
-      "resetTitle": "Przywrócić dane testowe?",
       "resetBody": "Wszystkie dane programu lojalnościowego zostaną usunięte i zastąpione testowymi: ustawienia, nagrody, konta, historia punktów i wymiany. Zarejestrowani klienci sklepu dostaną przykładową historię; sklep z mniej niż sześcioma klientami dostanie przykładowych klientów (demo.…@example.com). Tego nie da się cofnąć.",
-      "cancel": "Anuluj",
-      "restored": "Przywrócono dane testowe",
       "restoredHint": "Klienci: {{customers}}, wpisy punktów: {{entries}}."
     }
   }

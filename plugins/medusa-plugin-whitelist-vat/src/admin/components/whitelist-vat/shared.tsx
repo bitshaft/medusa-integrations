@@ -1,7 +1,8 @@
-import { ExclamationCircle } from "@medusajs/icons"
 import { Badge, Button, Copy, StatusBadge, Text, Tooltip } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
+
+import { DemoBar as KitDemoBar } from "../../lib/whitelist-vat/kit/demo"
 
 import type { Company, Outcome, Source, SourceState, Status } from "../../lib/whitelist-vat/api"
 import { formatDateTime } from "../../lib/whitelist-vat/kit/format"
@@ -228,20 +229,5 @@ export const Pager = ({
 /** Shown above the page in demo mode: GUS answers are sample data. */
 export const DemoBar = () => {
   const { t } = useTranslation()
-  return (
-    <div
-      role="status"
-      className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
-    >
-      <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
-      <div>
-        <Text size="small" weight="plus" className="text-ui-tag-orange-text">
-          {t("whitelist-vat.demo.title")}
-        </Text>
-        <Text size="xsmall" className="text-ui-tag-orange-text">
-          {t("whitelist-vat.demo.body")}
-        </Text>
-      </div>
-    </div>
-  )
+  return <KitDemoBar>{t("whitelist-vat.demo.body")}</KitDemoBar>
 }

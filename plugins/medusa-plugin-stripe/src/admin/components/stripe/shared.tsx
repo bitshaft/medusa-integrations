@@ -4,27 +4,14 @@ import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
+import { DemoBar as KitDemoBar } from "../../lib/stripe/kit/demo"
+
 import type { Check, Completeness, OrderRef } from "../../lib/stripe/api"
 
 /** Shown on every tab while demo mode is on. */
 export const DemoBar = () => {
   const { t } = useTranslation()
-  return (
-    <div
-      role="status"
-      className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
-    >
-      <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
-      <div>
-        <Text size="small" weight="plus" className="text-ui-tag-orange-text">
-          {t("stripe.demo.title")}
-        </Text>
-        <Text size="xsmall" className="text-ui-tag-orange-text">
-          {t("stripe.demo.body")}
-        </Text>
-      </div>
-    </div>
-  )
+  return <KitDemoBar>{t("stripe.demo.body")}</KitDemoBar>
 }
 
 /**

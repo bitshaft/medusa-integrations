@@ -1,7 +1,9 @@
-import { ExclamationCircle, InformationCircleSolid } from "@medusajs/icons"
+import { InformationCircleSolid } from "@medusajs/icons"
 import { Badge, Input, Label, Select, StatusBadge, Switch, Text, Textarea } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
+
+import { DemoBar as KitDemoBar } from "../../lib/compliance/kit/demo"
 
 import type { RequestStatus } from "../../lib/compliance/api"
 import { languageLabel } from "../../lib/compliance/format"
@@ -9,22 +11,7 @@ import { languageLabel } from "../../lib/compliance/format"
 /** Shown on every page of the panel while demo mode is on. */
 export const DemoBar = () => {
   const { t } = useTranslation()
-  return (
-    <div
-      role="status"
-      className="flex items-start gap-x-3 rounded-lg border border-ui-tag-orange-border bg-ui-tag-orange-bg px-4 py-3"
-    >
-      <ExclamationCircle className="mt-0.5 shrink-0 text-ui-tag-orange-icon" />
-      <div>
-        <Text size="small" weight="plus" className="text-ui-tag-orange-text">
-          {t("compliance.demo.title")}
-        </Text>
-        <Text size="xsmall" className="text-ui-tag-orange-text">
-          {t("compliance.demo.body")}
-        </Text>
-      </div>
-    </div>
-  )
+  return <KitDemoBar>{t("compliance.demo.body")}</KitDemoBar>
 }
 
 /** A reminder that the plugin is a tool, not legal advice. */

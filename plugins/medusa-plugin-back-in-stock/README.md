@@ -233,7 +233,8 @@ open.
 - **Settings:** the settings above, a guarded "Restore defaults", how
   emails are sent, the links in use, and the demo tools.
 
-**Product page:** a panel with the people waiting for each variant.
+**Product page:** a Back in stock tab in the Integrations card, with the
+people waiting for each variant (shown when someone waits).
 
 The admin is in English and Polish.
 

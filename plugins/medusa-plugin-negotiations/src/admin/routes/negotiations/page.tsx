@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import { Dashboard } from "../../components/negotiations/dashboard"
 import { Guide } from "../../components/negotiations/guide"
 import { Settings } from "../../components/negotiations/settings"
-import { DemoBar, TabTrigger } from "../../components/negotiations/shared"
+import { DemoBar, ResetDemoButton, TabTrigger } from "../../components/negotiations/shared"
 import { keys, useSettings } from "../../lib/negotiations/api"
 import { navIcon } from "../../lib/negotiations/kit/nav-icon"
 import { PageIcon } from "../../lib/negotiations/kit/ui"
@@ -26,7 +26,7 @@ const NegotiationsPage = () => {
   const s = status.data
   return (
     <div className="flex flex-col gap-y-3">
-      {s?.options.demo && <DemoBar reset />}
+      {s?.options.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
@@ -48,8 +48,8 @@ const NegotiationsPage = () => {
             {t("negotiations.refresh")}
           </Button>
         </div>
-        <div className="overflow-x-auto px-6 py-3">
-          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
             <Tabs.List>
               <TabTrigger value="panel" icon={ChartBar} color="#0891b2">
                 {t("negotiations.tabs.panel")}
@@ -62,6 +62,7 @@ const NegotiationsPage = () => {
               </TabTrigger>
             </Tabs.List>
           </Tabs>
+          {s?.options.demo && <ResetDemoButton />}
         </div>
         {status.isLoading && <Skeleton className="m-6 h-10" />}
         {s && !s.enabled && (

@@ -286,8 +286,8 @@ All under `/admin/negotiations`.
   arming the writers, expiry, demo data, net or gross per region, the writer
   history.
 
-Widgets: threads on the product page and on the customer page, a minimum
-price on the variant page, and a line above the order list.
+Widgets: a Negotiations tab with the threads in the Integrations cards of
+the product and customer pages, and a minimum price on the variant page.
 
 ### Demo mode
 

@@ -292,8 +292,9 @@ To remove your data after an erasure, subscribe to
 - **Omnibus**: discounts with the lowest prior price, incomplete history.
 - **Settings** and **Guide**.
 
-Widgets: GPSR data and price history on the product page; consents,
-requests and a data download on the customer page.
+Widgets: a Compliance tab in the product page's Integrations card (GPSR
+data and the price history); consents, requests and a data download in the
+customer page's Integrations card.
 
 ## Jobs and hooks
 

@@ -215,7 +215,6 @@
       "variantsNoWeight": "Warianty bez wagi: {{count}}; paczki liczą je wagą domyślną."
     },
     "demo": {
-      "title": "Tryb demo",
       "body": "Nic tu nie pochodzi z Apaczki: usługi, ceny, punkty odbioru, etykiety i śledzenie to dane przykładowe i żadne zapytanie nie jest wysyłane. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut („Odśwież śledzenie” pokazuje postęp od razu). Usuń demo: true i ustaw appId oraz appSecret, żeby podłączyć swoje konto."
     }
   }

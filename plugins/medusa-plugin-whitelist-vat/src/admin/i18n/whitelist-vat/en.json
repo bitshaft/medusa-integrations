@@ -198,7 +198,6 @@
       "problem": "businesses with a problem: {{count}}"
     },
     "demo": {
-      "title": "Demo mode",
       "body": "GUS answers with sample businesses (names start with [DEMO]); no key is needed and no request goes to GUS. The white list and VIES are asked as usual. Remove demo: true from the options to use the real GUS."
     }
   }

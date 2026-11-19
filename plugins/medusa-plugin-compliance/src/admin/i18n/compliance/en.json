@@ -39,7 +39,6 @@
       "en": "English"
     },
     "demo": {
-      "title": "Demo mode",
       "body": "You are looking at sample data. Nothing you do here changes the store's real data. Switch demo mode off in Settings."
     },
     "legal": {

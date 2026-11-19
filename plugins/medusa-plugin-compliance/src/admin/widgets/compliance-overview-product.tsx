@@ -1,6 +1,7 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
 
+import "../lib/compliance/product-tab"
 import "../lib/compliance/signals"
 import { claimZone, type EntityLike, OVERVIEW_ZONES } from "../lib/compliance/kit/integrations"
 import { ProductOverview } from "../lib/compliance/kit/overview"

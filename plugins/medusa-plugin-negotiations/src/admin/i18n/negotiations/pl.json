@@ -18,14 +18,9 @@
       "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
     },
     "demo": {
-      "title": "Tryb demo",
       "body": "Przykładowe negocjacje na produktach z Twojego sklepu, we wszystkich stanach. Nie wygasają i nigdy nie tworzą szkiców zamówień ani koszyków. „Przywróć dane testowe” wczytuje świeży zestaw. Przed startem wyłącz opcję demo w medusa-config.ts.",
       "badge": "Demo",
-      "reset": "Przywróć dane testowe",
-      "resetTitle": "Przywrócić dane testowe?",
-      "resetBody": "Wszystkie negocjacje demo zostaną zastąpione świeżym zestawem, który pokazuje wszystkie funkcje: każdy status, negocjacje produktu i koszyka, kilka rund ofert, wygasłą ofertę, ofertę dodaną do koszyka, notatki i przypisania. Prawdziwe negocjacje nie zostaną zmienione.",
-      "cancel": "Anuluj",
-      "restored": "Przywrócono dane testowe"
+      "resetBody": "Wszystkie negocjacje demo zostaną zastąpione świeżym zestawem, który pokazuje wszystkie funkcje: każdy status, negocjacje produktu i koszyka, kilka rund ofert, wygasłą ofertę, ofertę dodaną do koszyka, notatki i przypisania. Prawdziwe negocjacje nie zostaną zmienione."
     },
     "status": {
       "open": "Otwarte",

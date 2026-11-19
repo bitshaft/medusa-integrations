@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 
 import { Customers } from "../../components/loyalty/customers"
 import { Dashboard } from "../../components/loyalty/dashboard"
-import { DemoBar } from "../../components/loyalty/demo-bar"
+import { DemoBar, ResetDemoButton } from "../../components/loyalty/demo-bar"
 import { Guide } from "../../components/loyalty/guide"
 import { Rewards } from "../../components/loyalty/rewards"
 import { Settings } from "../../components/loyalty/settings"
@@ -58,8 +58,8 @@ const LoyaltyPage = () => {
             {t("loyalty.refresh")}
           </Button>
         </div>
-        <div className="px-6 py-3">
-          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
             <Tabs.List>
               <TabTrigger value="panel" icon={ChartBar} color="#2563eb">
                 {t("loyalty.tabs.panel")}
@@ -78,6 +78,7 @@ const LoyaltyPage = () => {
               </TabTrigger>
             </Tabs.List>
           </Tabs>
+          {s?.enabled && s.options.demo && <ResetDemoButton />}
         </div>
         {status.isLoading && <Skeleton className="m-6 h-10" />}
         {s && !s.enabled && (

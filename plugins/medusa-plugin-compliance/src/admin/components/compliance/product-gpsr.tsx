@@ -1,14 +1,13 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk"
-import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
-import { Container, Heading, Skeleton, Text } from "@medusajs/ui"
+import { Heading, Skeleton, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
-import { ProductSafetyForm } from "../components/compliance/product-safety-form"
-import { DemoBar } from "../components/compliance/shared"
-import { useProductSafety, useSettings } from "../lib/compliance/api"
+import { ProductSafetyForm } from "./product-safety-form"
+import { DemoBar } from "./shared"
+import { useProductSafety, useSettings } from "../../lib/compliance/api"
 
 /** GPSR data on the product page: manufacturer, responsible person, identification, warnings. */
-const ProductGpsrWidget = ({ data: product }: DetailWidgetProps<AdminProduct>) => {
+export const GpsrSection = ({ productId }: { productId: string }) => {
+  const product = { id: productId }
   const { t } = useTranslation()
   const settings = useSettings()
   const on = settings.data?.enabled && settings.data.settings.modules.gpsr
@@ -16,7 +15,7 @@ const ProductGpsrWidget = ({ data: product }: DetailWidgetProps<AdminProduct>) =
   if (!on) return null
   const demo = Boolean(settings.data?.settings.demo)
   return (
-    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
+    <div className="flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("compliance.gpsr.widgetTitle")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
@@ -29,10 +28,6 @@ const ProductGpsrWidget = ({ data: product }: DetailWidgetProps<AdminProduct>) =
       ) : (
         <ProductSafetyForm productId={product.id} current={safety.data} demo={demo} />
       )}
-    </Container>
+    </div>
   )
 }
-
-export const config = defineWidgetConfig({ zone: "product.details.after" })
-
-export default ProductGpsrWidget

@@ -25,6 +25,16 @@ Rules:
 - Tests in `__tests__/` are copied too and run as part of each plugin's
   `npm test`.
 
+## Demo mode
+
+`demo.tsx` makes demo mode look the same in every integration:
+
+- `DemoBar` above the page header: the shared "Demo mode" title, with the
+  plugin's own hint as children.
+- `DemoResetButton` at the right end of the page's tab row, for plugins
+  whose demo has data to restore: "Restore test data", a confirmation with
+  the plugin's `description`, and a toast with what `onReset` returns.
+
 ## Integrations on Medusa's pages
 
 `integrations.tsx` and `overview.tsx` put every installed plugin into one
@@ -36,7 +46,7 @@ card per Medusa page, the way a suite of integrations should look:
 | Customer     | `customer.details.before` | Integrations: a tab per plugin that applies to the customer         |
 | Order list   | `order.list.before`       | Orders to handle: tiles from Medusa's data, plugin tiles and chips  |
 | Product list | `product.list.before`     | Catalog at a glance: stock, drafts, images, sales, plugin chips     |
-| Product      | `product.details.before`  | Product at a glance: status, price, stock, sales, plugin rows/chips |
+| Product      | `product.details.before`  | Product at a glance: status, price, stock, sales, plugin rows/chips; under it Integrations, a tab per plugin that applies to the product |
 
 How it works:
 
@@ -56,5 +66,8 @@ How it works:
 - The overview cards read Medusa's admin API in the browser (latest 50
   orders; up to 500 products and 500 orders of 90 days for stock and sales)
   and say when they read only part.
+- Product tabs (`registerTab("product", …)`) need no widget of their own:
+  "Product at a glance" renders the Integrations card under itself. Import
+  the plugin's `product-tab.tsx` from its `<namespace>-overview-product.tsx`.
 - `texts.ts` holds the cards' Polish and English texts: the kit has no
   translation files of its own. Plugin texts stay in each plugin's i18n.

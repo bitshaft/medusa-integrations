@@ -1,6 +1,7 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
 
+import "../lib/back-in-stock/product-tab"
 import "../lib/back-in-stock/signals"
 import { claimZone, type EntityLike, OVERVIEW_ZONES } from "../lib/back-in-stock/kit/integrations"
 import { ProductOverview } from "../lib/back-in-stock/kit/overview"

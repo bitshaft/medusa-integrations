@@ -409,13 +409,8 @@
       "failed": "nieudane: {{count}}"
     },
     "demoData": {
-      "title": "Tryb demo: nic nie jest wysyłane",
       "body": "Maile są renderowane i zapisywane w historii ze statusem „Demo”. „Przywróć dane testowe” wypełnia historię przykładowymi mailami z ostatniego miesiąca dla najnowszych zamówień i klientów: każdy typ, wysłane, błędne z powodem, oczekujące i wysłane ponownie. Przed startem wyłącz opcję demo w medusa-config.ts.",
-      "reset": "Przywróć dane testowe",
-      "resetTitle": "Przywrócić dane testowe?",
       "resetBody": "Przykładowe maile w historii zostaną zastąpione świeżym zestawem na podstawie najnowszych zamówień i klientów sklepu. Prawdziwe wpisy historii zostaną, nic nie zostanie wysłane.",
-      "cancel": "Anuluj",
-      "restored": "Przywrócono dane testowe",
       "restoredHint": "Maile: {{count}}, zamówienia: {{orders}}."
     }
   }

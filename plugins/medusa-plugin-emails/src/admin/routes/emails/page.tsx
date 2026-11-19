@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router-dom"
 
 import { Appearance } from "../../components/emails/appearance"
-import { DemoBar } from "../../components/emails/demo-bar"
+import { DemoBar, ResetDemoButton } from "../../components/emails/demo-bar"
 import { Guide } from "../../components/emails/guide"
 import { MessageLog } from "../../components/emails/message-log"
 import { Settings } from "../../components/emails/settings"
@@ -63,8 +63,8 @@ const EmailsPage = () => {
             </StatusBadge>
           )}
         </div>
-        <div className="overflow-x-auto px-6 py-3">
-          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
             <Tabs.List>
               <TabTrigger value="history" icon={ClockSolid} color="#2563eb">
                 {t("emails.tabs.history")}
@@ -83,6 +83,7 @@ const EmailsPage = () => {
               </TabTrigger>
             </Tabs.List>
           </Tabs>
+          {s?.enabled && s.demo && <ResetDemoButton />}
         </div>
         {status.isLoading && (
           <div className="px-6 py-4">

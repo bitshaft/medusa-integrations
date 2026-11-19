@@ -70,6 +70,11 @@ const TEXTS = {
     save: "Save",
     pcs: "{{count}} pcs",
     ordersCount: "orders",
+    demoTitle: "Demo mode",
+    demoReset: "Restore test data",
+    demoResetTitle: "Restore test data?",
+    demoRestored: "Test data restored",
+    cancel: "Cancel",
   },
   pl: {
     ordersTitle: "Zamówienia do obsłużenia",
@@ -133,6 +138,11 @@ const TEXTS = {
     save: "Zapisz",
     pcs: "{{count}} szt.",
     ordersCount: "zam.",
+    demoTitle: "Tryb demo",
+    demoReset: "Przywróć dane testowe",
+    demoResetTitle: "Przywrócić dane testowe?",
+    demoRestored: "Przywrócono dane testowe",
+    cancel: "Anuluj",
   },
 } as const
 

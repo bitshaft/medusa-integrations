@@ -7,6 +7,7 @@ import { Link } from "react-router-dom"
 
 import { toIntlLocale } from "./format"
 import {
+  DetailCard,
   type EntityLike,
   isOwner,
   type Level,
@@ -664,7 +665,13 @@ const Thresholds = ({ settings, onSave }: { settings: CardSettings; onSave: (nex
 
 /** "Product at a glance" above Medusa's product page; `owner` is the calling plugin's namespace. */
 export const ProductOverview = ({ owner, product }: { owner: string; product: EntityLike }) =>
-  isOwner(OVERVIEW_ZONES.product, owner) ? <ProductCard productId={product.id} /> : null
+  isOwner(OVERVIEW_ZONES.product, owner) ? (
+    <div className="flex flex-col gap-y-3">
+      <ProductCard productId={product.id} />
+      {/* Every plugin's product tab (GPSR, Omnibus, negotiations…) in one card, like on orders and customers. */}
+      <DetailCard page="product" entity={product} />
+    </div>
+  ) : null
 
 const STATUS_COLOR: Record<string, "green" | "grey" | "orange" | "red"> = {
   published: "green",

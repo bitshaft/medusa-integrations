@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { DemoBar, ResetDemoButton } from "../../components/back-in-stock/demo-bar"
 import { History } from "../../components/back-in-stock/history"
 import { Settings } from "../../components/back-in-stock/settings"
 import { Subscriptions } from "../../components/back-in-stock/subscriptions"
@@ -35,6 +36,7 @@ const BackInStockPage = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
+      {s?.enabled && s.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
         <div className="flex items-center justify-between gap-x-4 px-6 py-4">
           <div className="flex items-center gap-x-3">
@@ -57,12 +59,6 @@ const BackInStockPage = () => {
           </Button>
         </div>
 
-        {s?.enabled && s.demo && (
-          <Text size="small" className="text-ui-fg-interactive px-6 py-3">
-            {t("back-in-stock.demoMode")}
-          </Text>
-        )}
-
         {s?.enabled && (
           <div className="grid grid-cols-2 gap-px md:grid-cols-4">
             {(["active", "pending", "ended", "pending_checks"] as const).map((key) => (
@@ -79,8 +75,8 @@ const BackInStockPage = () => {
         )}
 
         {s?.enabled && (
-          <div className="px-6 py-3">
-            <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
+          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+            <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
               <Tabs.List>
                 {TABS.map((value) => (
                   <TabTrigger key={value} value={value} icon={TAB_ICONS[value].icon} color={TAB_ICONS[value].color}>
@@ -89,6 +85,7 @@ const BackInStockPage = () => {
                 ))}
               </Tabs.List>
             </Tabs>
+            {s.demo && <ResetDemoButton />}
           </div>
         )}
 

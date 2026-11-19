@@ -20,7 +20,7 @@ import { Dashboard } from "../../components/coupons/dashboard"
 import { Guide } from "../../components/coupons/guide"
 import { Settings } from "../../components/coupons/settings"
 import { CouponWizard } from "../../components/coupons/wizard"
-import { DemoBar } from "../../components/coupons/demo-bar"
+import { DemoBar, ResetDemoButton } from "../../components/coupons/demo-bar"
 import { type CouponView, exportUrl, useSettings } from "../../lib/coupons/api"
 import { adminLocale } from "../../lib/coupons/draft"
 import { navIcon } from "../../lib/coupons/kit/nav-icon"
@@ -95,8 +95,8 @@ const CouponsPage = () => {
           )}
         </div>
 
-        <div className="px-6 py-3">
-          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)}>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
             <Tabs.List>
               <TabTrigger value="panel" icon={ChartBar} color="#2563eb">
                 {t("coupons.tabs.panel")}
@@ -109,6 +109,7 @@ const CouponsPage = () => {
               </TabTrigger>
             </Tabs.List>
           </Tabs>
+          {s?.enabled && s.options.demo && <ResetDemoButton />}
         </div>
 
         {status.isLoading && <Skeleton className="m-6 h-10" />}

@@ -1,15 +1,32 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk"
-import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
-import { Container, Heading, Skeleton, Text } from "@medusajs/ui"
+import { BellAlert } from "@medusajs/icons"
+import { Skeleton, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
-import { ProblemBadge } from "../components/back-in-stock/shared"
-import { useBackInStockStatus, useProductWaiting } from "../lib/back-in-stock/api"
-import { formatDateTime } from "../lib/back-in-stock/kit/format"
+import { ProblemBadge } from "../../components/back-in-stock/shared"
+import { useBackInStockStatus, useProductWaiting } from "./api"
+import { formatDateTime } from "./kit/format"
+import { registerTab } from "./kit/integrations"
 
-/** Product page panel: people waiting for each variant, and variants that can never come back. */
-const BackInStockProduct = ({ data: product }: DetailWidgetProps<AdminProduct>) => {
+/** The Back in stock tab of the product page's Integrations card: who waits for which variant. */
+registerTab("product", {
+  id: "back-in-stock",
+  brand: { label: "back-in-stock.title", icon: BellAlert, color: "#7c3aed" },
+  order: 40,
+  useState: (product) => {
+    const status = useBackInStockStatus()
+    const enabled = status.data?.enabled === true
+    const { data, isLoading } = useProductWaiting(product.id, enabled)
+    const variants = (data?.variants ?? []).filter((v) => v.waiting || v.pending || v.problem)
+    if (!enabled || !variants.length) return { visible: false, level: "none", loading: status.isLoading || isLoading }
+    return { visible: true, level: variants.some((v) => v.problem) ? "warn" : "info" }
+  },
+  Panel: ({ entity }) => <BackInStockProduct productId={entity.id} />,
+})
+
+/** People waiting for each variant, and variants that can never come back. */
+const BackInStockProduct = ({ productId }: { productId: string }) => {
+  const product = { id: productId }
   const { t, i18n } = useTranslation()
   const status = useBackInStockStatus()
   const enabled = status.data?.enabled === true
@@ -21,13 +38,10 @@ const BackInStockProduct = ({ data: product }: DetailWidgetProps<AdminProduct>) 
   const variants = (data?.variants ?? []).filter((variant) => variant.waiting || variant.pending || variant.problem)
 
   return (
-    <Container className="overflow-hidden divide-y p-0">
-      <div className="px-6 py-4">
-        <Heading level="h2">{t("back-in-stock.widget.title")}</Heading>
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("back-in-stock.widget.subtitle")}
-        </Text>
-      </div>
+    <div className="divide-y">
+      <Text size="small" className="text-ui-fg-subtle px-6 py-4">
+        {t("back-in-stock.widget.subtitle")}
+      </Text>
       {isLoading && (
         <div className="px-6 py-4">
           <Skeleton className="h-12 w-full" />
@@ -72,12 +86,6 @@ const BackInStockProduct = ({ data: product }: DetailWidgetProps<AdminProduct>) 
           {t("back-in-stock.widget.open")}
         </Link>
       </div>
-    </Container>
+    </div>
   )
 }
-
-export const config = defineWidgetConfig({
-  zone: "product.details.side.after",
-})
-
-export default BackInStockProduct

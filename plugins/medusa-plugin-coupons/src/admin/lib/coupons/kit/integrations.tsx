@@ -52,17 +52,23 @@ export type Brand = {
 
 /* Detail pages: tabs ------------------------------------------------------- */
 
-/** Detail pages with a tabbed Integrations card, and the zone each uses. */
+/**
+ * Detail pages with a tabbed Integrations card, and the zone each uses. On
+ * the product page the card sits under "Product at a glance", which
+ * renders it (see `ProductOverview`), so product tabs need no widget of
+ * their own: registering them is enough.
+ */
 export const DETAIL_ZONES = {
   order: "order.details.before",
   customer: "customer.details.before",
+  product: "product.details.before",
 } as const
 export type DetailPage = keyof typeof DETAIL_ZONES
 
 /** What a tab reports: whether it applies to the record, and its colour. */
 export type TabState = { visible: boolean; level: Level; loading?: boolean }
 
-/** The record Medusa passes to the widget (order, customer); tabs read what they need. */
+/** The record Medusa passes to the widget (order, customer, product); tabs read what they need. */
 export type EntityLike = { id: string } & Record<string, any>
 /** @deprecated Use EntityLike. */
 export type OrderLike = EntityLike
@@ -288,7 +294,8 @@ export const OrderIntegrations = ({ owner, order }: { owner: string; order: Enti
   <DetailIntegrations page="order" owner={owner} entity={order} />
 )
 
-const DetailCard = ({ page, entity }: { page: DetailPage; entity: EntityLike }) => {
+/** The tabbed Integrations card itself, for a kit card that already owns its zone. */
+export const DetailCard = ({ page, entity }: { page: DetailPage; entity: EntityLike }) => {
   const label = useBrandLabel()
   // A snapshot: every tab's hook is called on every render, in this order.
   const [tabs] = useState(() => [...tabsOf(page)])

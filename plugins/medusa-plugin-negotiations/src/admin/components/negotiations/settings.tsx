@@ -25,7 +25,7 @@ import {
   useSaveSettings,
 } from "../../lib/negotiations/api"
 import { dateTime, money } from "../../lib/negotiations/format"
-import { Note, ResetDemoButton, useErrorText } from "./shared"
+import { Note, useErrorText } from "./shared"
 
 const OptionRow = ({ name, value }: { name: string; value: string }) => (
   <div className="flex items-center justify-between gap-3 px-6 py-2">
@@ -233,7 +233,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
           >
             {t("negotiations.settings.expireNow")}
           </Button>
-          {o.demo && <ResetDemoButton />}
         </div>
       </Container>
 

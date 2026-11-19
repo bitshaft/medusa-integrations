@@ -8,7 +8,7 @@
       "title": "Wtyczka jest wyłączona",
       "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
     },
-    "demoMode": "Tryb demo: e-maile są renderowane i zapisywane w logach, nic nie jest wysyłane.",
+    "demoMode": "E-maile są renderowane i zapisywane w logach, nic nie jest wysyłane.",
     "tabs": {
       "wanted": "Najbardziej oczekiwane",
       "subscriptions": "Zapisy",
@@ -183,6 +183,9 @@
     "signals": {
       "wanted": "wyczekiwane warianty: {{count}}",
       "waiting": "czekający: {{count}}"
+    },
+    "demoReset": {
+      "body": "Wszystkie zapisy demo zostaną usunięte, a na niedostępnych produktach powstanie świeży zestaw: trzech przykładowych subskrybentów, po pięć produktów. Prawdziwe zapisy zostaną, nic nie zostanie wysłane."
     }
   }
 }

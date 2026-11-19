@@ -213,7 +213,6 @@
       "variantsNoWeight": "Variants without a weight: {{count}}; parcels count them with the default weight."
     },
     "demo": {
-      "title": "Demo mode",
       "body": "Nothing here comes from Apaczka: services, prices, parcel points, labels and tracking are sample data, and no request is sent. Tracking of a new shipment moves on by itself within about 20 minutes (\"Refresh tracking\" shows the progress at once). Remove demo: true and set appId and appSecret to connect your account."
     }
   }

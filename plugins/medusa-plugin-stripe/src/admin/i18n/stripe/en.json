@@ -29,7 +29,6 @@
       "hint": "Set the apiKey option in medusa-config.ts (or demo: true) and restart Medusa. The Checks and Guide tabs show what to set up."
     },
     "demo": {
-      "title": "Demo mode",
       "body": "You are looking at sample data. The plugin sends no requests to Stripe in demo mode. Remove demo: true from the options to see your account."
     },
     "incomplete": {

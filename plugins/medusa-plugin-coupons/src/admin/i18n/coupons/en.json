@@ -349,13 +349,8 @@
       }
     },
     "demo": {
-      "title": "Demo mode",
       "body": "\"Restore test data\" creates a set of demo coupons as real Medusa promotions: every kind, tiers, an automatic coupon, limits, a first-order coupon, a customer group, exclusions, every status and a batch of single-use codes. Their names start with [Demo] and their codes with DEMO-. Turn the demo option off in medusa-config.ts before going live.",
-      "reset": "Restore test data",
-      "resetTitle": "Restore test data?",
       "resetBody": "Coupons named [Demo] are deleted with their promotions and created again. They are real promotions: their codes work at checkout while they are active. Your own coupons are not touched.",
-      "cancel": "Cancel",
-      "restored": "Test data restored",
       "restoredHint": "{{coupons}} demo coupons, {{codes}} codes."
     }
   }

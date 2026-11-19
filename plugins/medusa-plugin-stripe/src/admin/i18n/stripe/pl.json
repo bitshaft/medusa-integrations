@@ -31,7 +31,6 @@
       "hint": "Ustaw opcję apiKey w medusa-config.ts (albo demo: true) i uruchom ponownie Medusę. Zakładki Kontrole i Przewodnik pokazują, co skonfigurować."
     },
     "demo": {
-      "title": "Tryb demo",
       "body": "Oglądasz dane pokazowe. W trybie demo wtyczka nie wysyła żadnych zapytań do Stripe. Usuń demo: true z opcji, żeby zobaczyć swoje konto."
     },
     "incomplete": {

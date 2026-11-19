@@ -409,13 +409,8 @@
       "failed": "failed: {{count}}"
     },
     "demoData": {
-      "title": "Demo mode: nothing is sent",
       "body": "Emails are rendered and logged with the status \"Demo\". \"Restore test data\" fills the history with a month of sample emails for your latest orders and customers: every type, sent, failed with the reason, pending and resent. Turn the demo option off in medusa-config.ts before going live.",
-      "reset": "Restore test data",
-      "resetTitle": "Restore test data?",
       "resetBody": "The sample emails in the history are replaced with a fresh set built from the store's latest orders and customers. Real history entries are kept, and nothing is sent.",
-      "cancel": "Cancel",
-      "restored": "Test data restored",
       "restoredHint": "{{count}} emails for {{orders}} orders."
     }
   }

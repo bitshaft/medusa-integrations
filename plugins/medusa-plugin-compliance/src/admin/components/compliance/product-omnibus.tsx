@@ -1,17 +1,16 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk"
-import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
-import { Container, Heading, Select, Skeleton, Table, Text } from "@medusajs/ui"
+import { Heading, Select, Skeleton, Table, Text } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { OmnibusFlags } from "../components/compliance/omnibus"
-import { PriceChart } from "../components/compliance/price-chart"
-import { DemoBar, Empty } from "../components/compliance/shared"
-import { useProductPrices, useSettings } from "../lib/compliance/api"
-import { dateTime, money, shortDate } from "../lib/compliance/format"
+import { OmnibusFlags } from "./omnibus"
+import { PriceChart } from "./price-chart"
+import { DemoBar, Empty } from "./shared"
+import { useProductPrices, useSettings } from "../../lib/compliance/api"
+import { dateTime, money, shortDate } from "../../lib/compliance/format"
 
 /** Omnibus price history on the product page: chart and table per variant and region. */
-const ProductPricesWidget = ({ data: product }: DetailWidgetProps<AdminProduct>) => {
+export const OmnibusSection = ({ productId }: { productId: string }) => {
+  const product = { id: productId }
   const { t, i18n } = useTranslation()
   const settings = useSettings()
   const on = Boolean(settings.data?.enabled && settings.data.settings.modules.omnibus)
@@ -24,7 +23,7 @@ const ProductPricesWidget = ({ data: product }: DetailWidgetProps<AdminProduct>)
   const current = series.find((s) => keyOf(s) === key) ?? series[0]
 
   return (
-    <Container className="overflow-hidden flex flex-col gap-y-4 p-6">
+    <div className="flex flex-col gap-y-4 p-6">
       <div>
         <Heading level="h2">{t("compliance.omnibus.widgetTitle")}</Heading>
         <Text size="small" className="text-ui-fg-subtle">
@@ -111,7 +110,7 @@ const ProductPricesWidget = ({ data: product }: DetailWidgetProps<AdminProduct>)
           </Table>
         </>
       )}
-    </Container>
+    </div>
   )
 }
 
@@ -125,7 +124,3 @@ const Fact = ({ label, value }: { label: string; value: string }) => (
     </Text>
   </div>
 )
-
-export const config = defineWidgetConfig({ zone: "product.details.after" })
-
-export default ProductPricesWidget

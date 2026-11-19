@@ -8,7 +8,7 @@
       "title": "The plugin is disabled",
       "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
     },
-    "demoMode": "Demo mode: emails are rendered and logged, nothing is sent.",
+    "demoMode": "Emails are rendered and logged, nothing is sent.",
     "tabs": {
       "wanted": "Most wanted",
       "subscriptions": "Subscriptions",
@@ -183,6 +183,9 @@
     "signals": {
       "wanted": "wanted variants: {{count}}",
       "waiting": "waiting: {{count}}"
+    },
+    "demoReset": {
+      "body": "Every demo subscription is deleted and a fresh set is created on out-of-stock products: three sample subscribers, five products each. Real subscriptions are not touched and nothing is sent."
     }
   }
 }

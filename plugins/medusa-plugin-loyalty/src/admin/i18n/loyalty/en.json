@@ -308,13 +308,8 @@
       "title": "Loyalty"
     },
     "demo": {
-      "title": "Demo mode",
       "body": "\"Restore test data\" replaces the whole program with a sample one: every rule on, a reward of every kind and a year of history for up to eight customers (tiers, orders, returns, redemptions, expired and expiring points, birthdays, manual corrections). Turn the demo option off in medusa-config.ts before going live.",
-      "reset": "Restore test data",
-      "resetTitle": "Restore test data?",
       "resetBody": "Every loyalty record is deleted and replaced with test data: settings, rewards, accounts, the points history and redemptions. The store's registered customers get sample histories; a store with fewer than six gets sample customers (demo.…@example.com). This cannot be undone.",
-      "cancel": "Cancel",
-      "restored": "Test data restored",
       "restoredHint": "{{customers}} customers, {{entries}} points entries."
     }
   }
