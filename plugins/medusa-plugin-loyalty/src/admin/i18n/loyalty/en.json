@@ -125,7 +125,9 @@
       "newsletterGranted": "Newsletter bonus given: {{points}} pts.",
       "newsletterNot": "Not given: already received, switched off, or the customer does not take part.",
       "redemptions": "Rewards redeemed",
-      "tierHistory": "Tier history"
+      "tierHistory": "Tier history",
+      "newsletterConfirmTitle": "Grant the newsletter bonus?",
+      "newsletterConfirmText": "The customer gets the points for signing up to the newsletter. This bonus is granted only once."
     },
     "redemptionStatus": {
       "issued": "code issued",
@@ -184,7 +186,12 @@
       "reasonPlaceholder": "e.g. complaint about order #1042",
       "save": "Add correction",
       "done": "Correction saved. Balance: {{balance}} pts.",
-      "hint": "Entries are never edited or deleted: a mistake is fixed with another correction. Your user is recorded with it."
+      "hint": "Entries are never edited or deleted: a mistake is fixed with another correction. Your user is recorded with it.",
+      "confirmAdd_one": "Add {{count}} point?",
+      "confirmAdd_other": "Add {{count}} points?",
+      "confirmRemove_one": "Remove {{count}} point?",
+      "confirmRemove_other": "Remove {{count}} points?",
+      "confirmText": "Reason: {{reason}}. The customer sees the new balance at once; the entry cannot be deleted, only corrected by another one."
     },
     "settings": {
       "title": "Settings",

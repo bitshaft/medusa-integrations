@@ -1,4 +1,4 @@
-import { Badge, Button, Container, Drawer, Heading, Input, Skeleton, Table, Text, toast } from "@medusajs/ui"
+import { Badge, Button, Container, Drawer, Heading, Input, Skeleton, Table, Text, toast, usePrompt } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -108,6 +108,7 @@ export const CustomerLoyalty = ({ customerId, compact = false }: { customerId: s
   const lang = i18n.language
   const { data, isLoading } = useCustomer(customerId)
   const newsletter = useGrantNewsletter(customerId)
+  const prompt = usePrompt()
   const settings = useSettings()
   const tierName = (id: string | null) =>
     (settings.data?.enabled ? settings.data.settings.tiers.levels.find((tier) => tier.id === id)?.name : null) ??
@@ -152,7 +153,15 @@ export const CustomerLoyalty = ({ customerId, compact = false }: { customerId: s
           variant="secondary"
           className="self-start"
           isLoading={newsletter.isPending}
-          onClick={() =>
+          onClick={async () => {
+            const ok = await prompt({
+              title: t("loyalty.customers.newsletterConfirmTitle"),
+              description: t("loyalty.customers.newsletterConfirmText"),
+              confirmText: t("loyalty.customers.newsletter"),
+              cancelText: t("loyalty.cancel"),
+              variant: "confirmation",
+            })
+            if (!ok) return
             newsletter.mutate(undefined, {
               onSuccess: (r) =>
                 r.granted
@@ -160,7 +169,7 @@ export const CustomerLoyalty = ({ customerId, compact = false }: { customerId: s
                   : toast.info(t("loyalty.customers.newsletterNot")),
               onError: (error) => toast.error(errorMessage(error)),
             })
-          }
+          }}
         >
           {t("loyalty.customers.newsletter")}
         </Button>

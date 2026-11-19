@@ -129,7 +129,9 @@
       "newsletterGranted": "Przyznano bonus za newsletter: {{points}} pkt.",
       "newsletterNot": "Nie przyznano: już otrzymany, akcja wyłączona albo klient nie bierze udziału.",
       "redemptions": "Wymienione nagrody",
-      "tierHistory": "Historia poziomów"
+      "tierHistory": "Historia poziomów",
+      "newsletterConfirmTitle": "Przyznać bonus za newsletter?",
+      "newsletterConfirmText": "Klient dostanie punkty za zapis do newslettera. Ten bonus przyznaje się tylko raz."
     },
     "redemptionStatus": {
       "issued": "kod wydany",
@@ -188,7 +190,16 @@
       "reasonPlaceholder": "np. reklamacja zamówienia #1042",
       "save": "Dodaj korektę",
       "done": "Korekta zapisana. Saldo: {{balance}} pkt.",
-      "hint": "Wpisów nigdy się nie edytuje ani nie usuwa: błąd poprawia się kolejną korektą. Zapisujemy przy niej Twojego użytkownika."
+      "hint": "Wpisów nigdy się nie edytuje ani nie usuwa: błąd poprawia się kolejną korektą. Zapisujemy przy niej Twojego użytkownika.",
+      "confirmAdd_one": "Dodać {{count}} punkt?",
+      "confirmAdd_few": "Dodać {{count}} punkty?",
+      "confirmAdd_many": "Dodać {{count}} punktów?",
+      "confirmAdd_other": "Dodać {{count}} punktu?",
+      "confirmRemove_one": "Odjąć {{count}} punkt?",
+      "confirmRemove_few": "Odjąć {{count}} punkty?",
+      "confirmRemove_many": "Odjąć {{count}} punktów?",
+      "confirmRemove_other": "Odjąć {{count}} punktu?",
+      "confirmText": "Powód: {{reason}}. Klient od razu zobaczy nowe saldo, a wpisu nie da się usunąć, tylko poprawić kolejną korektą."
     },
     "settings": {
       "title": "Ustawienia",

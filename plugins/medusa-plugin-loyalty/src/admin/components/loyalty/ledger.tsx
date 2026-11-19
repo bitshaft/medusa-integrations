@@ -1,5 +1,5 @@
 import { ArrowDownTray } from "@medusajs/icons"
-import { Badge, Button, Input, Label, Select, Skeleton, Table, Text, Textarea, toast } from "@medusajs/ui"
+import { Badge, Button, Input, Label, Select, Skeleton, Table, Text, Textarea, toast, usePrompt } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -153,6 +153,7 @@ export const Ledger = ({
 export const AdjustForm = ({ customerId }: { customerId: string }) => {
   const { t } = useTranslation()
   const adjust = useAdjust(customerId)
+  const prompt = usePrompt()
   const [value, setValue] = useState("")
   const [reason, setReason] = useState("")
   const [formId, setFormId] = useState(requestId)
@@ -191,7 +192,17 @@ export const AdjustForm = ({ customerId }: { customerId: string }) => {
           size="small"
           disabled={!valid}
           isLoading={adjust.isPending}
-          onClick={() =>
+          onClick={async () => {
+            const ok = await prompt({
+              title: t(amount > 0 ? "loyalty.adjust.confirmAdd" : "loyalty.adjust.confirmRemove", {
+                count: Math.abs(amount),
+              }),
+              description: t("loyalty.adjust.confirmText", { reason: reason.trim() }),
+              confirmText: t("loyalty.adjust.save"),
+              cancelText: t("loyalty.cancel"),
+              variant: amount > 0 ? "confirmation" : "danger",
+            })
+            if (!ok) return
             adjust.mutate(
               { points: amount, reason: reason.trim(), request_id: formId },
               {
@@ -204,7 +215,7 @@ export const AdjustForm = ({ customerId }: { customerId: string }) => {
                 onError: (error) => toast.error(errorMessage(error)),
               }
             )
-          }
+          }}
         >
           {t("loyalty.adjust.save")}
         </Button>
