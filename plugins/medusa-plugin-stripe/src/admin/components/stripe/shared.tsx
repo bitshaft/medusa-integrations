@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
+export { Empty } from "../../lib/stripe/kit/page"
 import { DemoBar as KitDemoBar } from "../../lib/stripe/kit/demo"
 
 import type { Check, Completeness, OrderRef } from "../../lib/stripe/api"
@@ -169,11 +170,3 @@ export const Verdict = ({ verdict }: { verdict: Check["verdict"] }) => {
   const color = verdict === "ok" ? "green" : verdict === "warn" ? "orange" : "red"
   return <StatusBadge color={color}>{t(`stripe.checks.verdict.${verdict}`)}</StatusBadge>
 }
-
-export const Empty = ({ children }: { children: ReactNode }) => (
-  <div className="flex items-center justify-center rounded-lg border border-dashed border-ui-border-base px-6 py-8">
-    <Text size="small" className="text-ui-fg-subtle">
-      {children}
-    </Text>
-  </div>
-)

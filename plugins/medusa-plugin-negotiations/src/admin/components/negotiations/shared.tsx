@@ -3,6 +3,7 @@ import { Badge, StatusBadge, Text } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
+export { Empty, Pager } from "../../lib/negotiations/kit/page"
 import { DemoResetButton, DemoBar as KitDemoBar } from "../../lib/negotiations/kit/demo"
 import { apiError, type FloorCheck, type Status, type Thread, useResetDemo } from "../../lib/negotiations/api"
 import { money, percent } from "../../lib/negotiations/format"
@@ -149,14 +150,6 @@ export const PriceWithDiscount = ({
 
 /** Tabs styled the same in every integration (kit). */
 export { TAB_CLASS, TabTrigger } from "../../lib/negotiations/kit/ui"
-
-export const Empty = ({ children }: { children: ReactNode }) => (
-  <div className="flex items-center justify-center rounded-lg border border-dashed border-ui-border-base px-6 py-8">
-    <Text size="small" className="text-ui-fg-subtle">
-      {children}
-    </Text>
-  </div>
-)
 
 export const Tile = ({
   label,

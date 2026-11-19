@@ -2,6 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
 import { adminRoute, parse } from "../../../../lib/negotiations/api/utils"
 import { AdminSettings } from "../../../../lib/negotiations/api/validators"
+import { readPackageVersion } from "../../../../lib/negotiations/kit/package-info"
 import { PACKAGE_NAME } from "../../../../lib/negotiations/options"
 import { type PriceBases, priceBases } from "../../../../lib/negotiations/server/catalog"
 import { logger, resolveNegotiations } from "../../../../lib/negotiations/server/runtime"
@@ -24,6 +25,7 @@ async function view(req: MedusaRequest) {
     enabled,
     disabled_reason: await service.disabledReason(),
     package: PACKAGE_NAME,
+    version: readPackageVersion(PACKAGE_NAME, __dirname),
     /** Options from medusa-config, read-only here. */
     options: await service.getOptions(),
     settings: await service.getSettings(),

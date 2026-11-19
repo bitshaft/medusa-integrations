@@ -1,4 +1,4 @@
-import { toIntlLocale } from "./kit/format"
+import { formatDate, formatDateTime, toIntlLocale } from "./kit/format"
 import type { Totals } from "./api"
 
 export { errorMessage } from "./kit/format"
@@ -49,22 +49,11 @@ export function totals(value: Totals | null | undefined, language: string): stri
 
 /** `13 lis 2026` from a Unix timestamp in seconds. */
 export function date(seconds: number | null | undefined, language: string): string {
-  if (!seconds) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(seconds * 1000))
+  return formatDate(seconds ? new Date(seconds * 1000) : null, language)
 }
 
 export function dateTime(seconds: number | null | undefined, language: string): string {
-  if (!seconds) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(seconds * 1000))
+  return formatDateTime(seconds ? new Date(seconds * 1000) : null, language)
 }
 
 /** 934 per mille → `93,4%`. */

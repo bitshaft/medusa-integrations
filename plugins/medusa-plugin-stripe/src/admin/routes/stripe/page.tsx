@@ -1,7 +1,6 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { ArrowPath, BookOpen, Cash, ChartBar, CreditCard, ExclamationCircle, ListCheckbox } from "@medusajs/icons"
-import { Badge, Button, Container, Heading, Skeleton, Tabs, Text, toast } from "@medusajs/ui"
-import { useState } from "react"
+import { BookOpen, Cash, ChartBar, CreditCard, ExclamationCircle, ListCheckbox } from "@medusajs/icons"
+import { Badge, Container, Text, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
 import { Checks } from "../../components/stripe/checks"
@@ -15,9 +14,10 @@ import { useRefresh, useStatus } from "../../lib/stripe/api"
 import { errorMessage } from "../../lib/stripe/format"
 import { NAV_TILE_STYLE } from "../../lib/stripe/kit/nav-icon"
 import stripeLogo from "../../lib/stripe/stripe-logo.png"
+import { DisabledNotice, LoadingBlock, OptionsCard, PageHeader, PageTabs, useTabParam } from "../../lib/stripe/kit/page"
 import { PageLogo } from "../../lib/stripe/kit/ui"
 
-type Tab = "panel" | "payments" | "payouts" | "disputes" | "checks" | "guide"
+const TABS = ["panel", "payments", "payouts", "disputes", "checks", "guide"] as const
 
 /** The "Stripe" page in the main menu. Read-only: payments and refunds stay with the official provider. */
 const StripePage = () => {
@@ -25,77 +25,51 @@ const StripePage = () => {
   const status = useStatus()
   const refresh = useRefresh()
   const s = status.data
-  const [tab, setTab] = useState<Tab | null>(null)
   // Without data to show, open on Checks: that is where the setup is explained.
-  const current: Tab = tab ?? (s && !s.enabled ? "checks" : "panel")
+  const [current, setTab] = useTabParam(TABS, s && !s.enabled ? "checks" : "panel")
   const ready = Boolean(s?.enabled)
 
   return (
     <div className="flex flex-col gap-y-3">
       {s?.demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
-        <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
-          <div className="flex items-center gap-x-3">
-            <PageLogo src={stripeLogo} fill />
-            <div>
-              <div className="flex items-center gap-x-2">
-                <Heading>Stripe</Heading>
-                {s?.key && (
-                  <Badge size="2xsmall" color={s.key.mode === "live" ? "green" : "orange"}>
-                    {t(`stripe.keyKind.${s.key.kind}`)} · {s.key.mode} · …{s.key.last4}
-                  </Badge>
-                )}
-              </div>
-              <Text size="small" className="text-ui-fg-subtle">
-                {t("stripe.description")}
-              </Text>
-            </div>
-          </div>
-          <Button
-            size="small"
-            variant="secondary"
-            isLoading={refresh.isPending}
-            onClick={() => refresh.mutate(undefined, { onError: (e) => toast.error(errorMessage(e)) })}
-          >
-            <ArrowPath />
-            {t("stripe.refresh")}
-          </Button>
-        </div>
-        <div className="overflow-x-auto px-6 py-3">
-          <Tabs value={current} onValueChange={(v) => setTab(v as Tab)}>
-            <Tabs.List>
-              <TabTrigger value="panel" icon={ChartBar} color="#635bff">
-                {t("stripe.tabs.panel")}
-              </TabTrigger>
-              <TabTrigger value="payments" icon={CreditCard} color="#2563eb">
-                {t("stripe.tabs.payments")}
-              </TabTrigger>
-              <TabTrigger value="payouts" icon={Cash} color="#16a34a">
-                {t("stripe.tabs.payouts")}
-              </TabTrigger>
-              <TabTrigger value="disputes" icon={ExclamationCircle} color="#dc2626">
-                {t("stripe.tabs.disputes")}
-              </TabTrigger>
-              <TabTrigger value="checks" icon={ListCheckbox} color="#ea580c">
-                {t("stripe.tabs.checks")}
-              </TabTrigger>
-              <TabTrigger value="guide" icon={BookOpen} color="#db2777">
-                {t("stripe.tabs.guide")}
-              </TabTrigger>
-            </Tabs.List>
-          </Tabs>
-        </div>
-        {status.isLoading && <Skeleton className="m-6 h-10" />}
-        {s && !s.enabled && (
-          <div className="px-6 py-4">
-            <Text size="small" weight="plus" className="text-ui-fg-error">
-              {t("stripe.disabled.title", { reason: s.disabled_reason })}
-            </Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              {t("stripe.disabled.hint")}
-            </Text>
-          </div>
-        )}
+        <PageHeader
+          icon={<PageLogo src={stripeLogo} fill />}
+          title="Stripe"
+          description={t("stripe.description")}
+          state={!s ? null : !s.enabled ? "off" : s.demo ? "demo" : "on"}
+          actions={
+            s?.key && (
+              <Badge size="2xsmall" color={s.key.mode === "live" ? "green" : "orange"}>
+                {t(`stripe.keyKind.${s.key.kind}`)} · {s.key.mode} · …{s.key.last4}
+              </Badge>
+            )
+          }
+          onRefresh={() => refresh.mutate(undefined, { onError: (e) => toast.error(errorMessage(e)) })}
+          refreshing={refresh.isPending}
+        />
+        <PageTabs value={current} onChange={setTab}>
+          <TabTrigger value="panel" icon={ChartBar} color="#635bff">
+            {t("stripe.tabs.panel")}
+          </TabTrigger>
+          <TabTrigger value="payments" icon={CreditCard} color="#2563eb">
+            {t("stripe.tabs.payments")}
+          </TabTrigger>
+          <TabTrigger value="payouts" icon={Cash} color="#16a34a">
+            {t("stripe.tabs.payouts")}
+          </TabTrigger>
+          <TabTrigger value="disputes" icon={ExclamationCircle} color="#dc2626">
+            {t("stripe.tabs.disputes")}
+          </TabTrigger>
+          <TabTrigger value="checks" icon={ListCheckbox} color="#ea580c">
+            {t("stripe.tabs.checks")}
+          </TabTrigger>
+          <TabTrigger value="guide" icon={BookOpen} color="#db2777">
+            {t("stripe.tabs.guide")}
+          </TabTrigger>
+        </PageTabs>
+        {status.isLoading && <LoadingBlock className="m-6 h-10" />}
+        {s && !s.enabled && <DisabledNotice reason={s.disabled_reason} hint={t("stripe.disabled.hint")} />}
       </Container>
 
       {ready && current === "panel" && <Overview />}
@@ -104,7 +78,24 @@ const StripePage = () => {
       )}
       {ready && current === "payouts" && <Payouts demo={Boolean(s?.demo)} />}
       {ready && current === "disputes" && <Disputes demo={Boolean(s?.demo)} />}
-      {s && current === "checks" && <Checks status={s} />}
+      {s && current === "checks" && (
+        <>
+          <Checks status={s} />
+          <OptionsCard
+            version={s.version}
+            rows={[
+              ["apiKey", s.options.hasKey ? t("stripe.options.keySet") : null],
+              ["providerId", s.options.providerId],
+              ["mode", s.options.mode],
+              ["backendUrl", s.options.backendUrl],
+              ["storefrontDomains", s.options.storefrontDomains],
+              ["cacheSeconds", s.options.cacheSeconds],
+              ["orphanGraceMinutes", s.options.orphanGraceMinutes],
+              ["demo", s.demo],
+            ]}
+          />
+        </>
+      )}
       {current === "guide" && <Guide />}
       {s && !ready && !["checks", "guide"].includes(current) && (
         <Container className="overflow-hidden p-6">

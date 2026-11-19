@@ -2,6 +2,8 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
 import { requireEnabled } from "../../../../lib/compliance/api/utils"
+import { readPackageVersion } from "../../../../lib/compliance/kit/package-info"
+import { PACKAGE_NAME } from "../../../../lib/compliance/options"
 import { requiredWarningLanguages } from "../../../../lib/compliance/gpsr"
 import { LAWYER_PLACEHOLDER, settingsSchema } from "../../../../lib/compliance/settings"
 import { graph, resolveCompliance } from "../../../../lib/compliance/server/runtime"
@@ -15,6 +17,7 @@ async function view(req: MedusaRequest) {
   return {
     enabled,
     disabled_reason: await service.disabledReason(),
+    version: readPackageVersion(PACKAGE_NAME, __dirname),
     settings: await service.getSettings(),
     options: {
       ...(await service.getOptions()),

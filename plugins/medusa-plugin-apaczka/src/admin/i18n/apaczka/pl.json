@@ -143,7 +143,8 @@
       "subtitle": "Przesyłki, zamawianie kuriera i ustawienia integracji",
       "tabs": {
         "shipments": "Przesyłki",
-        "settings": "Ustawienia"
+        "settings": "Ustawienia",
+        "guide": "Przewodnik"
       }
     },
     "list": {
@@ -216,6 +217,42 @@
     },
     "demo": {
       "body": "Nic tu nie pochodzi z Apaczki: usługi, ceny, punkty odbioru, etykiety i śledzenie to dane przykładowe i żadne zapytanie nie jest wysyłane. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut („Odśwież śledzenie” pokazuje postęp od razu). Usuń demo: true i ustaw appId oraz appSecret, żeby podłączyć swoje konto."
+    },
+    "guide": {
+      "title": "Jak działa wysyłka z Apaczką",
+      "subtitle": "Od opcji dostawy w koszyku do doręczonej paczki.",
+      "start": {
+        "title": "Co robi",
+        "text": "Każda usługa z konta Apaczki staje się opcją dostawy w Medusie (zwykła, za pobraniem i zwrotna). Wtyczka wycenia je, tworzy przesyłki, drukuje etykiety, zamawia kuriera i śledzi paczki aż do doręczenia."
+      },
+      "options": {
+        "title": "Opcje dostawy",
+        "text": "W Ustawieniach → Lokalizacje i wysyłka dodaj opcję dostawy z dostawcą „apaczka” i wybierz usługę. Ceny są stałe albo liczone na bieżąco przez Apaczkę, z Twoją marżą, zaokrągleniem i progiem darmowej dostawy."
+      },
+      "shipments": {
+        "title": "Przesyłki",
+        "text": "Przy shipmentCreation „auto” przesyłka powstaje w Apaczce od razu po utworzeniu realizacji; przy „manual” z karty Integracje na zamówieniu, gdzie można najpierw zmienić paczki. Przesyłka nigdy nie powstaje dwa razy: wtyczka sprawdza Apaczkę, zanim coś zapisze."
+      },
+      "labels": {
+        "title": "Etykiety i dokumenty",
+        "text": "Etykiety są w PDF albo ZPL (labelFormat). W zakładce Przesyłki pobierzesz etykiety, kody nadania i zbiorczy protokół przekazania oraz zamówisz jednego kuriera do kilku paczek."
+      },
+      "tracking": {
+        "title": "Śledzenie",
+        "text": "Apaczka zgłasza zmiany statusu na webhook wtyczki (webhooks.backendUrl). Odpytywanie co 30 minut jest zabezpieczeniem. Realizacja sama dostaje status wysłanej i doręczonej (tracking.markShipped, tracking.markDelivered)."
+      },
+      "weight": {
+        "title": "Waga paczek",
+        "text": "Wagi pochodzą z wariantów. Wariant bez wagi dostaje parcel.defaultItemWeightKg, więc cena może się nie zgadzać: Ustawienia → Waga paczek pokazuje takie warianty, a przesyłki bez wagi można wstrzymywać do czasu poprawki."
+      },
+      "points": {
+        "title": "Paczkomaty i punkty",
+        "text": "Przy usługach z dostawą do punktu sklep szuka punktów przez /store/apaczka/points i zapisuje wybrany w koszyku. Punkt jest sprawdzany przed wysłaniem zamówienia."
+      },
+      "demo": {
+        "title": "Tryb demo",
+        "text": "demo: true nie wymaga danych dostępowych i nic nie wysyła do Apaczki: usługi, ceny, punkty, etykiety i śledzenie to dane przykładowe. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut."
+      }
     }
   }
 }

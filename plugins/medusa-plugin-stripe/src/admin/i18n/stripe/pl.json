@@ -377,6 +377,9 @@
     },
     "signals": {
       "disputes": "otwarte spory: {{count}}"
+    },
+    "options": {
+      "keySet": "Ustawiony (nigdy nie jest pokazywany)"
     }
   }
 }

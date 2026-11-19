@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 
 import { type ListFilters, type Status, type Thread, useThreads } from "../../lib/negotiations/api"
 import { customerName, money, relative } from "../../lib/negotiations/format"
-import { DemoBadge, Empty, PriceWithDiscount, productLabel, StatusLabel, TurnDot } from "./shared"
+import { DemoBadge, Empty, PriceWithDiscount, productLabel, StatusLabel, TurnDot, Pager } from "./shared"
 
 const STATUSES: Status[] = ["open", "countered", "accepted", "rejected", "expired", "withdrawn"]
 const PAGE = 20
@@ -124,18 +124,7 @@ export const ThreadList = ({
               ))}
             </Table.Body>
           </Table>
-          {!compact && (data?.count ?? 0) > PAGE && (
-            <Table.Pagination
-              count={data?.count ?? 0}
-              pageSize={PAGE}
-              pageIndex={Math.floor(offset / PAGE)}
-              pageCount={Math.ceil((data?.count ?? 0) / PAGE)}
-              canPreviousPage={offset > 0}
-              canNextPage={offset + PAGE < (data?.count ?? 0)}
-              previousPage={() => setOffset(Math.max(0, offset - PAGE))}
-              nextPage={() => setOffset(offset + PAGE)}
-            />
-          )}
+          {!compact && <Pager offset={offset} limit={PAGE} count={data?.count ?? 0} onChange={setOffset} />}
         </div>
       )}
     </div>

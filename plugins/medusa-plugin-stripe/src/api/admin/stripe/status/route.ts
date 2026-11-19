@@ -1,6 +1,8 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
 import { expectedMode } from "../../../../lib/stripe/checks"
+import { readPackageVersion } from "../../../../lib/stripe/kit/package-info"
+import { PACKAGE_NAME } from "../../../../lib/stripe/options"
 import { resolveStripe } from "../../../../lib/stripe/server/runtime"
 
 /**
@@ -14,6 +16,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     enabled: service.isEnabled(),
     disabled_reason: service.disabledReason(),
     demo: service.isDemo(),
+    version: readPackageVersion(PACKAGE_NAME, __dirname),
     key: service.keyInfo(),
     expected_mode: expectedMode(options.mode, process.env.NODE_ENV),
     options,

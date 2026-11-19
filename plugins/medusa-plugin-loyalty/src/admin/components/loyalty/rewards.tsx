@@ -33,6 +33,7 @@ import {
 import { money, points } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { NumberField } from "./shared"
+import { Empty } from "../../lib/loyalty/kit/page"
 
 const KINDS: RewardKind[] = ["fixed", "percentage", "free_shipping", "gift"]
 const NONE = "none"
@@ -100,7 +101,9 @@ export const Rewards = ({ tiers, currencyCode }: { tiers: Tier[]; currencyCode: 
         </Button>
       </div>
       {!isLoading && (data?.rewards ?? []).length === 0 ? (
-        <Text className="text-ui-fg-subtle px-6 py-8 text-center">{t("loyalty.rewards.empty")}</Text>
+        <div className="px-6 py-4">
+          <Empty>{t("loyalty.rewards.empty")}</Empty>
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <Table>

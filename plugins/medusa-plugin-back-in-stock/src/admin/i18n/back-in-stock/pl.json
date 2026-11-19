@@ -13,7 +13,8 @@
       "wanted": "Najbardziej oczekiwane",
       "subscriptions": "Zapisy",
       "history": "Historia wysyłek",
-      "settings": "Ustawienia"
+      "settings": "Ustawienia",
+      "guide": "Przewodnik"
     },
     "tiles": {
       "active": "Oczekujący",
@@ -186,6 +187,38 @@
     },
     "demoReset": {
       "body": "Wszystkie zapisy demo zostaną usunięte, a na niedostępnych produktach powstanie świeży zestaw: trzech przykładowych subskrybentów, po pięć produktów. Prawdziwe zapisy zostaną, nic nie zostanie wysłane."
+    },
+    "guide": {
+      "title": "Jak działają powiadomienia o dostępności",
+      "subtitle": "Od „Powiadom mnie” na produkcie do maila, gdy towar wróci.",
+      "start": {
+        "title": "Co robi",
+        "text": "Klienci proszą o powiadomienie, gdy wariant wróci. Gdy stan w Medusie pozwala go znów zamówić, każdy czekający dostaje maila, a wtyczka przestaje pisać, gdy klient kupi produkt, wypisze się albo zapis wygaśnie."
+      },
+      "storefront": {
+        "title": "W sklepie",
+        "text": "Pokaż „Powiadom mnie” przy wariantach, których nie da się zamówić, i wyślij e-mail oraz wariant do /store/back-in-stock/subscriptions. Zalogowany klient nie podaje e-maila: używany jest adres z konta."
+      },
+      "consent": {
+        "title": "Zgoda i podwójne potwierdzenie",
+        "text": "Treść zgody pokazana przy zapisie jest przechowywana razem z nim (Ustawienia). Przy podwójnym potwierdzeniu najpierw idzie mail z linkiem, a zapis liczy się dopiero po potwierdzeniu."
+      },
+      "restock": {
+        "title": "Wykrywanie powrotu towaru",
+        "text": "Zmiana stanu uruchamia sprawdzenie po delayMinutes, więc szybka korekta stanu nic nie wysyła. Dostępność jest liczona tak jak w Store API: tylko magazyny kanału sprzedaży, stan minus rezerwacje."
+      },
+      "emails": {
+        "title": "Maile",
+        "text": "Z wtyczką E-maile te wiadomości mają jej wygląd, edytowalne teksty i historię wysyłek. Bez niej wbudowany szablon po polsku i angielsku idzie przez moduł powiadomień Medusy. minGapHours i maxNotifications pilnują, żeby nikt nie dostał za dużo."
+      },
+      "privacy": {
+        "title": "Prywatność",
+        "text": "Adresy służą tylko do tych powiadomień. Każdy mail ma link do wypisania, który nie działa przez samo otwarcie. Niepotwierdzone zapisy są usuwane po 7 dniach, zakończone tracą adres po 180 dniach."
+      },
+      "demo": {
+        "title": "Tryb demo",
+        "text": "Przy demo: true maile są renderowane i zapisywane w logach, nigdy wysyłane. „Przywróć dane testowe” tworzy przykładowe zapisy na niedostępnych produktach, w Ustawieniach utworzysz je dla własnych adresów, a w zakładce Najbardziej oczekiwane zasymulujesz powrót towaru."
+      }
     }
   }
 }

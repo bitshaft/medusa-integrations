@@ -139,6 +139,7 @@ export type SettingsResponse = {
   enabled: boolean
   disabled_reason: string | null
   package: string
+  version: string | null
   options: {
     expiryDays: number
     acceptedOfferDays: number

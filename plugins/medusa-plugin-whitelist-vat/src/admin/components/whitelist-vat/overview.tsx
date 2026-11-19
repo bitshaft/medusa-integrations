@@ -15,6 +15,7 @@ import {
 import { errorMessage, formatDateTime } from "../../lib/whitelist-vat/kit/format"
 import { OutcomeBadge, Pager, TaxId, VerdictBadge } from "./shared"
 import { TAB_CLASS } from "../../lib/whitelist-vat/kit/ui"
+import { Empty } from "../../lib/whitelist-vat/kit/page"
 
 type EnabledStatus = Extract<WhitelistVatStatus, { enabled: true }>
 
@@ -131,11 +132,13 @@ const Subjects = ({ counts }: { counts: Record<SubjectFilter, number> }) => {
         </Text>
       )}
       {!isLoading && !isError && !subjects.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {filter === "all" && !search.trim()
-            ? t("whitelist-vat.subjects.empty")
-            : t("whitelist-vat.subjects.emptyFiltered")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>
+            {filter === "all" && !search.trim()
+              ? t("whitelist-vat.subjects.empty")
+              : t("whitelist-vat.subjects.emptyFiltered")}
+          </Empty>
+        </div>
       )}
 
       {subjects.length > 0 && (
@@ -247,9 +250,9 @@ const History = () => {
         </Text>
       )}
       {!isLoading && !isError && !checks.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("whitelist-vat.history.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("whitelist-vat.history.empty")}</Empty>
+        </div>
       )}
       {checks.length > 0 && (
         <Table>

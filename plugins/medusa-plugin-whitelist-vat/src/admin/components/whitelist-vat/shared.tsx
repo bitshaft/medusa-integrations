@@ -1,7 +1,8 @@
-import { Badge, Button, Copy, StatusBadge, Text, Tooltip } from "@medusajs/ui"
+import { Badge, Copy, StatusBadge, Text, Tooltip } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
+export { Pager } from "../../lib/whitelist-vat/kit/page"
 import { DemoBar as KitDemoBar } from "../../lib/whitelist-vat/kit/demo"
 
 import type { Company, Outcome, Source, SourceState, Status } from "../../lib/whitelist-vat/api"
@@ -179,49 +180,6 @@ export const CompanyDetails = ({ company, accounts = false }: { company: Company
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-/** Previous / next buttons with "1–20 of 57". Renders nothing when everything fits on one page. */
-export const Pager = ({
-  offset,
-  limit,
-  count,
-  onChange,
-}: {
-  offset: number
-  limit: number
-  count: number
-  onChange: (offset: number) => void
-}) => {
-  const { t } = useTranslation()
-  if (count <= limit) {
-    return null
-  }
-  return (
-    <div className="flex items-center justify-between px-6 py-3">
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("whitelist-vat.paging.range", { from: offset + 1, to: Math.min(offset + limit, count), count })}
-      </Text>
-      <div className="flex items-center gap-x-2">
-        <Button
-          size="small"
-          variant="secondary"
-          disabled={offset === 0}
-          onClick={() => onChange(Math.max(0, offset - limit))}
-        >
-          {t("whitelist-vat.paging.previous")}
-        </Button>
-        <Button
-          size="small"
-          variant="secondary"
-          disabled={offset + limit >= count}
-          onClick={() => onChange(offset + limit)}
-        >
-          {t("whitelist-vat.paging.next")}
-        </Button>
-      </div>
     </div>
   )
 }

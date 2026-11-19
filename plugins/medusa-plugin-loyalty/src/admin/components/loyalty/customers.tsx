@@ -6,6 +6,7 @@ import { useCustomer, useCustomers, useGrantNewsletter, useSettings } from "../.
 import { money, points, shortDate } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { AdjustForm, Ledger } from "./ledger"
+import { Empty, Pager } from "../../lib/loyalty/kit/page"
 
 const PAGE = 20
 
@@ -43,7 +44,9 @@ export const Customers = () => {
       {isLoading ? (
         <Skeleton className="m-6 h-24" />
       ) : (data?.customers ?? []).length === 0 ? (
-        <Text className="text-ui-fg-subtle px-6 py-8 text-center">{t("loyalty.customers.empty")}</Text>
+        <div className="px-6 py-4">
+          <Empty>{t("loyalty.customers.empty")}</Empty>
+        </div>
       ) : (
         <Table>
           <Table.Header>
@@ -84,28 +87,7 @@ export const Customers = () => {
           </Table.Body>
         </Table>
       )}
-      {(data?.count ?? 0) > PAGE && (
-        <div className="flex items-center justify-end gap-x-2 px-6 py-3">
-          <Text size="xsmall" className="text-ui-fg-subtle">
-            {t("loyalty.range", {
-              from: offset + 1,
-              to: Math.min(offset + PAGE, data?.count ?? 0),
-              count: data?.count ?? 0,
-            })}
-          </Text>
-          <Button size="small" variant="secondary" disabled={offset === 0} onClick={() => setOffset(offset - PAGE)}>
-            {t("loyalty.previous")}
-          </Button>
-          <Button
-            size="small"
-            variant="secondary"
-            disabled={offset + PAGE >= (data?.count ?? 0)}
-            onClick={() => setOffset(offset + PAGE)}
-          >
-            {t("loyalty.next")}
-          </Button>
-        </div>
-      )}
+      <Pager offset={offset} limit={PAGE} count={data?.count ?? 0} onChange={setOffset} />
       <Drawer open={!!opened} onOpenChange={(open) => !open && setOpened(null)}>
         <Drawer.Content className="sm:max-w-3xl">
           <Drawer.Header>

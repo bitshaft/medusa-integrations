@@ -1,5 +1,5 @@
 import type { CouponDraft } from "./api"
-import { toIntlLocale } from "./kit/format"
+import { formatDate, toIntlLocale } from "./kit/format"
 
 /** The plugin speaks Polish and English; any other admin language gets English. */
 export function adminLocale(language: string | undefined): "pl" | "en" {
@@ -45,12 +45,7 @@ export function money(amount: number, currency: string | null | undefined, langu
 
 /** `13 lis 2026` / `13 Nov 2026`. */
 export function shortDate(value: string | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value))
+  return formatDate(value, language)
 }
 
 /* Validity presets -------------------------------------------------------- */

@@ -15,6 +15,7 @@ import {
   type OrderLike,
   registerOrderTab,
 } from "../lib/apaczka/kit/integrations"
+import { Empty } from "../lib/apaczka/kit/page"
 
 type OrderFulfillment = { id: string; provider_id?: string | null; canceled_at?: string | null }
 
@@ -97,9 +98,9 @@ const ApaczkaPanel = ({ order }: { order: OrderLike }) => {
       )}
 
       {!isLoading && !shipments.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("apaczka.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("apaczka.empty")}</Empty>
+        </div>
       )}
 
       {shipments.map((shipment) => (

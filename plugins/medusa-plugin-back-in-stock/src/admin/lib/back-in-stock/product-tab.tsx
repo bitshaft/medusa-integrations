@@ -7,6 +7,7 @@ import { ProblemBadge } from "../../components/back-in-stock/shared"
 import { useBackInStockStatus, useProductWaiting } from "./api"
 import { formatDateTime } from "./kit/format"
 import { registerTab } from "./kit/integrations"
+import { Empty } from "./kit/page"
 
 /** The Back in stock tab of the product page's Integrations card: who waits for which variant. */
 registerTab("product", {
@@ -48,9 +49,9 @@ const BackInStockProduct = ({ productId }: { productId: string }) => {
         </div>
       )}
       {!isLoading && !variants.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("back-in-stock.widget.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("back-in-stock.widget.empty")}</Empty>
+        </div>
       )}
       {variants.map((variant) => (
         <div key={variant.id} className="flex flex-col gap-y-1 px-6 py-3">

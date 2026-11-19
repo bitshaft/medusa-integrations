@@ -1,8 +1,9 @@
-import { Badge, Container, Heading, StatusBadge, Text } from "@medusajs/ui"
+import { Container, Heading, StatusBadge, Text } from "@medusajs/ui"
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import type { WhitelistVatStatus } from "../../lib/whitelist-vat/api"
+import { OptionsCard } from "../../lib/whitelist-vat/kit/page"
 
 type EnabledStatus = Extract<WhitelistVatStatus, { enabled: true }>
 
@@ -86,44 +87,24 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
         </Register>
       </Container>
 
-      <Container className="overflow-hidden divide-y p-0">
-        <div className="px-6 py-4">
-          <Heading level="h2">{t("whitelist-vat.settings.options")}</Heading>
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("whitelist-vat.settings.subtitle")}
-          </Text>
-        </div>
-        <div className="grid grid-cols-1 gap-x-8 gap-y-4 px-6 py-4 md:grid-cols-2 xl:grid-cols-3">
-          <Option label={t("whitelist-vat.settings.cacheTtl")}>
-            {t("whitelist-vat.settings.hours", { count: options.cache_ttl_hours })}
-          </Option>
-          <Option label={t("whitelist-vat.settings.timeout")}>
-            {t("whitelist-vat.settings.seconds", { count: options.timeout_ms / 1000 })}
-          </Option>
-          <Option label={t("whitelist-vat.settings.defaultCountry")}>{options.default_country}</Option>
-          <Option label={t("whitelist-vat.settings.taxIdKeys")}>
-            <Tags values={options.tax_id_keys} />
-          </Option>
-          <Option label={t("whitelist-vat.settings.verifyOnOrder")}>{onOff(options.verify_on_order_placed)}</Option>
-          <Option label={t("whitelist-vat.settings.rejectOnCompletion")}>{onOff(options.reject_on_completion)}</Option>
-          {options.reject_on_completion && (
-            <Option label={t("whitelist-vat.settings.rejectStatuses")}>
-              <Tags values={options.reject_statuses.map((value) => t(`whitelist-vat.status.${value}`))} />
-            </Option>
-          )}
-          <Option label={t("whitelist-vat.settings.storeRoute")}>
-            <div className="flex flex-col gap-y-1">
-              {onOff(options.store_route)}
-              {options.store_route && (
-                <Text size="xsmall" className="text-ui-fg-subtle">
-                  {t("whitelist-vat.settings.storeLimit", { count: options.store_rate_limit_per_minute })}
-                </Text>
-              )}
-            </div>
-          </Option>
-          <Option label={t("whitelist-vat.settings.version")}>{status.version}</Option>
-        </div>
-      </Container>
+      <OptionsCard
+        version={status.version}
+        rows={[
+          ["cacheTtlHours", options.cache_ttl_hours],
+          ["timeoutMs", options.timeout_ms],
+          ["defaultCountry", options.default_country],
+          ["taxIdKeys", options.tax_id_keys],
+          ["orders.verifyOnPlaced", options.verify_on_order_placed],
+          ["checkout.rejectOnCompletion", options.reject_on_completion],
+          [
+            "checkout.rejectStatuses",
+            options.reject_on_completion ? options.reject_statuses.map((v) => t(`whitelist-vat.status.${v}`)) : null,
+          ],
+          ["store.enabled", options.store_route],
+          ["store.rateLimitPerMinute", options.store_route ? options.store_rate_limit_per_minute : null],
+          ["demo", status.demo],
+        ]}
+      />
     </div>
   )
 }
@@ -163,24 +144,5 @@ const Detail = ({ label, children }: { label: string; children: ReactNode }) => 
     <Text size="small" className="col-span-2">
       {children}
     </Text>
-  </div>
-)
-
-const Option = ({ label, children }: { label: string; children: ReactNode }) => (
-  <div className="flex flex-col gap-y-1">
-    <Text size="xsmall" className="text-ui-fg-subtle">
-      {label}
-    </Text>
-    <div className="txt-compact-small">{children}</div>
-  </div>
-)
-
-const Tags = ({ values }: { values: string[] }) => (
-  <div className="flex flex-wrap gap-1">
-    {values.map((value) => (
-      <Badge key={value} size="2xsmall">
-        {value}
-      </Badge>
-    ))}
   </div>
 )

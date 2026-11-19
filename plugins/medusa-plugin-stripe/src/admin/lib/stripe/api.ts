@@ -13,6 +13,7 @@ export type Status = {
   enabled: boolean
   disabled_reason: string | null
   demo: boolean
+  version: string | null
   key: {
     kind: "secret" | "restricted" | "publishable" | "unknown"
     mode: "live" | "test" | "unknown"

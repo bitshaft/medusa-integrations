@@ -41,6 +41,7 @@ import {
 import { adminLocale, money, shortDate } from "../../lib/coupons/draft"
 import { errorMessage } from "../../lib/coupons/kit/format"
 import { StatusBadge } from "./shared"
+import { Empty } from "../../lib/coupons/kit/page"
 
 const FILTERS: CouponFilter[] = ["all", "active", "scheduled", "paused", "ended", "expiring", "automatic"]
 
@@ -182,7 +183,9 @@ export const Dashboard = ({ onEdit, currencyCode }: { onEdit: (coupon: CouponVie
         {list.isError ? (
           <Text className="text-ui-fg-error px-6 py-4">{t("coupons.loadError")}</Text>
         ) : (data?.coupons ?? []).length === 0 && !list.isLoading ? (
-          <Text className="text-ui-fg-subtle px-6 py-8 text-center">{t("coupons.list.empty")}</Text>
+          <div className="px-6 py-4">
+            <Empty>{t("coupons.list.empty")}</Empty>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
@@ -404,7 +407,9 @@ const CouponDrawer = ({ coupon, onClose }: { coupon: CouponView | null; onClose:
           ) : orders.isLoading ? (
             <Skeleton className="m-6 h-24" />
           ) : (orders.data?.orders ?? []).length === 0 ? (
-            <Text className="text-ui-fg-subtle px-6 py-8 text-center">{t("coupons.drawer.noOrders")}</Text>
+            <div className="px-6 py-4">
+              <Empty>{t("coupons.drawer.noOrders")}</Empty>
+            </div>
           ) : (
             <Table>
               <Table.Header>

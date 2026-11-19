@@ -16,14 +16,29 @@ export function toIntlLocale(locale: string | null | undefined): string | undefi
   }
 }
 
-/** `—` for empty values, otherwise a localized date and time. */
-export function formatDateTime(value: string | null | undefined, locale: string): string {
+/** `13 lis 2026, 14:05`; `—` for empty values. The one date-time format of every integration. */
+export function formatDateTime(value: string | Date | null | undefined, locale: string): string {
   if (!value) {
     return "—"
   }
-  return new Intl.DateTimeFormat(toIntlLocale(locale), {
-    dateStyle: "medium",
-    timeStyle: "short",
+  return new Intl.DateTimeFormat(toIntlLocale(locale) ?? "en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value))
+}
+
+/** `13 lis 2026`; `—` for empty values. The one date format of every integration. */
+export function formatDate(value: string | Date | null | undefined, locale: string): string {
+  if (!value) {
+    return "—"
+  }
+  return new Intl.DateTimeFormat(toIntlLocale(locale) ?? "en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   }).format(new Date(value))
 }
 

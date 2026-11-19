@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { type EmailMessage, type MessageStatus, useEmailMessages, useResendEmail } from "../../lib/emails/api"
 import { errorMessage, formatDateTime } from "../../lib/emails/kit/format"
+import { Empty, Pager } from "../../lib/emails/kit/page"
 
 const STATUS_COLORS: Record<MessageStatus, "green" | "red" | "orange" | "blue"> = {
   sent: "green",
@@ -111,9 +112,9 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
         </Text>
       )}
       {!isLoading && !isError && !messages.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("emails.log.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("emails.log.empty")}</Empty>
+        </div>
       )}
 
       {messages.length > 0 && (
@@ -191,31 +192,7 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
         </Table>
       )}
 
-      {count > pageSize && (
-        <div className="flex items-center justify-between px-6 py-3">
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("emails.log.range", { from: offset + 1, to: Math.min(offset + pageSize, count), count })}
-          </Text>
-          <div className="flex items-center gap-x-2">
-            <Button
-              size="small"
-              variant="secondary"
-              disabled={offset === 0}
-              onClick={() => setOffset(Math.max(0, offset - pageSize))}
-            >
-              {t("emails.log.previous")}
-            </Button>
-            <Button
-              size="small"
-              variant="secondary"
-              disabled={offset + pageSize >= count}
-              onClick={() => setOffset(offset + pageSize)}
-            >
-              {t("emails.log.next")}
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pager offset={offset} limit={pageSize} count={count} onChange={setOffset} />
     </div>
   )
 }

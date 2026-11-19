@@ -363,6 +363,9 @@
     },
     "signals": {
       "disputes": "open disputes: {{count}}"
+    },
+    "options": {
+      "keySet": "Set (never shown)"
     }
   }
 }

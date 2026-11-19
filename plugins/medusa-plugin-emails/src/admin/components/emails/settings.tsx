@@ -1,4 +1,4 @@
-import { Button, Container, Heading, Input, Label, StatusBadge, Text, Textarea, toast, usePrompt } from "@medusajs/ui"
+import { Button, Container, Heading, Input, Label, Text, Textarea, toast, usePrompt } from "@medusajs/ui"
 import { type ReactNode, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -10,6 +10,7 @@ import {
   useUpdateEmailsSettings,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { OptionsCard } from "../../lib/emails/kit/page"
 import { languageName } from "../../lib/emails/languages"
 import { formatRecipients, parseRecipients } from "./recipients"
 
@@ -42,32 +43,12 @@ export const Settings = ({ status }: { status: Extract<EmailsStatus, { enabled: 
   return (
     <div className="flex flex-col gap-y-3">
       <Container className="overflow-hidden divide-y p-0">
-        <Section title={t("emails.status.title")}>
-          <Row label={t("emails.status.state")}>
-            {s.demo ? (
-              <StatusBadge color="blue">{t("emails.status.demo")}</StatusBadge>
-            ) : (
-              <StatusBadge color="green">{t("emails.status.enabled")}</StatusBadge>
-            )}
-          </Row>
-          {s.demo && <Note>{t("emails.status.demoHint")}</Note>}
-          <Row label={t("emails.status.sender")}>
-            <Text size="small">{s.from}</Text>
-          </Row>
-          {s.reply_to && (
-            <Row label={t("emails.status.replyTo")}>
-              <Text size="small">{s.reply_to}</Text>
-            </Row>
-          )}
-          <Row label={t("emails.status.defaultLanguage")}>
-            <Text size="small">{languageName(s.default_locale, s.locales, i18n.language)}</Text>
-          </Row>
-          <Row label={t("emails.status.version")}>
-            <Text size="small">{s.version}</Text>
-          </Row>
-          {!s.storefront_url && <Note>{t("emails.status.storefrontMissing")}</Note>}
-          {!s.admin_url && <Note>{t("emails.status.adminMissing")}</Note>}
-        </Section>
+        {(!s.storefront_url || !s.admin_url) && (
+          <div className="flex flex-col gap-y-2 px-6 py-4">
+            {!s.storefront_url && <Note>{t("emails.status.storefrontMissing")}</Note>}
+            {!s.admin_url && <Note>{t("emails.status.adminMissing")}</Note>}
+          </div>
+        )}
         {settings.data && <GeneralSettings settings={settings.data.settings} />}
       </Container>
 
@@ -82,6 +63,20 @@ export const Settings = ({ status }: { status: Extract<EmailsStatus, { enabled: 
           {t("emails.reset.everything")}
         </Button>
       </Container>
+
+      <OptionsCard
+        version={s.version}
+        rows={[
+          ["from", s.from],
+          ["replyTo", s.reply_to],
+          ["channel", s.channel],
+          ["defaultLocale", languageName(s.default_locale, s.locales, i18n.language)],
+          ["storefrontUrl", s.storefront_url],
+          ["adminUrl", s.admin_url],
+          ["retries.maxAttempts", s.max_attempts],
+          ["demo", s.demo],
+        ]}
+      />
     </div>
   )
 }
@@ -195,24 +190,6 @@ const DefaultState = ({ overridden, onRestore }: { overridden: boolean; onRestor
     </Text>
   )
 }
-
-const Section = ({ title, children }: { title: string; children: ReactNode }) => (
-  <div className="px-6 py-4">
-    <Text size="small" weight="plus" className="mb-2">
-      {title}
-    </Text>
-    <div className="flex flex-col">{children}</div>
-  </div>
-)
-
-const Row = ({ label, children }: { label: string; children: ReactNode }) => (
-  <div className="grid grid-cols-2 items-center gap-x-4 py-1.5">
-    <Text size="small" className="text-ui-fg-subtle">
-      {label}
-    </Text>
-    <div className="flex items-center gap-x-2">{children}</div>
-  </div>
-)
 
 const Note = ({ children }: { children: ReactNode }) => (
   <Text size="small" className="text-ui-fg-subtle py-1.5">

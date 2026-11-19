@@ -231,7 +231,10 @@ open.
   each received and when the last one went out, unsubscribe someone.
 - **Sent history:** every email with its result and how it was sent.
 - **Settings:** the settings above, a guarded "Restore defaults", how
-  emails are sent, the links in use, and the demo tools.
+  emails are sent, the demo tools, and the options from `medusa-config.ts`
+  (read-only) with the plugin version.
+- **Guide:** subscribing, consent, restock detection, emails and privacy in
+  plain words.
 
 **Product page:** a Back in stock tab in the Integrations card, with the
 people waiting for each variant (shown when someone waits).

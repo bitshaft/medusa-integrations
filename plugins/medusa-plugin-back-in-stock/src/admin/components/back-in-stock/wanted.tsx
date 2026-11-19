@@ -6,6 +6,7 @@ import { useSimulateRestock, useWanted, type WantedVariant } from "../../lib/bac
 import { errorMessage } from "../../lib/back-in-stock/kit/format"
 import { Pager, ProblemBadge, VariantCell } from "./shared"
 import { TAB_CLASS } from "../../lib/back-in-stock/kit/ui"
+import { Empty } from "../../lib/back-in-stock/kit/page"
 
 const PAGE = 20
 type Scope = "real" | "demo"
@@ -67,9 +68,9 @@ export const Wanted = () => {
         </Text>
       )}
       {!isLoading && !isError && !rows.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("back-in-stock.wanted.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("back-in-stock.wanted.empty")}</Empty>
+        </div>
       )}
 
       {rows.length > 0 && (

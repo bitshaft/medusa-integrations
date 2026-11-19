@@ -1,4 +1,4 @@
-import { toIntlLocale } from "./kit/format"
+import { formatDate, formatDateTime, toIntlLocale } from "./kit/format"
 
 export { errorMessage } from "./kit/format"
 
@@ -81,13 +81,11 @@ export function percent(bp: number | null | undefined, language: string): string
 }
 
 export function dateTime(value: string | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(locale(language), { dateStyle: "medium", timeStyle: "short" }).format(new Date(value))
+  return formatDateTime(value, language)
 }
 
 export function shortDate(value: string | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(locale(language), { dateStyle: "medium" }).format(new Date(value))
+  return formatDate(value, language)
 }
 
 /** "3 godz. temu", "za 2 dni". */

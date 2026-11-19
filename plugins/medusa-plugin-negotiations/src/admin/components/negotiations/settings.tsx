@@ -25,18 +25,9 @@ import {
   useSaveSettings,
 } from "../../lib/negotiations/api"
 import { dateTime, money } from "../../lib/negotiations/format"
+import { OptionsCard } from "../../lib/negotiations/kit/page"
 import { Note, useErrorText } from "./shared"
-
-const OptionRow = ({ name, value }: { name: string; value: string }) => (
-  <div className="flex items-center justify-between gap-3 px-6 py-2">
-    <Text size="small" className="font-mono text-ui-fg-subtle">
-      {name}
-    </Text>
-    <Text size="small" className="font-mono">
-      {value}
-    </Text>
-  </div>
-)
+import { Empty } from "../../lib/negotiations/kit/page"
 
 /**
  * Net or gross per currency, and the regions whose own setting differs (for
@@ -112,8 +103,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
     if (!Number.isInteger(bp) || bp > 10_000) return toast.error(t("negotiations.settings.discountInvalid"))
     submit({ ...form, max_discount_bp: bp })
   }
-
-  const yesNo = (v: boolean) => (v ? t("negotiations.yes") : t("negotiations.no"))
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -238,37 +227,27 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
 
       <PriceBasesCard bases={data.price_bases} />
 
-      <Container className="overflow-hidden divide-y p-0">
-        <div className="px-6 py-4">
-          <Heading level="h2">{t("negotiations.settings.optionsTitle")}</Heading>
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("negotiations.settings.optionsHint")}
-          </Text>
-        </div>
-        <div className="py-2">
-          <OptionRow name="expiryDays" value={String(o.expiryDays)} />
-          <OptionRow name="acceptedOfferDays" value={String(o.acceptedOfferDays)} />
-          <OptionRow
-            name="defaultCurrency"
-            value={o.defaultCurrency?.toUpperCase() ?? t("negotiations.settings.storeCurrency")}
-          />
-          <OptionRow name="customerAccept" value={yesNo(o.customerAccept)} />
-          <OptionRow
-            name="allowedCustomerGroups"
-            value={
-              o.allowedCustomerGroups.length ? o.allowedCustomerGroups.join(", ") : t("negotiations.settings.everyone")
-            }
-          />
-          <OptionRow name="writers.draftOrders" value={yesNo(o.writers.draftOrders)} />
-          <OptionRow name="writers.cart" value={yesNo(o.writers.cart)} />
-          <OptionRow name="limits.openThreads" value={String(o.limits.openThreads)} />
-          <OptionRow name="limits.threadsPerHour" value={String(o.limits.threadsPerHour)} />
-          <OptionRow name="limits.messagesPerHour" value={String(o.limits.messagesPerHour)} />
-          <OptionRow name="limits.messageLength" value={String(o.limits.messageLength)} />
-          <OptionRow name="limits.maxQuantity" value={String(o.limits.maxQuantity)} />
-          <OptionRow name="demo" value={yesNo(o.demo)} />
-        </div>
-      </Container>
+      <OptionsCard
+        version={data.version}
+        rows={[
+          ["expiryDays", o.expiryDays],
+          ["acceptedOfferDays", o.acceptedOfferDays],
+          ["defaultCurrency", o.defaultCurrency?.toUpperCase() ?? t("negotiations.settings.storeCurrency")],
+          ["customerAccept", o.customerAccept],
+          [
+            "allowedCustomerGroups",
+            o.allowedCustomerGroups.length ? o.allowedCustomerGroups : t("negotiations.settings.everyone"),
+          ],
+          ["writers.draftOrders", o.writers.draftOrders],
+          ["writers.cart", o.writers.cart],
+          ["limits.openThreads", o.limits.openThreads],
+          ["limits.threadsPerHour", o.limits.threadsPerHour],
+          ["limits.messagesPerHour", o.limits.messagesPerHour],
+          ["limits.messageLength", o.limits.messageLength],
+          ["limits.maxQuantity", o.limits.maxQuantity],
+          ["demo", o.demo],
+        ]}
+      />
 
       <RunsHistory />
     </div>
@@ -292,9 +271,9 @@ const RunsHistory = () => {
       {isLoading ? (
         <Skeleton className="mx-6 mb-6 h-16" />
       ) : !data?.runs.length ? (
-        <Text size="small" className="px-6 pb-6 text-ui-fg-subtle">
-          {t("negotiations.runs.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("negotiations.runs.empty")}</Empty>
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <Table>

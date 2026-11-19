@@ -24,6 +24,7 @@ import {
   useVariantsWithoutWeight,
 } from "../../lib/apaczka/api"
 import { errorMessage } from "../../lib/apaczka/format"
+import { OptionsCard, Pager } from "../../lib/apaczka/kit/page"
 
 /** The Settings tab: connection, configuration from plugin options, tracking and services. */
 export const SettingsPanel = () => {
@@ -57,24 +58,7 @@ export const SettingsPanel = () => {
           <div className="px-6 py-4">
             <Skeleton className="h-24 w-full" />
           </div>
-        ) : !s.enabled ? (
-          <Section title={t("apaczka.settings.connection")}>
-            <Row label={t("apaczka.settings.connection")}>
-              <StatusBadge color="orange">{t("apaczka.settings.disabled")}</StatusBadge>
-            </Row>
-            <div className="py-2">
-              <Text size="small" className="text-ui-fg-error">
-                {s.disabled_reason}
-              </Text>
-              <Text size="small" className="text-ui-fg-subtle mt-1">
-                {t("apaczka.settings.disabledHint")}
-              </Text>
-            </div>
-            <Row label={t("apaczka.settings.version")}>
-              <Text size="small">{s.version}</Text>
-            </Row>
-          </Section>
-        ) : (
+        ) : !s.enabled ? null : (
           <>
             <Section title={t("apaczka.settings.connection")}>
               <Row label={t("apaczka.settings.connection")}>
@@ -107,40 +91,6 @@ export const SettingsPanel = () => {
                   {s.app_id}
                 </Text>
               </Row>
-              <Row label={t("apaczka.settings.version")}>
-                <Text size="small">{s.version}</Text>
-              </Row>
-            </Section>
-
-            <Section title={t("apaczka.settings.configuration")} hint={t("apaczka.settings.configHint")}>
-              <Row label={t("apaczka.settings.shipmentCreation")}>
-                <Text size="small">{t(`apaczka.settings.${s.settings.shipment_creation}`)}</Text>
-              </Row>
-              <Row label={t("apaczka.settings.labelFormat")}>
-                <Text size="small">{s.settings.label_format.toUpperCase()}</Text>
-              </Row>
-              <Row label={t("apaczka.settings.defaultHandover")}>
-                <Text size="small">{t(`apaczka.pickupType.${s.settings.pickup_type}`)}</Text>
-              </Row>
-              <Row label={t("apaczka.settings.pricingBasis")}>
-                <Text size="small">{s.settings.pricing_basis}</Text>
-              </Row>
-              <Row label={t("apaczka.settings.insurance")}>
-                <Text size="small">{s.settings.insurance}</Text>
-              </Row>
-              <Row label={t("apaczka.settings.codAccount")}>
-                <StatusBadge color={s.settings.cod_account_configured ? "green" : "grey"}>
-                  {s.settings.cod_account_configured
-                    ? t("apaczka.settings.configured")
-                    : t("apaczka.settings.notConfigured")}
-                </StatusBadge>
-              </Row>
-              <Row label={t("apaczka.settings.senderLocations")}>
-                <Text size="small">{s.settings.sender_locations.length || "—"}</Text>
-              </Row>
-            </Section>
-
-            <Section title={t("apaczka.settings.tracking")}>
               <Row label={t("apaczka.settings.webhookUrl")}>
                 {s.tracking.webhook_url ? (
                   <div className="flex items-center gap-x-1">
@@ -154,15 +104,6 @@ export const SettingsPanel = () => {
                     {t("apaczka.settings.webhookMissing")}
                   </Text>
                 )}
-              </Row>
-              <Row label={t("apaczka.settings.polling")}>
-                <OnOff value={s.tracking.polling} />
-              </Row>
-              <Row label={t("apaczka.settings.markShipped")}>
-                <OnOff value={s.tracking.mark_shipped} />
-              </Row>
-              <Row label={t("apaczka.settings.markDelivered")}>
-                <OnOff value={s.tracking.mark_delivered} />
               </Row>
             </Section>
           </>
@@ -223,6 +164,27 @@ export const SettingsPanel = () => {
           </Table>
         )}
       </Container>
+
+      {s?.enabled && (
+        <OptionsCard
+          version={s.version}
+          rows={[
+            ["environment", s.environment],
+            ["shipmentCreation", s.settings.shipment_creation],
+            ["labelFormat", s.settings.label_format],
+            ["pickup.type", s.settings.pickup_type],
+            ["pricing.basis", s.settings.pricing_basis],
+            ["insurance.mode", s.settings.insurance],
+            ["cod", s.settings.cod_account_configured],
+            ["senderByLocation", s.settings.sender_locations],
+            ["webhooks.backendUrl", s.tracking.webhook_url],
+            ["tracking.polling", s.tracking.polling],
+            ["tracking.markShipped", s.tracking.mark_shipped],
+            ["tracking.markDelivered", s.tracking.mark_delivered],
+            ["demo", s.demo],
+          ]}
+        />
+      )}
     </div>
   )
 }
@@ -251,15 +213,6 @@ const Row = ({ label, children }: { label: string; children: React.ReactNode }) 
     <div className="flex flex-wrap items-center gap-2">{children}</div>
   </div>
 )
-
-const OnOff = ({ value }: { value: boolean }) => {
-  const { t } = useTranslation()
-  return (
-    <StatusBadge color={value ? "green" : "grey"}>
-      {value ? t("apaczka.settings.on") : t("apaczka.settings.off")}
-    </StatusBadge>
-  )
-}
 
 const PAGE = 10
 
@@ -371,18 +324,7 @@ const ParcelWeight = () => {
                   ))}
                 </Table.Body>
               </Table>
-              {count > PAGE && (
-                <Table.Pagination
-                  count={count}
-                  pageSize={PAGE}
-                  pageIndex={Math.floor(offset / PAGE)}
-                  pageCount={Math.ceil(count / PAGE)}
-                  canPreviousPage={offset > 0}
-                  canNextPage={offset + PAGE < count}
-                  previousPage={() => setOffset(Math.max(0, offset - PAGE))}
-                  nextPage={() => setOffset(offset + PAGE)}
-                />
-              )}
+              {count > PAGE && <Pager offset={offset} limit={PAGE} count={count} onChange={setOffset} />}
             </div>
           </>
         )}

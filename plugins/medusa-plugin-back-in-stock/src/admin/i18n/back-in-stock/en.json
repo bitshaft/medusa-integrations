@@ -13,7 +13,8 @@
       "wanted": "Most wanted",
       "subscriptions": "Subscriptions",
       "history": "Sent history",
-      "settings": "Settings"
+      "settings": "Settings",
+      "guide": "Guide"
     },
     "tiles": {
       "active": "Waiting",
@@ -186,6 +187,38 @@
     },
     "demoReset": {
       "body": "Every demo subscription is deleted and a fresh set is created on out-of-stock products: three sample subscribers, five products each. Real subscriptions are not touched and nothing is sent."
+    },
+    "guide": {
+      "title": "How back in stock notifications work",
+      "subtitle": "From \"Notify me\" on a product to the email when it is back.",
+      "start": {
+        "title": "What it does",
+        "text": "Customers ask to be told when a variant is back. When Medusa's inventory shows it can be ordered again, everyone waiting gets one email, and the plugin stops once they buy it, unsubscribe or the request expires."
+      },
+      "storefront": {
+        "title": "In the storefront",
+        "text": "Show \"Notify me\" on variants that cannot be ordered and post the email and variant to /store/back-in-stock/subscriptions. Signed-in customers need no email: their account email is used."
+      },
+      "consent": {
+        "title": "Consent and double opt-in",
+        "text": "The consent text shown at subscription is stored with it (Settings). With double opt-in, a confirmation email goes first, and the request counts only once it is confirmed."
+      },
+      "restock": {
+        "title": "Detecting a restock",
+        "text": "Inventory changes trigger a check after delayMinutes, so a quick stock correction sends nothing. Availability is counted the way the store API counts it: only the sales channel's stock locations, stocked minus reserved."
+      },
+      "emails": {
+        "title": "Emails",
+        "text": "With the emails plugin, these emails use its branding, editable text and send log. Without it, a built-in Polish and English template goes through Medusa's notification module. minGapHours and maxNotifications keep anyone from getting too many."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "text": "Addresses are used only for these notifications. Every email has an unsubscribe link that never acts just by being opened. Unconfirmed requests are deleted after 7 days; ended ones lose the email after 180 days."
+      },
+      "demo": {
+        "title": "Demo mode",
+        "text": "With demo: true emails are rendered and logged, never sent. \"Restore test data\" creates sample requests on out-of-stock products, Settings creates them for your own addresses, and the Most wanted tab simulates a restock."
+      }
     }
   }
 }

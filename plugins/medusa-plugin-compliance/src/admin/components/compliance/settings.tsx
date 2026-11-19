@@ -424,16 +424,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
         ))}
       </Section>
 
-      <Section title={t("compliance.settings.technical")} hint={t("compliance.settings.technicalHint")}>
-        <Text size="small">
-          {t("compliance.settings.timeZone")}: <span className="font-mono">{data.options.timeZone}</span>
-        </Text>
-        <Text size="small">
-          {t("compliance.settings.providers")}:{" "}
-          {data.options.dataProviders.length ? data.options.dataProviders.join(", ") : "—"}
-        </Text>
-      </Section>
-
       <div className="flex justify-end">
         <Button size="small" onClick={submit} isLoading={save.isPending}>
           {t("compliance.save")}

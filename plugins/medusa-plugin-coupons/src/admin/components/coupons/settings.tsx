@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { type Settings as SettingsValues, type SettingsResponse, useSaveSettings } from "../../lib/coupons/api"
 import { errorMessage } from "../../lib/coupons/kit/format"
+import { OptionsCard } from "../../lib/coupons/kit/page"
 
 /** "Settings" tab: what the plugin runs with, and the few things the owner can change. */
 export const Settings = ({ status }: { status: Extract<SettingsResponse, { enabled: true }> }) => {
@@ -24,17 +25,6 @@ export const Settings = ({ status }: { status: Extract<SettingsResponse, { enabl
       onSuccess: () => toast.success(t("coupons.settings.saved")),
       onError: (error) => toast.error(t("coupons.settings.saveFailed", { error: errorMessage(error) })),
     })
-
-  const option = (key: string, value: string | number) => (
-    <div key={key} className="flex flex-col">
-      <Text size="xsmall" className="text-ui-fg-subtle">
-        {t(`coupons.settings.options.${key}`)}
-      </Text>
-      <Text size="small" weight="plus">
-        {value}
-      </Text>
-    </div>
-  )
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -102,21 +92,16 @@ export const Settings = ({ status }: { status: Extract<SettingsResponse, { enabl
         </div>
       </Container>
 
-      <Container className="overflow-hidden flex flex-col gap-y-4 px-6 py-6">
-        <div>
-          <Heading level="h2">{t("coupons.settings.optionsTitle")}</Heading>
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("coupons.settings.optionsHint")}
-          </Text>
-        </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          {option("version", status.version)}
-          {option("timeZone", status.options.timeZone)}
-          {option("defaultLocale", status.options.defaultLocale.toUpperCase())}
-          {option("maxBatchSize", status.options.maxBatchSize)}
-          {option("checkRateLimitPerMinute", status.options.checkRateLimitPerMinute)}
-        </div>
-      </Container>
+      <OptionsCard
+        version={status.version}
+        rows={[
+          ["timeZone", status.options.timeZone],
+          ["defaultLocale", status.options.defaultLocale],
+          ["maxBatchSize", status.options.maxBatchSize],
+          ["checkRateLimitPerMinute", status.options.checkRateLimitPerMinute],
+          ["demo", status.options.demo],
+        ]}
+      />
     </div>
   )
 }

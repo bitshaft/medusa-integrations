@@ -9,9 +9,10 @@
       "hint": "Fix the plugin options in medusa-config.ts and restart Medusa."
     },
     "tabs": {
-      "overview": "Overview",
+      "panel": "Panel",
       "lookup": "Lookup",
-      "settings": "Settings"
+      "settings": "Settings",
+      "guide": "Guide"
     },
     "status": {
       "active": "Active VAT payer",
@@ -199,6 +200,38 @@
     },
     "demo": {
       "body": "GUS answers with sample businesses (names start with [DEMO]); no key is needed and no request goes to GUS. The white list and VIES are asked as usual. Remove demo: true from the options to use the real GUS."
+    },
+    "guide": {
+      "title": "How VAT verification works",
+      "subtitle": "What the plugin checks, when, and what the answers mean.",
+      "start": {
+        "title": "What it does",
+        "text": "The plugin checks a buyer's tax ID: a Polish NIP on the Ministry of Finance white list (and in GUS with a key), an EU VAT number in VIES. Every answer is stored with the register's request ID, so you can prove the check was made."
+      },
+      "registers": {
+        "title": "The registers",
+        "text": "White list: free, about 100 requests a day; shows VAT status and bank accounts.\nGUS (REGON): knows every business, not only VAT payers; needs a free key from api.stat.gov.pl.\nVIES: EU VAT numbers; with your own VAT number it issues a consultation number as proof."
+      },
+      "verdicts": {
+        "title": "Verdicts",
+        "text": "Active VAT payer, VAT exempt, not a VAT payer, business closed, valid EU VAT, invalid, not found, or could not verify. \"Could not verify\" means no register answered (down, slow or over its limit): it is never treated as invalid."
+      },
+      "orders": {
+        "title": "Orders",
+        "text": "An order with a tax ID is verified when placed. The answer is linked to the order and the customer and shown in their Integrations cards. Answers are reused for 24 hours (cacheTtlHours)."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "text": "The storefront can check a number while the buyer types it (/store/whitelist-vat/verify) and fill in the company data. Refusing carts with an invalid number is off by default (checkout.rejectOnCompletion)."
+      },
+      "limits": {
+        "title": "Daily limit",
+        "text": "The plugin stops asking the white list after its daily limit (mf.dailyLimit, 95) and counts the day in Polish time. Add a GUS key or raise cacheTtlHours for many B2B orders a day."
+      },
+      "demo": {
+        "title": "Demo mode",
+        "text": "demo: true makes GUS answer with sample businesses without a key. NIP 1112223332 is a closed business, 9876543210 is not found. The white list and VIES are asked as usual."
+      }
     }
   }
 }

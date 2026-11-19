@@ -1,4 +1,4 @@
-import { toIntlLocale } from "./kit/format"
+import { formatDate, toIntlLocale } from "./kit/format"
 
 /** The plugin speaks Polish and English; other admin languages get English. */
 export const adminLocale = (language: string | undefined): "pl" | "en" =>
@@ -23,12 +23,7 @@ export function money(
 
 /** `13 lis 2026`. */
 export function shortDate(value: string | Date | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value))
+  return formatDate(value, language)
 }
 
 /** `1255` / `12 555` points, with the locale's separators. */

@@ -104,7 +104,7 @@ export default defineConfig({
 
 If `appId` or `appSecret` is missing, or an option is invalid, Medusa still
 starts. The plugin stays disabled, logs one line (`[apaczka] Disabled: …`)
-and shows the reason on the **Apaczka** page in the admin menu (Settings tab). Nothing is sent to Apaczka
+and shows the reason on the **Apaczka** page in the admin menu, under the tabs. Nothing is sent to Apaczka
 until you fix the options and restart.
 
 Every option is described in [docs/configuration.md](./docs/configuration.md):
@@ -158,7 +158,7 @@ await sdk.store.cart.addShippingMethod(cart.id, { option_id, data: { point_id: "
 - **Courier pickups** for one shipment or many (batch), using the pickup days Apaczka offers.
 - **Return labels** created as soon as a return is requested.
 - **Tracking** by signed webhooks with polling as a backup. Fulfillments are marked shipped and delivered in Medusa, and events are emitted for your own notifications.
-- **Apaczka page in the admin menu** with every shipment in one list: search by waybill, Apaczka or order number, filters by status and returns, labels, tracking refresh, a courier pickup or a hand-over protocol for several shipments at once, and a Settings tab with a connection check. Plus a panel on each order page. In Polish and English.
+- **Apaczka page in the admin menu** with every shipment in one list: search by waybill, Apaczka or order number, filters by status and returns, labels, tracking refresh, a courier pickup or a hand-over protocol for several shipments at once, a Settings tab with a connection check and the options in use, and a Guide tab. Plus a panel on each order page. In Polish and English.
 - **Multi-warehouse.** The sender address comes from each stock location, with per-location overrides.
 - **Built to be safe.** HMAC request signing, webhook signature verification against the raw request body, no retries on order creation (so no duplicate orders), every workflow step undone on failure, money handled as integers, and secrets masked in logs and never returned by the admin API.
 

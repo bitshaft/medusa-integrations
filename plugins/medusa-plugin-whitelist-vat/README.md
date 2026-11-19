@@ -256,7 +256,7 @@ your own code.
 
 **Extensions → VAT white list**
 
-- **Overview:** counts at a glance and today's white list usage; the
+- **Panel:** counts at a glance and today's white list usage; the
   businesses verified so far with status, address, REGON/KRS and number of
   bank accounts, filtered by active, exempt and EU, needs attention, or
   stale; search by number, name or address; "check again" per business; a
@@ -265,8 +265,11 @@ your own code.
 - **Lookup:** verify any NIP or EU VAT number and see what each register
   said, the company's data and its white list bank accounts; check whether
   a bank account belongs to a NIP.
-- **Settings:** the registers and options in use, read-only (they are set
-  in `medusa-config.ts`). The GUS key is never shown, not even in part.
+- **Settings:** the registers in use, and the options from
+  `medusa-config.ts` (read-only) with the plugin version. The GUS key is
+  never shown, not even in part.
+- **Guide:** the registers, verdicts, orders, checkout and limits in plain
+  words.
 
 **Order and customer pages** get a panel with the record's tax ID, the
 verdict, the business's data, the answers recorded for that record and a

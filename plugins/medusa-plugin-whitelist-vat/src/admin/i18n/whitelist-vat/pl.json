@@ -9,9 +9,10 @@
       "hint": "Popraw opcje wtyczki w medusa-config.ts i uruchom Medusę ponownie."
     },
     "tabs": {
-      "overview": "Przegląd",
+      "panel": "Panel",
       "lookup": "Sprawdź numer",
-      "settings": "Ustawienia"
+      "settings": "Ustawienia",
+      "guide": "Przewodnik"
     },
     "status": {
       "active": "Czynny podatnik VAT",
@@ -199,6 +200,38 @@
     },
     "demo": {
       "body": "GUS odpowiada przykładowymi firmami (nazwy zaczynają się od [DEMO]); klucz nie jest potrzebny i żadne zapytanie nie trafia do GUS. Biała lista i VIES są pytane normalnie. Usuń demo: true z opcji, żeby korzystać z prawdziwego GUS."
+    },
+    "guide": {
+      "title": "Jak działa weryfikacja VAT",
+      "subtitle": "Co wtyczka sprawdza, kiedy i co znaczą odpowiedzi.",
+      "start": {
+        "title": "Co robi",
+        "text": "Wtyczka sprawdza numer podatkowy kupującego: polski NIP na białej liście Ministerstwa Finansów (i w GUS, jeśli jest klucz), numer VAT UE w VIES. Każda odpowiedź jest zapisywana z identyfikatorem zapytania rejestru, więc da się udowodnić, że sprawdzenie było."
+      },
+      "registers": {
+        "title": "Rejestry",
+        "text": "Biała lista: bezpłatna, ok. 100 zapytań dziennie; pokazuje status VAT i rachunki bankowe.\nGUS (REGON): zna każdą firmę, nie tylko podatników VAT; wymaga bezpłatnego klucza z api.stat.gov.pl.\nVIES: numery VAT UE; z Twoim numerem VAT wydaje numer konsultacji jako dowód."
+      },
+      "verdicts": {
+        "title": "Werdykty",
+        "text": "Czynny podatnik VAT, zwolniony z VAT, niezarejestrowany, działalność zakończona, ważny VAT UE, nieprawidłowy, nie znaleziono albo nie udało się sprawdzić. „Nie udało się sprawdzić” znaczy, że żaden rejestr nie odpowiedział (awaria, zbyt wolno, limit): nigdy nie jest traktowane jak nieprawidłowy numer."
+      },
+      "orders": {
+        "title": "Zamówienia",
+        "text": "Zamówienie z numerem podatkowym jest sprawdzane przy złożeniu. Odpowiedź jest powiązana z zamówieniem i klientem i widoczna w ich kartach Integracje. Odpowiedzi są używane ponownie przez 24 godziny (cacheTtlHours)."
+      },
+      "checkout": {
+        "title": "Kasa",
+        "text": "Sklep może sprawdzać numer w trakcie wpisywania (/store/whitelist-vat/verify) i uzupełniać dane firmy. Odrzucanie koszyków z nieprawidłowym numerem jest domyślnie wyłączone (checkout.rejectOnCompletion)."
+      },
+      "limits": {
+        "title": "Limit dzienny",
+        "text": "Po przekroczeniu własnego limitu (mf.dailyLimit, 95) wtyczka przestaje pytać białą listę do północy czasu polskiego. Przy wielu zamówieniach B2B dziennie dodaj klucz GUS albo zwiększ cacheTtlHours."
+      },
+      "demo": {
+        "title": "Tryb demo",
+        "text": "demo: true sprawia, że GUS odpowiada przykładowymi firmami bez klucza. NIP 1112223332 to zakończona działalność, 9876543210 nie istnieje. Biała lista i VIES są pytane normalnie."
+      }
     }
   }
 }

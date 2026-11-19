@@ -3,6 +3,7 @@ import { Badge, Input, Label, Select, StatusBadge, Switch, Text, Textarea } from
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
+export { Empty, Pager } from "../../lib/compliance/kit/page"
 import { DemoBar as KitDemoBar } from "../../lib/compliance/kit/demo"
 
 import type { RequestStatus } from "../../lib/compliance/api"
@@ -317,55 +318,6 @@ export const DaysLeft = ({ days, warn }: { days: number | null; warn: number }) 
     <Badge size="2xsmall" color={color}>
       {days < 0 ? t("compliance.gdpr.overdue", { count: -days }) : t("compliance.gdpr.daysLeft", { count: days })}
     </Badge>
-  )
-}
-
-export const Empty = ({ children }: { children: ReactNode }) => (
-  <div className="flex items-center justify-center rounded-lg border border-dashed border-ui-border-base px-6 py-8">
-    <Text size="small" className="text-ui-fg-subtle">
-      {children}
-    </Text>
-  </div>
-)
-
-/** Simple pager under a table. */
-export const Pager = ({
-  offset,
-  limit,
-  count,
-  onChange,
-}: {
-  offset: number
-  limit: number
-  count: number
-  onChange: (offset: number) => void
-}) => {
-  const { t } = useTranslation()
-  if (count <= limit) return null
-  return (
-    <div className="flex items-center justify-between pt-2">
-      <Text size="xsmall" className="text-ui-fg-subtle">
-        {t("compliance.pager", { from: offset + 1, to: Math.min(offset + limit, count), count })}
-      </Text>
-      <div className="flex gap-x-2">
-        <button
-          type="button"
-          className="txt-compact-small text-ui-fg-interactive disabled:text-ui-fg-disabled"
-          disabled={offset === 0}
-          onClick={() => onChange(Math.max(0, offset - limit))}
-        >
-          {t("compliance.prev")}
-        </button>
-        <button
-          type="button"
-          className="txt-compact-small text-ui-fg-interactive disabled:text-ui-fg-disabled"
-          disabled={offset + limit >= count}
-          onClick={() => onChange(offset + limit)}
-        >
-          {t("compliance.next")}
-        </button>
-      </div>
-    </div>
   )
 }
 

@@ -3,6 +3,8 @@ import { Badge, Button, Input, Label, Select, Skeleton, Table, Text, Textarea, t
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { Pager } from "../../lib/loyalty/kit/page"
+
 import { type EntryType, entriesCsvUrl, useAdjust, useEntries } from "../../lib/loyalty/api"
 import { adminLocale, points, requestId, shortDate } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
@@ -142,33 +144,7 @@ export const Ledger = ({
           </Table>
         </div>
       )}
-      {(data?.count ?? 0) > pageSize && (
-        <div className="flex items-center justify-end gap-x-2">
-          <Text size="xsmall" className="text-ui-fg-subtle">
-            {t("loyalty.range", {
-              from: offset + 1,
-              to: Math.min(offset + pageSize, data?.count ?? 0),
-              count: data?.count ?? 0,
-            })}
-          </Text>
-          <Button
-            size="small"
-            variant="secondary"
-            disabled={offset === 0}
-            onClick={() => setOffset(Math.max(0, offset - pageSize))}
-          >
-            {t("loyalty.previous")}
-          </Button>
-          <Button
-            size="small"
-            variant="secondary"
-            disabled={offset + pageSize >= (data?.count ?? 0)}
-            onClick={() => setOffset(offset + pageSize)}
-          >
-            {t("loyalty.next")}
-          </Button>
-        </div>
-      )}
+      <Pager offset={offset} limit={pageSize} count={data?.count ?? 0} onChange={setOffset} />
     </div>
   )
 }

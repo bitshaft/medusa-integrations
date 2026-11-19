@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useNotifications } from "../../lib/back-in-stock/api"
 import { formatDateTime } from "../../lib/back-in-stock/kit/format"
 import { DemoBadge, NotificationBadge, Pager, VariantCell } from "./shared"
+import { Empty } from "../../lib/back-in-stock/kit/page"
 
 const PAGE = 20
 
@@ -34,9 +35,9 @@ export const History = () => {
         </Text>
       )}
       {!isLoading && !isError && !rows.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("back-in-stock.history.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("back-in-stock.history.empty")}</Empty>
+        </div>
       )}
       {rows.length > 0 && (
         <Table>

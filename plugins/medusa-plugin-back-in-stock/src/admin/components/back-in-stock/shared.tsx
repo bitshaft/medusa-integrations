@@ -1,6 +1,7 @@
-import { Badge, Button, StatusBadge, Text, Tooltip } from "@medusajs/ui"
+import { Badge, StatusBadge, Text, Tooltip } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
+export { Pager } from "../../lib/back-in-stock/kit/page"
 import type { NotificationStatus, ProductLabel, SubscriptionStatus } from "../../lib/back-in-stock/api"
 
 type Color = "green" | "red" | "orange" | "grey" | "blue"
@@ -69,48 +70,5 @@ export const ProblemBadge = ({ problem }: { problem: string }) => {
         {t(`back-in-stock.reason.${problem}`)}
       </Badge>
     </Tooltip>
-  )
-}
-
-/** Previous / next with "1–20 of 57"; nothing when everything fits on one page. */
-export const Pager = ({
-  offset,
-  limit,
-  count,
-  onChange,
-}: {
-  offset: number
-  limit: number
-  count: number
-  onChange: (offset: number) => void
-}) => {
-  const { t } = useTranslation()
-  if (count <= limit) {
-    return null
-  }
-  return (
-    <div className="flex items-center justify-between px-6 py-3">
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("back-in-stock.paging.range", { from: offset + 1, to: Math.min(offset + limit, count), count })}
-      </Text>
-      <div className="flex items-center gap-x-2">
-        <Button
-          size="small"
-          variant="secondary"
-          disabled={offset === 0}
-          onClick={() => onChange(Math.max(0, offset - limit))}
-        >
-          {t("back-in-stock.paging.previous")}
-        </Button>
-        <Button
-          size="small"
-          variant="secondary"
-          disabled={offset + limit >= count}
-          onClick={() => onChange(offset + limit)}
-        >
-          {t("back-in-stock.paging.next")}
-        </Button>
-      </div>
-    </div>
   )
 }

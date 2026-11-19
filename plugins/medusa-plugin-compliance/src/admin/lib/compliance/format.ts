@@ -1,4 +1,4 @@
-import { toIntlLocale } from "./kit/format"
+import { formatDate, formatDateTime, toIntlLocale } from "./kit/format"
 
 export { errorMessage } from "./kit/format"
 
@@ -25,24 +25,12 @@ export function money(
 
 /** `13 lis 2026`. */
 export function shortDate(value: string | Date | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value))
+  return formatDate(value, language)
 }
 
 /** `13 lis 2026, 14:05`. */
 export function dateTime(value: string | Date | null | undefined, language: string): string {
-  if (!value) return "—"
-  return new Intl.DateTimeFormat(toIntlLocale(language) ?? "en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value))
+  return formatDateTime(value, language)
 }
 
 /** A localized text in the admin's language, else Polish or English, else any language that has it. */

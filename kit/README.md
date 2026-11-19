@@ -25,6 +25,27 @@ Rules:
 - Tests in `__tests__/` are copied too and run as part of each plugin's
   `npm test`.
 
+## Page layout
+
+`page.tsx` holds the parts every integration's page is built from, so they
+look and behave the same:
+
+- `PageHeader`: icon or logo, title with one state badge (green On, orange
+  Demo mode, red Off), description, extra actions, and Refresh on the right.
+- `PageTabs`: the tab row, with actions (e.g. `DemoResetButton`) at its
+  right end. Tab order: the plugin's data tabs, then Settings, then Guide.
+- `useTabParam(tabs)`: the open tab in the URL (`?tab=`), so reloading or
+  coming back returns to it.
+- `DisabledNotice`: under the tabs when options are missing: why, and what
+  to do.
+- `OptionsCard`: the end of every Settings tab: the options from
+  medusa-config.ts by their config names, read-only, and the plugin version.
+- `GuideSections`: the Guide tab, section by section.
+- `Empty`, `LoadingBlock`, `Pager` (Medusa's table pagination, translated):
+  empty lists, loading and paging look the same everywhere.
+- `format.ts`: `formatDate` (`13 lis 2026`) and `formatDateTime`
+  (`13 lis 2026, 14:05`), the one date format of every integration.
+
 ## Demo mode
 
 `demo.tsx` makes demo mode look the same in every integration:

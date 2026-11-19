@@ -36,6 +36,7 @@ import { errorMessage, formatDateTime, formatGrosze, STATUS_COLORS } from "../..
 import { backendUrl } from "../../lib/apaczka/kit/sdk"
 import { PickupDrawer } from "./pickup-drawer"
 import { ShipmentCard } from "./shipment-card"
+import { Empty, Pager } from "../../lib/apaczka/kit/page"
 
 const PAGE_SIZE = 20
 const FINISHED = new Set(["delivered", "returned", "canceled"])
@@ -88,7 +89,6 @@ export const ShipmentsList = () => {
   const list = useShipments(filter)
   const shipments = list.data?.shipments ?? []
   const count = list.data?.count ?? 0
-  const pageCount = Math.max(1, Math.ceil(count / PAGE_SIZE))
   const filtered = Boolean(q) || group !== "all" || type !== "all"
 
   // Keep the selection and the open details in step with fresh data.
@@ -248,9 +248,9 @@ export const ShipmentsList = () => {
           {errorMessage(list.error)}
         </Text>
       ) : !shipments.length ? (
-        <Text size="small" className="text-ui-fg-subtle px-6 pb-6">
-          {filtered ? t("apaczka.list.emptyFiltered") : t("apaczka.list.empty")}
-        </Text>
+        <div className="px-6 pb-6">
+          <Empty>{filtered ? t("apaczka.list.emptyFiltered") : t("apaczka.list.empty")}</Empty>
+        </div>
       ) : (
         <>
           <Table>
@@ -329,23 +329,7 @@ export const ShipmentsList = () => {
               ))}
             </Table.Body>
           </Table>
-          <Table.Pagination
-            count={count}
-            pageSize={PAGE_SIZE}
-            pageIndex={page}
-            pageCount={pageCount}
-            canPreviousPage={page > 0}
-            canNextPage={page + 1 < pageCount}
-            previousPage={() => setPage((p) => Math.max(0, p - 1))}
-            nextPage={() => setPage((p) => p + 1)}
-            translations={{
-              of: t("apaczka.list.pagination.of"),
-              results: t("apaczka.list.pagination.results"),
-              pages: t("apaczka.list.pagination.pages"),
-              prev: t("apaczka.list.pagination.prev"),
-              next: t("apaczka.list.pagination.next"),
-            }}
-          />
+          <Pager offset={page * PAGE_SIZE} limit={PAGE_SIZE} count={count} onChange={(o) => setPage(o / PAGE_SIZE)} />
         </>
       )}
 

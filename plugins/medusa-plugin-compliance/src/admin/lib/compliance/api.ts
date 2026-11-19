@@ -72,6 +72,7 @@ export type SettingsResponse = {
   enabled: boolean
   disabled_reason: string | null
   settings: Settings
+  version: string | null
   options: { timeZone: string; defaultLocale: Locale; dataProviders: string[] }
   omnibus_started_at: string | null
   regions: Array<{ id: string; name: string; countries: string[] }>

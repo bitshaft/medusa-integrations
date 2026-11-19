@@ -143,7 +143,8 @@
       "subtitle": "Shipments, courier pickups and integration settings",
       "tabs": {
         "shipments": "Shipments",
-        "settings": "Settings"
+        "settings": "Settings",
+        "guide": "Guide"
       }
     },
     "list": {
@@ -214,6 +215,42 @@
     },
     "demo": {
       "body": "Nothing here comes from Apaczka: services, prices, parcel points, labels and tracking are sample data, and no request is sent. Tracking of a new shipment moves on by itself within about 20 minutes (\"Refresh tracking\" shows the progress at once). Remove demo: true and set appId and appSecret to connect your account."
+    },
+    "guide": {
+      "title": "How shipping with Apaczka works",
+      "subtitle": "From a shipping option at checkout to a delivered parcel.",
+      "start": {
+        "title": "What it does",
+        "text": "Every service on your Apaczka account becomes a shipping option in Medusa (standard, cash on delivery and return). The plugin prices them, creates the shipments, prints labels, books couriers and follows the parcels until delivery."
+      },
+      "options": {
+        "title": "Shipping options",
+        "text": "In Settings → Locations & Shipping, add a shipping option with the provider \"apaczka\" and pick a service. Prices are flat or calculated live by Apaczka, with your markup, rounding and free shipping threshold."
+      },
+      "shipments": {
+        "title": "Shipments",
+        "text": "With shipmentCreation \"auto\" a shipment is created in Apaczka as soon as a fulfillment is created; with \"manual\", from the order's Integrations card, where you can change the parcels first. A shipment is never created twice: the plugin checks Apaczka before it writes."
+      },
+      "labels": {
+        "title": "Labels and documents",
+        "text": "Labels are PDF or ZPL (labelFormat). The Shipments tab downloads labels, drop-off codes and the collective hand-over protocol, and books one courier for several parcels."
+      },
+      "tracking": {
+        "title": "Tracking",
+        "text": "Apaczka reports status changes to the plugin's webhook (webhooks.backendUrl). Polling every 30 minutes is a backup. The fulfillment is marked shipped and delivered on its own (tracking.markShipped, tracking.markDelivered)."
+      },
+      "weight": {
+        "title": "Parcel weight",
+        "text": "Weights come from the variants. A variant without weight uses parcel.defaultItemWeightKg, so prices can be wrong: Settings → Parcel weight lists those variants, and you can hold shipments that have no weight until you fix them."
+      },
+      "points": {
+        "title": "Parcel lockers and points",
+        "text": "For services delivered to a point, the storefront searches points through /store/apaczka/points and saves the chosen one on the cart. The point is checked before the order is sent."
+      },
+      "demo": {
+        "title": "Demo mode",
+        "text": "demo: true needs no credentials and sends nothing to Apaczka: services, prices, points, labels and tracking are sample data. A new shipment's tracking moves on by itself within about 20 minutes."
+      }
     }
   }
 }

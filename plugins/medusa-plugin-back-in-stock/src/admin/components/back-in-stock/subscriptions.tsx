@@ -10,6 +10,7 @@ import {
 } from "../../lib/back-in-stock/api"
 import { errorMessage, formatDateTime } from "../../lib/back-in-stock/kit/format"
 import { DemoBadge, Pager, SubscriptionBadge, VariantCell } from "./shared"
+import { Empty } from "../../lib/back-in-stock/kit/page"
 
 const PAGE = 20
 const ALL = "all"
@@ -130,9 +131,9 @@ export const Subscriptions = () => {
         </Text>
       )}
       {!isLoading && !isError && !rows.length && (
-        <Text size="small" className="text-ui-fg-subtle px-6 py-4">
-          {t("back-in-stock.subscriptions.empty")}
-        </Text>
+        <div className="px-6 py-4">
+          <Empty>{t("back-in-stock.subscriptions.empty")}</Empty>
+        </div>
       )}
 
       {rows.length > 0 && (

@@ -1,8 +1,8 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { BookOpen, ClockSolid, CogSixTooth, DocumentText, Envelope, SwatchSolid } from "@medusajs/icons"
-import { Container, Heading, Skeleton, StatusBadge, Tabs, Text } from "@medusajs/ui"
+import { Container, Heading, Text } from "@medusajs/ui"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router-dom"
 
 import { Appearance } from "../../components/emails/appearance"
 import { DemoBar, ResetDemoButton } from "../../components/emails/demo-bar"
@@ -13,12 +13,12 @@ import { TabTrigger } from "../../components/emails/shared"
 import { Templates } from "../../components/emails/templates"
 import { useEmailsStatus } from "../../lib/emails/api"
 import { navIcon } from "../../lib/emails/kit/nav-icon"
+import { DisabledNotice, LoadingBlock, PageHeader, PageTabs, useTabParam } from "../../lib/emails/kit/page"
 import { PageIcon } from "../../lib/emails/kit/ui"
 
 const BRAND_COLOR = "#2563eb"
 
 const TABS = ["history", "templates", "appearance", "settings", "guide"] as const
-type Tab = (typeof TABS)[number]
 
 /**
  * "Emails" in the main menu: the send history first, then the templates,
@@ -27,84 +27,48 @@ type Tab = (typeof TABS)[number]
  */
 const EmailsPage = () => {
   const { t } = useTranslation()
-  const [params, setParams] = useSearchParams()
+  const queryClient = useQueryClient()
   const status = useEmailsStatus()
   const s = status.data
-  const requested = params.get("tab") as Tab | null
-  const tab: Tab = requested && TABS.includes(requested) ? requested : "history"
-  const setTab = (next: Tab) =>
-    setParams(
-      (current) => {
-        const copy = new URLSearchParams(current)
-        if (next === "history") copy.delete("tab")
-        else copy.set("tab", next)
-        return copy
-      },
-      { replace: true }
-    )
+  const [tab, setTab] = useTabParam(TABS)
+  const demo = Boolean(s?.enabled && s.demo)
 
   return (
     <div className="flex flex-col gap-y-3">
-      {s?.enabled && s.demo && <DemoBar />}
+      {demo && <DemoBar />}
       <Container className="overflow-hidden divide-y p-0">
-        <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
-          <div className="flex items-center gap-x-3">
-            <PageIcon icon={Envelope} color={BRAND_COLOR} />
-            <div>
-              <Heading>{t("emails.title")}</Heading>
-              <Text size="small" className="text-ui-fg-subtle">
-                {t("emails.description")}
-              </Text>
-            </div>
-          </div>
-          {s?.enabled && (
-            <StatusBadge color={s.demo ? "blue" : "green"}>
-              {s.demo ? t("emails.status.demo") : t("emails.status.enabled")}
-            </StatusBadge>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
-          <Tabs value={tab} onValueChange={(value) => setTab(value as Tab)} className="min-w-0 overflow-x-auto">
-            <Tabs.List>
-              <TabTrigger value="history" icon={ClockSolid} color="#2563eb">
-                {t("emails.tabs.history")}
-              </TabTrigger>
-              <TabTrigger value="templates" icon={DocumentText} color="#ea580c">
-                {t("emails.tabs.templates")}
-              </TabTrigger>
-              <TabTrigger value="appearance" icon={SwatchSolid} color="#7c3aed">
-                {t("emails.tabs.appearance")}
-              </TabTrigger>
-              <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
-                {t("emails.tabs.settings")}
-              </TabTrigger>
-              <TabTrigger value="guide" icon={BookOpen} color="#db2777">
-                {t("emails.tabs.guide")}
-              </TabTrigger>
-            </Tabs.List>
-          </Tabs>
-          {s?.enabled && s.demo && <ResetDemoButton />}
-        </div>
-        {status.isLoading && (
-          <div className="px-6 py-4">
-            <Skeleton className="h-10 w-full" />
-          </div>
-        )}
+        <PageHeader
+          icon={<PageIcon icon={Envelope} color={BRAND_COLOR} />}
+          title={t("emails.title")}
+          description={t("emails.description")}
+          state={!s ? null : !s.enabled ? "off" : demo ? "demo" : "on"}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: ["emails"] })}
+          refreshing={status.isFetching}
+        />
+        <PageTabs value={tab} onChange={setTab} actions={demo && <ResetDemoButton />}>
+          <TabTrigger value="history" icon={ClockSolid} color="#2563eb">
+            {t("emails.tabs.history")}
+          </TabTrigger>
+          <TabTrigger value="templates" icon={DocumentText} color="#ea580c">
+            {t("emails.tabs.templates")}
+          </TabTrigger>
+          <TabTrigger value="appearance" icon={SwatchSolid} color="#7c3aed">
+            {t("emails.tabs.appearance")}
+          </TabTrigger>
+          <TabTrigger value="settings" icon={CogSixTooth} color="#64748b">
+            {t("emails.tabs.settings")}
+          </TabTrigger>
+          <TabTrigger value="guide" icon={BookOpen} color="#db2777">
+            {t("emails.tabs.guide")}
+          </TabTrigger>
+        </PageTabs>
+        {status.isLoading && <LoadingBlock className="m-6 h-10" />}
         {status.isError && (
           <Text size="small" className="text-ui-fg-error px-6 py-4">
             {t("emails.loadError")}
           </Text>
         )}
-        {s && !s.enabled && (
-          <div className="px-6 py-4">
-            <Text size="small" weight="plus" className="text-ui-fg-error">
-              {t("emails.status.disabled")}: {s.disabled_reason}
-            </Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              {t("emails.status.disabledHint")}
-            </Text>
-          </div>
-        )}
+        {s && !s.enabled && <DisabledNotice reason={s.disabled_reason} hint={t("emails.status.disabledHint")} />}
       </Container>
 
       {s?.enabled && tab === "history" && (

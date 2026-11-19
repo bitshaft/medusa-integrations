@@ -25,6 +25,7 @@ import {
   useSettings,
 } from "../../lib/back-in-stock/api"
 import { errorMessage } from "../../lib/back-in-stock/kit/format"
+import { OptionsCard } from "../../lib/back-in-stock/kit/page"
 import { TAB_CLASS } from "../../lib/back-in-stock/kit/ui"
 
 type EnabledStatus = Extract<BackInStockStatus, { enabled: true }>
@@ -38,6 +39,19 @@ export const Settings = ({ status }: { status: EnabledStatus }) => {
       {settings.data && <SettingsForm data={settings.data} />}
       <Sending status={status} />
       <DemoTools demoCount={status.counts.demo} />
+      <OptionsCard
+        version={status.version}
+        rows={[
+          ["backendUrl", status.links.backend_url],
+          ["storefrontUrl", status.links.storefront_url],
+          ["urls.product", status.links.product],
+          ["urls.confirm", status.links.confirm],
+          ["urls.unsubscribe", status.links.unsubscribe],
+          ["emails", status.sending.emails_option],
+          ["channel", status.sending.channel],
+          ["demo", status.demo],
+        ]}
+      />
     </div>
   )
 }
@@ -302,7 +316,6 @@ const Sending = ({ status }: { status: EnabledStatus }) => {
           t("back-in-stock.sending.unsubscribeUrl"),
           status.links.unsubscribe ?? t("back-in-stock.sending.builtInPage")
         )}
-        {row(t("back-in-stock.sending.version"), status.version)}
       </div>
     </Container>
   )
