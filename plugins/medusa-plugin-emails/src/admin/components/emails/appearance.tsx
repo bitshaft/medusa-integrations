@@ -17,6 +17,7 @@ import {
   useSaveEmailTheme,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { useTypeText } from "../../lib/emails/type-text"
 import { useDebounced } from "../../lib/emails/kit/hooks"
 
 const COLOR_KEYS: ColorKey[] = ["primary", "primaryText", "background", "card", "text", "muted", "border"]
@@ -189,6 +190,7 @@ const AppearanceForm = ({ data, locale }: { data: ThemeResponse; locale: EmailLo
       onError: (error) => toast.error(`${t("emails.appearance.saveError")} ${errorMessage(error)}`),
     })
 
+  const typeText = useTypeText()
   const customerTypes = (types.data?.types ?? []).filter((type) => type.audience !== "team")
 
   return (
@@ -452,7 +454,7 @@ const AppearanceForm = ({ data, locale }: { data: ThemeResponse; locale: EmailLo
               <Select.Content>
                 {customerTypes.map((type) => (
                   <Select.Item key={type.type} value={type.type}>
-                    {t(`emails.types.${type.type}.name`, { defaultValue: type.type })}
+                    {typeText(type.type, type.labels).name}
                   </Select.Item>
                 ))}
               </Select.Content>

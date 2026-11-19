@@ -6,6 +6,7 @@ import { type EmailMessage, type MessageStatus, useEmailMessages, useResendEmail
 import { errorMessage, formatDateTime } from "../../lib/emails/kit/format"
 import { Empty, Pager } from "../../lib/emails/kit/page"
 import { useDebounced } from "../../lib/emails/kit/hooks"
+import { useTypeText } from "../../lib/emails/type-text"
 import { useEmailConfirm } from "./confirm"
 
 const STATUS_COLORS: Record<MessageStatus, "green" | "red" | "orange" | "blue"> = {
@@ -45,6 +46,7 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
   })
   const resend = useResendEmail()
   const confirm = useEmailConfirm()
+  const typeText = useTypeText()
 
   const onResend = async (message: EmailMessage) => {
     if (!(await confirm.resend(message))) return
@@ -139,7 +141,7 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
                 <Table.Cell className="max-w-[320px] py-2">
                   <div className="flex items-center gap-x-2">
                     <Text size="small" weight="plus">
-                      {t(`emails.types.${message.type}.name`, { defaultValue: message.type })}
+                      {typeText(message.type).name}
                     </Text>
                     {message.trigger_type === "test" && <Badge size="2xsmall">{t("emails.log.test")}</Badge>}
                     {message.original_message_id && <Badge size="2xsmall">{t("emails.log.resent")}</Badge>}

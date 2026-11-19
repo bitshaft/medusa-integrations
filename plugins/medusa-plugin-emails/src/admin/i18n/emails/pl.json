@@ -97,7 +97,9 @@
       "noRecipients": "Brak odbiorców",
       "toggleError": "Nie udało się zmienić ustawienia.",
       "sharedTitle": "Teksty wspólne",
-      "sharedDescription": "Powitanie, podpis, etykiety tabel i stopka używane w każdym e-mailu."
+      "sharedDescription": "Powitanie, podpis, etykiety tabel i stopka używane w każdym e-mailu.",
+      "customHint": "Ten e-mail dodaje inna wtyczka albo sklep. Tekst możesz edytować tak jak pozostałe.",
+      "missingIn": "Brakuje tekstu w: {{languages}}. Do czasu tłumaczenia te pola idą w języku podstawowym."
     },
     "translations": {
       "title": "E-maile",

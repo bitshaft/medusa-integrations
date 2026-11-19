@@ -14,5 +14,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     types: listDefinitions(options).map((definition) => describeType(options, settings, definition.type, languages)),
     common_edited: common.edited,
     common_missing_translations: common.missing_translations,
+    common_missing_locales: common.missing_locales,
   })
 }

@@ -39,6 +39,7 @@ import {
 import { errorMessage } from "../../../lib/emails/kit/format"
 import { languageName } from "../../../lib/emails/languages"
 import { useDebounced } from "../../../lib/emails/kit/hooks"
+import { useTypeText } from "../../../lib/emails/type-text"
 
 const COMMON = "common"
 const LATEST = "latest"
@@ -99,7 +100,8 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
   const prompt = usePrompt()
   const isCommon = type === COMMON
   const summary = "audience" in detail ? detail : null
-  const name = t(`emails.types.${type}.name`, { defaultValue: type })
+  const text = useTypeText()(type, summary?.labels)
+  const name = text.name
   const languageLabel = (code: EmailLocale) => languageName(code, detail.locales, i18n.language)
 
   const saved = useMemo(() => toDraft(detail), [detail])
@@ -166,11 +168,11 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
               </Link>
               <div className="mt-1 flex flex-wrap items-center gap-x-2">
                 <Heading>{name}</Heading>
-                {summary?.custom && <Badge size="2xsmall">{t("emails.list.custom")}</Badge>}
+                {summary?.custom && <Badge size="2xsmall">{text.source ?? t("emails.list.custom")}</Badge>}
                 {detail.edited && <Badge size="2xsmall">{t("emails.list.edited")}</Badge>}
               </div>
               <Text size="small" className="text-ui-fg-subtle">
-                {t(`emails.types.${type}.description`, { defaultValue: "" })}
+                {text.description}
               </Text>
             </div>
             {summary && (
@@ -183,8 +185,7 @@ const Editor = ({ type, detail }: { type: string; detail: EmailTypeDetail }) => 
                   checked={summary.enabled}
                   disabled={update.isPending}
                   onCheckedChange={async (checked) => {
-                    if (!checked && !(await confirm.disable(t(`emails.types.${type}.name`, { defaultValue: type }))))
-                      return
+                    if (!checked && !(await confirm.disable(name))) return
                     update.mutate(
                       { enabled: checked },
                       { onError: (error) => toast.error(`${t("emails.list.toggleError")} ${errorMessage(error)}`) }

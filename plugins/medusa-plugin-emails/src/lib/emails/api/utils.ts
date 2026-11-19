@@ -189,6 +189,8 @@ export function describeType(
     type,
     audience: definition.audience,
     custom: definition.custom,
+    /** Admin texts of a custom type per admin language; `null` for built-in types. */
+    labels: definition.custom ? (definition.labels ?? null) : null,
     sensitive: definition.sensitive,
     enabled: state.enabled,
     default_enabled: definition.defaultEnabled,
@@ -196,14 +198,22 @@ export function describeType(
     edited: hasEdits(state.copy, languages),
     /** Untranslated fields, summed over the store's languages. */
     missing_translations: sum(countMissing(options, settings, type, languages)),
+    /** The store's languages with untranslated fields. */
+    missing_locales: missingLocales(countMissing(options, settings, type, languages)),
   }
 }
+
+const missingLocales = (counts: Record<string, number>) =>
+  Object.entries(counts)
+    .filter(([, count]) => count > 0)
+    .map(([locale]) => locale)
 
 /** The shared labels as the admin lists them. */
 export function describeCommon(options: EmailsPluginOptions, settings: EmailsSettings, languages: EmailLanguages) {
   return {
     edited: hasEdits(settings.common_copy, languages),
     missing_translations: sum(countMissing(options, settings, COMMON_GROUP, languages)),
+    missing_locales: missingLocales(countMissing(options, settings, COMMON_GROUP, languages)),
   }
 }
 

@@ -23,6 +23,7 @@ export function listDefinitions(options: TemplateOptions): EmailTypeDefinition[]
       variables: template.variables ?? null,
       custom: true,
       defaultEnabled: !options.disabledTypes.includes(type) && (template.enabled ?? true),
+      labels: { name: template.name, description: template.description, source: template.source },
     }))
   return [...builtIn, ...custom]
 }

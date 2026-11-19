@@ -405,6 +405,11 @@ options: {
   templates: {
     "abandoned-cart": {
       component: AbandonedCart,
+      // How the admin names it, per admin language (default: the type key).
+      name: { en: "Abandoned cart", pl: "Porzucony koszyk" },
+      description: { en: "A day after a cart is left.", pl: "Dzień po porzuceniu koszyka." },
+      // Who adds it, shown instead of "Custom".
+      source: { en: "My store", pl: "Mój sklep" },
       copy: {
         en: { subject: "You left {{count}} items behind", heading: "Still thinking?", body: "Your cart is waiting.", button: "Back to the cart" },
         pl: { subject: "W koszyku czeka {{count}} produktów", heading: "Jeszcze się zastanawiasz?", body: "Twój koszyk czeka.", button: "Wróć do koszyka" },
@@ -417,8 +422,9 @@ options: {
 }
 ```
 
-A custom type shows up in the admin with a toggle, editable text, preview
-and test send. `StandardEmail` renders the heading, greeting, body, button
+A custom type shows up in the admin with its name, description and source,
+a toggle, editable text, preview and test send. "Missing translations"
+names the store languages that still have no text of their own. `StandardEmail` renders the heading, greeting, body, button
 (when the data has `action_url`), note and sign-off around your content;
 the package also exports `EmailLayout`, `OrderSummary`, `OrderItems`,
 `OrderTotals`, `InfoRows`, `QuantityList`, `Highlight` and `PrimaryButton`.
@@ -479,7 +485,7 @@ Admin routes, all under `/admin/emails` and behind admin authentication:
 | Route                         |                                                               |
 | ----------------------------- | ------------------------------------------------------------- |
 | `GET /status`                 | Enabled or the reason it is not, demo mode, sender.           |
-| `POST /demo/reset`            | "Restore test data" for the send history (demo mode only).     |
+| `POST /demo/reset`            | "Restore test data" for the send history (demo mode only).    |
 | `GET, POST /settings`         | Store team recipients and low stock threshold.                |
 | `GET, POST /theme`            | Appearance; `{ theme: null }` restores the plugin options.    |
 | `GET /guide`                  | Rollout steps with their detected status.                     |

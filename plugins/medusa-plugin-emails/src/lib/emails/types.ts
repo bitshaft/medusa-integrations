@@ -25,6 +25,16 @@ export type EmailTypeDefinition = {
   custom: boolean
   /** State of the on/off toggle until an admin changes it. */
   defaultEnabled: boolean
+  /** Admin texts of a custom type, per admin language (built-in types have translations). */
+  labels?: TypeLabels
+}
+
+/** How the admin names a custom type: each value per admin language (`en`, `pl`). */
+export type TypeLabels = {
+  name?: Partial<Record<string, string>>
+  description?: Partial<Record<string, string>>
+  /** The plugin or app that adds the type, shown instead of "Custom". */
+  source?: Partial<Record<string, string>>
 }
 
 const BASE_VARIABLES = ["store_name", "support_email", "first_name", "last_name", "customer_name", "customer_email"]
@@ -271,4 +281,10 @@ export type CustomTemplateOption = {
   enabled?: boolean
   /** Example data for the admin preview and test sends of a new type; gets the store language code. */
   previewData?: EmailData | ((locale: EmailLocale) => EmailData)
+  /** Name in the admin per admin language (`{ en: "…", pl: "…" }`). Default: the type key. */
+  name?: Partial<Record<string, string>>
+  /** One line under the name in the admin, per admin language. */
+  description?: Partial<Record<string, string>>
+  /** The plugin or app that adds the type, per admin language; shown instead of "Custom". */
+  source?: Partial<Record<string, string>>
 }

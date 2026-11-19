@@ -455,6 +455,7 @@ describe("copy", () => {
       expect(describeCommon(opts, settings, store)).toEqual({
         edited: false,
         missing_translations: copyKeys(opts, "common").length,
+        missing_locales: ["de-DE"],
       })
       // With only the base there is nothing to translate.
       const off = { base: "pl-PL", locales: ["pl-PL"], translation: false }
@@ -495,7 +496,13 @@ describe("registry and settings", () => {
     const opts = options({
       disabledTypes: ["payment-received"],
       templates: {
-        "abandoned-cart": { copy: { en: { subject: "Hi", coupon: "Code" } }, enabled: false, audience: "customer" },
+        "abandoned-cart": {
+          copy: { en: { subject: "Hi", coupon: "Code" } },
+          enabled: false,
+          audience: "customer",
+          name: { en: "Abandoned cart", pl: "Porzucony koszyk" },
+          source: { en: "My store" },
+        },
       },
     })
     const definitions = listDefinitions(opts)
@@ -505,7 +512,9 @@ describe("registry and settings", () => {
       custom: true,
       defaultEnabled: false,
       variables: null,
+      labels: { name: { en: "Abandoned cart", pl: "Porzucony koszyk" }, source: { en: "My store" } },
     })
+    expect(definitions.find((d) => d.type === "order-confirmation")?.labels).toBeUndefined()
     expect(copyKeys(opts, "abandoned-cart")).toEqual(["subject", "coupon"])
   })
 

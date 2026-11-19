@@ -38,10 +38,19 @@ export type EmailsGeneralSettings = {
   default_low_stock_threshold: number
 }
 
+/** Admin texts of a type added by another plugin, each per admin language. */
+export type TypeLabels = {
+  name?: Partial<Record<string, string>>
+  description?: Partial<Record<string, string>>
+  source?: Partial<Record<string, string>>
+}
+
 export type EmailTypeSummary = {
   type: string
   audience: EmailAudience
   custom: boolean
+  /** `null` for built-in types (their texts are in the translations). */
+  labels: TypeLabels | null
   sensitive: boolean
   enabled: boolean
   default_enabled: boolean
@@ -49,6 +58,8 @@ export type EmailTypeSummary = {
   edited: boolean
   /** Untranslated fields, summed over the store's languages. */
   missing_translations: number
+  /** The store's languages with untranslated fields. */
+  missing_locales: string[]
 }
 
 export type CopyField = {
@@ -148,6 +159,7 @@ export function useEmailTypes(enabled: boolean) {
         types: EmailTypeSummary[]
         common_edited: boolean
         common_missing_translations: number
+        common_missing_locales: string[]
       }>("/admin/emails/types"),
     enabled,
   })

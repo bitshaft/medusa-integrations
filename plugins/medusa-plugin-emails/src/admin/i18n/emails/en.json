@@ -97,7 +97,9 @@
       "noRecipients": "No recipients",
       "toggleError": "Could not change the setting.",
       "sharedTitle": "Shared texts",
-      "sharedDescription": "Greeting, sign-off, table labels and footer used by every email."
+      "sharedDescription": "Greeting, sign-off, table labels and footer used by every email.",
+      "customHint": "Another plugin or the store adds this email. You can edit its text like the others.",
+      "missingIn": "Text missing in: {{languages}}. Until translated, these fields go out in the base language."
     },
     "translations": {
       "title": "Emails",
