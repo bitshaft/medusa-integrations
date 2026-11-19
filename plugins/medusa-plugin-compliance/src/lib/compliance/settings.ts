@@ -49,8 +49,6 @@ export const settingsSchema = z
         omnibus: z.boolean().default(true),
       })
       .prefault({}),
-    /** The admin shows sample data and refuses every change to real data. */
-    demo: z.boolean().default(false),
     gpsr: z
       .object({
         /** Fields that must be filled for a product to count as complete. */

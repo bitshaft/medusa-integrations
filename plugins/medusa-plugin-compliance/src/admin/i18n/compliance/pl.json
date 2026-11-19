@@ -39,7 +39,7 @@
       "en": "Angielski"
     },
     "demo": {
-      "body": "Oglądasz dane pokazowe. Nic, co tu zrobisz, nie zmienia prawdziwych danych sklepu. Wyłącz tryb demo w Ustawieniach."
+      "body": "Oglądasz dane pokazowe. Nic, co tu zrobisz, nie zmienia prawdziwych danych sklepu. Przed startem wyłącz opcję demo w medusa-config.ts."
     },
     "legal": {
       "short": "Ta wtyczka to narzędzie, nie porada prawna, i nie gwarantuje zgodności z przepisami. Sprawdź ustawienia i teksty z prawnikiem.",
@@ -407,8 +407,6 @@
       "gpsrHint": "Dane bezpieczeństwa produktów, sprawdzanie kompletności i Store API GPSR.",
       "gdprHint": "Rejestr zgód, żądania, eksport danych i anonimizacja.",
       "omnibusHint": "Historia cen i najniższa cena przed obniżką. Włączenie robi migawkę wszystkich cen.",
-      "demo": "Tryb demo",
-      "demoHint": "Panel pokazuje dane pokazowe i niczego nie zapisuje poza tymi ustawieniami. Sklep dalej działa na prawdziwych danych.",
       "gpsrTitle": "GPSR: wymagane pola",
       "gpsrRequiredHint": "Nazwa, adres pocztowy i elektroniczny producenta (oraz osoby odpowiedzialnej dla producentów spoza UE) są zawsze wymagane. Te pola są opcjonalne:",
       "requestsTitle": "RODO: żądania",
@@ -531,7 +529,7 @@
       },
       "demo": {
         "title": "Tryb demo",
-        "body": "Włącz go w Ustawieniach, żeby pokazać panel na danych pokazowych (produkty z brakami GPSR, żądania w różnych stanach, ceny z obniżkami). Gdy jest włączony, nic prawdziwego się nie zmienia, a sklep dalej działa na prawdziwych danych."
+        "body": "Ustaw demo: true w opcjach wtyczki w medusa-config.ts, żeby pokazać panel na danych pokazowych (produkty z brakami GPSR, żądania w różnych stanach, ceny z obniżkami). Gdy jest włączony, nic prawdziwego się nie zmienia poza ustawieniami, a sklep dalej działa na prawdziwych danych."
       }
     },
     "translations": {
@@ -590,7 +588,7 @@
       },
       "production": {
         "title": "Start produkcyjny",
-        "body": "Tryb demo wyłączony w Ustawieniach, żeby panele pokazywały prawdziwe dane sklepu."
+        "body": "Tryb demo wyłączony (demo: false w medusa-config.ts), żeby panele pokazywały prawdziwe dane sklepu."
       }
     }
   }

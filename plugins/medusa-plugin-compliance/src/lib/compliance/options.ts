@@ -39,6 +39,11 @@ export const pluginOptionsSchema = z.object({
   /** Language of customer messages when the request names none. */
   defaultLocale: z.enum(["pl", "en"]).default("pl"),
   dataProviders: z.array(dataProviderSchema).default([]),
+  /**
+   * The admin shows sample data and refuses every change to real data
+   * except the settings. The storefront keeps using real data.
+   */
+  demo: z.boolean().default(false),
 })
 export type CompliancePluginOptions = z.output<typeof pluginOptionsSchema>
 

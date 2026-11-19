@@ -13,7 +13,7 @@ export const GpsrSection = ({ productId }: { productId: string }) => {
   const on = settings.data?.enabled && settings.data.settings.modules.gpsr
   const safety = useProductSafety(product.id)
   if (!on) return null
-  const demo = Boolean(settings.data?.settings.demo)
+  const demo = Boolean(settings.data?.demo)
   return (
     <div className="flex flex-col gap-y-4 p-6">
       <div>

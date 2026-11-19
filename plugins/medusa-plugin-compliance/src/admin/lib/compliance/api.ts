@@ -28,7 +28,6 @@ export type OmnibusException = {
 
 export type Settings = {
   modules: { gpsr: boolean; gdpr: boolean; omnibus: boolean }
-  demo: boolean
   gpsr: {
     require: {
       manufacturer_trade_name: boolean
@@ -72,8 +71,10 @@ export type SettingsResponse = {
   enabled: boolean
   disabled_reason: string | null
   settings: Settings
+  /** The `demo` plugin option. */
+  demo: boolean
   version: string | null
-  options: { timeZone: string; defaultLocale: Locale; dataProviders: string[] }
+  options: { timeZone: string; defaultLocale: Locale; dataProviders: string[]; demo: boolean }
   omnibus_started_at: string | null
   regions: Array<{ id: string; name: string; countries: string[] }>
   lawyer_placeholder: string

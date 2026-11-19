@@ -592,10 +592,16 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
 
     describe("demo mode", () => {
       it("shows sample data and changes nothing", async () => {
-        const { container } = makeStore(service)
+        // Demo mode is the `demo` plugin option, read when the module starts:
+        // the same module, seen with that option on.
+        const options = await service.getOptions()
+        const demoService = new Proxy(service, {
+          get: (target, key) =>
+            key === "getOptions" ? async () => ({ ...options, demo: true }) : Reflect.get(target, key),
+        })
+        const { container } = makeStore(demoService)
         await submitRequest(container, { type: "access", email: "real@example.com", locale: "pl", ip_hash: "r" })
         await recomputeGpsr(container)
-        await service.saveSettings({ demo: true })
         const before = {
           requests: (await service.listComplianceRequests({})).length,
           events: (await service.listComplianceRequestEvents({})).length,

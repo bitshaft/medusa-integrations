@@ -35,7 +35,7 @@ const CompliancePage = () => {
   // The tab is kept in the URL (`?tab=gpsr`), so other pages can link straight to it.
   const [tab, setTab] = useTabParam(TABS)
   const s = status.data
-  const demo = Boolean(s?.settings.demo)
+  const demo = Boolean(s?.demo)
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -101,6 +101,7 @@ const CompliancePage = () => {
               ["timeZone", s.options.timeZone],
               ["defaultLocale", s.options.defaultLocale],
               ["dataProviders", s.options.dataProviders],
+              ["demo", s.options.demo],
             ]}
           />
         </>

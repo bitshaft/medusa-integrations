@@ -19,6 +19,8 @@ async function view(req: MedusaRequest) {
     disabled_reason: await service.disabledReason(),
     version: readPackageVersion(PACKAGE_NAME, __dirname),
     settings: await service.getSettings(),
+    /** From the plugin options (`demo`), not a setting. */
+    demo: (await service.getOptions()).demo,
     options: {
       ...(await service.getOptions()),
       dataProviders: (await service.getOptions()).dataProviders.map((p) => p.label ?? p.module),
@@ -42,7 +44,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
 /**
  * `POST /admin/compliance/settings` with the whole settings object. The
- * only change allowed in demo mode, so demo mode can be switched off.
+ * only change allowed in demo mode, so the owner can try the rules.
  * Switching Omnibus on for the first time takes the price snapshot.
  */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {

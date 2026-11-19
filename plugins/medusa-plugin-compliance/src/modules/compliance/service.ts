@@ -130,7 +130,7 @@ class ComplianceModuleService extends MedusaService({
   async getOptions(): Promise<CompliancePluginOptions> {
     return "options" in this.state_
       ? this.state_.options
-      : { timeZone: "Europe/Warsaw", defaultLocale: "pl", dataProviders: [] }
+      : { timeZone: "Europe/Warsaw", defaultLocale: "pl", dataProviders: [], demo: false }
   }
 
   /* Settings ---------------------------------------------------------------- */

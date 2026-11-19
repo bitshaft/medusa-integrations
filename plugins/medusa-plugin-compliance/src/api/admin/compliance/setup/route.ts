@@ -47,6 +47,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       setupStep("omnibusStorefront", null, { params: { days: settings.omnibus.period_days } })
     )
   }
-  steps.push(setupStep("lawyer", null), setupStep("production", !settings.demo))
+  steps.push(setupStep("lawyer", null), setupStep("production", !(await service.getOptions()).demo))
   res.json({ steps })
 }

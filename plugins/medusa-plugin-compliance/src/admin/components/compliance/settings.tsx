@@ -80,12 +80,6 @@ export const Settings = ({ data }: { data: SettingsResponse }) => {
           checked={s.modules.omnibus}
           onChange={(v) => set("modules", { ...s.modules, omnibus: v })}
         />
-        <Toggle
-          label={t("compliance.settings.demo")}
-          hint={t("compliance.settings.demoHint")}
-          checked={s.demo}
-          onChange={(demo) => set("demo", demo)}
-        />
       </Section>
 
       <Section title={t("compliance.settings.gpsrTitle")} hint={t("compliance.settings.gpsrRequiredHint")}>

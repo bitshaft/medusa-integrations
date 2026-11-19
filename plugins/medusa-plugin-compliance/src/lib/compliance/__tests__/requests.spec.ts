@@ -108,7 +108,6 @@ describe("settings", () => {
   it("has safe defaults", () => {
     expect(DEFAULT_SETTINGS).toMatchObject({
       modules: { gpsr: true, gdpr: true, omnibus: true },
-      demo: false,
       gdpr: { response_days: 30, warn_days: 7 },
       omnibus: { period_days: 30, automatic_promotions: true, code_promotions: false },
     })
@@ -117,7 +116,8 @@ describe("settings", () => {
 
   it("falls back to defaults for broken stored data", () => {
     expect(readSettings({ gdpr: { response_days: -5 } })).toEqual(DEFAULT_SETTINGS)
-    expect(readSettings({ demo: true }).demo).toBe(true)
+    // Demo mode moved to the plugin options: an old stored value is dropped.
+    expect(readSettings({ demo: true })).not.toHaveProperty("demo")
   })
 })
 

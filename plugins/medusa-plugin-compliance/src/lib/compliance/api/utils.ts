@@ -48,7 +48,7 @@ export async function requireStoreModule(req: MedusaRequest, key: ModuleKey) {
 }
 
 export async function isDemo(req: MedusaRequest): Promise<boolean> {
-  return (await resolveCompliance(req.scope).getSettings()).demo
+  return (await resolveCompliance(req.scope).getOptions()).demo
 }
 
 /**
@@ -61,7 +61,7 @@ export async function refuseInDemo(req: MedusaRequest, _res: MedusaResponse, nex
       return next(
         new MedusaError(
           MedusaError.Types.NOT_ALLOWED,
-          "Demo mode is on: changes are not saved. Switch demo mode off in Compliance → Settings to work on real data."
+          "Demo mode is on: changes are not saved. Set demo: false in the plugin options in medusa-config.ts to work on real data."
         )
       )
     }

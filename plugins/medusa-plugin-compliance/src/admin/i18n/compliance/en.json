@@ -39,7 +39,7 @@
       "en": "English"
     },
     "demo": {
-      "body": "You are looking at sample data. Nothing you do here changes the store's real data. Switch demo mode off in Settings."
+      "body": "You are looking at sample data. Nothing you do here changes the store's real data. Before going live, switch the demo option off in medusa-config.ts."
     },
     "legal": {
       "short": "This plugin is a tool, not legal advice, and it does not guarantee compliance with the law. Check your settings and texts with a lawyer.",
@@ -387,8 +387,6 @@
       "gpsrHint": "Product safety data, completeness checks and the GPSR Store API.",
       "gdprHint": "Consent register, requests, data export and anonymisation.",
       "omnibusHint": "Price history and the lowest price before a discount. Switching it on takes a snapshot of every price.",
-      "demo": "Demo mode",
-      "demoHint": "The admin shows sample data and saves nothing except these settings. The storefront keeps using real data.",
       "gpsrTitle": "GPSR: required fields",
       "gpsrRequiredHint": "Manufacturer name, postal and electronic address (and the same for the responsible person outside the EU) are always required. These are optional:",
       "requestsTitle": "GDPR: requests",
@@ -511,7 +509,7 @@
       },
       "demo": {
         "title": "Demo mode",
-        "body": "Switch it on in Settings to show the panel with sample data (products missing GPSR data, requests in different states, prices with discounts). Nothing real is changed while it is on, and the storefront keeps working on real data."
+        "body": "Set demo: true in the plugin options in medusa-config.ts to show the panel with sample data (products missing GPSR data, requests in different states, prices with discounts). Nothing real is changed while it is on except the settings, and the storefront keeps working on real data."
       }
     },
     "translations": {
@@ -570,7 +568,7 @@
       },
       "production": {
         "title": "Go live",
-        "body": "Demo mode off in Settings, so the panels show the store's real data."
+        "body": "Demo mode off (demo: false in medusa-config.ts), so the panels show the store's real data."
       }
     }
   }

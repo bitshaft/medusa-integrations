@@ -69,13 +69,14 @@ The plugin options are technical only:
 | `timeZone`      | `Europe/Warsaw` | Time zone for dates                                                           |
 | `defaultLocale` | `pl`            | Language of Store API messages when the request names none                    |
 | `dataProviders` | `[]`            | Other modules that add data to exports, see [Data providers](#data-providers) |
+| `demo`          | `false`         | Sample data in the admin, see [Demo mode](#demo-mode). Demo stores only       |
 
 Invalid options never stop Medusa: the plugin stays disabled, logs one
 line (`[compliance] Disabled: …`) and the admin page shows the reason.
 
 Everything else is a setting on the **Settings** tab:
 
-- modules on or off, demo mode;
+- modules on or off;
 - GPSR: which optional fields are required (trade name, type, model,
   marking photo, warnings and their languages);
 - GDPR: deadline for answers (30 days), warning before it (7 days),
@@ -178,10 +179,11 @@ lawyer.
 
 ### Demo mode
 
-A switch in the settings. The admin then shows sample data (products
-missing GPSR data, requests in different states, prices with discounts),
-refuses every change except to the settings, and shows a "Demo mode" bar
-on every page. The storefront and the Store API keep using real data.
+The `demo: true` plugin option in `medusa-config.ts`. The admin then shows
+sample data (products missing GPSR data, requests in different states,
+prices with discounts), refuses every change except to the settings, and
+shows a "Demo mode" bar on every page. The storefront and the Store API
+keep using real data. Switch it off before going live.
 
 ## Events
 
