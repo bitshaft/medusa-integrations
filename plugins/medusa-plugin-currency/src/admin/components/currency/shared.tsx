@@ -5,7 +5,7 @@ import type { PlanRow, RateLookup, ResolvedRate, Warning } from "../../lib/curre
 import { formatDate, formatDateTime } from "../../lib/currency/kit/format"
 import { formatPercent, formatRate } from "../../lib/currency/format"
 
-export const BRAND_COLOR = "#0891b2"
+export const BRAND_COLOR = "#4f46e5"
 
 /** Add / overwrite / skip, coloured. */
 export const ActionBadge = ({ row }: { row: Pick<PlanRow, "action" | "reason"> }) => {

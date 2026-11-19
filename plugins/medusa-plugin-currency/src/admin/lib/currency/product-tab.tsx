@@ -9,7 +9,7 @@ import { formatDate } from "./kit/format"
 import { registerTab } from "./kit/integrations"
 import { Empty } from "./kit/page"
 
-export const brand = { label: "currency.title", icon: Cash, color: "#0891b2" }
+export const brand = { label: "currency.title", icon: Cash, color: "#4f46e5" }
 
 /** The Currencies tab of the product page's Integrations card: every price and where it came from. */
 registerTab("product", {
