@@ -259,6 +259,8 @@ export type ListFilters = {
   q?: string
   customer_id?: string
   product_id?: string
+  /** `me`, `none` (nobody leads it) or a user id. */
+  assignee?: string
   limit?: number
   offset?: number
 }

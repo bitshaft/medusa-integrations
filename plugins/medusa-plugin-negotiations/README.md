@@ -78,21 +78,21 @@ Every option has a default; nothing stops Medusa from starting. Invalid
 values keep the plugin disabled and log one line (`[negotiations] Disabled:
 …`).
 
-| Option                   | Default             |                                                                                                                |
-| ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `expiryDays`             | `14`                | A thread with no move for this many days expires. `0` = never. Internal notes do not count as moves            |
-| `acceptedOfferDays`      | `expiryDays` (`14`) | Days the customer has to use an agreed price (14 when `expiryDays` is 0). Shown to the customer                |
-| `defaultCurrency`        | store default       | Currency of product threads when the customer sends neither a region nor a currency                            |
-| `customerAccept`         | `true`              | Customers may accept a counter-offer themselves. Off: the team closes the deal at its offer                    |
-| `allowedCustomerGroups`  | `[]`                | Customer group ids or names allowed to negotiate. Empty: every signed-in customer                              |
-| `writers.draftOrders`    | `false`             | Allows draft orders from agreed prices. Also needs arming in the admin settings                                |
-| `writers.cart`           | `false`             | Allows agreed lines in the customer's cart. Also needs arming in the admin settings                            |
-| `limits.openThreads`     | `10`                | Open threads (open or with a counter-offer) per customer                                                       |
-| `limits.threadsPerHour`  | `5`                 | New threads per customer per hour                                                                              |
-| `limits.messagesPerHour` | `30`                | Customer messages per hour, across their threads                                                               |
-| `limits.messageLength`   | `2000`              | Characters per message                                                                                         |
-| `limits.maxQuantity`     | `10000`             | Quantity of one line                                                                                           |
-| `demo`                   | `false`             | Sample threads on the admin page (see [Demo mode](#demo-mode)); they never expire and never write              |
+| Option                   | Default             |                                                                                                     |
+| ------------------------ | ------------------- | --------------------------------------------------------------------------------------------------- |
+| `expiryDays`             | `14`                | A thread with no move for this many days expires. `0` = never. Internal notes do not count as moves |
+| `acceptedOfferDays`      | `expiryDays` (`14`) | Days the customer has to use an agreed price (14 when `expiryDays` is 0). Shown to the customer     |
+| `defaultCurrency`        | store default       | Currency of product threads when the customer sends neither a region nor a currency                 |
+| `customerAccept`         | `true`              | Customers may accept a counter-offer themselves. Off: the team closes the deal at its offer         |
+| `allowedCustomerGroups`  | `[]`                | Customer group ids or names allowed to negotiate. Empty: every signed-in customer                   |
+| `writers.draftOrders`    | `false`             | Allows draft orders from agreed prices. Also needs arming in the admin settings                     |
+| `writers.cart`           | `false`             | Allows agreed lines in the customer's cart. Also needs arming in the admin settings                 |
+| `limits.openThreads`     | `10`                | Open threads (open or with a counter-offer) per customer                                            |
+| `limits.threadsPerHour`  | `5`                 | New threads per customer per hour                                                                   |
+| `limits.messagesPerHour` | `30`                | Customer messages per hour, across their threads                                                    |
+| `limits.messageLength`   | `2000`              | Characters per message                                                                              |
+| `limits.maxQuantity`     | `10000`             | Quantity of one line                                                                                |
+| `demo`                   | `false`             | Sample threads on the admin page (see [Demo mode](#demo-mode)); they never expire and never write   |
 
 Admin settings (Negotiations → Settings, stored in the database): which
 counter-offer modes the team may use on whole carts (one amount, a price
@@ -272,8 +272,10 @@ All under `/admin/negotiations`.
 - **Dashboard**: waiting for you, open, with a counter-offer, value in talks,
   expiring within two days, accepted, agreed amount, rejected and expired in
   30 days, average first reply. The thread list with status filters and
-  counts, search (number, product, SKU, customer), a "your move" dot, and
-  "Answer the oldest".
+  counts, search (number, product, SKU, customer), a filter by assignee
+  (mine, no assignee, anyone on the team), the assignee column with a "No
+  assignee" flag on active threads, a "your move" dot, and "Answer the
+  oldest".
 - **Thread page**: details (customer, product, SKU, quantity, catalog price,
   target, our offer, value and discount, lead, start, expiry), the
   conversation (customer on the left, team on the right, internal notes

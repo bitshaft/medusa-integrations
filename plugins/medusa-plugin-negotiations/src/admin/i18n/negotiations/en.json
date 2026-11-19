@@ -80,7 +80,8 @@
       "lines_other": "{{count}} lines",
       "yourMove": "Your move",
       "empty": "No negotiations yet.",
-      "noResults": "Nothing matches the search."
+      "noResults": "Nothing matches the search.",
+      "assignee": "Assignee"
     },
     "price": {
       "below": "{{value}} below catalog",
@@ -382,6 +383,12 @@
         "title": "Go live",
         "body": "Switch demo mode off and restart Medusa."
       }
+    },
+    "assignee": {
+      "filter": "Assignee",
+      "any": "All assignees",
+      "me": "Mine",
+      "none": "No assignee"
     }
   }
 }

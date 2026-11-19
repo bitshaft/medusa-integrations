@@ -653,6 +653,18 @@ medusaIntegrationTestRunner({
       expect(list.data.oldest_waiting_id).toBe(data.negotiation.id)
       const stats = await api.get("/admin/negotiations/stats", admin)
       expect(stats.data.stats).toMatchObject({ waiting: 1, open: 1, in_talks: { pln: 80_000 } })
+
+      // By assignee: nobody leads it yet, then the signed-in user does.
+      const count = async (assignee: string) =>
+        (await api.get(`/admin/negotiations?assignee=${assignee}`, admin)).data.counts.open ?? 0
+      expect(await count("none")).toBe(1)
+      expect(await count("me")).toBe(0)
+      const me = (await api.get("/admin/users/me", admin)).data.user.id
+      await api.post(`/admin/negotiations/${data.negotiation.id}/assign`, { user_id: me }, admin)
+      expect(await count("none")).toBe(0)
+      expect(await count("me")).toBe(1)
+      expect(await count(me)).toBe(1)
+      expect(await count("user_someone_else")).toBe(0)
     })
 
     it("installation steps: detected from the store, optional ones marked, events checked by hand", async () => {

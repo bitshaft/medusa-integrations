@@ -16,7 +16,19 @@ import {
 import { customerName, dateTime, money, percent, relative } from "../../lib/negotiations/format"
 import { CounterForm } from "./counter-form"
 import { DraftOrderPanel } from "./draft-order"
-import { BasisBadge, DemoBadge, floorWarning, Note, StatusLabel, TurnDot, useBasisMoney, useErrorText } from "./shared"
+import {
+  BasisBadge,
+  DemoBadge,
+  floorWarning,
+  isUnassigned,
+  Note,
+  StatusLabel,
+  TurnDot,
+  UnassignedBadge,
+  useBasisMoney,
+  useErrorText,
+  useUserName,
+} from "./shared"
 
 const ACTIVE = ["open", "countered"]
 
@@ -65,9 +77,9 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
   return (
     <Container className="overflow-hidden divide-y p-0">
       <div className="flex items-start justify-between gap-2 px-6 py-4">
-        <div>
-          <div className="flex items-center gap-x-2">
-            <TurnDot thread={thread} />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <TurnDot thread={thread} spacer={false} />
             <Heading level="h2" className="font-mono">
               {thread.number}
             </Heading>
@@ -78,7 +90,9 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
             {thread.kind === "cart" ? t("negotiations.list.wholeCart") : t("negotiations.thread.productThread")}
           </Text>
         </div>
-        <StatusLabel status={thread.status} />
+        <div className="shrink-0">
+          <StatusLabel status={thread.status} />
+        </div>
       </div>
       <div className="py-2">
         <Row label={t("negotiations.thread.customer")}>
@@ -164,6 +178,11 @@ const Details = ({ detail }: { detail: ThreadDetail }) => {
               ))}
             </Select.Content>
           </Select>
+          {isUnassigned(thread) && (
+            <div className="mt-1">
+              <UnassignedBadge />
+            </div>
+          )}
         </Row>
       </div>
       {thread.kind === "cart" && <CartLines thread={thread} detail={detail} />}
@@ -238,11 +257,7 @@ const CartLines = ({ thread, detail }: { thread: Thread; detail: ThreadDetail })
 
 const Conversation = ({ detail }: { detail: ThreadDetail }) => {
   const { t } = useTranslation()
-  const users = useUsers()
-  const userName = (id: string | null) => {
-    const u = users.data?.users.find((u) => u.id === id)
-    return u ? [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email : null
-  }
+  const userName = useUserName()
   return (
     <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
       <Heading level="h2">{t("negotiations.thread.conversation")}</Heading>

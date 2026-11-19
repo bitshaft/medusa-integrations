@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 
 export { Empty, Pager } from "../../lib/negotiations/kit/page"
 import { DemoResetButton, DemoBar as KitDemoBar } from "../../lib/negotiations/kit/demo"
-import { apiError, type FloorCheck, type Status, type Thread, useResetDemo } from "../../lib/negotiations/api"
+import { apiError, type FloorCheck, type Status, type Thread, useResetDemo, useUsers } from "../../lib/negotiations/api"
 import { money, percent } from "../../lib/negotiations/format"
 
 /** Shown on every page while demo mode is on: the bar every integration shares. */
@@ -79,11 +79,14 @@ export const StatusLabel = ({ status }: { status: Status }) => {
   return <StatusBadge color={STATUS_COLOR[status]}>{t(`negotiations.status.${status}`)}</StatusBadge>
 }
 
-/** The "your move" dot: the thread waits for the team. */
-export const TurnDot = ({ thread }: { thread: Pick<Thread, "turn" | "status"> }) => {
+/**
+ * The "your move" dot: the thread waits for the team. In lists an empty
+ * spacer keeps the numbers aligned; elsewhere (`spacer={false}`) nothing.
+ */
+export const TurnDot = ({ thread, spacer = true }: { thread: Pick<Thread, "turn" | "status">; spacer?: boolean }) => {
   const { t } = useTranslation()
   if (thread.turn !== "team" || (thread.status !== "open" && thread.status !== "countered")) {
-    return <span className="inline-block h-2 w-2 shrink-0" aria-hidden />
+    return spacer ? <span className="inline-block h-2 w-2 shrink-0" aria-hidden /> : null
   }
   return (
     <span
@@ -91,6 +94,29 @@ export const TurnDot = ({ thread }: { thread: Pick<Thread, "turn" | "status"> })
       title={t("negotiations.list.yourMove")}
       aria-label={t("negotiations.list.yourMove")}
     />
+  )
+}
+
+/** An admin user's name (or email) by id; `null` while loading or unknown. */
+export function useUserName() {
+  const users = useUsers()
+  return (id: string | null) => {
+    const u = users.data?.users.find((u) => u.id === id)
+    return u ? [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email : null
+  }
+}
+
+/** An active thread (open or countered) that nobody on the team leads. */
+export const isUnassigned = (thread: Pick<Thread, "assignee_id" | "status">) =>
+  !thread.assignee_id && (thread.status === "open" || thread.status === "countered")
+
+/** "No assignee": an active thread nobody leads yet. */
+export const UnassignedBadge = () => {
+  const { t } = useTranslation()
+  return (
+    <Badge size="2xsmall" color="orange">
+      {t("negotiations.assignee.none")}
+    </Badge>
   )
 }
 

@@ -73,6 +73,8 @@ export const AdminListQuery = z.object({
   q: z.string().max(200).optional(),
   customer_id: id.optional(),
   product_id: id.optional(),
+  /** `me`, `none` (nobody leads the thread) or a user id. */
+  assignee: z.union([z.enum(["me", "none"]), id]).optional(),
   ...page,
 })
 

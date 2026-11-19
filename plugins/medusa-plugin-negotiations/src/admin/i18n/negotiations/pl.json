@@ -82,7 +82,8 @@
       "lines_other": "{{count}} pozycji",
       "yourMove": "Twój ruch",
       "empty": "Nie ma jeszcze negocjacji.",
-      "noResults": "Nic nie pasuje do wyszukiwania."
+      "noResults": "Nic nie pasuje do wyszukiwania.",
+      "assignee": "Prowadzący"
     },
     "price": {
       "below": "{{value}} poniżej katalogu",
@@ -384,6 +385,12 @@
         "title": "Start produkcyjny",
         "body": "Wyłącz tryb demo i uruchom Medusę ponownie."
       }
+    },
+    "assignee": {
+      "filter": "Prowadzący",
+      "any": "Wszyscy prowadzący",
+      "me": "Moje",
+      "none": "Brak prowadzącego"
     }
   }
 }

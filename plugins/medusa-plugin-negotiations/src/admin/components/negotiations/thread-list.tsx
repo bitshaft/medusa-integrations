@@ -1,15 +1,27 @@
 import { MagnifyingGlass } from "@medusajs/icons"
-import { Button, Input, Skeleton, Table, Text } from "@medusajs/ui"
+import { Button, Input, Select, Skeleton, Table, Text } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
-import { type ListFilters, type Status, type Thread, useThreads } from "../../lib/negotiations/api"
+import { type ListFilters, type Status, type Thread, useThreads, useUsers } from "../../lib/negotiations/api"
 import { customerName, money, relative } from "../../lib/negotiations/format"
-import { DemoBadge, Empty, PriceWithDiscount, productLabel, StatusLabel, TurnDot, Pager } from "./shared"
+import {
+  DemoBadge,
+  Empty,
+  isUnassigned,
+  Pager,
+  PriceWithDiscount,
+  productLabel,
+  StatusLabel,
+  TurnDot,
+  UnassignedBadge,
+  useUserName,
+} from "./shared"
 
 const STATUSES: Status[] = ["open", "countered", "accepted", "rejected", "expired", "withdrawn"]
 const PAGE = 20
+const ANY = "any"
 
 /**
  * Threads with status filters (and their counts), search and paging. Used on
@@ -28,9 +40,12 @@ export const ThreadList = ({
   const navigate = useNavigate()
   const [status, setStatus] = useState<Status | "waiting" | "all">("all")
   const [q, setQ] = useState("")
+  const [assignee, setAssignee] = useState(ANY)
   const [offset, setOffset] = useState(0)
+  const users = useUsers()
   const filters: ListFilters = {
     ...fixed,
+    assignee: compact || assignee === ANY ? undefined : assignee,
     status: status === "all" || status === "waiting" ? undefined : status,
     waiting: status === "waiting" || undefined,
     q: q.trim() || undefined,
@@ -68,6 +83,30 @@ export const ThreadList = ({
             {STATUSES.map((s) => chip(s, t(`negotiations.status.${s}`), counts[s]))}
           </div>
           <div className="flex items-center gap-2">
+            <div className="w-48 shrink-0">
+              <Select
+                size="small"
+                value={assignee}
+                onValueChange={(value) => {
+                  setAssignee(value)
+                  setOffset(0)
+                }}
+              >
+                <Select.Trigger aria-label={t("negotiations.assignee.filter")}>
+                  <Select.Value />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Item value={ANY}>{t("negotiations.assignee.any")}</Select.Item>
+                  <Select.Item value="me">{t("negotiations.assignee.me")}</Select.Item>
+                  <Select.Item value="none">{t("negotiations.assignee.none")}</Select.Item>
+                  {(users.data?.users ?? []).map((u) => (
+                    <Select.Item key={u.id} value={u.id}>
+                      {[u.first_name, u.last_name].filter(Boolean).join(" ") || u.email}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select>
+            </div>
             <div className="relative w-full lg:w-72">
               <MagnifyingGlass className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-ui-fg-muted" />
               <Input
@@ -99,7 +138,7 @@ export const ThreadList = ({
         <Skeleton className="mx-6 h-32" />
       ) : !rows.length ? (
         <div className={compact ? "" : "px-6 pb-6"}>
-          <Empty>{q ? t("negotiations.list.noResults") : t("negotiations.list.empty")}</Empty>
+          <Empty>{q || filters.assignee ? t("negotiations.list.noResults") : t("negotiations.list.empty")}</Empty>
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -115,6 +154,7 @@ export const ThreadList = ({
                 <Table.HeaderCell>{t("negotiations.list.price")}</Table.HeaderCell>
                 {!compact && <Table.HeaderCell className="text-right">{t("negotiations.list.value")}</Table.HeaderCell>}
                 <Table.HeaderCell>{t("negotiations.list.status")}</Table.HeaderCell>
+                {!compact && <Table.HeaderCell>{t("negotiations.list.assignee")}</Table.HeaderCell>}
                 <Table.HeaderCell>{t("negotiations.list.activity")}</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -144,6 +184,7 @@ const Row = ({
 }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const userName = useUserName()
   const unit =
     thread.kind === "product" && thread.quantity_total ? Math.floor(thread.current_price / thread.quantity_total) : null
   return (
@@ -193,6 +234,19 @@ const Row = ({
       <Table.Cell>
         <StatusLabel status={thread.status} />
       </Table.Cell>
+      {!compact && (
+        <Table.Cell>
+          {thread.assignee_id ? (
+            <Text size="small">{userName(thread.assignee_id) ?? "—"}</Text>
+          ) : isUnassigned(thread) ? (
+            <UnassignedBadge />
+          ) : (
+            <Text size="small" className="text-ui-fg-muted">
+              —
+            </Text>
+          )}
+        </Table.Cell>
+      )}
       <Table.Cell>
         <div className="flex flex-col">
           <Text size="small">{relative(thread.last_activity_at, lang)}</Text>

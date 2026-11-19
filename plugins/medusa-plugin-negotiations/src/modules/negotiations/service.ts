@@ -174,6 +174,8 @@ export type ThreadFilters = {
   q?: string
   customer_id?: string
   product_id?: string
+  /** A user id, or `null` for threads nobody leads. */
+  assignee_id?: string | null
   limit?: number
   offset?: number
 }
@@ -390,6 +392,11 @@ class NegotiationsModuleService extends MedusaService({
       params.push(...filters.status)
     }
     if (filters.waiting) clauses.push(`"turn" = 'team' and "status" in ${ACTIVE_SQL}`)
+    if (filters.assignee_id === null) clauses.push(`"assignee_id" is null`)
+    else if (filters.assignee_id !== undefined) {
+      clauses.push(`"assignee_id" = ?`)
+      params.push(filters.assignee_id)
+    }
     if (filters.customer_id) {
       clauses.push(`"customer_id" = ?`)
       params.push(filters.customer_id)
