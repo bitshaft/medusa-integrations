@@ -546,6 +546,52 @@
       "gpsrIncomplete": "GPSR niekompletne: {{count}}",
       "gpsrGaps": "Braki w GPSR: {{count}}",
       "gpsrComplete": "Rekord GPSR kompletny"
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+      },
+      "manufacturers": {
+        "title": "Dodaj producentów",
+        "body": "Zakładka GPSR: producent (albo osoba odpowiedzialna w UE) z adresem pocztowym i elektronicznym, potem przypisz go do produktów."
+      },
+      "gpsrProducts": {
+        "title": "Uzupełnij dane bezpieczeństwa produktów",
+        "body": "Sprawdzonych produktów: {{products}}, niekompletnych: {{incomplete}}. Uzupełnisz je na stronie produktu (karta Integracje → Zgodność) albo w zakładce GPSR."
+      },
+      "gdprLinks": {
+        "title": "Ustaw linki RODO",
+        "body": "Ustawienia → RODO: strona potwierdzenia w sklepie i link do polityki prywatności."
+      },
+      "gdprNotice": {
+        "title": "Komunikat po wysłaniu żądania",
+        "body": "Ustawienia → RODO: zamień tekst zastępczy na treść od prawnika."
+      },
+      "consents": {
+        "title": "Dodaj rodzaje zgód",
+        "body": "Zakładka RODO → Rodzaje zgód: np. newsletter, z treścią po polsku i angielsku."
+      },
+      "gdprEmails": {
+        "title": "Wysyłaj maile weryfikacyjne",
+        "body": "Klient potwierdza żądanie linkiem z maila. Wyślij go na zdarzenie compliance.request_verification (np. wtyczką E-maile)."
+      },
+      "omnibusStarted": {
+        "title": "Rozpocznij historię cen",
+        "body": "Włączenie Omnibusa robi pierwszy zapis cen. Gotowe, gdy historia ruszyła."
+      },
+      "omnibusStorefront": {
+        "title": "Pokaż najniższą cenę w sklepie",
+        "body": "Przy każdej obniżonej cenie najniższa cena z ostatnich {{days}} dni, ze Store API."
+      },
+      "lawyer": {
+        "title": "Przejrzyj z prawnikiem",
+        "body": "Ustawienia to odczytanie przepisów przez wtyczkę, nie porada prawna. Przewodnik niżej mówi, co sprawdzić."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony w Ustawieniach, żeby panele pokazywały prawdziwe dane sklepu."
+      }
     }
   }
 }

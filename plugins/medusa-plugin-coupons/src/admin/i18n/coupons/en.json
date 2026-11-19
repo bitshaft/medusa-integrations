@@ -352,6 +352,32 @@
       "body": "\"Restore test data\" creates a set of demo coupons as real Medusa promotions: every kind, tiers, an automatic coupon, limits, a first-order coupon, a customer group, exclusions, every status and a batch of single-use codes. Their names start with [Demo] and their codes with DEMO-. Turn the demo option off in medusa-config.ts before going live.",
       "resetBody": "Coupons named [Demo] are deleted with their promotions and created again. They are real promotions: their codes work at checkout while they are active. Your own coupons are not touched.",
       "restoredHint": "{{coupons}} demo coupons, {{codes}} codes."
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+      },
+      "firstCoupon": {
+        "title": "Create the first coupon",
+        "body": "\"New coupon\" on the Panel tab. Demo coupons do not count. Coupons now: {{count}}."
+      },
+      "storefront": {
+        "title": "Code field in the cart",
+        "body": "The storefront adds a code to the cart as a Medusa promotion. Optionally it checks it first (POST /store/coupons/check) and shows how much is missing to the next tier (GET /store/coupons/progress)."
+      },
+      "automatic": {
+        "title": "Automatic coupon",
+        "body": "A discount without a code, e.g. free shipping above an amount. In the wizard choose \"automatically\"."
+      },
+      "batch": {
+        "title": "Batch of single-use codes",
+        "body": "E.g. 500 codes for a newsletter, downloaded as CSV. The \"New code batch\" button on the Panel tab."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off (demo: false), so the Panel shows the store's real coupons."
+      }
     }
   }
 }

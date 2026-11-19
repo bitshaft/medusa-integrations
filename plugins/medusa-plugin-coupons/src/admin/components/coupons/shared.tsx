@@ -4,6 +4,7 @@ import { type ReactNode, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { type CouponStatus, type OptionKind, useLabels, useOptions } from "../../lib/coupons/api"
+import { useDebounced } from "../../lib/coupons/kit/hooks"
 
 const STATUS_COLOR: Record<CouponStatus, "green" | "blue" | "orange" | "grey"> = {
   active: "green",
@@ -145,7 +146,8 @@ export const MultiPicker = ({
 }) => {
   const { t } = useTranslation()
   const [q, setQ] = useState("")
-  const options = useOptions(kind, q, !disabled)
+  const query = useDebounced(q.trim())
+  const options = useOptions(kind, query, !disabled)
   const labels = useLabels(kind, value)
   const toggle = (id: string) => onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id])
 

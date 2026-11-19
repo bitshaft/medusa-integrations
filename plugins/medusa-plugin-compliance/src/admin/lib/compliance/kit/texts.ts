@@ -89,6 +89,13 @@ const TEXTS = {
     pagerPages: "pages",
     pagerPrev: "Previous",
     pagerNext: "Next",
+    setupTitle: "Installation steps",
+    setupProgress: "Required: {{done}} of {{total}} done",
+    setupDone: "Done",
+    setupTodo: "To do",
+    setupOptional: "Optional",
+    setupManual: "Check yourself",
+    setupOptionalTag: "optional step",
   },
   pl: {
     ordersTitle: "Zamówienia do obsłużenia",
@@ -171,6 +178,13 @@ const TEXTS = {
     pagerPages: "stron",
     pagerPrev: "Poprzednia",
     pagerNext: "Następna",
+    setupTitle: "Kroki instalacji",
+    setupProgress: "Wymagane: {{done}} z {{total}} gotowe",
+    setupDone: "Gotowe",
+    setupTodo: "Do zrobienia",
+    setupOptional: "Opcjonalne",
+    setupManual: "Sprawdź samodzielnie",
+    setupOptionalTag: "krok opcjonalny",
   },
 } as const
 

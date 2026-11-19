@@ -49,6 +49,7 @@ import {
 } from "../../lib/coupons/draft"
 import { errorMessage } from "../../lib/coupons/kit/format"
 import { ChoiceCard, MultiPicker, NumberField, QuickChoices, Section } from "./shared"
+import { useDebounced } from "../../lib/coupons/kit/hooks"
 
 type UiKind = CouponKind | "tiers"
 type Step = "kind" | "who" | "rules"
@@ -74,15 +75,6 @@ const fromDateInput = (value: string, endOfDay: boolean) => {
   if (!value) return null
   const [y, m, d] = value.split("-").map(Number)
   return (endOfDay ? new Date(y, m - 1, d, 23, 59, 59) : new Date(y, m - 1, d, 0, 0, 0)).toISOString()
-}
-
-function useDebounced<T>(value: T, ms: number): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), ms)
-    return () => clearTimeout(timer)
-  }, [value, ms])
-  return debounced
 }
 
 export type WizardProps = {

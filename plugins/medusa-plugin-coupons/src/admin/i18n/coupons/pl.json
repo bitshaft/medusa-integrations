@@ -368,6 +368,32 @@
       "body": "„Przywróć dane testowe” tworzy zestaw kuponów demo jako prawdziwe promocje Medusy: każdy rodzaj, progi, kupon automatyczny, limity, kupon na pierwsze zamówienie, grupę klientów, wykluczenia, każdy status i partię kodów jednorazowych. Ich nazwy zaczynają się od [Demo], a kody od DEMO-. Przed startem wyłącz opcję demo w medusa-config.ts.",
       "resetBody": "Kupony z nazwą [Demo] zostaną usunięte razem z promocjami i utworzone od nowa. To prawdziwe promocje: aktywne kody działają przy zamówieniu. Twoje własne kupony nie zostaną zmienione.",
       "restoredHint": "Kupony demo: {{coupons}}, kody: {{codes}}."
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+      },
+      "firstCoupon": {
+        "title": "Utwórz pierwszy kupon",
+        "body": "„Nowy kupon” w zakładce Panel. Kupony demo się nie liczą. Kuponów teraz: {{count}}."
+      },
+      "storefront": {
+        "title": "Pole kodu w koszyku",
+        "body": "Sklep dodaje kod do koszyka jako promocję Medusy. Opcjonalnie najpierw go sprawdza (POST /store/coupons/check) i pokazuje, ile brakuje do kolejnego progu (GET /store/coupons/progress)."
+      },
+      "automatic": {
+        "title": "Kupon automatyczny",
+        "body": "Rabat bez kodu, np. darmowa dostawa od kwoty. W kreatorze wybierz „automatycznie”."
+      },
+      "batch": {
+        "title": "Paczka kodów jednorazowych",
+        "body": "Np. 500 kodów do newslettera, do pobrania jako CSV. Przycisk „Nowa paczka kodów” w zakładce Panel."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony (demo: false), żeby Panel pokazywał prawdziwe kupony sklepu."
+      }
     }
   }
 }

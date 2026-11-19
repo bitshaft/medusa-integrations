@@ -13,6 +13,7 @@ import {
 import { adminLocale, points, slug } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { NumberField, Picker, Section } from "./shared"
+import { useDebounced } from "../../lib/loyalty/kit/hooks"
 
 type Props = {
   settings: SettingsValues
@@ -30,7 +31,8 @@ export const Settings = ({ settings, defaults, storeCurrencies }: Props) => {
   const save = useSaveSettings()
   const [form, setForm] = useState<SettingsValues>(settings)
   const [groupSearch, setGroupSearch] = useState("")
-  const groups = useGroupOptions(groupSearch)
+  const groupQuery = useDebounced(groupSearch.trim())
+  const groups = useGroupOptions(groupQuery)
   const groupLabels = useGroupLabels(form.excluded_group_ids)
   useEffect(() => setForm(settings), [settings])
 

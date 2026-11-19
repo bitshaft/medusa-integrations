@@ -29,6 +29,7 @@ import {
 import { errorMessage, shortDate } from "../../lib/compliance/format"
 import { PartyFields } from "./product-safety-form"
 import { Empty, Gaps, Pager, Section, TextField, Toggle } from "./shared"
+import { useDebounced } from "../../lib/compliance/kit/hooks"
 
 const LIMIT = 25
 
@@ -45,7 +46,8 @@ const Products = ({ demo }: { demo: boolean }) => {
   const [filter, setFilter] = useState<"false" | "all">("false")
   const [q, setQ] = useState("")
   const [offset, setOffset] = useState(0)
-  const products = useGpsrProducts({ complete: filter === "all" ? undefined : filter, q, limit: LIMIT, offset })
+  const query = useDebounced(q.trim())
+  const products = useGpsrProducts({ complete: filter === "all" ? undefined : filter, q: query, limit: LIMIT, offset })
   const recompute = useRecomputeGpsr()
 
   return (

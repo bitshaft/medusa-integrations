@@ -7,6 +7,7 @@ import { money, points, shortDate } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { AdjustForm, Ledger } from "./ledger"
 import { Empty, Pager } from "../../lib/loyalty/kit/page"
+import { useDebounced } from "../../lib/loyalty/kit/hooks"
 
 const PAGE = 20
 
@@ -17,7 +18,8 @@ export const Customers = () => {
   const [q, setQ] = useState("")
   const [offset, setOffset] = useState(0)
   const [opened, setOpened] = useState<string | null>(null)
-  const { data, isLoading } = useCustomers({ q: q.trim(), offset, limit: PAGE })
+  const query = useDebounced(q.trim())
+  const { data, isLoading } = useCustomers({ q: query, offset, limit: PAGE })
 
   return (
     <Container className="overflow-hidden divide-y p-0">

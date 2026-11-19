@@ -232,6 +232,40 @@
         "title": "Tryb demo",
         "text": "demo: true sprawia, że GUS odpowiada przykładowymi firmami bez klucza. NIP 1112223332 to zakończona działalność, 9876543210 nie istnieje. Biała lista i VIES są pytane normalnie."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate. Biała lista i VIES nie wymagają klucza."
+      },
+      "firstCheck": {
+        "title": "Sprawdź numer",
+        "body": "Zakładka „Sprawdź numer”: wpisz dowolny NIP. Gotowe, gdy rejestr odpowie."
+      },
+      "taxId": {
+        "title": "NIP w zamówieniu",
+        "body": "Sklep zapisuje NIP kupującego w metadanych pod jednym z kluczy: {{keys}}. Gotowe, gdy pierwsze zamówienie zostanie sprawdzone."
+      },
+      "checkoutLookup": {
+        "title": "Podpowiedź w kasie",
+        "body": "Sklep uzupełnia nazwę i adres firmy po NIP (POST /store/whitelist-vat/verify)."
+      },
+      "gus": {
+        "title": "Klucz GUS",
+        "body": "gus.apiKey z GUS (REGON BIR1.1) daje nazwę i adres także dla firm bez VAT."
+      },
+      "vies": {
+        "title": "Twój numer VAT UE dla VIES",
+        "body": "vies.requesterVatNumber: VIES wydaje wtedy numer konsultacji, dowód sprawdzenia."
+      },
+      "reject": {
+        "title": "Blokuj złe NIP-y w kasie",
+        "body": "checkout.rejectOnCompletion: true odrzuca zamówienie z NIP-em nieprawidłowym albo nieznalezionym. Domyślnie wyłączone."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony (demo: false), żeby GUS odpowiadał prawdziwymi danymi."
+      }
     }
   }
 }

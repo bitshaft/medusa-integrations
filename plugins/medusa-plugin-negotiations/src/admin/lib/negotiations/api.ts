@@ -196,7 +196,7 @@ export type DraftPlan = {
   problems: string[]
 }
 
-export type GuideStep = { id: string; status: "done" | "todo" | "optional"; params?: Record<string, string | number> }
+export type GuideStep = import("./kit/setup").SetupStep
 
 /** An admin API refusal: a code the admin translates, and for conflicts the current thread. */
 export type ApiError = {

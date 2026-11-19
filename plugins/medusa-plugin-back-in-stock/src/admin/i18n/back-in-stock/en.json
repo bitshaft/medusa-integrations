@@ -219,6 +219,36 @@
         "title": "Demo mode",
         "text": "With demo: true emails are rendered and logged, never sent. \"Restore test data\" creates sample requests on out-of-stock products, Settings creates them for your own addresses, and the Most wanted tab simulates a restock."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts with backendUrl and run npx medusa db:migrate."
+      },
+      "links": {
+        "title": "Set the store links",
+        "body": "storefrontUrl (or urls.confirm and urls.unsubscribe), so links in emails lead to the store."
+      },
+      "sending": {
+        "title": "Connect sending",
+        "body": "With the Emails plugin the messages go through it. Without it, a notification provider must handle the \"{{channel}}\" channel: check it in medusa-config.ts."
+      },
+      "storefront": {
+        "title": "Add \"Notify me\" in the store",
+        "body": "Next to variants that cannot be ordered, POST /store/back-in-stock/subscriptions. Done when the first real subscription arrives."
+      },
+      "doubleOptIn": {
+        "title": "Double opt-in",
+        "body": "Settings → \"Ask for confirmation by email\": the customer first confirms the address by a link in an email."
+      },
+      "firstEmail": {
+        "title": "First email",
+        "body": "Done when the first real \"back in stock\" email goes out. In demo mode you can simulate a restock on the Most wanted tab."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off, so emails really go out."
+      }
     }
   }
 }

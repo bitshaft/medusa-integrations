@@ -34,6 +34,7 @@ import { money, points } from "../../lib/loyalty/format"
 import { errorMessage } from "../../lib/loyalty/kit/format"
 import { NumberField } from "./shared"
 import { Empty } from "../../lib/loyalty/kit/page"
+import { useDebounced } from "../../lib/loyalty/kit/hooks"
 
 const KINDS: RewardKind[] = ["fixed", "percentage", "free_shipping", "gift"]
 const NONE = "none"
@@ -208,7 +209,8 @@ const RewardForm = ({
   const save = useSaveReward(reward?.id)
   const [form, setForm] = useState<RewardInput>(empty(currencyCode))
   const [variantSearch, setVariantSearch] = useState("")
-  const variants = useVariantOptions(variantSearch)
+  const variantQuery = useDebounced(variantSearch.trim())
+  const variants = useVariantOptions(variantQuery)
   const variantLabel = useVariantLabel(form.variant_id)
 
   useEffect(() => {

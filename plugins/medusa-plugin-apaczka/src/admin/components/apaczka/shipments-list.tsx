@@ -37,6 +37,7 @@ import { backendUrl } from "../../lib/apaczka/kit/sdk"
 import { PickupDrawer } from "./pickup-drawer"
 import { ShipmentCard } from "./shipment-card"
 import { Empty, Pager } from "../../lib/apaczka/kit/page"
+import { useDebounced } from "../../lib/apaczka/kit/hooks"
 
 const PAGE_SIZE = 20
 const FINISHED = new Set(["delivered", "returned", "canceled"])
@@ -63,7 +64,6 @@ type TypeFilter = keyof typeof TYPES
 export const ShipmentsList = () => {
   const { t, i18n } = useTranslation()
   const [search, setSearch] = useState("")
-  const [q, setQ] = useState("")
   const [group, setGroup] = useState<StatusGroup>("all")
   const [type, setType] = useState<TypeFilter>("all")
   const [page, setPage] = useState(0)
@@ -72,10 +72,7 @@ export const ShipmentsList = () => {
   const [pickupOpen, setPickupOpen] = useState(false)
   const [turnInLoading, setTurnInLoading] = useState(false)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setQ(search.trim()), 300)
-    return () => clearTimeout(timer)
-  }, [search])
+  const q = useDebounced(search.trim())
 
   useEffect(() => setPage(0), [q, group, type])
 

@@ -311,6 +311,48 @@
       "body": "\"Restore test data\" replaces the whole program with a sample one: every rule on, a reward of every kind and a year of history for up to eight customers (tiers, orders, returns, redemptions, expired and expiring points, birthdays, manual corrections). Turn the demo option off in medusa-config.ts before going live.",
       "resetBody": "Every loyalty record is deleted and replaced with test data: settings, rewards, accounts, the points history and redemptions. The store's registered customers get sample histories; a store with fewer than six gets sample customers (demo.…@example.com). This cannot be undone.",
       "restoredHint": "{{customers}} customers, {{entries}} points entries."
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+      },
+      "program": {
+        "title": "Switch the program on",
+        "body": "Settings: the main switch. When it is off nothing is earned or redeemed."
+      },
+      "earning": {
+        "title": "Set how points are earned",
+        "body": "Settings → Earning: how many points per amount spent."
+      },
+      "rewards": {
+        "title": "Add rewards",
+        "body": "Rewards tab: a discount, free shipping or a gift product for points. Active rewards: {{count}}."
+      },
+      "terms": {
+        "title": "Link to the program terms",
+        "body": "Settings: the program needs published terms. The store shows the link to customers."
+      },
+      "tiers": {
+        "title": "Tiers",
+        "body": "Settings → Tiers: e.g. Silver and Gold by spend, with more points per order."
+      },
+      "actions": {
+        "title": "Bonus points",
+        "body": "Settings: points for signing up, the first order, a birthday or the newsletter."
+      },
+      "storefront": {
+        "title": "Show points in the store",
+        "body": "In the customer account: balance, history and rewards to redeem (Store API /store/loyalty/me and /store/loyalty/rewards)."
+      },
+      "firstPoints": {
+        "title": "First points for an order",
+        "body": "Done when a customer earns points for a paid order."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off (demo: false)."
+      }
     }
   }
 }

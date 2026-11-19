@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { type EmailMessage, type MessageStatus, useEmailMessages, useResendEmail } from "../../lib/emails/api"
 import { errorMessage, formatDateTime } from "../../lib/emails/kit/format"
 import { Empty, Pager } from "../../lib/emails/kit/page"
+import { useDebounced } from "../../lib/emails/kit/hooks"
 
 const STATUS_COLORS: Record<MessageStatus, "green" | "red" | "orange" | "blue"> = {
   sent: "green",
@@ -32,10 +33,11 @@ export const MessageLog = ({ orderId, customerId, pageSize = 10, filters = false
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string>(ALL)
 
+  const query = useDebounced(search.trim())
   const { data, isLoading, isError } = useEmailMessages({
     order_id: orderId,
     customer_id: customerId,
-    q: search.trim() || undefined,
+    q: query || undefined,
     status: status === ALL ? undefined : (status as MessageStatus),
     limit: pageSize,
     offset,

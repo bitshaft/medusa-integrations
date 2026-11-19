@@ -356,50 +356,6 @@
         "provider": "Resend lub SMTP",
         "inbox": "Skrzynka klienta i zespołu"
       },
-      "stepsTitle": "Od instalacji do produkcji",
-      "status": {
-        "done": "Gotowe",
-        "todo": "Do zrobienia",
-        "optional": "Opcjonalne"
-      },
-      "steps": {
-        "install": {
-          "title": "Zainstaluj wtyczkę",
-          "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
-        },
-        "provider": {
-          "title": "Podłącz wysyłkę",
-          "body": "Zarejestruj providera Resend albo SMTP dla kanału „{{channel}}” i wyłącz tryb demo. W trybie demo nic nie wychodzi ze sklepu."
-        },
-        "links": {
-          "title": "Ustaw linki",
-          "body": "storefrontUrl i adminUrl, żeby przyciski w mailach prowadziły do zamówienia w sklepie i w panelu."
-        },
-        "team": {
-          "title": "Odbiorcy w zespole",
-          "body": "Adresy dla powiadomień o nowym zamówieniu, nieudanej płatności i niskim stanie (ustawiono: {{count}}). W zakładce Ustawienia."
-        },
-        "appearance": {
-          "title": "Dopasuj wygląd",
-          "body": "Kolory, czcionka, przyciski i logo w zakładce Wygląd, z podglądem na żywo."
-        },
-        "texts": {
-          "title": "Przejrzyj teksty",
-          "body": "W zakładce Szablony. Zmienne, np. numer zamówienia, wstawiasz kliknięciem."
-        },
-        "languages": {
-          "title": "Języki",
-          "body": "Sklep ma języków: {{count}}. Z modułem Translation każdy mail można przetłumaczyć."
-        },
-        "test": {
-          "title": "Wyślij mail testowy",
-          "body": "Otwórz dowolny szablon i wyślij test na swój adres. Gotowe, gdy mail faktycznie trafi do providera."
-        },
-        "production": {
-          "title": "Start produkcyjny",
-          "body": "Tryb demo wyłączony, zweryfikowana domena nadawcy i rzut oka na Historię po pierwszych zamówieniach."
-        }
-      },
       "promptTitle": "Prompt dla asystenta AI",
       "promptHint": "Wklej go w Claude Code, Cursora lub innego asystenta w projekcie backendu Medusy.",
       "copy": "Kopiuj",
@@ -412,6 +368,44 @@
       "body": "Maile są renderowane i zapisywane w historii ze statusem „Demo”. „Przywróć dane testowe” wypełnia historię przykładowymi mailami z ostatniego miesiąca dla najnowszych zamówień i klientów: każdy typ, wysłane, błędne z powodem, oczekujące i wysłane ponownie. Przed startem wyłącz opcję demo w medusa-config.ts.",
       "resetBody": "Przykładowe maile w historii zostaną zastąpione świeżym zestawem na podstawie najnowszych zamówień i klientów sklepu. Prawdziwe wpisy historii zostaną, nic nie zostanie wysłane.",
       "restoredHint": "Maile: {{count}}, zamówienia: {{orders}}."
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+      },
+      "provider": {
+        "title": "Podłącz wysyłkę",
+        "body": "Zarejestruj providera Resend albo SMTP dla kanału „{{channel}}” i wyłącz tryb demo. W trybie demo nic nie wychodzi ze sklepu."
+      },
+      "links": {
+        "title": "Ustaw linki",
+        "body": "storefrontUrl i adminUrl, żeby przyciski w mailach prowadziły do zamówienia w sklepie i w panelu."
+      },
+      "team": {
+        "title": "Odbiorcy w zespole",
+        "body": "Adresy dla powiadomień o nowym zamówieniu, nieudanej płatności i niskim stanie (ustawiono: {{count}}). W zakładce Ustawienia."
+      },
+      "appearance": {
+        "title": "Dopasuj wygląd",
+        "body": "Kolory, czcionka, przyciski i logo w zakładce Wygląd, z podglądem na żywo."
+      },
+      "texts": {
+        "title": "Przejrzyj teksty",
+        "body": "W zakładce Szablony. Zmienne, np. numer zamówienia, wstawiasz kliknięciem."
+      },
+      "languages": {
+        "title": "Języki",
+        "body": "Sklep ma języków: {{count}}. Z modułem Translation każdy mail można przetłumaczyć."
+      },
+      "test": {
+        "title": "Wyślij mail testowy",
+        "body": "Otwórz dowolny szablon i wyślij test na swój adres. Gotowe, gdy mail faktycznie trafi do providera."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony, zweryfikowana domena nadawcy i rzut oka na Historię po pierwszych zamówieniach."
+      }
     }
   }
 }

@@ -356,50 +356,6 @@
         "provider": "Resend or SMTP",
         "inbox": "Customer and team inbox"
       },
-      "stepsTitle": "From installation to production",
-      "status": {
-        "done": "Done",
-        "todo": "To do",
-        "optional": "Optional"
-      },
-      "steps": {
-        "install": {
-          "title": "Install the plugin",
-          "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
-        },
-        "provider": {
-          "title": "Connect sending",
-          "body": "Register the Resend or SMTP provider for the \"{{channel}}\" channel and switch demo mode off. In demo mode nothing leaves the store."
-        },
-        "links": {
-          "title": "Set the links",
-          "body": "storefrontUrl and adminUrl, so buttons in emails lead to the order in the store and in the admin."
-        },
-        "team": {
-          "title": "Store team recipients",
-          "body": "Addresses for new order, failed payment and low stock alerts ({{count}} set). On the Settings tab."
-        },
-        "appearance": {
-          "title": "Match the look",
-          "body": "Colours, font, buttons and logo on the Appearance tab, with a live preview."
-        },
-        "texts": {
-          "title": "Review the texts",
-          "body": "On the Templates tab. Variables such as the order number are inserted with a click."
-        },
-        "languages": {
-          "title": "Languages",
-          "body": "The store has {{count}} language(s). With the Translation module, each email can be translated."
-        },
-        "test": {
-          "title": "Send a test email",
-          "body": "Open any template and send a test to your address. Done once an email was really delivered to a provider."
-        },
-        "production": {
-          "title": "Go live",
-          "body": "Demo mode off, a verified sending domain, and a look at the History tab after the first orders."
-        }
-      },
       "promptTitle": "Prompt for an AI assistant",
       "promptHint": "Paste it into Claude Code, Cursor or another assistant in your Medusa backend project.",
       "copy": "Copy",
@@ -412,6 +368,44 @@
       "body": "Emails are rendered and logged with the status \"Demo\". \"Restore test data\" fills the history with a month of sample emails for your latest orders and customers: every type, sent, failed with the reason, pending and resent. Turn the demo option off in medusa-config.ts before going live.",
       "resetBody": "The sample emails in the history are replaced with a fresh set built from the store's latest orders and customers. Real history entries are kept, and nothing is sent.",
       "restoredHint": "{{count}} emails for {{orders}} orders."
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+      },
+      "provider": {
+        "title": "Connect sending",
+        "body": "Register the Resend or SMTP provider for the \"{{channel}}\" channel and switch demo mode off. In demo mode nothing leaves the store."
+      },
+      "links": {
+        "title": "Set the links",
+        "body": "storefrontUrl and adminUrl, so buttons in emails lead to the order in the store and in the admin."
+      },
+      "team": {
+        "title": "Store team recipients",
+        "body": "Addresses for new order, failed payment and low stock alerts ({{count}} set). On the Settings tab."
+      },
+      "appearance": {
+        "title": "Match the look",
+        "body": "Colours, font, buttons and logo on the Appearance tab, with a live preview."
+      },
+      "texts": {
+        "title": "Review the texts",
+        "body": "On the Templates tab. Variables such as the order number are inserted with a click."
+      },
+      "languages": {
+        "title": "Languages",
+        "body": "The store has {{count}} language(s). With the Translation module, each email can be translated."
+      },
+      "test": {
+        "title": "Send a test email",
+        "body": "Open any template and send a test to your address. Done once an email was really delivered to a provider."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off, a verified sending domain, and a look at the History tab after the first orders."
+      }
     }
   }
 }

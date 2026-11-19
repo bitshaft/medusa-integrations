@@ -251,6 +251,44 @@
         "title": "Demo mode",
         "text": "demo: true needs no credentials and sends nothing to Apaczka: services, prices, points, labels and tracking are sample data. A new shipment's tracking moves on by itself within about 20 minutes."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+      },
+      "credentials": {
+        "title": "Connect your Apaczka account",
+        "body": "appId and appSecret from the Apaczka panel (Settings → API). Done when Apaczka answers with the list of services (now: {{environment}})."
+      },
+      "sender": {
+        "title": "Fill in the sender",
+        "body": "sender in the options (or senderByLocation per warehouse): name, street, postal code, city, phone and e-mail. Apaczka rejects a shipment without them."
+      },
+      "shippingOptions": {
+        "title": "Add shipping options",
+        "body": "Settings → Locations & Shipping: add a shipping option with the \"apaczka\" provider and pick a service. Apaczka options in the store: {{count}}."
+      },
+      "weights": {
+        "title": "Give variants a weight",
+        "body": "Variants without a weight ship with parcel.defaultItemWeightKg and their price may be off. Without a weight now: {{count}}. The list is in Settings → Parcel weight."
+      },
+      "webhook": {
+        "title": "Turn on the tracking webhook",
+        "body": "Set webhooks.backendUrl and Apaczka reports status changes at once. Without it the plugin checks every 30 minutes."
+      },
+      "cod": {
+        "title": "Cash on delivery account",
+        "body": "cod.bankAccount (or cod.bankAccountId), only if you offer cash on delivery."
+      },
+      "firstShipment": {
+        "title": "Create the first shipment",
+        "body": "Fulfil an order shipped with Apaczka. Done when the first shipment is saved."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off and environment \"production\", so labels and couriers are real."
+      }
     }
   }
 }

@@ -1,0 +1,37 @@
+/**
+ * The installation steps shown on every plugin's Guide tab, with a status
+ * detected from the store. The texts live in the admin translations, under
+ * `<ns>.setup.<id>.title` and `<ns>.setup.<id>.body`.
+ *
+ * - `done`: the store shows the step is done (optional steps too: an
+ *   optional step that was done says so).
+ * - `todo`: not done yet; `optional: true` marks a step the plugin works
+ *   without.
+ * - `manual`: nothing in the store shows whether it was done (e.g. a change
+ *   in the storefront), so the admin checks it themselves.
+ */
+export type SetupStatus = "done" | "todo" | "manual"
+
+export type SetupStep = {
+  id: string
+  status: SetupStatus
+  optional?: boolean
+  params?: Record<string, string | number>
+}
+
+/**
+ * One step. `done` is what the store shows: `true`, `false`, or `null` when
+ * it cannot tell.
+ */
+export function setupStep(
+  id: string,
+  done: boolean | null,
+  extra: { optional?: boolean; params?: Record<string, string | number> } = {}
+): SetupStep {
+  return {
+    id,
+    status: done === null ? "manual" : done ? "done" : "todo",
+    ...(extra.optional ? { optional: true } : {}),
+    ...(extra.params ? { params: extra.params } : {}),
+  }
+}

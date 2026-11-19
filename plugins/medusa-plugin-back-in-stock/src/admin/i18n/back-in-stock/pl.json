@@ -219,6 +219,36 @@
         "title": "Tryb demo",
         "text": "Przy demo: true maile są renderowane i zapisywane w logach, nigdy wysyłane. „Przywróć dane testowe” tworzy przykładowe zapisy na niedostępnych produktach, w Ustawieniach utworzysz je dla własnych adresów, a w zakładce Najbardziej oczekiwane zasymulujesz powrót towaru."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts z backendUrl i uruchom npx medusa db:migrate."
+      },
+      "links": {
+        "title": "Ustaw linki do sklepu",
+        "body": "storefrontUrl (albo urls.confirm i urls.unsubscribe), żeby linki w mailach prowadziły do sklepu."
+      },
+      "sending": {
+        "title": "Podłącz wysyłkę",
+        "body": "Z wtyczką E-maile wiadomości idą przez nią. Bez niej kanał „{{channel}}” musi obsługiwać provider powiadomień: sprawdź to w medusa-config.ts."
+      },
+      "storefront": {
+        "title": "Dodaj „Powiadom mnie” w sklepie",
+        "body": "Przy wariantach, których nie da się zamówić, POST /store/back-in-stock/subscriptions. Gotowe, gdy przyjdzie pierwszy prawdziwy zapis."
+      },
+      "doubleOptIn": {
+        "title": "Podwójne potwierdzenie",
+        "body": "Ustawienia → „Proś o potwierdzenie e-mailem”: klient najpierw potwierdza adres linkiem z maila."
+      },
+      "firstEmail": {
+        "title": "Pierwszy mail",
+        "body": "Gotowe, gdy wyjdzie pierwszy prawdziwy mail o powrocie towaru. W trybie demo powrót zasymulujesz w zakładce Najbardziej oczekiwane."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony, żeby maile naprawdę wychodziły."
+      }
     }
   }
 }

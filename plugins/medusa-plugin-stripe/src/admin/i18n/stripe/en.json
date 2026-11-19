@@ -323,7 +323,15 @@
     "guide": {
       "title": "Guide",
       "intro": "From a restricted key to the first test payment. Start in test mode.",
-      "readOnly": "This plugin only reads. Payments, captures and refunds are done by the official Stripe provider in Medusa.",
+      "readOnly": "This plugin only reads. Payments, captures and refunds are done by the official Stripe provider in Medusa."
+    },
+    "signals": {
+      "disputes": "open disputes: {{count}}"
+    },
+    "options": {
+      "keySet": "Set (never shown)"
+    },
+    "setup": {
       "key": {
         "title": "Create a restricted key",
         "body": "Stripe Dashboard → Developers → API keys → Create restricted key. Name it e.g. \"Medusa admin (read)\"."
@@ -360,12 +368,6 @@
         "title": "Go live",
         "body": "Repeat steps 1–2 in live mode, set the live key and mode: \"live\", and check the Checks tab again."
       }
-    },
-    "signals": {
-      "disputes": "open disputes: {{count}}"
-    },
-    "options": {
-      "keySet": "Set (never shown)"
     }
   }
 }

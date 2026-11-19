@@ -268,54 +268,6 @@
         "events": "Zdarzenia negotiation.*",
         "consumers": "E-maile, CRM, ERP"
       },
-      "stepsTitle": "Od instalacji do produkcji",
-      "status": {
-        "done": "Gotowe",
-        "todo": "Do zrobienia",
-        "optional": "Opcjonalne"
-      },
-      "steps": {
-        "install": {
-          "title": "Zainstaluj wtyczkę",
-          "body": "npm install, potem dodaj ją do plugins w medusa-config.ts."
-        },
-        "migrations": {
-          "title": "Uruchom migracje",
-          "body": "npx medusa db:migrate tworzy tabele negocjacji."
-        },
-        "groups": {
-          "title": "Wybierz, kto może negocjować",
-          "body": "allowedCustomerGroups: ustawiono {{count}} grup(y), nie znaleziono {{missing}}. Puste pozwala negocjować każdemu zalogowanemu klientowi."
-        },
-        "storefront": {
-          "title": "Dodaj ekrany w sklepie",
-          "body": "„Zapytaj o cenę” na stronie produktu i koszyka oraz strona negocjacji w koncie klienta, na Store API. Gotowe, gdy przyjdzie pierwsze prawdziwe zapytanie."
-        },
-        "floors": {
-          "title": "Ustaw ceny minimalne",
-          "body": "W widżecie „Cena minimalna” na wariancie. Cena poniżej wymaga potwierdzenia i nigdy nie jest pokazywana klientom."
-        },
-        "events": {
-          "title": "Podłącz e-maile, CRM lub ERP",
-          "body": "Subskrybuj zdarzenia negotiation.*. W e-mailach do klienta używaj tylko pola customer z payloadu."
-        },
-        "expiry": {
-          "title": "Sprawdź wygasanie",
-          "body": "Wątki wygasają po {{days}} dniach bez ruchu (0 = nigdy). Zadanie działa co godzinę."
-        },
-        "draft_orders": {
-          "title": "Szkice zamówień (opcjonalnie)",
-          "body": "Ustaw writers.draftOrders: true, potem uzbrój w Ustawieniach."
-        },
-        "cart": {
-          "title": "Uzgodniona cena w koszyku (opcjonalnie)",
-          "body": "Ustaw writers.cart: true, potem uzbrój w Ustawieniach. Sklep woła add-to-cart."
-        },
-        "production": {
-          "title": "Start produkcyjny",
-          "body": "Wyłącz tryb demo i uruchom Medusę ponownie."
-        }
-      },
       "promptTitle": "Prompt dla asystenta AI",
       "promptHint": "Wklej go w Claude Code, Cursora lub innego asystenta w projekcie backendu Medusy.",
       "copy": "Kopiuj",
@@ -390,6 +342,48 @@
       "tileHint": "czekają na odpowiedź",
       "active": "W toku: {{count}}",
       "past": "Wątki: {{count}}"
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, potem dodaj ją do plugins w medusa-config.ts."
+      },
+      "migrations": {
+        "title": "Uruchom migracje",
+        "body": "npx medusa db:migrate tworzy tabele negocjacji."
+      },
+      "groups": {
+        "title": "Wybierz, kto może negocjować",
+        "body": "allowedCustomerGroups: ustawiono {{count}} grup(y), nie znaleziono {{missing}}. Puste pozwala negocjować każdemu zalogowanemu klientowi."
+      },
+      "storefront": {
+        "title": "Dodaj ekrany w sklepie",
+        "body": "„Zapytaj o cenę” na stronie produktu i koszyka oraz strona negocjacji w koncie klienta, na Store API. Gotowe, gdy przyjdzie pierwsze prawdziwe zapytanie."
+      },
+      "floors": {
+        "title": "Ustaw ceny minimalne",
+        "body": "W widżecie „Cena minimalna” na wariancie. Cena poniżej wymaga potwierdzenia i nigdy nie jest pokazywana klientom."
+      },
+      "events": {
+        "title": "Podłącz e-maile, CRM lub ERP",
+        "body": "Subskrybuj zdarzenia negotiation.*. W e-mailach do klienta używaj tylko pola customer z payloadu."
+      },
+      "expiry": {
+        "title": "Sprawdź wygasanie",
+        "body": "Wątki wygasają po {{days}} dniach bez ruchu (0 = nigdy). Zadanie działa co godzinę."
+      },
+      "draft_orders": {
+        "title": "Szkice zamówień",
+        "body": "Ustaw writers.draftOrders: true, potem uzbrój w Ustawieniach."
+      },
+      "cart": {
+        "title": "Uzgodniona cena w koszyku",
+        "body": "Ustaw writers.cart: true, potem uzbrój w Ustawieniach. Sklep woła add-to-cart."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Wyłącz tryb demo i uruchom Medusę ponownie."
+      }
     }
   }
 }

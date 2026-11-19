@@ -316,7 +316,7 @@ export function useSaveEmailTheme() {
   })
 }
 
-export type GuideStep = { id: string; status: "done" | "todo" | "optional"; params?: Record<string, string | number> }
+export type GuideStep = import("./kit/setup").SetupStep
 
 export function useEmailsGuide() {
   return useQuery({

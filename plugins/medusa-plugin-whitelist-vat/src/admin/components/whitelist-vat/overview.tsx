@@ -16,6 +16,7 @@ import { errorMessage, formatDateTime } from "../../lib/whitelist-vat/kit/format
 import { OutcomeBadge, Pager, TaxId, VerdictBadge } from "./shared"
 import { TAB_CLASS } from "../../lib/whitelist-vat/kit/ui"
 import { Empty } from "../../lib/whitelist-vat/kit/page"
+import { useDebounced } from "../../lib/whitelist-vat/kit/hooks"
 
 type EnabledStatus = Extract<WhitelistVatStatus, { enabled: true }>
 
@@ -61,7 +62,8 @@ const Subjects = ({ counts }: { counts: Record<SubjectFilter, number> }) => {
   const [filter, setFilter] = useState<SubjectFilter>("all")
   const [search, setSearch] = useState("")
   const [offset, setOffset] = useState(0)
-  const { data, isLoading, isError } = useSubjects({ q: search.trim(), filter, limit: PAGE, offset }, true)
+  const query = useDebounced(search.trim())
+  const { data, isLoading, isError } = useSubjects({ q: query, filter, limit: PAGE, offset }, true)
   const refresh = useRefreshSubject()
 
   const onRefresh = (subject: Subject) =>

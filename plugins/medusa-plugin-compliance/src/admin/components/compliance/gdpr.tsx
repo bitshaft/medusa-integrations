@@ -49,6 +49,7 @@ import {
   Toggle,
   TAB_CLASS,
 } from "./shared"
+import { useDebounced } from "../../lib/compliance/kit/hooks"
 
 const LIMIT = 25
 const TYPES: RequestType[] = ["access", "portability", "erasure", "objection", "rectification"]
@@ -738,9 +739,10 @@ const Register = () => {
   const [type, setType] = useState(ALL)
   const [email, setEmail] = useState("")
   const [offset, setOffset] = useState(0)
+  const query = useDebounced(email.trim())
   const entries = useConsentEntries({
     type_key: type === ALL ? undefined : type,
-    email: email.trim() || undefined,
+    email: query || undefined,
     limit: LIMIT,
     offset,
   })

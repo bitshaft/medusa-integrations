@@ -42,6 +42,7 @@ import { adminLocale, money, shortDate } from "../../lib/coupons/draft"
 import { errorMessage } from "../../lib/coupons/kit/format"
 import { StatusBadge } from "./shared"
 import { Empty } from "../../lib/coupons/kit/page"
+import { useDebounced } from "../../lib/coupons/kit/hooks"
 
 const FILTERS: CouponFilter[] = ["all", "active", "scheduled", "paused", "ended", "expiring", "automatic"]
 
@@ -54,7 +55,8 @@ export const Dashboard = ({ onEdit, currencyCode }: { onEdit: (coupon: CouponVie
   const [filter, setFilter] = useState<CouponFilter>("all")
   const [q, setQ] = useState("")
   const [opened, setOpened] = useState<CouponView | null>(null)
-  const list = useCoupons({ filter, q: q.trim() })
+  const query = useDebounced(q.trim())
+  const list = useCoupons({ filter, q: query })
   const setStatus = useSetStatus()
   const duplicate = useDuplicate()
   const remove = useDeleteCoupon()

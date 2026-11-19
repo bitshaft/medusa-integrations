@@ -11,6 +11,7 @@ import {
 import { errorMessage, formatDateTime } from "../../lib/back-in-stock/kit/format"
 import { DemoBadge, Pager, SubscriptionBadge, VariantCell } from "./shared"
 import { Empty } from "../../lib/back-in-stock/kit/page"
+import { useDebounced } from "../../lib/back-in-stock/kit/hooks"
 
 const PAGE = 20
 const ALL = "all"
@@ -25,12 +26,13 @@ export const Subscriptions = () => {
   const [scope, setScope] = useState<Scope>("real")
   const [search, setSearch] = useState("")
   const [offset, setOffset] = useState(0)
+  const query = useDebounced(search.trim())
   const { data, isLoading, isError } = useSubscriptions(
     {
       limit: PAGE,
       offset,
       status: status === ALL ? undefined : (status as SubscriptionStatus),
-      q: search.trim(),
+      q: query,
       demo: scope === "all" ? undefined : scope === "demo",
     },
     true

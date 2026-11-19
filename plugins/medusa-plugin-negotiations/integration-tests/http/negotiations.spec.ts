@@ -655,6 +655,16 @@ medusaIntegrationTestRunner({
       expect(stats.data.stats).toMatchObject({ waiting: 1, open: 1, in_talks: { pln: 80_000 } })
     })
 
+    it("installation steps: detected from the store, optional ones marked, events checked by hand", async () => {
+      const { data } = await api.get("/admin/negotiations/guide", admin)
+      const step = (id: string) => data.steps.find((s: Row) => s.id === id)
+      expect(step("install")).toEqual({ id: "install", status: "done" })
+      expect(step("expiry")).toMatchObject({ status: "done", optional: true, params: { days: 14 } })
+      expect(step("events")).toEqual({ id: "events", status: "manual", optional: true })
+      expect(step("groups").optional).toBeUndefined()
+      expect(step("draft_orders").optional).toBe(true)
+    })
+
     // Last: it opens threads the counts above don't expect.
     it("net or gross follows Medusa's tax-inclusive pricing, from the catalog price to the cart line", async () => {
       // "Tax inclusive pricing" for PLN (Settings -> Store -> Currencies); the products have PLN prices.

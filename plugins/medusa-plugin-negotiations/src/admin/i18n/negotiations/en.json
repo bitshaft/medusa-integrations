@@ -266,54 +266,6 @@
         "events": "Events negotiation.*",
         "consumers": "E-mails, CRM, ERP"
       },
-      "stepsTitle": "From installation to production",
-      "status": {
-        "done": "Done",
-        "todo": "To do",
-        "optional": "Optional"
-      },
-      "steps": {
-        "install": {
-          "title": "Install the plugin",
-          "body": "npm install, then add it to plugins in medusa-config.ts."
-        },
-        "migrations": {
-          "title": "Run the migrations",
-          "body": "npx medusa db:migrate creates the negotiation tables."
-        },
-        "groups": {
-          "title": "Choose who may negotiate",
-          "body": "allowedCustomerGroups: {{count}} group(s) set, {{missing}} not found. Empty lets every signed-in customer negotiate."
-        },
-        "storefront": {
-          "title": "Add the storefront screens",
-          "body": "“Ask for a price” on the product and cart pages and a negotiations page in the account, on the Store API. Done once the first real request arrives."
-        },
-        "floors": {
-          "title": "Set minimum prices",
-          "body": "In the variant's “Minimum price” widget. Prices below it need a confirmation and are never shown to customers."
-        },
-        "events": {
-          "title": "Connect e-mails, CRM or ERP",
-          "body": "Subscribe to negotiation.* events. Use only the payload's customer field in customer e-mails."
-        },
-        "expiry": {
-          "title": "Check expiry",
-          "body": "Threads expire after {{days}} days without a move (0 = never). The job runs every hour."
-        },
-        "draft_orders": {
-          "title": "Draft orders (optional)",
-          "body": "Set writers.draftOrders: true, then arm it in Settings."
-        },
-        "cart": {
-          "title": "Agreed price in the cart (optional)",
-          "body": "Set writers.cart: true, then arm it in Settings. The storefront calls add-to-cart."
-        },
-        "production": {
-          "title": "Go live",
-          "body": "Switch demo mode off and restart Medusa."
-        }
-      },
       "promptTitle": "Prompt for an AI assistant",
       "promptHint": "Paste it into Claude Code, Cursor or another assistant in your Medusa backend project.",
       "copy": "Copy",
@@ -388,6 +340,48 @@
       "tileHint": "waiting for an answer",
       "active": "In progress: {{count}}",
       "past": "Threads: {{count}}"
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, then add it to plugins in medusa-config.ts."
+      },
+      "migrations": {
+        "title": "Run the migrations",
+        "body": "npx medusa db:migrate creates the negotiation tables."
+      },
+      "groups": {
+        "title": "Choose who may negotiate",
+        "body": "allowedCustomerGroups: {{count}} group(s) set, {{missing}} not found. Empty lets every signed-in customer negotiate."
+      },
+      "storefront": {
+        "title": "Add the storefront screens",
+        "body": "“Ask for a price” on the product and cart pages and a negotiations page in the account, on the Store API. Done once the first real request arrives."
+      },
+      "floors": {
+        "title": "Set minimum prices",
+        "body": "In the variant's “Minimum price” widget. Prices below it need a confirmation and are never shown to customers."
+      },
+      "events": {
+        "title": "Connect e-mails, CRM or ERP",
+        "body": "Subscribe to negotiation.* events. Use only the payload's customer field in customer e-mails."
+      },
+      "expiry": {
+        "title": "Check expiry",
+        "body": "Threads expire after {{days}} days without a move (0 = never). The job runs every hour."
+      },
+      "draft_orders": {
+        "title": "Draft orders",
+        "body": "Set writers.draftOrders: true, then arm it in Settings."
+      },
+      "cart": {
+        "title": "Agreed price in the cart",
+        "body": "Set writers.cart: true, then arm it in Settings. The storefront calls add-to-cart."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Switch demo mode off and restart Medusa."
+      }
     }
   }
 }

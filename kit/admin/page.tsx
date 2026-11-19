@@ -75,7 +75,11 @@ export const PageHeader = ({
   )
 }
 
-/** The tab row: `Tabs.List` content on the left, `actions` (e.g. `DemoResetButton`) on the right. */
+/**
+ * The tab row: `Tabs.List` content on the left, `actions` (e.g. `DemoResetButton`) on the right.
+ * The list scrolls sideways on narrow screens; the padding (taken back with a
+ * negative margin) keeps the active tab's shadow from being clipped by it.
+ */
 export const PageTabs = <T extends string>({
   value,
   onChange,
@@ -88,7 +92,7 @@ export const PageTabs = <T extends string>({
   actions?: ReactNode
 }) => (
   <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
-    <Tabs value={value} onValueChange={(next) => onChange(next as T)} className="min-w-0 overflow-x-auto">
+    <Tabs value={value} onValueChange={(next) => onChange(next as T)} className="-m-1 min-w-0 overflow-x-auto p-1">
       <Tabs.List>{children}</Tabs.List>
     </Tabs>
     {actions}

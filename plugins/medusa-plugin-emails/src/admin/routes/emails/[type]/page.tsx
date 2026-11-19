@@ -13,7 +13,7 @@ import {
   toast,
   usePrompt,
 } from "@medusajs/ui"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { Link, useParams } from "react-router-dom"
 
@@ -37,6 +37,7 @@ import {
 } from "../../../lib/emails/api"
 import { errorMessage } from "../../../lib/emails/kit/format"
 import { languageName } from "../../../lib/emails/languages"
+import { useDebounced } from "../../../lib/emails/kit/hooks"
 
 const COMMON = "common"
 const LATEST = "latest"
@@ -59,15 +60,6 @@ const countMissing = (detail: EmailTypeDetail, draft: Draft, locale: EmailLocale
         const field = detail.copy[locale]?.[key]
         return !draft[locale]?.[key]?.trim() && !field?.default.trim() && Boolean(field?.original.trim())
       }).length
-
-function useDebounced<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-  return debounced
-}
 
 /** Editor of one email type: toggle, text per language, live preview, test send and reset. */
 const EmailTypePage = () => {

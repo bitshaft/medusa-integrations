@@ -253,6 +253,44 @@
         "title": "Tryb demo",
         "text": "demo: true nie wymaga danych dostępowych i nic nie wysyła do Apaczki: usługi, ceny, punkty, etykiety i śledzenie to dane przykładowe. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+      },
+      "credentials": {
+        "title": "Połącz konto Apaczki",
+        "body": "appId i appSecret z panelu Apaczki (Ustawienia → API). Gotowe, gdy Apaczka odda listę usług (teraz: {{environment}})."
+      },
+      "sender": {
+        "title": "Uzupełnij nadawcę",
+        "body": "sender w opcjach (albo senderByLocation dla każdego magazynu): nazwa, ulica, kod pocztowy, miasto, telefon i e-mail. Bez nich Apaczka odrzuci przesyłkę."
+      },
+      "shippingOptions": {
+        "title": "Dodaj opcje dostawy",
+        "body": "Ustawienia → Lokalizacje i wysyłka: dodaj opcję dostawy z dostawcą „apaczka” i wybierz usługę. Opcji Apaczki w sklepie: {{count}}."
+      },
+      "weights": {
+        "title": "Uzupełnij wagi wariantów",
+        "body": "Warianty bez wagi idą z parcel.defaultItemWeightKg i cena może się nie zgadzać. Teraz bez wagi: {{count}}. Lista jest w Ustawienia → Waga paczek."
+      },
+      "webhook": {
+        "title": "Włącz webhook śledzenia",
+        "body": "Ustaw webhooks.backendUrl, a Apaczka zgłosi zmianę statusu od razu. Bez niego wtyczka sprawdza paczki co 30 minut."
+      },
+      "cod": {
+        "title": "Konto do pobrań",
+        "body": "cod.bankAccount (albo cod.bankAccountId), tylko jeśli oferujesz płatność przy odbiorze."
+      },
+      "firstShipment": {
+        "title": "Utwórz pierwszą przesyłkę",
+        "body": "Zrealizuj zamówienie wysyłane Apaczką. Gotowe, gdy zapisze się pierwsza przesyłka."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony i environment „production”, żeby etykiety i kurierzy były prawdziwe."
+      }
     }
   }
 }

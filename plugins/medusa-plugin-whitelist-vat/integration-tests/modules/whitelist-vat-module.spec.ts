@@ -108,6 +108,18 @@ moduleIntegrationTestRunner<WhitelistVatModuleService>({
         expect(await service.countRequestsSince("gus", startOfWarsawDay(new Date()))).toBe(1)
         expect(await service.listWhitelistVatChecks({ order_id: "order_2" })).toHaveLength(1)
       })
+
+      it("filters checks the way the Guide's installation steps count them", async () => {
+        await service.recordChecks([
+          { ...check, outcome: "unavailable", order_id: null },
+          { ...check, trigger_type: "checkout", order_id: null, cart_id: "cart_1" },
+        ])
+        const count = async (filters: Record<string, unknown>) =>
+          (await service.listAndCountWhitelistVatChecks(filters, { take: 1, select: ["id"] }))[1]
+        expect(await count({ outcome: { $ne: "unavailable" } })).toBe(1)
+        expect(await count({ order_id: { $ne: null } })).toBe(0)
+        expect(await count({ trigger_type: "checkout" })).toBe(1)
+      })
     })
 
     describe("verify", () => {

@@ -1,0 +1,19 @@
+import { setupStep } from "../setup"
+
+describe("setupStep", () => {
+  it("maps what the store shows to a status", () => {
+    expect(setupStep("a", true)).toEqual({ id: "a", status: "done" })
+    expect(setupStep("a", false)).toEqual({ id: "a", status: "todo" })
+    expect(setupStep("a", null)).toEqual({ id: "a", status: "manual" })
+  })
+
+  it("keeps an optional step optional once it is done", () => {
+    expect(setupStep("a", true, { optional: true })).toEqual({ id: "a", status: "done", optional: true })
+    expect(setupStep("a", false, { optional: true, params: { n: 2 } })).toEqual({
+      id: "a",
+      status: "todo",
+      optional: true,
+      params: { n: 2 },
+    })
+  })
+})

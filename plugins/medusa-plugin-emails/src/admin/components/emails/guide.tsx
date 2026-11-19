@@ -1,10 +1,9 @@
-import { CheckCircleSolid, Clock, SquareTwoStack } from "@medusajs/icons"
-import { Button, Container, Heading, Skeleton, StatusBadge, Text, toast } from "@medusajs/ui"
+import { SquareTwoStack } from "@medusajs/icons"
+import { Button, Container, Heading, Text, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
 import { useEmailsGuide } from "../../lib/emails/api"
-
-const STATUS_COLOR = { done: "green", todo: "orange", optional: "grey" } as const
+import { SetupSteps } from "../../lib/emails/kit/setup"
 
 /** Paste into Claude Code, Cursor or another assistant in the Medusa backend project. Kept in English on purpose. */
 export const AI_PROMPT = `Install and configure @bitshaft/medusa-plugin-emails in this Medusa v2 project.
@@ -29,7 +28,7 @@ export const AI_PROMPT = `Install and configure @bitshaft/medusa-plugin-emails i
 5. Run the type check and build the project.
 Then tell me to open Admin → Emails → Rollout guide, set the look on the Appearance tab and send a test email.`
 
-/** The "Rollout guide" tab: what the plugin does, how it connects, and the steps with their detected status. */
+/** The "Guide" tab: what the plugin does, how it connects, and the installation steps with their detected status. */
 export const Guide = () => {
   const { t } = useTranslation()
   const { data, isLoading } = useEmailsGuide()
@@ -64,39 +63,11 @@ export const Guide = () => {
         </div>
       </Container>
 
-      <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
-        <Heading level="h2">{t("emails.guide.stepsTitle")}</Heading>
-        {isLoading ? (
-          <Skeleton className="h-40" />
-        ) : (
-          <ol className="flex flex-col gap-y-3">
-            {(data?.steps ?? []).map((step, index) => (
-              <li key={step.id} className="flex items-start gap-x-3 rounded-lg border border-ui-border-base px-4 py-3">
-                <span className="mt-0.5 shrink-0">
-                  {step.status === "done" ? (
-                    <CheckCircleSolid className="text-ui-tag-green-icon" />
-                  ) : (
-                    <Clock className="text-ui-fg-muted" />
-                  )}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Text size="small" weight="plus">
-                      {index + 1}. {t(`emails.guide.steps.${step.id}.title`)}
-                    </Text>
-                    <StatusBadge color={STATUS_COLOR[step.status]}>
-                      {t(`emails.guide.status.${step.status}`)}
-                    </StatusBadge>
-                  </div>
-                  <Text size="small" className="text-ui-fg-subtle">
-                    {t(`emails.guide.steps.${step.id}.body`, step.params ?? {})}
-                  </Text>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
-      </Container>
+      <SetupSteps
+        steps={data?.steps}
+        loading={isLoading}
+        text={(id, part, params) => t(`emails.setup.${id}.${part}`, params)}
+      />
 
       <Container className="overflow-hidden flex flex-col gap-y-3 p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">

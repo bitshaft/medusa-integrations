@@ -232,6 +232,40 @@
         "title": "Demo mode",
         "text": "demo: true makes GUS answer with sample businesses without a key. NIP 1112223332 is a closed business, 9876543210 is not found. The white list and VIES are asked as usual."
       }
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate. The white list and VIES need no key."
+      },
+      "firstCheck": {
+        "title": "Check a number",
+        "body": "Lookup tab: type any tax ID. Done when a register answers."
+      },
+      "taxId": {
+        "title": "Tax ID in the order",
+        "body": "The storefront saves the buyer's tax ID in metadata under one of: {{keys}}. Done when the first order is verified."
+      },
+      "checkoutLookup": {
+        "title": "Lookup in the checkout",
+        "body": "The storefront fills the company name and address from the tax ID (POST /store/whitelist-vat/verify)."
+      },
+      "gus": {
+        "title": "GUS key",
+        "body": "gus.apiKey from GUS (REGON BIR1.1) gives the company name and address also for businesses without VAT."
+      },
+      "vies": {
+        "title": "Your EU VAT number for VIES",
+        "body": "vies.requesterVatNumber: VIES then issues a consultation number, proof of the check."
+      },
+      "reject": {
+        "title": "Block bad tax IDs in the checkout",
+        "body": "checkout.rejectOnCompletion: true refuses an order whose tax ID is invalid or not found. Off by default."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off (demo: false), so GUS answers with real data."
+      }
     }
   }
 }

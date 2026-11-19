@@ -1,5 +1,5 @@
 import { Button, clx, Container, Heading, Input, Label, Select, Skeleton, Switch, Text, toast } from "@medusajs/ui"
-import { type ReactNode, useEffect, useState } from "react"
+import { type ReactNode, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import {
@@ -17,6 +17,7 @@ import {
   useSaveEmailTheme,
 } from "../../lib/emails/api"
 import { errorMessage } from "../../lib/emails/kit/format"
+import { useDebounced } from "../../lib/emails/kit/hooks"
 
 const COLOR_KEYS: ColorKey[] = ["primary", "primaryText", "background", "card", "text", "muted", "border"]
 const FONTS: Record<FontKey, string> = {
@@ -106,15 +107,6 @@ const PRESETS: Array<{ id: string; colors: Record<ColorKey, string> }> = [
     },
   },
 ]
-
-function useDebounced<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-  return debounced
-}
 
 /** Drops values equal to the plugin options, so they keep following the options. */
 function compact(theme: EmailTheme, defaults: ThemeResponse["defaults"]): EmailTheme {

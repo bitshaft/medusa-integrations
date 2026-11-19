@@ -337,7 +337,15 @@
     "guide": {
       "title": "Przewodnik",
       "intro": "Od klucza ograniczonego do pierwszej płatności testowej. Zacznij w trybie testowym.",
-      "readOnly": "Ta wtyczka tylko czyta. Płatności, przechwycenia i zwroty wykonuje oficjalny provider Stripe w Medusie.",
+      "readOnly": "Ta wtyczka tylko czyta. Płatności, przechwycenia i zwroty wykonuje oficjalny provider Stripe w Medusie."
+    },
+    "signals": {
+      "disputes": "otwarte spory: {{count}}"
+    },
+    "options": {
+      "keySet": "Ustawiony (nigdy nie jest pokazywany)"
+    },
+    "setup": {
       "key": {
         "title": "Utwórz klucz ograniczony",
         "body": "Panel Stripe → Developers → API keys → Create restricted key. Nazwij go np. „Medusa admin (odczyt)”."
@@ -374,12 +382,6 @@
         "title": "Przejdź na live",
         "body": "Powtórz kroki 1–2 w trybie live, ustaw klucz live i mode: \"live\", a potem sprawdź zakładkę Kontrole."
       }
-    },
-    "signals": {
-      "disputes": "otwarte spory: {{count}}"
-    },
-    "options": {
-      "keySet": "Ustawiony (nigdy nie jest pokazywany)"
     }
   }
 }

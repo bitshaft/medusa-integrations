@@ -526,6 +526,52 @@
       "gpsrIncomplete": "GPSR incomplete: {{count}}",
       "gpsrGaps": "GPSR gaps: {{count}}",
       "gpsrComplete": "GPSR record complete"
+    },
+    "setup": {
+      "install": {
+        "title": "Install the plugin",
+        "body": "npm install, add it to plugins in medusa-config.ts and run npx medusa db:migrate."
+      },
+      "manufacturers": {
+        "title": "Add manufacturers",
+        "body": "GPSR tab: the manufacturer (or the EU responsible person) with a postal and electronic address, then assign it to products."
+      },
+      "gpsrProducts": {
+        "title": "Complete product safety data",
+        "body": "Products checked: {{products}}, incomplete: {{incomplete}}. Fill them in on the product page (Integrations card → Compliance) or on the GPSR tab."
+      },
+      "gdprLinks": {
+        "title": "Set the GDPR links",
+        "body": "Settings → GDPR: the storefront confirmation page and the privacy policy link."
+      },
+      "gdprNotice": {
+        "title": "Message after a request",
+        "body": "Settings → GDPR: replace the placeholder with the text from your lawyer."
+      },
+      "consents": {
+        "title": "Add consent types",
+        "body": "GDPR tab → Consent types: e.g. the newsletter, with the wording in Polish and English."
+      },
+      "gdprEmails": {
+        "title": "Send verification e-mails",
+        "body": "A customer confirms a request by a link from an e-mail. Send it on the compliance.request_verification event (e.g. with the Emails plugin)."
+      },
+      "omnibusStarted": {
+        "title": "Start the price history",
+        "body": "Switching Omnibus on takes the first price snapshot. Done when the history has started."
+      },
+      "omnibusStorefront": {
+        "title": "Show the lowest price in the store",
+        "body": "Next to each discounted price, the lowest price from the last {{days}} days, from the Store API."
+      },
+      "lawyer": {
+        "title": "Review with a lawyer",
+        "body": "The settings are the plugin's readings of the law, not legal advice. The Guide below says what to check."
+      },
+      "production": {
+        "title": "Go live",
+        "body": "Demo mode off in Settings, so the panels show the store's real data."
+      }
     }
   }
 }

@@ -45,6 +45,23 @@ look and behave the same:
   empty lists, loading and paging look the same everywhere.
 - `format.ts`: `formatDate` (`13 lis 2026`) and `formatDateTime`
   (`13 lis 2026, 14:05`), the one date format of every integration.
+- `hooks.ts`: `useDebounced(value)`. Every search box feeds its text through
+  it (300 ms) before it goes into a query: one request per word, not per
+  letter.
+
+## Installation steps
+
+Every Guide tab starts with the installation steps, each with the status the
+plugin detects in the store. The server builds them with `setupStep(id, done,
+{ optional, params })` from `kit/server/setup.ts`, where `done` is `true`,
+`false`, or `null` when nothing in the store can show it (e.g. a change in
+the storefront). It serves them from `GET /admin/<ns>/setup` as `{ steps }`.
+The admin shows them with `<SetupStepsFrom path=… text=…/>` (`setup.tsx`),
+with texts in `<ns>.setup.<id>.title` and `.body`.
+
+Statuses: Done (green, optional steps too), To do (orange), Optional (grey,
+not done yet), Check yourself (blue, `null`). The header counts the required
+steps done.
 
 ## Demo mode
 

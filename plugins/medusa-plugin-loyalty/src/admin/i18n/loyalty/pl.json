@@ -315,6 +315,48 @@
       "body": "„Przywróć dane testowe” zastępuje cały program przykładowym: wszystkie zasady włączone, nagroda każdego rodzaju i rok historii dla maksymalnie ośmiu klientów (poziomy, zamówienia, zwroty, wymiany nagród, wygasłe i wygasające punkty, urodziny, ręczne korekty). Przed startem wyłącz opcję demo w medusa-config.ts.",
       "resetBody": "Wszystkie dane programu lojalnościowego zostaną usunięte i zastąpione testowymi: ustawienia, nagrody, konta, historia punktów i wymiany. Zarejestrowani klienci sklepu dostaną przykładową historię; sklep z mniej niż sześcioma klientami dostanie przykładowych klientów (demo.…@example.com). Tego nie da się cofnąć.",
       "restoredHint": "Klienci: {{customers}}, wpisy punktów: {{entries}}."
+    },
+    "setup": {
+      "install": {
+        "title": "Zainstaluj wtyczkę",
+        "body": "npm install, dodaj ją do plugins w medusa-config.ts i uruchom npx medusa db:migrate."
+      },
+      "program": {
+        "title": "Włącz program",
+        "body": "Ustawienia: główny przełącznik. Gdy jest wyłączony, nic się nie nalicza ani nie wymienia."
+      },
+      "earning": {
+        "title": "Ustal naliczanie punktów",
+        "body": "Ustawienia → Naliczanie: ile punktów za wydaną kwotę."
+      },
+      "rewards": {
+        "title": "Dodaj nagrody",
+        "body": "Zakładka Nagrody: rabat, darmowa dostawa albo produkt w prezencie za punkty. Aktywnych nagród: {{count}}."
+      },
+      "terms": {
+        "title": "Link do regulaminu programu",
+        "body": "Ustawienia: program wymaga opublikowanego regulaminu. Sklep pokazuje link klientom."
+      },
+      "tiers": {
+        "title": "Poziomy",
+        "body": "Ustawienia → Poziomy: np. Srebrny i Złoty według wydatków, z większą liczbą punktów za zamówienie."
+      },
+      "actions": {
+        "title": "Punkty za akcje",
+        "body": "Ustawienia: punkty za rejestrację, pierwsze zamówienie, urodziny albo newsletter."
+      },
+      "storefront": {
+        "title": "Pokaż punkty w sklepie",
+        "body": "W koncie klienta: saldo, historia i nagrody do wymiany (Store API /store/loyalty/me i /store/loyalty/rewards)."
+      },
+      "firstPoints": {
+        "title": "Pierwsze punkty za zamówienie",
+        "body": "Gotowe, gdy klient dostanie punkty za opłacone zamówienie."
+      },
+      "production": {
+        "title": "Start produkcyjny",
+        "body": "Tryb demo wyłączony (demo: false)."
+      }
     }
   }
 }
