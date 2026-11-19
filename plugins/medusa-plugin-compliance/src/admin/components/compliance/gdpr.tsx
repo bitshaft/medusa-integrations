@@ -215,6 +215,16 @@ const RequestDrawer = ({
       })
       if (!ok) return
     }
+    if (action === "reject" || action === "complete") {
+      const ok = await prompt({
+        title: t(`compliance.gdpr.confirm.${action}Title`),
+        description: t("compliance.gdpr.confirm.closeText", { email: d?.request.email ?? "" }),
+        confirmText: t(`compliance.gdpr.actions.${action}`),
+        cancelText: t("compliance.cancel"),
+        variant: action === "reject" ? "danger" : "confirmation",
+      })
+      if (!ok) return
+    }
     act.mutate(
       { action, note: note.trim() || null },
       {

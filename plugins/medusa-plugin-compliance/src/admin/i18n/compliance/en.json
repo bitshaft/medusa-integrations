@@ -324,7 +324,12 @@
         "import": "Import"
       },
       "texts": "Name and text",
-      "textsHint": "Written for each store language: pick the language on the right."
+      "textsHint": "Written for each store language: pick the language on the right.",
+      "confirm": {
+        "rejectTitle": "Reject the request?",
+        "completeTitle": "Mark the request as done?",
+        "closeText": "The request from {{email}} closes for good and cannot be reopened. Everything stays in the history."
+      }
     },
     "omnibus": {
       "title": "Discounts and the lowest prior price",

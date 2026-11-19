@@ -342,7 +342,12 @@
         "import": "Import"
       },
       "texts": "Nazwa i treść",
-      "textsHint": "Osobno dla każdego języka sklepu: wybierz język po prawej."
+      "textsHint": "Osobno dla każdego języka sklepu: wybierz język po prawej.",
+      "confirm": {
+        "rejectTitle": "Odrzucić żądanie?",
+        "completeTitle": "Oznaczyć żądanie jako wykonane?",
+        "closeText": "Żądanie od {{email}} zostanie zamknięte na stałe i nie da się go otworzyć ponownie. Wszystko zostaje w historii."
+      }
     },
     "omnibus": {
       "title": "Obniżki i najniższa cena sprzed obniżki",
