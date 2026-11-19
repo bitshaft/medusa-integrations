@@ -177,6 +177,10 @@ const Field = ({ label, value }: { label: string; value: ReactNode }) => (
   </div>
 )
 
-export const config = defineWidgetConfig({ zone: "order.details.before" })
+export const config = defineWidgetConfig({
+  zone: "order.details.before",
+  // Shared by every Bitshaft plugin: one id, so a layout placement holds whichever plugin renders the card.
+  id: "bitshaft-integrations-order-details",
+})
 
 export default StripeOrderWidget

@@ -4,6 +4,11 @@ import { type ComponentType, type CSSProperties, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
+import { ensureIconTileStyle, ICON_TILE_CLASS } from "./icon"
+import { CardOnTop } from "./layout"
+
+ensureIconTileStyle()
+
 /**
  * Integrations on Medusa's own pages, the same in every plugin.
  *
@@ -204,7 +209,7 @@ export const BrandTile = ({ brand, size = 20 }: { brand: Brand; size?: number })
   return (
     <span
       aria-hidden
-      className="flex shrink-0 items-center justify-center rounded-[4px]"
+      className={clx(ICON_TILE_CLASS, "flex shrink-0 items-center justify-center rounded-[4px]")}
       style={{ width: size, height: size, backgroundColor: brand.color, color: "#ffffff" }}
     >
       {Icon && <Icon color="currentColor" style={{ width: size * 0.7, height: size * 0.7 }} />}
@@ -287,7 +292,12 @@ export function useSignals(scope: OverviewScope, context: SignalContext) {
  * the zone; `owner` is the calling plugin's namespace.
  */
 export const DetailIntegrations = ({ page, owner, entity }: { page: DetailPage; owner: string; entity: EntityLike }) =>
-  isOwner(DETAIL_ZONES[page], owner) ? <DetailCard page={page} entity={entity} /> : null
+  isOwner(DETAIL_ZONES[page], owner) ? (
+    <>
+      <CardOnTop zone={`${page}.details`} />
+      <DetailCard page={page} entity={entity} />
+    </>
+  ) : null
 
 /** @deprecated Use DetailIntegrations with page="order". */
 export const OrderIntegrations = ({ owner, order }: { owner: string; order: EntityLike }) => (

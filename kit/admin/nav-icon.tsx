@@ -1,5 +1,7 @@
 import type { ComponentType, CSSProperties } from "react"
 
+import { ensureIconTileStyle, ICON_TILE_CLASS } from "./icon"
+
 type IconComponent = ComponentType<{ style?: CSSProperties; color?: string }>
 
 /**
@@ -22,8 +24,9 @@ export const NAV_TILE_STYLE: CSSProperties = {
 
 /** A sidebar icon for `defineRouteConfig`: a white icon on a colored tile. */
 export function navIcon(Icon: IconComponent, background: string): ComponentType {
+  ensureIconTileStyle()
   const NavIcon = () => (
-    <span style={{ ...NAV_TILE_STYLE, backgroundColor: background, color: "#ffffff" }}>
+    <span className={ICON_TILE_CLASS} style={{ ...NAV_TILE_STYLE, backgroundColor: background, color: "#ffffff" }}>
       <Icon color="currentColor" style={{ width: 14, height: 14, flexShrink: 0 }} />
     </span>
   )

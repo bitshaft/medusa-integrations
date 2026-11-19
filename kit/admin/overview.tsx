@@ -19,6 +19,7 @@ import {
   useBrandLabel,
   useSignals,
 } from "./integrations"
+import { CardOnTop } from "./layout"
 import { sdk } from "./sdk"
 import { type KitTextKey, useKitText } from "./texts"
 
@@ -252,7 +253,12 @@ function useLatestOrders(enabled: boolean) {
 
 /** "To handle" above Medusa's order list; `owner` is the calling plugin's namespace. */
 export const OrdersOverview = ({ owner }: { owner: string }) =>
-  isOwner(OVERVIEW_ZONES.orders, owner) ? <OrdersCard /> : null
+  isOwner(OVERVIEW_ZONES.orders, owner) ? (
+    <>
+      <CardOnTop zone="order.list" />
+      <OrdersCard />
+    </>
+  ) : null
 
 const OrdersCard = () => {
   const k = useKitText()
@@ -472,7 +478,12 @@ const CATALOG_PRODUCTS = 500
 
 /** "Catalog at a glance" above Medusa's product list; `owner` is the calling plugin's namespace. */
 export const CatalogOverview = ({ owner }: { owner: string }) =>
-  isOwner(OVERVIEW_ZONES.catalog, owner) ? <CatalogCard /> : null
+  isOwner(OVERVIEW_ZONES.catalog, owner) ? (
+    <>
+      <CardOnTop zone="product.list" />
+      <CatalogCard />
+    </>
+  ) : null
 
 const CatalogCard = () => {
   const k = useKitText()
@@ -666,6 +677,7 @@ const Thresholds = ({ settings, onSave }: { settings: CardSettings; onSave: (nex
 export const ProductOverview = ({ owner, product }: { owner: string; product: EntityLike }) =>
   isOwner(OVERVIEW_ZONES.product, owner) ? (
     <div className="flex flex-col gap-y-3">
+      <CardOnTop zone="product.details" />
       <ProductCard productId={product.id} />
       {/* Every plugin's product tab (GPSR, Omnibus, negotiations…) in one card, like on orders and customers. */}
       <DetailCard page="product" entity={product} />

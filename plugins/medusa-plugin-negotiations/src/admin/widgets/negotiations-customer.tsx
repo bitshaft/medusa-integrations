@@ -41,6 +41,10 @@ const CustomerNegotiationsWidget = ({ data: customer }: DetailWidgetProps<AdminC
   <DetailIntegrations page="customer" owner="negotiations" entity={customer as unknown as EntityLike} />
 )
 
-export const config = defineWidgetConfig({ zone: "customer.details.before" })
+export const config = defineWidgetConfig({
+  zone: "customer.details.before",
+  // Shared by every Bitshaft plugin: one id, so a layout placement holds whichever plugin renders the card.
+  id: "bitshaft-integrations-customer-details",
+})
 
 export default CustomerNegotiationsWidget

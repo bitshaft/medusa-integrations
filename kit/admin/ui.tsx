@@ -1,6 +1,10 @@
 import { clx, Tabs } from "@medusajs/ui"
 import type { ComponentType, CSSProperties, ReactNode } from "react"
 
+import { ensureIconTileStyle, ICON_TILE_CLASS } from "./icon"
+
+ensureIconTileStyle()
+
 type IconComponent = ComponentType<{ style?: CSSProperties; color?: string; className?: string }>
 
 /**
@@ -23,7 +27,7 @@ export const TabTrigger = ({
   className?: string
   children: ReactNode
 }) => (
-  <Tabs.Trigger value={value} className={clx(TAB_CLASS, className)}>
+  <Tabs.Trigger value={value} className={clx(TAB_CLASS, ICON_TILE_CLASS, className)}>
     {Icon && <Icon color={color} style={{ flexShrink: 0 }} />}
     {children}
   </Tabs.Trigger>
@@ -36,7 +40,7 @@ export const TabTrigger = ({
 export const PageIcon = ({ icon: Icon, color }: { icon: IconComponent; color: string }) => (
   <span
     aria-hidden
-    className="flex size-8 shrink-0 items-center justify-center rounded-lg shadow-borders-base"
+    className={clx(ICON_TILE_CLASS, "flex size-8 shrink-0 items-center justify-center rounded-lg shadow-borders-base")}
     style={{ backgroundColor: color, color: "#ffffff" }}
   >
     <Icon color="currentColor" />

@@ -79,12 +79,12 @@ steps done.
 `integrations.tsx` and `overview.tsx` put every installed plugin into one
 card per Medusa page, the way a suite of integrations should look:
 
-| Page         | Zone                      | Card                                                                |
-| ------------ | ------------------------- | ------------------------------------------------------------------- |
-| Order        | `order.details.before`    | Integrations: a tab per plugin that applies to the order            |
-| Customer     | `customer.details.before` | Integrations: a tab per plugin that applies to the customer         |
-| Order list   | `order.list.before`       | Orders to handle: tiles from Medusa's data, plugin tiles and chips  |
-| Product list | `product.list.before`     | Catalog at a glance: stock, drafts, images, sales, plugin chips     |
+| Page         | Zone                      | Card                                                                                                                                     |
+| ------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Order        | `order.details.before`    | Integrations: a tab per plugin that applies to the order                                                                                 |
+| Customer     | `customer.details.before` | Integrations: a tab per plugin that applies to the customer                                                                              |
+| Order list   | `order.list.before`       | Orders to handle: tiles from Medusa's data, plugin tiles and chips                                                                       |
+| Product list | `product.list.before`     | Catalog at a glance: stock, drafts, images, sales, plugin chips                                                                          |
 | Product      | `product.details.before`  | Product at a glance: status, price, stock, sales, plugin rows/chips; under it Integrations, a tab per plugin that applies to the product |
 
 How it works:
@@ -110,3 +110,16 @@ How it works:
   the plugin's `product-tab.tsx` from its `<namespace>-overview-product.tsx`.
 - `texts.ts` holds the cards' Polish and English texts: the kit has no
   translation files of its own. Plugin texts stay in each plugin's i18n.
+- **Placement (`layout.tsx`).** Since Medusa 2.22 a page's layout composer
+  puts `*.before` and `*.after` widgets in the main column after Medusa's own
+  sections, so "before" alone ends up at the bottom. Every plugin's widget in
+  these zones sets the same `id` in `defineWidgetConfig`
+  (`bitshaft-integrations-<page>-<details|list>`, a string literal; the
+  admin numbers repeats `#2`, `#3`…), and the card's owner, on a page with
+  **no** saved layout, saves Medusa's default layout once with the card
+  first. A layout an admin saved ("Customize layout") is never changed, and
+  the card can be moved there like any widget.
+- **Icons (`icon.ts`).** Medusa's icons clip with `clip-path="url(#a)"` and
+  all share the id `a`, so with several on a page one can come out cut. Kit
+  tiles (`BrandTile`, `PageIcon`, `TabTrigger`, `navIcon`) carry
+  `ICON_TILE_CLASS`, whose one CSS rule switches that clip off.

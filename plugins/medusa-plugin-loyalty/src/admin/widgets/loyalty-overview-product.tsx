@@ -11,6 +11,10 @@ const ProductOverviewWidget = ({ data }: DetailWidgetProps<AdminProduct>) => (
   <ProductOverview owner="loyalty" product={data as unknown as EntityLike} />
 )
 
-export const config = defineWidgetConfig({ zone: "product.details.before" })
+export const config = defineWidgetConfig({
+  zone: "product.details.before",
+  // Shared by every Bitshaft plugin: one id, so a layout placement holds whichever plugin renders the card.
+  id: "bitshaft-integrations-product-details",
+})
 
 export default ProductOverviewWidget
