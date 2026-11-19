@@ -6,7 +6,7 @@
     "refresh": "Odśwież",
     "openPromotions": "Promocje Medusy",
     "export": "Eksport CSV",
-    "newBatch": "Nowa paczka kodów",
+    "newBatch": "Nowa seria kodów",
     "newCoupon": "Nowy kupon",
     "loading": "Wczytywanie…",
     "loadError": "Nie udało się wczytać kuponów.",
@@ -54,10 +54,10 @@
       "uses": "Użycia",
       "discount": "Rabat",
       "orders": "Zamówienia",
-      "batch_one": "Paczka: {{count}} kod",
-      "batch_few": "Paczka: {{count}} kody",
-      "batch_many": "Paczka: {{count}} kodów",
-      "batch_other": "Paczka: {{count}} kodu",
+      "batch_one": "Seria: {{count}} kod",
+      "batch_few": "Seria: {{count}} kody",
+      "batch_many": "Seria: {{count}} kodów",
+      "batch_other": "Seria: {{count}} kodu",
       "automaticCoupon": "Kupon automatyczny",
       "automatic": "automatyczny",
       "usedCount_one": "{{count}} użycie",
@@ -144,7 +144,7 @@
     "wizard": {
       "newTitle": "Nowy kupon",
       "editTitle": "Edycja {{code}}",
-      "batchTitle": "Nowa paczka kodów jednorazowych",
+      "batchTitle": "Nowa seria kodów jednorazowych",
       "editHint": "Kodu, rodzaju rabatu i trybu automatycznego nie można zmienić. Aby je zmienić, zduplikuj kupon.",
       "steps": {
         "kind": "Rodzaj",
@@ -235,10 +235,10 @@
     "batch": {
       "title": "Kody",
       "hint": "Każdy kod działa raz. Rozdaj je w newsletterze albo wydrukuj.",
-      "editing_one": "Ta paczka ma {{count}} kod. Kodów ani ich liczby nie można zmienić.",
-      "editing_few": "Ta paczka ma {{count}} kody. Kodów ani ich liczby nie można zmienić.",
-      "editing_many": "Ta paczka ma {{count}} kodów. Kodów ani ich liczby nie można zmienić.",
-      "editing_other": "Ta paczka ma {{count}} kodu. Kodów ani ich liczby nie można zmienić.",
+      "editing_one": "Ta seria ma {{count}} kod. Kodów ani ich liczby nie można zmienić.",
+      "editing_few": "Ta seria ma {{count}} kody. Kodów ani ich liczby nie można zmienić.",
+      "editing_many": "Ta seria ma {{count}} kodów. Kodów ani ich liczby nie można zmienić.",
+      "editing_other": "Ta seria ma {{count}} kodu. Kodów ani ich liczby nie można zmienić.",
       "prefix": "Prefiks",
       "quantity": "Ile kodów",
       "example": "Przykładowy kod: {{code}}"
@@ -328,7 +328,7 @@
         "text": "Jeden kupon, kilka poziomów, np. 5% od 200 zł i 10% od 500 zł. Klient dostaje najwyższy poziom, jaki osiąga koszyk, nigdy dwa naraz. W promocjach Medusy każdy poziom to osobna promocja z kodem zakończonym na __T1, __T2."
       },
       "batches": {
-        "title": "Paczki kodów jednorazowych",
+        "title": "Serie kodów jednorazowych",
         "text": "Prefiks i liczba, np. 500 kodów zaczynających się od NL-. Każdy kod działa raz. Lista pokazuje, który kod został użyty i w jakim zamówieniu; pobierzesz ją jako CSV.\nInne wtyczki (np. newsletter) dowiadują się o nowej paczce ze zdarzenia bitshaft.coupons.batch_created."
       },
       "checks": {
@@ -348,7 +348,7 @@
       "title": "Ustawienia",
       "subtitle": "Wartości dla nowych kuponów i eksportów. Zapisywane jest tylko to, co zmienisz; reszta wynika z opcji wtyczki.",
       "currency": "Waluta nowych kuponów",
-      "codeLength": "Długość kodów w paczkach",
+      "codeLength": "Długość kodów w seriach",
       "exportLocale": "Język eksportu CSV",
       "polish": "Polski",
       "english": "Angielski",
@@ -367,7 +367,7 @@
       }
     },
     "demo": {
-      "body": "„Przywróć dane testowe” tworzy zestaw kuponów demo jako prawdziwe promocje Medusy: każdy rodzaj, progi, kupon automatyczny, limity, kupon na pierwsze zamówienie, grupę klientów, wykluczenia, każdy status i partię kodów jednorazowych. Ich nazwy zaczynają się od [Demo], a kody od DEMO-. Przed startem wyłącz opcję demo w medusa-config.ts.",
+      "body": "„Przywróć dane testowe” tworzy zestaw kuponów demo jako prawdziwe promocje Medusy: każdy rodzaj, progi, kupon automatyczny, limity, kupon na pierwsze zamówienie, grupę klientów, wykluczenia, każdy status i serię kodów jednorazowych. Ich nazwy zaczynają się od [Demo], a kody od DEMO-. Przed startem wyłącz opcję demo w medusa-config.ts.",
       "resetBody": "Kupony z nazwą [Demo] zostaną usunięte razem z promocjami i utworzone od nowa. To prawdziwe promocje: aktywne kody działają przy zamówieniu. Twoje własne kupony nie zostaną zmienione.",
       "restoredHint": "Kupony demo: {{coupons}}, kody: {{codes}}."
     },
@@ -389,8 +389,8 @@
         "body": "Rabat bez kodu, np. darmowa dostawa od kwoty. W kreatorze wybierz „automatycznie”."
       },
       "batch": {
-        "title": "Paczka kodów jednorazowych",
-        "body": "Np. 500 kodów do newslettera, do pobrania jako CSV. Przycisk „Nowa paczka kodów” w zakładce Panel."
+        "title": "Seria kodów jednorazowych",
+        "body": "Np. 500 kodów do newslettera, do pobrania jako CSV. Przycisk „Nowa seria kodów” w zakładce Panel."
       },
       "production": {
         "title": "Start produkcyjny",

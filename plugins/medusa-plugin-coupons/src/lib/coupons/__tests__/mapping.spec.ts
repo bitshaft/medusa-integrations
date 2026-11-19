@@ -418,6 +418,6 @@ describe("csv", () => {
       ]
     )
     expect(csv).toBe('﻿Kod;Rabat;Opis\r\nJESIEN15;12,5;"Zdanie; z ""cudzysłowem"""\r\n\'=HYPERLINK();-5;\r\n')
-    expect(csvFileName("kupony paczka/1", new Date("2026-11-14T10:00:00Z"))).toBe("kupony-paczka-1-2026-11-14.csv")
+    expect(csvFileName("kupony seria/1", new Date("2026-11-14T10:00:00Z"))).toBe("kupony-seria-1-2026-11-14.csv")
   })
 })
