@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next"
 
 import { ScopeCard } from "../components/currency/scope-card"
 import { useProductPrices } from "../lib/currency/api"
+import { installPriceEditorHelper } from "../lib/currency/price-editor"
+
+// "Suggest prices" in Medusa's own price grids (see price-editor.tsx); started once, with the admin.
+installPriceEditorHelper()
 
 /** "Prices in currencies" beside the product's variants: what is missing, and "Fill from PLN" for all variants. */
 const CurrencyProductSide = ({ data }: DetailWidgetProps<AdminProduct>) => {

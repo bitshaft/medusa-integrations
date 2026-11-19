@@ -296,6 +296,27 @@
         "title": "Limits",
         "text": "Prices with rules other than region (e.g. customer groups) are not touched. A fill covers at most the maxVariants option of variants. Rates are not updated automatically yet."
       }
+    },
+    "suggest": {
+      "button": "Suggest prices",
+      "title": "Price suggestions from exchange rates",
+      "hint": "For every row the other prices are computed from the price typed last (or the {{base}} price), with the rates, margins, rounding and VAT set on the Currencies page.",
+      "overwrite": "Also replace prices already entered",
+      "stale": "NBP is not answering: prices use the last saved table {{table}} of {{date}}.",
+      "variant": "Variant",
+      "from": "from {{price}}",
+      "replaces": "replaces",
+      "nothing": "Every price is already entered.",
+      "saveHint": "The prices go into the table; save them with Save.",
+      "apply_one": "Enter {{count}} price",
+      "apply_other": "Enter {{count}} prices",
+      "done_one": "{{count}} price entered. Check it and save.",
+      "done_other": "{{count}} prices entered. Check them and save.",
+      "error": {
+        "no_source": "No price to convert: enter a price in any column.",
+        "unknown_slot": "This column is not one of the store's currencies.",
+        "invalid_amount": "The price entered is not a number above zero."
+      }
     }
   }
 }

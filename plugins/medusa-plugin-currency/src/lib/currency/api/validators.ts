@@ -65,3 +65,18 @@ export const AdminRunsQuery = z.object({
   offset: z.coerce.number().int().min(0).default(0),
   product_id: id.optional(),
 })
+
+export const AdminSuggest = z.object({
+  /** One typed price per row of Medusa's price editor; every other column of the row is computed from it. */
+  rows: z
+    .array(
+      z.object({
+        key: z.string().min(1).max(200),
+        slot: z.string().trim().min(1).max(100),
+        amount: z.string().regex(/^\d{1,12}(\.\d{1,10})?$/),
+      })
+    )
+    .min(1)
+    .max(1000),
+})
+export type AdminSuggestType = z.output<typeof AdminSuggest>

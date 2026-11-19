@@ -316,6 +316,31 @@
         "title": "Ograniczenia",
         "text": "Ceny z regułami innymi niż region (np. grupy klientów) nie są ruszane. Jedno uzupełnienie obejmuje najwyżej tyle wariantów, ile opcja maxVariants. Kursy nie aktualizują się jeszcze automatycznie."
       }
+    },
+    "suggest": {
+      "button": "Podpowiedz ceny",
+      "title": "Podpowiedź cen z kursów walut",
+      "hint": "Dla każdego wiersza liczę pozostałe ceny z ceny wpisanej ostatnio (albo z ceny w {{base}}), według kursów, marż, zaokrągleń i VAT z ustawień Walut.",
+      "overwrite": "Zastąp też ceny już wpisane",
+      "stale": "NBP nie odpowiada: ceny liczone z ostatniej zapisanej tabeli {{table}} z {{date}}.",
+      "variant": "Wariant",
+      "from": "z {{price}}",
+      "replaces": "zastąpi",
+      "nothing": "Wszystkie ceny są już wpisane.",
+      "saveHint": "Ceny trafią do tabeli; zapisujesz je przyciskiem Zapisz.",
+      "apply_one": "Wpisz {{count}} cenę",
+      "apply_few": "Wpisz {{count}} ceny",
+      "apply_many": "Wpisz {{count}} cen",
+      "apply_other": "Wpisz {{count}} ceny",
+      "done_one": "Wpisano {{count}} cenę. Sprawdź i zapisz.",
+      "done_few": "Wpisano {{count}} ceny. Sprawdź i zapisz.",
+      "done_many": "Wpisano {{count}} cen. Sprawdź i zapisz.",
+      "done_other": "Wpisano {{count}} ceny. Sprawdź i zapisz.",
+      "error": {
+        "no_source": "Brak ceny do przeliczenia: wpisz cenę w dowolnej kolumnie.",
+        "unknown_slot": "Tej kolumny nie ma w walutach sklepu.",
+        "invalid_amount": "Wpisana cena nie jest liczbą większą od zera."
+      }
     }
   }
 }

@@ -21,6 +21,9 @@ First release.
   overwriting confirmed separately; price lists and region prices optional.
   The save writes exactly the preview and is refused (409) when a base price
   or a rate changed since.
+- "Suggest prices" in Medusa's own price editors (product, variant, new product, new
+  variant): a price typed in any column fills the row's other columns under the same
+  rules, as if typed, until the admin saves. `POST /admin/currency/suggest`.
 - History of every fill, and the origin of each price (manual, or filled on a
   day at a rate).
 - `currency.prices_filled` event for other plugins.

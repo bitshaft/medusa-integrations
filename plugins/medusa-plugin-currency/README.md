@@ -185,6 +185,26 @@ HTTP 409 and the admin refreshes the preview. Writes go through Medusa's Pricing
 so its `pricing.price.*` events fire as for any admin change; a failed save removes the
 prices it created and restores the ones it overwrote.
 
+### Suggest prices in Medusa's price editor
+
+Medusa's own price grids (**Edit prices** on a product or variant, the prices step of a
+new product, a new variant) get a **Suggest prices** button in their header. Type a price
+in any column of a row, press the button, and the plugin computes every other column of
+that row under the same rules as a fill (rate, margin, rounding, VAT), including the base
+currency and region columns. A row starts from the cell typed last, else from its base
+currency price, else from its first filled column. A price typed in another currency is
+first taken back to the base currency (the inverse of its rule), then converted.
+
+The panel lists what goes where; only empty cells are filled unless **Also replace prices
+already entered** is ticked. The prices are written into the grid as if typed: nothing is
+saved until you press Medusa's **Save**, so these saves do not appear in the plugin's
+history. Switched-off currencies are left alone. When NBP does not answer, the last saved
+table is used and marked.
+
+Medusa has no extension point in these grids, so the button is added to the page from
+outside and relies on the dashboard's markup. If a Medusa update changes it, the button
+does not appear and the grid works as before.
+
 ### History and price origin
 
 Every save records who, when, what (products, currencies), the options, and per currency
@@ -220,7 +240,7 @@ There is no dependency between the packages.
 All under `/admin/currency`, authenticated as an admin user: `GET status`,
 `GET|POST settings`, `GET rates?refresh=true`, `POST sample`, `POST preview`,
 `POST apply` (body of the preview plus `fingerprint` and, when overwriting,
-`confirm_overwrite: true`), `GET runs`, `GET runs/:id`, `GET products/:id`.
+`confirm_overwrite: true`), `POST suggest` (`{ rows: [{ key, slot, amount }] }`, writes nothing), `GET runs`, `GET runs/:id`, `GET products/:id`.
 
 ## Demo mode
 
@@ -312,6 +332,21 @@ Podgląd pokazuje wariant, cenę bazową, walutę, kurs z datą, marżę, nową 
 oraz akcję: dodaj, nadpisz albo pomiń z powodem. **Zapisuje się dokładnie to, co
 w podglądzie.** Jeśli w międzyczasie zmieniła się cena bazowa albo kurs, nic się nie
 zapisuje, a podgląd się odświeża.
+
+### Podpowiedź cen w edytorze cen Medusy
+
+Edytory cen Medusy (**Edytuj ceny** produktu i wariantu, krok cen przy tworzeniu produktu,
+nowy wariant) mają w nagłówku przycisk **Podpowiedz ceny**. Wpisz cenę w dowolnej kolumnie
+wiersza i kliknij przycisk: plugin policzy pozostałe kolumny tego wiersza według tych
+samych zasad co uzupełnianie (kurs, marża, zaokrąglenie, VAT), łącznie z walutą bazową
+i regionami. Źródłem jest komórka wpisana ostatnio, a jeśli nic nie wpisano, cena w walucie
+bazowej. Domyślnie wypełniane są tylko puste komórki; opcja „Zastąp też ceny już wpisane”
+nadpisuje pozostałe. Ceny trafiają do tabeli jak wpisane ręcznie i zapisują się dopiero
+przyciskiem **Zapisz** Medusy, więc nie trafiają do historii pluginu.
+
+Medusa nie ma w tych tabelach miejsca na rozszerzenia, więc przycisk jest doklejany do
+strony z zewnątrz. Jeśli aktualizacja Medusy zmieni jej budowę, przycisk się nie pokaże,
+a tabela będzie działać jak dotąd.
 
 ### Historia i pochodzenie ceny
 

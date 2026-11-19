@@ -475,6 +475,28 @@ medusaIntegrationTestRunner({
       expect(regional.price_rules[0]).toMatchObject({ attribute: "region_id", value: euRegion })
     })
 
+    it("suggests every other column of the price editor from a price typed in any one, writing nothing", async () => {
+      const before = await pricesOf(drill.variants["W-500"].id)
+      const response = await call("post", "/admin/currency/suggest", {
+        rows: [
+          { key: "variants.0.prices", slot: "eur", amount: "10" },
+          { key: "variants.1.prices", slot: "usd", amount: "10" },
+        ],
+      })
+      expect(response.status).toBe(200)
+      const [eur, usd] = response.data.rows as Row[]
+      const bySlot = Object.fromEntries((eur.suggestions as Row[]).map((s) => [s.slot, s]))
+      // 10 EUR × 4.4165 = 44.165 PLN, gross as it is (DE 19 % → PL 23 %, noted).
+      expect(bySlot.pln).toMatchObject({ ok: true, amount: "44.17", warnings: ["tax_differs"] })
+      // CZK prices are net: 44.165 / 1.19 / 0.17 = 218.31 → whole units.
+      expect(bySlot.czk).toMatchObject({ ok: true, amount: "218.00" })
+      // The EU region's prices are net (Medusa's default for regions): same currency, VAT taken off.
+      expect(bySlot[euRegion]).toMatchObject({ ok: true, currency: "eur", amount: "8.40" })
+      expect(bySlot.eur).toBeUndefined()
+      expect(usd).toMatchObject({ error: "unknown_slot", suggestions: [] })
+      expect(await pricesOf(drill.variants["W-500"].id)).toEqual(before)
+    })
+
     it("saves nothing when a base price or the rate changed after the preview", async () => {
       await call("post", "/admin/currency/settings", {
         currencies: { eur: { enabled: true, mode: "api", rounding: "none", tax: "gross" }, czk: { enabled: false } },
