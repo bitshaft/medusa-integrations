@@ -79,14 +79,20 @@ export function isPaid(order: LoyaltyOrder): boolean {
   return amount > 0 && captured + 0.005 >= amount
 }
 
+/** No earlier order of the customer counts: canceled orders and drafts do not. */
 async function isFirstOrder(container: MedusaContainer, order: LoyaltyOrder): Promise<boolean> {
   const { data } = await graph(container)({
     entity: "order",
-    fields: ["id", "status", "created_at"],
-    filters: { customer_id: order.customer_id, created_at: { $lt: order.created_at } },
-    pagination: { take: 20 },
+    fields: ["id"],
+    filters: {
+      customer_id: order.customer_id,
+      created_at: { $lt: order.created_at },
+      status: { $nin: ["canceled", "draft"] },
+      id: { $ne: order.id },
+    },
+    pagination: { take: 1 },
   })
-  return !data.some((o) => o.status !== "canceled" && o.id !== order.id)
+  return data.length === 0
 }
 
 export type AwardResult = { status: "earned"; points: number } | { status: "skipped"; reason: string }

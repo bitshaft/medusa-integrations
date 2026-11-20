@@ -237,17 +237,19 @@ export async function expireRewardCodes(container: MedusaContainer, settings: Lo
   const refund = settings.rewards.return_points_on_code_expiry
   let expired = 0
   for (const redemption of due) {
+    // The code is switched off first: if closing then fails, the next run
+    // closes it, and a closed redemption never leaves a live code behind.
+    if (redemption.promotion_id) {
+      await container
+        .resolve<IPromotionModuleService>(Modules.PROMOTION)
+        .updatePromotions([{ id: redemption.promotion_id, status: "inactive" }])
+    }
     const closed = await service.returnRedemption(redemption.id, "expired", {
       description: "Code expired unused",
       refund,
     })
     if (!closed.changed) continue
     expired++
-    if (redemption.promotion_id) {
-      await container
-        .resolve<IPromotionModuleService>(Modules.PROMOTION)
-        .updatePromotions([{ id: redemption.promotion_id, status: "inactive" }])
-    }
     if (refund) {
       await emit(container, LoyaltyEvents.POINTS_REVERTED, {
         customer_id: redemption.customer_id,

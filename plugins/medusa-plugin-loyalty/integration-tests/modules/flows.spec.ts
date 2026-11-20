@@ -40,6 +40,8 @@ function makeContainer(service: LoyaltyModuleService) {
     Object.entries(filters ?? {}).every(([key, value]) => {
       if (value && typeof value === "object" && !Array.isArray(value)) {
         if ("$lt" in value) return new Date(row[key]).getTime() < new Date(value.$lt).getTime()
+        if ("$nin" in value) return !value.$nin.includes(row[key])
+        if ("$ne" in value) return row[key] !== value.$ne
         return true
       }
       if (Array.isArray(value)) return value.includes(row[key])
@@ -50,9 +52,11 @@ function makeContainer(service: LoyaltyModuleService) {
       if (key === LOYALTY_MODULE) return service
       if (key === "query") {
         return {
-          graph: async ({ entity, filters }: Row) => {
-            const rows = (data[entity] ?? []).filter((row) => matches(row, filters))
-            return { data: rows, metadata: { count: rows.length } }
+          graph: async ({ entity, filters, pagination }: Row) => {
+            const all = (data[entity] ?? []).filter((row) => matches(row, filters))
+            // No order given: rows come in storage order, as from Postgres.
+            const rows = pagination?.take ? all.slice(0, pagination.take) : all
+            return { data: rows, metadata: { count: all.length } }
           },
         }
       }
@@ -160,6 +164,27 @@ moduleIntegrationTestRunner<LoyaltyModuleService>({
         ctx.data.order.push(first, second)
         expect(await awardOrder(ctx.container, "order_3")).toEqual({ status: "earned", points: 200 })
         expect(await awardOrder(ctx.container, "order_4")).toEqual({ status: "earned", points: 100 })
+      })
+
+      it("adds the first-order bonus after canceled orders, and not after a real one among many canceled", async () => {
+        await service.saveSettings({ actions: { first_order: { enabled: true, points: 100 } } })
+        const at = (day: number) => ({ created_at: new Date(Date.UTC(2026, 0, day)).toISOString() })
+        const canceled = Array.from({ length: 25 }, (_, i) =>
+          order(`order_c${i}`, ANNA, [item("i1", 1, 100)], { status: "canceled", ...at(i + 2) })
+        )
+        ctx.data.order.push(...canceled, order("order_5", ANNA, [item("i1", 1, 100)], at(28)))
+        expect(await awardOrder(ctx.container, "order_5")).toEqual({ status: "earned", points: 200 })
+
+        // An older real order stored behind more than 20 canceled ones still counts.
+        ctx.data.order.push(
+          ...Array.from({ length: 25 }, (_, i) =>
+            order(`order_d${i}`, "cus_bob", [item("i1", 1, 100)], { status: "canceled", ...at(i + 2) })
+          ),
+          order("order_6", "cus_bob", [item("i1", 1, 100)], at(1)),
+          order("order_7", "cus_bob", [item("i1", 1, 100)], at(28))
+        )
+        ctx.data.customer.push({ id: "cus_bob", has_account: true, groups: [] })
+        expect(await awardOrder(ctx.container, "order_7")).toEqual({ status: "earned", points: 100 })
       })
 
       it("gives nothing to guests and excluded groups", async () => {
