@@ -261,7 +261,7 @@ describe("GusClient", () => {
   })
 
   it("reuses the session for the next search", async () => {
-    const fetch = jest.fn().mockResolvedValueOnce(login()).mockResolvedValue(search(found))
+    const fetch = jest.fn().mockResolvedValueOnce(login()).mockImplementation(async () => search(found))
     const gus = client(fetch)
     await gus.searchNip("5691868369")
     await gus.searchNip("5691868369")

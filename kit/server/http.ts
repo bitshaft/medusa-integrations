@@ -164,6 +164,9 @@ export class HttpClient {
 
     const startedAt = this.now()
     let response: Response
+    let text: string
+    // The timeout and the caller's signal cover the whole attempt, body included:
+    // a server can send the headers and then stall.
     try {
       response = await this.fetchImpl(this.baseUrl + request.path, {
         method,
@@ -174,6 +177,7 @@ export class HttpClient {
         body: request.body,
         signal: controller.signal,
       })
+      text = await readBody(response, controller.signal)
     } catch (error) {
       if (controller.signal.aborted && !request.signal?.aborted) {
         throw new HttpTimeoutError(request.path, this.timeoutMs)
@@ -186,7 +190,6 @@ export class HttpClient {
       request.signal?.removeEventListener("abort", onAbort)
     }
 
-    const text = await response.text()
     this.logger?.debug(
       `${this.logPrefix}${method} ${request.path} -> HTTP ${response.status} in ${this.now() - startedAt} ms`
     )
@@ -211,8 +214,26 @@ export class HttpClient {
           value: this.mask(withBody.body),
         })
       }
+      // The underlying error (e.g. fetch's) may be serialised by a logger too.
+      if (error instanceof HttpError && error.cause !== undefined) {
+        Object.defineProperty(error, "cause", { value: this.maskCause(error.cause, 3), configurable: true })
+      }
     }
     return error
+  }
+
+  /** A plain copy of an error chain with secrets masked: name, message, code. */
+  private maskCause(cause: unknown, depth: number): unknown {
+    if (!(cause instanceof Error)) {
+      return typeof cause === "string" ? this.mask(cause) : undefined
+    }
+    const code = (cause as Error & { code?: unknown }).code
+    return {
+      name: cause.name,
+      message: this.mask(cause.message),
+      ...(typeof code === "string" ? { code } : {}),
+      ...(depth > 1 && cause.cause !== undefined ? { cause: this.maskCause(cause.cause, depth - 1) } : {}),
+    }
   }
 }
 
@@ -239,6 +260,33 @@ export function isRetryableHttpError(error: unknown): boolean {
 export function backoffDelay(baseMs: number, attempt: number): number {
   const exponential = baseMs * 2 ** (attempt - 1)
   return Math.round(exponential / 2 + Math.random() * (exponential / 2))
+}
+
+/**
+ * The body as text, given up when the signal aborts. Real `fetch` already
+ * aborts a body read on its signal; this also covers injected fetches.
+ */
+function readBody(response: Response, signal: AbortSignal): Promise<string> {
+  if (signal.aborted) {
+    return Promise.reject(new Error("aborted"))
+  }
+  return new Promise<string>((resolve, reject) => {
+    const onAbort = () => {
+      reject(new Error("aborted"))
+      response.body?.cancel().catch(() => undefined)
+    }
+    signal.addEventListener("abort", onAbort, { once: true })
+    response.text().then(
+      (text) => {
+        signal.removeEventListener("abort", onAbort)
+        resolve(text)
+      },
+      (error: unknown) => {
+        signal.removeEventListener("abort", onAbort)
+        reject(error)
+      }
+    )
+  })
 }
 
 function defaultSleep(ms: number): Promise<void> {

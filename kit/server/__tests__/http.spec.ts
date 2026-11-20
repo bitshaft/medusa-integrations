@@ -87,6 +87,26 @@ describe("HttpClient", () => {
     expect(error).toBeInstanceOf(HttpNetworkError)
   })
 
+  it("times out when the body stalls after the headers", async () => {
+    const stalled = new Response(new ReadableStream({ start: () => undefined }), { status: 200 })
+    const fetchImpl = jest.fn().mockResolvedValue(stalled)
+    const error = await client(fetchImpl, { timeoutMs: 5, maxRetries: 0 })
+      .request<never>({ path: "slow-body", idempotent: true })
+      .catch((e: Error) => e)
+    expect(error).toBeInstanceOf(HttpTimeoutError)
+  })
+
+  it("masks secrets in the underlying error", async () => {
+    const fetchImpl = jest
+      .fn()
+      .mockRejectedValue(new TypeError("fetch failed", { cause: new Error(`connect to key=${SECRET}`) }))
+    const error = await client(fetchImpl, { maxRetries: 0 })
+      .request<never>({ path: "x", idempotent: true })
+      .catch((e: Error) => e)
+    expect(JSON.stringify(error.cause)).not.toContain(SECRET)
+    expect(error.cause).toMatchObject({ name: "TypeError", message: "fetch failed", cause: { message: "connect to key=****" } })
+  })
+
   it("masks secrets in logs and error messages", async () => {
     const warn = jest.fn()
     const debug = jest.fn()
