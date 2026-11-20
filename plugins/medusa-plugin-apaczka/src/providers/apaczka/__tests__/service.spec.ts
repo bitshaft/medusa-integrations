@@ -290,6 +290,24 @@ describe("ApaczkaFulfillmentProviderService", () => {
       })
     })
 
+    it("declares the items' value in PLN for an order in another currency", async () => {
+      const send = jest
+        .spyOn(ApaczkaClient.prototype, "sendOrder")
+        .mockResolvedValue({ id: 556, service_id: 21, status: "NEW" } as never)
+      jest.spyOn(ApaczkaClient.prototype, "getOrder").mockResolvedValue({} as never)
+      // 1 PLN = 0.25 EUR: 2 × 50 EUR is 400 PLN.
+      const provider = createProvider({ insurance: { mode: "order_total" }, pricing: { exchangeRates: { eur: 0.25 } } })
+
+      await provider.createFulfillment(
+        await shippingData(provider),
+        items,
+        { ...order, currency_code: "eur" } as never,
+        { id: "ful_1", location_id: "sloc_1", delivery_address: shippingAddress } as never
+      )
+
+      expect(send.mock.calls[0][0]).toMatchObject({ shipment_value: 40000 })
+    })
+
     it("defers in manual mode", async () => {
       const send = jest.spyOn(ApaczkaClient.prototype, "sendOrder")
       const provider = createProvider({ shipmentCreation: "manual" })

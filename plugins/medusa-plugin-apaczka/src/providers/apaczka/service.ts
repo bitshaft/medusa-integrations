@@ -321,10 +321,16 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
     if (missingWeights(parcelItems).length) {
       return this.pending(shippingData, option, undefined, { autoCreate: true })
     }
-    const itemsValue = items.reduce((sum, item) => {
-      const orderItem = orderItems.get(item.line_item_id as string)
-      return sum + Number(orderItem?.unit_price ?? 0) * Number(item.quantity ?? 0)
-    }, 0)
+    // Apaczka works in PLN: an order in another currency is converted, as for the quote.
+    const itemsValue =
+      items.reduce((sum, item) => {
+        const orderItem = orderItems.get(item.line_item_id as string)
+        return sum + Number(orderItem?.unit_price ?? 0) * Number(item.quantity ?? 0)
+      }, 0) /
+      exchangeRate(
+        String(order?.currency_code ?? "pln"),
+        optionsForService(this.options_, option.service_id).pricing.exchangeRates
+      )
 
     try {
       const created = await createShipment({

@@ -5,6 +5,7 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { assertCompleteAddress, customerAddress, warehouseAddress } from "../../../lib/apaczka/addresses"
 import type { ApaczkaAddress } from "../../../lib/apaczka/client"
 import type { ShipmentOverrides } from "../../../lib/apaczka/data"
+import { exchangeRate } from "../../../lib/apaczka/money"
 import { type CreatedShipment, createShipment } from "../../../lib/apaczka/shipments"
 import { APACZKA_MODULE } from "../../../modules/apaczka"
 import type ApaczkaModuleService from "../../../modules/apaczka/service"
@@ -57,7 +58,10 @@ export const createApaczkaOrderStep = createStep(
     )
     assertCompleteAddress(customer, context.option.is_return ? "sender" : "receiver")
 
-    const itemsValue = context.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
+    // Apaczka works in PLN: an order in another currency is converted, as for the quote.
+    const itemsValue =
+      context.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0) /
+      exchangeRate(context.cod.currency_code, options.pricing.exchangeRates)
 
     const created = await createShipment({
       client: await apaczka.getClient(),

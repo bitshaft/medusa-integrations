@@ -18,7 +18,7 @@ export type BuildOrderInput = {
   /** Customer address (sender on returns). */
   customer: ApaczkaAddress
   items: ParcelItem[]
-  /** Value of the shipped items in major units (for insurance). */
+  /** Value of the shipped items in PLN, major units (for insurance). */
   itemsValue?: number
   /** Amount to collect on delivery, major units. Only used for COD options. */
   codAmount?: number
