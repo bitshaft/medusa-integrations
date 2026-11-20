@@ -36,6 +36,7 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
           testSuite: ({ service: promotion }) => {
             let priceSetId: string
             let container: MedusaContainer
+            let services: Record<string, unknown>
 
             const variant = (priceSet: string) => ({
               id: "variant_1",
@@ -78,7 +79,7 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
                 )
                 return { data: rows, metadata: { count: rows.length } }
               }
-              const services: Record<string, unknown> = {
+              services = {
                 [COMPLIANCE_MODULE]: compliance,
                 [Modules.PRICING]: pricing,
                 [Modules.PROMOTION]: promotion,
@@ -115,6 +116,21 @@ moduleIntegrationTestRunner<ComplianceModuleService>({
                 start_known: false,
               })
               expect(await recordPrices(container, { source: "job" })).toHaveLength(0)
+            })
+
+            it("takes the first snapshot again when the first run failed", async () => {
+              services[Modules.PRICING] = {
+                calculatePrices: async () => {
+                  throw new Error("pricing down")
+                },
+              }
+              await expect(startHistory(60)).rejects.toThrow("pricing down")
+              expect(await compliance.omnibusStartedAt()).toBeNull()
+
+              services[Modules.PRICING] = pricing
+              await startHistory(60)
+              expect(await compliance.omnibusStartedAt()).not.toBeNull()
+              expect(await compliance.priceHistory(["variant_1"])).toMatchObject([{ source: "snapshot" }])
             })
 
             it("records a sale price list as a discount and finds the lowest prior price", async () => {

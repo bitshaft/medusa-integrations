@@ -164,7 +164,9 @@ lawyer.
   snapshot of all current prices.
 - A discount is an active `sale` price list and, if enabled, an automatic
   promotion without cart conditions (it lowers the price on the product
-  page). Promotion codes are skipped unless enabled.
+  page). Promotion codes are skipped unless enabled; when enabled, each
+  code is evaluated per variant and region, so at most the 50 newest
+  active codes count (a warning is logged when there are more).
 - For each discount the plugin finds the lowest price in the period
   before it began (30 days by default). Products on sale for less than
   the period use the time since sales started. When the history is

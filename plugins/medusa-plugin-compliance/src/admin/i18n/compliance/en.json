@@ -425,7 +425,7 @@
       "automaticPromotions": "Count automatic promotions",
       "automaticPromotionsHint": "Automatic promotions without cart conditions lower the price shown on the product page, if your storefront shows them.",
       "codePromotions": "Count promotion codes",
-      "codePromotionsHint": "Off: codes are skipped. On: each code without cart conditions is checked alone and the best one counts.",
+      "codePromotionsHint": "Off: codes are skipped. On: each code without cart conditions is checked alone and the best one counts (up to the 50 newest active codes).",
       "taxCountry": "Country used for tax",
       "taxCountryHint": "Regions with several countries: prices are recorded with this country's tax.",
       "exceptionsTitle": "Omnibus: exceptions",

@@ -445,7 +445,7 @@
       "automaticPromotions": "Licz promocje automatyczne",
       "automaticPromotionsHint": "Promocje automatyczne bez warunków koszyka obniżają cenę na karcie produktu, jeśli sklep je tam pokazuje.",
       "codePromotions": "Licz kody rabatowe",
-      "codePromotionsHint": "Wyłączone: kody są pomijane. Włączone: każdy kod bez warunków koszyka jest sprawdzany osobno i liczy się najlepszy.",
+      "codePromotionsHint": "Wyłączone: kody są pomijane. Włączone: każdy kod bez warunków koszyka jest sprawdzany osobno i liczy się najlepszy (do 50 najnowszych aktywnych kodów).",
       "taxCountry": "Kraj do liczenia podatku",
       "taxCountryHint": "Regiony z kilkoma krajami: ceny zapisują się z podatkiem tego kraju.",
       "exceptionsTitle": "Omnibus: wyjątki",

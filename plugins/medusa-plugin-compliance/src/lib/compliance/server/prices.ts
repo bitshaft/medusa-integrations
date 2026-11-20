@@ -117,6 +117,9 @@ async function taxRates(
 
 type PromotionReduction = { amount: number; promotion_id: string }
 
+/** Active promotion codes counted at most; see `observePrices`. */
+export const MAX_CODES = 50
+
 /**
  * The best discount an automatic promotion (and, if enabled, a single code)
  * gives one unit of the variant, evaluated by the Promotion Module on a cart
@@ -202,10 +205,23 @@ export async function observePrices(container: MedusaContainer, variantIds?: str
     settings.omnibus.automatic_promotions &&
     (await promotion.listPromotions({ is_automatic: true, status: "active" }, { take: 1, select: ["id"] })).length > 0
   const codes = settings.omnibus.code_promotions
-    ? (await promotion.listPromotions({ is_automatic: false, status: "active" }, { take: 50, select: ["code"] }))
+    ? (
+        await promotion.listPromotions(
+          { is_automatic: false, status: "active" },
+          { take: MAX_CODES + 1, select: ["code"], order: { created_at: "DESC" } }
+        )
+      )
         .map((p) => p.code)
         .filter(Boolean)
     : []
+  if (codes.length > MAX_CODES) {
+    // Each code is evaluated per variant and region: more would make the job too slow.
+    codes.length = MAX_CODES
+    logger(container).warn(
+      `[compliance] Omnibus: more than ${MAX_CODES} active promotion codes; only the ${MAX_CODES} newest are counted. ` +
+        "Switch off old codes, or stop counting codes in the plugin's Omnibus settings."
+    )
+  }
 
   const observations: PriceObservation[] = []
   for (const region of regions) {
@@ -268,9 +284,10 @@ export async function recordPrices(
   const service = resolveCompliance(container)
   if (!(await service.omnibusStartedAt())) {
     const at = options.at ?? new Date()
-    await service.setValue(OMNIBUS_STARTED_KEY, { at: at.toISOString() })
     const snapshot = await observePrices(container)
     const rows = await service.recordPrices(snapshot, { source: "snapshot", at })
+    // Marked as started only once the snapshot is stored: a failed first run is taken again.
+    await service.setValue(OMNIBUS_STARTED_KEY, { at: at.toISOString() })
     logger(container).info(`[compliance] Omnibus: price history started with ${rows.length} prices`)
     if (!options.variantIds) return rows
   }
