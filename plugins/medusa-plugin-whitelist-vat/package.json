@@ -28,6 +28,9 @@
     "b2b",
     "poland"
   ],
+  "bitshaft": {
+    "requiresOptions": false
+  },
   "files": [
     ".medusa/server",
     "!**/*.map",
