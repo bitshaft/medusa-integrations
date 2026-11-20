@@ -55,6 +55,8 @@ type Compensation = {
     price_list_id: string | null
     region_id: string | null
     currency_code: string
+    min_quantity: string | null
+    max_quantity: string | null
   }>
 }
 
@@ -140,6 +142,8 @@ export const currencyWritePricesStep = createStep(
           price_list_id: write.price_list_id,
           region_id: write.region_id,
           currency_code: write.currency_code,
+          min_quantity: write.min_quantity,
+          max_quantity: write.max_quantity,
         })),
     }
 
@@ -204,8 +208,9 @@ async function rollback(pricing: IPricingModuleService, writes: FillWrite[], com
         currency_code: price.currency_code,
         price_list_id: price.price_list_id,
         region_id: price.region_id,
-        min_quantity: null,
-        max_quantity: null,
+        // A tiered price keeps its quantity range: an upsert without it would clear it.
+        min_quantity: price.min_quantity,
+        max_quantity: price.max_quantity,
         price_id: price.id,
         previous_amount: null,
         amount: price.amount,
