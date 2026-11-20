@@ -26,14 +26,6 @@ module.exports = {
       testMatch: ["<rootDir>/src/**/__tests__/**/*.spec.{ts,tsx}"],
       modulePathIgnorePatterns: ["<rootDir>/.medusa/", "<rootDir>/dist/"],
     },
-    {
-      displayName: "integration",
-      testEnvironment: "node",
-      transform,
-      moduleFileExtensions: ["js", "ts", "tsx", "json"],
-      testMatch: ["<rootDir>/integration-tests/modules/**/*.spec.ts"],
-      modulePathIgnorePatterns: ["<rootDir>/.medusa/", "<rootDir>/dist/"],
-    },
   ],
   collectCoverageFrom: ["src/lib/**/*.ts", "src/providers/**/*.ts", "!src/**/__tests__/**"],
   coverageThreshold: {

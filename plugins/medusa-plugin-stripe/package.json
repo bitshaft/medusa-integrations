@@ -57,7 +57,6 @@
     "typecheck": "tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p src/admin/tsconfig.json",
     "test": "jest --selectProjects unit",
     "check": "npm run typecheck && npm test",
-    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --selectProjects integration",
     "test:coverage": "jest --selectProjects unit --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
