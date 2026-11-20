@@ -237,7 +237,11 @@ console.log("  loaded: " + results.join(", "))
   /* 6. Database: migrate and boot ---------------------------------------- */
   if (process.env.DATABASE_URL) {
     step(`${plugin.folder}: medusa db:migrate`)
-    if (run("npx", ["medusa", "db:migrate"], { cwd: app }) !== 0) {
+    // The database is shared by every plugin's run (one Postgres in CI), so it
+    // holds link tables of plugins that are not installed here. Without a
+    // flag, db:migrate stops to ask whether to drop them and never returns.
+    // Safe actions create this plugin's links and leave the others alone.
+    if (run("npx", ["medusa", "db:migrate", "--execute-safe-links"], { cwd: app }) !== 0) {
       die(`${plugin.folder}: migrations failed`)
     }
     step(`${plugin.folder}: booting the app`)
