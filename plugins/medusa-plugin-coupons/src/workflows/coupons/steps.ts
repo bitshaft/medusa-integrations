@@ -34,11 +34,17 @@ export const couponsCreatePromotionsStep = createStep(
   "coupons-create-promotions",
   async (input: { specs: PromotionSpec[]; campaign_id: string }, { container }) => {
     const ids: string[] = []
-    for (let i = 0; i < input.specs.length; i += CHUNK) {
-      const created = await promotions(container).createPromotions(
-        input.specs.slice(i, i + CHUNK).map((spec) => ({ ...spec, campaign_id: input.campaign_id }) as never)
-      )
-      ids.push(...created.map((p) => p.id))
+    try {
+      for (let i = 0; i < input.specs.length; i += CHUNK) {
+        const created = await promotions(container).createPromotions(
+          input.specs.slice(i, i + CHUNK).map((spec) => ({ ...spec, campaign_id: input.campaign_id }) as never)
+        )
+        ids.push(...created.map((p) => p.id))
+      }
+    } catch (error) {
+      // Medusa does not compensate the step that threw: remove the chunks already created.
+      if (ids.length) await promotions(container).deletePromotions(ids)
+      throw error
     }
     return new StepResponse(ids, ids)
   },
@@ -193,15 +199,21 @@ const toState = (id: string, spec: PromotionSpec): PromotionState => ({
 /**
  * Updates existing promotions in place, so their ids, usage counts, campaign
  * budget usage and order history stay. The previous state is restored if a
- * later step fails.
+ * later step fails, and by the step itself if it fails partway: Medusa does
+ * not compensate the step that threw.
  */
 export const couponsUpdatePromotionsStep = createStep(
   "coupons-update-promotions",
   async (input: { pairs: Array<{ id: string; spec: PromotionSpec }> }, { container }) => {
     const before: PromotionState[] = []
-    for (const { id, spec } of input.pairs) {
-      before.push(await readState(container, id))
-      await writeState(container, toState(id, spec))
+    try {
+      for (const { id, spec } of input.pairs) {
+        before.push(await readState(container, id))
+        await writeState(container, toState(id, spec))
+      }
+    } catch (error) {
+      for (const state of before.reverse()) await writeState(container, state)
+      throw error
     }
     return new StepResponse(undefined, before)
   },
