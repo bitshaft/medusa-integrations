@@ -5,6 +5,7 @@ node_modules/
 .medusa/
 dist/
 build/
+!/kit/build/
 *.tsbuildinfo
 .cache/
 *.tgz
