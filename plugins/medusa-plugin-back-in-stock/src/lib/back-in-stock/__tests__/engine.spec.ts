@@ -237,6 +237,49 @@ describe("runCheck", () => {
       expect(await runCheck(engine, check.id)).toMatchObject({ status: "done", notified: 1 })
     })
 
+    it("still notifies the rest after a worker stopped mid-sending, and nobody twice", async () => {
+      const engine = createEngine({ options: { settings: { minGapHours: 0 } } })
+      const [first, second, third] = [
+        engine.store.addSubscription(),
+        engine.store.addSubscription(),
+        engine.store.addSubscription(),
+      ]
+      engine.setStock(5)
+      const complete = engine.store.completeNotification.bind(engine.store)
+      let calls = 0
+      engine.store.completeNotification = async (...args) => {
+        if (++calls === 2) throw new Error("worker killed")
+        return complete(...args)
+      }
+      await expect(restockCycle(engine)).rejects.toThrow("worker killed")
+      expect(engine.deliveries.map((delivery) => delivery.to)).toEqual([first.email, second.email])
+
+      const [check] = [...engine.store.checks.values()]
+      engine.advance(CLAIM_STALE_MS + 1)
+      expect(await runCheck(engine, check.id)).toMatchObject({ status: "done", restocked: true, notified: 1 })
+      // The first was emailed, the second may have been (its email is still in flight): only the third gets one now.
+      expect(engine.deliveries.map((delivery) => delivery.to)).toEqual([first.email, second.email, third.email])
+      expect(engine.store.states.get(`${VARIANT}|${CHANNEL}`)).toMatchObject({ in_stock: true })
+    })
+
+    it("closes the email as failed when building it fails, so it is tried at the next restock", async () => {
+      const engine = createEngine({ options: { settings: { minGapHours: 0 } } })
+      engine.store.addSubscription()
+      engine.setStock(5)
+      const issue = engine.store.issueToken.bind(engine.store)
+      engine.store.issueToken = async () => {
+        throw new Error("database is down")
+      }
+      expect(await restockCycle(engine)).toMatchObject({ notified: 0, failed: 1 })
+      expect(engine.store.notifications[0]).toMatchObject({ status: "failed", error: "database is down" })
+
+      engine.store.issueToken = issue
+      engine.setStock(0)
+      await restockCycle(engine)
+      engine.setStock(5)
+      expect(await restockCycle(engine)).toMatchObject({ notified: 1 })
+    })
+
     it("keeps the row when the check fails, so it can be run again", async () => {
       const engine = createEngine()
       engine.availability = async () => {

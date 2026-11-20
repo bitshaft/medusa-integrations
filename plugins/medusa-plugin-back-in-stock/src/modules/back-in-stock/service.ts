@@ -296,9 +296,17 @@ export default class BackInStockModuleService
         available,
       })
       return created.id
-    } catch {
-      // The unique index allows one pending email per subscription.
-      return null
+    } catch (error) {
+      // The unique index allows one pending email per subscription: that is
+      // "someone else is sending". Any other failure is not, and is thrown.
+      const [pending] = await this.listBackInStockNotifications(
+        { subscription_id: subscription.id, status: "pending" },
+        { take: 1, select: ["id"] }
+      )
+      if (pending) {
+        return null
+      }
+      throw error
     }
   }
 

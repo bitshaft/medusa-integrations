@@ -2,6 +2,7 @@ import type { MedusaContainer } from "@medusajs/framework/types"
 import { MedusaError } from "@medusajs/framework/utils"
 
 import type { SubscriptionStatus } from "../../modules/back-in-stock/models/subscription"
+import type { DeliveryResult } from "./deliver"
 import { buildView, type EngineDependencies } from "./engine"
 import { BackInStockEvents } from "./events"
 import { localeCode, normalizeLocale } from "./options"
@@ -149,17 +150,23 @@ async function sendConfirmation(engine: EngineDependencies, subscription: Subscr
   if (!notificationId) {
     return false
   }
-  const token = await engine.store.issueToken(subscription.id, "confirm")
-  const { view, one_click } = await buildView(engine, subscription, product, await engine.storeName(), "confirm", token)
-  const result = await engine.deliver({
-    to: subscription.email,
-    view,
-    dedupe_key: `back-in-stock:${notificationId}`,
-    demo: engine.options.demo || subscription.demo,
-    customer_id: subscription.customer_id,
-    subscription_id: subscription.id,
-    one_click_unsubscribe: one_click,
-  })
+  let result: DeliveryResult
+  try {
+    const token = await engine.store.issueToken(subscription.id, "confirm")
+    const { view, one_click } = await buildView(engine, subscription, product, await engine.storeName(), "confirm", token)
+    result = await engine.deliver({
+      to: subscription.email,
+      view,
+      dedupe_key: `back-in-stock:${notificationId}`,
+      demo: engine.options.demo || subscription.demo,
+      customer_id: subscription.customer_id,
+      subscription_id: subscription.id,
+      one_click_unsubscribe: one_click,
+    })
+  } catch (error) {
+    // Closed as failed, so the claim does not block the next email.
+    result = { status: "failed", via: "notification", error: (error as Error).message }
+  }
   await engine.store.completeNotification(notificationId, subscription, result, new Date())
   return result.status === "sent" || result.status === "demo"
 }

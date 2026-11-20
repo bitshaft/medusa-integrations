@@ -114,10 +114,11 @@ export type CheckOutcome =
     }
 
 /**
- * Runs a due check: claims it, recomputes availability, stores the new state,
- * and on a change from out of stock to in stock notifies every active
- * subscription the guardrails allow. The row is deleted only at the end, so
- * a crash leaves it for the startup hook or the daily job to run again.
+ * Runs a due check: claims it, recomputes availability, on a change from out
+ * of stock to in stock notifies every active subscription the guardrails
+ * allow, then stores the new state. The state and the row are written only
+ * at the end, so a crash leaves the check for the startup hook or the daily
+ * job, and that run still sees the restock.
  */
 export async function runCheck(deps: EngineDependencies, checkId: string): Promise<CheckOutcome> {
   const now = deps.now?.() ?? new Date()
@@ -143,21 +144,17 @@ export async function runCheck(deps: EngineDependencies, checkId: string): Promi
 
   const previous = await deps.store.getState(pair)
   const restocked = !(previous?.in_stock ?? false) && availability.in_stock
-  await deps.store.saveState({
-    ...pair,
-    in_stock: availability.in_stock,
-    available: availability.available,
-    reason: availability.reason,
-    checked_at: now,
-    restocked_at: restocked ? now : (previous?.restocked_at ?? null),
-  })
 
   let notified = 0
   let failed = 0
   if (restocked || check.forced) {
+    // Taking over a claim of a worker that stopped: whoever it emailed before
+    // stopping is not emailed again, whatever the gap setting.
+    const gapCutoff = now.getTime() - settings.minGapHours * 3_600_000
+    const cutoff = row.claimed_at ? Math.min(gapCutoff, row.claimed_at.getTime()) : gapCutoff
     const subscriptions = await deps.store.listNotifiable(pair, {
       // A forced run (demo "simulate restock") ignores the gap and reaches demo subscriptions only.
-      notifiedBefore: check.forced ? null : new Date(now.getTime() - settings.minGapHours * 3_600_000),
+      notifiedBefore: check.forced ? null : new Date(cutoff),
       max: settings.maxNotifications,
       demoOnly: check.forced && !restocked,
     })
@@ -181,6 +178,17 @@ export async function runCheck(deps: EngineDependencies, checkId: string): Promi
       }
     }
   }
+
+  // Stored only after the emails: if the worker stops before this, the next
+  // run still sees the change to in stock and notifies whoever is left.
+  await deps.store.saveState({
+    ...pair,
+    in_stock: availability.in_stock,
+    available: availability.available,
+    reason: availability.reason,
+    checked_at: now,
+    restocked_at: restocked ? now : (previous?.restocked_at ?? null),
+  })
 
   const rescheduled = await deps.store.finishCheck(check, new Date(now.getTime() + settings.delayMinutes * 60_000))
   if (rescheduled) {
@@ -214,16 +222,22 @@ async function notifySubscription(
     return "skipped"
   }
 
-  const view = await buildView(deps, subscription, product, storeName, "restock")
-  const result = await deps.deliver({
-    to: subscription.email,
-    view: view.view,
-    dedupe_key: `back-in-stock:${notificationId}`,
-    demo: deps.options.demo || subscription.demo,
-    customer_id: subscription.customer_id,
-    subscription_id: subscription.id,
-    one_click_unsubscribe: view.one_click,
-  })
+  let result: DeliveryResult
+  try {
+    const view = await buildView(deps, subscription, product, storeName, "restock")
+    result = await deps.deliver({
+      to: subscription.email,
+      view: view.view,
+      dedupe_key: `back-in-stock:${notificationId}`,
+      demo: deps.options.demo || subscription.demo,
+      customer_id: subscription.customer_id,
+      subscription_id: subscription.id,
+      one_click_unsubscribe: view.one_click,
+    })
+  } catch (error) {
+    // Closed as failed, so the claim does not block the next restock email.
+    result = { status: "failed", via: "notification", error: (error as Error).message }
+  }
   await deps.store.completeNotification(notificationId, subscription, result, now)
 
   if (result.status === "sent" || result.status === "demo") {
