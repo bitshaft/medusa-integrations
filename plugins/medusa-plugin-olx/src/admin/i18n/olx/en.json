@@ -1,0 +1,226 @@
+{
+  "olx": {
+    "title": "OLX",
+    "description": "Publish products on OLX and take them down when they sell.",
+    "loadError": "Could not load the OLX plugin's data. Refresh the page.",
+    "disabledHint": "Set clientId, clientSecret, redirectUri and encryptionKey in medusa-config.ts and restart Medusa, or set demo: true to try it without an account.",
+    "demoHint": "Sample categories and an OLX kept in memory: nothing is sent to OLX and store stock does not change.",
+    "demoReset": "Removes every demo advert. Products and stock are not touched.",
+    "demoRemoved": "Removed adverts: {{count}}",
+    "tabs": { "adverts": "Adverts", "settings": "Settings", "guide": "Guide" },
+    "status": {
+      "publishing": "Publishing",
+      "failed": "Not published",
+      "new": "In moderation",
+      "active": "Active",
+      "limited": "Over the limit",
+      "unpaid": "Unpaid",
+      "unconfirmed": "Unconfirmed",
+      "outdated": "Expired",
+      "removed_by_user": "Taken down",
+      "moderated": "Rejected, can be fixed",
+      "blocked": "Blocked by OLX",
+      "disabled": "Disabled by OLX",
+      "removed_by_moderator": "Removed by OLX",
+      "taking_down": "Taking down",
+      "sold_store": "Sold out in store",
+      "sold_olx": "Sold on OLX"
+    },
+    "field": {
+      "title": "Title",
+      "description": "Description",
+      "price": "Price (PLN)",
+      "category": "Category",
+      "city": "City",
+      "contact": "Contact person",
+      "images": "Photos"
+    },
+    "issue": {
+      "too_short": "too short",
+      "too_long": "too long",
+      "repeated_punctuation": "the same punctuation mark three times in a row",
+      "too_many_capitals": "more than half of the letters are capitals",
+      "contains_email": "OLX does not allow an e-mail address here",
+      "contains_website": "OLX does not allow a website address here",
+      "contains_phone": "OLX does not allow a phone number here",
+      "invalid": "enter an amount above zero, e.g. 199.00",
+      "missing": "required",
+      "not_public": "OLX can only download photos from a public https address"
+    },
+    "conflict": {
+      "exists": "This variant already has an advert. Edit it instead.",
+      "in_progress": "This advert is being saved right now. Try again in a moment.",
+      "not_on_olx": "This advert is not on OLX yet.",
+      "out_of_stock": "This item cannot be bought in the store, so it was not offered on OLX."
+    },
+    "result": {
+      "published": "Sent to OLX. It goes live after moderation.",
+      "saved": "Saved on OLX.",
+      "unconfirmed": "OLX did not confirm in time. The plugin will check within 5 minutes and will not send it twice."
+    },
+    "form": {
+      "publishTitle": "Publish on OLX",
+      "editTitle": "Edit the advert",
+      "publish": "Publish on OLX",
+      "save": "Save on OLX",
+      "cancel": "Cancel",
+      "change": "Change",
+      "negotiable": "Price is negotiable",
+      "storePrice": "Store price: {{price}} PLN",
+      "textRules": "OLX does not allow phone numbers, e-mail or website addresses here.",
+      "categorySearch": "Search for a category, e.g. men's jacket",
+      "citySearch": "Start typing a city",
+      "district": "Choose a district",
+      "loadingAttributes": "Loading this category's fields…",
+      "missingAttributes": "Fill in: {{names}}",
+      "imagesHint": "Greyed-out photos are not on a public https address, so OLX cannot download them.",
+      "paidNotice": "Adverts in some categories are paid on OLX. If your account has no free pool or packet left, OLX marks the advert \"Over the limit\" and you buy a packet on OLX. This plugin never buys anything."
+    },
+    "actions": {
+      "menu": "Advert actions",
+      "open": "Open on OLX",
+      "edit": "Edit",
+      "sold": "Sold on OLX",
+      "deactivate": "Take down",
+      "activate": "Bring back"
+    },
+    "confirm": {
+      "sold": {
+        "title": "Sold on OLX?",
+        "body": "\"{{title}}\" comes down from OLX and its free stock in the store goes to zero, so nobody can buy it again.",
+        "action": "Mark as sold"
+      },
+      "deactivate": {
+        "title": "Take the advert down?",
+        "body": "\"{{title}}\" disappears from OLX. Store stock does not change.",
+        "action": "Take down"
+      },
+      "activate": {
+        "title": "Bring the advert back?",
+        "body": "\"{{title}}\" returns to OLX. OLX may charge for it, depending on your account.",
+        "action": "Bring back"
+      }
+    },
+    "adverts": {
+      "search": "Search by title",
+      "allStatuses": "All statuses",
+      "syncNow": "Sync now",
+      "synced": "Synced with OLX.",
+      "empty": "No adverts yet. Open a product and publish it, or use \"Publish several\".",
+      "col": { "advert": "Advert", "status": "Status", "price": "Price", "validTo": "Valid until" }
+    },
+    "bulk": {
+      "open": "Publish several",
+      "title": "Publish several products",
+      "hint": "Up to {{max}} variants with one category. Title, description, price and photos come from each product; the rest from Settings.",
+      "search": "Search products",
+      "publish": "Publish ({{count}})",
+      "result": {
+        "ok": "Published",
+        "unconfirmed": "Unconfirmed",
+        "invalid": "Needs fixing",
+        "conflict": "Skipped",
+        "refused": "Refused by OLX"
+      }
+    },
+    "connection": {
+      "title": "OLX account",
+      "on": "Connected",
+      "off": "Not connected",
+      "expired": "Connect again",
+      "unnamed": "Connected account",
+      "hint": "Connect the OLX account adverts are published from.",
+      "connect": "Connect OLX",
+      "disconnect": "Disconnect",
+      "disconnectTitle": "Disconnect the OLX account?",
+      "disconnectBody": "The plugin forgets the account's tokens. Adverts stay on OLX, but stop being taken down automatically until you connect again.",
+      "ok": "OLX account connected.",
+      "failed": "Connecting failed. Check clientId, clientSecret and redirectUri, then try again.",
+      "denied": "OLX did not grant access.",
+      "invalid_state": "That link has expired. Click \"Connect OLX\" again."
+    },
+    "settings": {
+      "title": "Defaults for new adverts",
+      "hint": "Filled into every new advert. Adverts already on OLX do not change.",
+      "saved": "Saved.",
+      "save": "Save",
+      "phone": "Contact phone",
+      "advertiser": "Seller type",
+      "business": "Business",
+      "private": "Private",
+      "safetyTitle": "Product safety (GPSR)",
+      "safetyHint": "OLX requires this in some categories. Leave it empty unless OLX asks for it. Your accountant or lawyer can say what applies to your goods.",
+      "placedBefore": "Goods placed on the market before 2024",
+      "makerName": "Manufacturer",
+      "makerCountry": "Manufacturer's country",
+      "makerAddress": "Manufacturer's address",
+      "makerEmail": "Manufacturer's e-mail",
+      "warning": "Warnings and safety information"
+    },
+    "product": {
+      "variant": "Variant",
+      "publish": "Publish",
+      "retry": "Try again",
+      "notListed": "Not on OLX",
+      "noStock": "Out of stock",
+      "priceDiffers": "Store price: {{price}}",
+      "noVariants": "This product has no variants.",
+      "connectFirst": "Connect an OLX account to publish"
+    },
+    "signals": { "live": "on OLX", "problems": "OLX: needs attention" },
+    "setup": {
+      "app": {
+        "title": "Register an app on developer.olx.pl",
+        "body": "Sign in with the store's OLX account, fill in the company details and add an app. Redirect URI: https://<your-backend>/hooks/olx/oauth/callback. OLX reviews it and answers by e-mail."
+      },
+      "options": {
+        "title": "Add the options to medusa-config.ts",
+        "body": "clientId, clientSecret, redirectUri and encryptionKey (at least 32 random characters), from environment variables. Then restart Medusa."
+      },
+      "connect": {
+        "title": "Connect the OLX account",
+        "body": "Settings → Connect OLX."
+      },
+      "defaults": {
+        "title": "Set the defaults",
+        "body": "Contact person and city in Settings, so forms come pre-filled."
+      },
+      "images": {
+        "title": "Check that photos are public",
+        "body": "OLX downloads photos by address, so they must be on a public https URL. Local file storage on localhost will not work."
+      },
+      "first": {
+        "title": "Publish the first advert",
+        "body": "Open a product, tab OLX, and click Publish."
+      }
+    },
+    "guide": {
+      "title": "How it works",
+      "subtitle": "OLX in your store, in plain words.",
+      "what": {
+        "title": "What it does",
+        "text": "Each variant can have one OLX advert. You publish and edit it from the product page; the store keeps track of its status."
+      },
+      "publish": {
+        "title": "Publishing",
+        "text": "Nothing goes to OLX by itself. The form starts from the product and your defaults, you check it and click Publish. OLX moderates the advert, usually within seconds."
+      },
+      "sold": {
+        "title": "When it sells",
+        "text": "Sold in the store: the advert comes down by itself, at once and checked again every 5 minutes.\nSold on OLX: click \"Sold on OLX\". Free stock goes to zero and the advert comes down.\nStock coming back never republishes an advert: you decide with \"Bring back\"."
+      },
+      "paid": {
+        "title": "Costs",
+        "text": "Adverts in some categories are paid on OLX. The plugin never buys packets or promotions. An advert over your limit shows \"Over the limit\" until you handle it on OLX."
+      },
+      "limits": {
+        "title": "What it does not do",
+        "text": "No OLX orders or Przesyłka OLX, no messages, no promotions. OLX cannot tell the plugin about a sale agreed in chat, so that one needs the \"Sold on OLX\" button."
+      },
+      "demo": {
+        "title": "Demo mode",
+        "text": "With demo: true everything works on sample data, without an OLX account. Nothing is sent and stock does not change."
+      }
+    }
+  }
+}

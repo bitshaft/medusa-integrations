@@ -1,0 +1,226 @@
+{
+  "olx": {
+    "title": "OLX",
+    "description": "Wystawiaj produkty na OLX i zdejmuj je, gdy się sprzedadzą.",
+    "loadError": "Nie udało się wczytać danych pluginu OLX. Odśwież stronę.",
+    "disabledHint": "Ustaw clientId, clientSecret, redirectUri i encryptionKey w medusa-config.ts i zrestartuj Medusę albo ustaw demo: true, żeby wypróbować plugin bez konta.",
+    "demoHint": "Przykładowe kategorie i OLX trzymany w pamięci: nic nie trafia na OLX, a stany w sklepie się nie zmieniają.",
+    "demoReset": "Usuwa wszystkie ogłoszenia demo. Produkty i stany pozostają bez zmian.",
+    "demoRemoved": "Usunięte ogłoszenia: {{count}}",
+    "tabs": { "adverts": "Ogłoszenia", "settings": "Ustawienia", "guide": "Przewodnik" },
+    "status": {
+      "publishing": "Wystawianie",
+      "failed": "Nie wystawiono",
+      "new": "W moderacji",
+      "active": "Aktywne",
+      "limited": "Ponad limit",
+      "unpaid": "Nieopłacone",
+      "unconfirmed": "Niepotwierdzone",
+      "outdated": "Wygasłe",
+      "removed_by_user": "Zdjęte",
+      "moderated": "Odrzucone, do poprawy",
+      "blocked": "Zablokowane przez OLX",
+      "disabled": "Wyłączone przez OLX",
+      "removed_by_moderator": "Usunięte przez OLX",
+      "taking_down": "Zdejmowanie",
+      "sold_store": "Wyprzedane w sklepie",
+      "sold_olx": "Sprzedane na OLX"
+    },
+    "field": {
+      "title": "Tytuł",
+      "description": "Opis",
+      "price": "Cena (PLN)",
+      "category": "Kategoria",
+      "city": "Miasto",
+      "contact": "Osoba kontaktowa",
+      "images": "Zdjęcia"
+    },
+    "issue": {
+      "too_short": "za krótki",
+      "too_long": "za długi",
+      "repeated_punctuation": "ten sam znak interpunkcyjny trzy razy z rzędu",
+      "too_many_capitals": "ponad połowa liter to wielkie litery",
+      "contains_email": "OLX nie pozwala tu na adres e-mail",
+      "contains_website": "OLX nie pozwala tu na adres strony",
+      "contains_phone": "OLX nie pozwala tu na numer telefonu",
+      "invalid": "podaj kwotę większą od zera, np. 199.00",
+      "missing": "pole wymagane",
+      "not_public": "OLX pobiera zdjęcia tylko z publicznego adresu https"
+    },
+    "conflict": {
+      "exists": "Ten wariant ma już ogłoszenie. Edytuj je.",
+      "in_progress": "To ogłoszenie właśnie się zapisuje. Spróbuj za chwilę.",
+      "not_on_olx": "Tego ogłoszenia nie ma jeszcze na OLX.",
+      "out_of_stock": "Tego produktu nie da się kupić w sklepie, więc nie został wystawiony na OLX."
+    },
+    "result": {
+      "published": "Wysłano na OLX. Ogłoszenie pojawi się po moderacji.",
+      "saved": "Zapisano na OLX.",
+      "unconfirmed": "OLX nie potwierdził na czas. Plugin sprawdzi to w ciągu 5 minut i nie wyśle ogłoszenia drugi raz."
+    },
+    "form": {
+      "publishTitle": "Wystaw na OLX",
+      "editTitle": "Edytuj ogłoszenie",
+      "publish": "Wystaw na OLX",
+      "save": "Zapisz na OLX",
+      "cancel": "Anuluj",
+      "change": "Zmień",
+      "negotiable": "Cena do negocjacji",
+      "storePrice": "Cena w sklepie: {{price}} zł",
+      "textRules": "OLX nie pozwala tu na numery telefonów, adresy e-mail ani adresy stron.",
+      "categorySearch": "Szukaj kategorii, np. marynarka męska",
+      "citySearch": "Zacznij wpisywać miasto",
+      "district": "Wybierz dzielnicę",
+      "loadingAttributes": "Wczytywanie pól tej kategorii…",
+      "missingAttributes": "Uzupełnij: {{names}}",
+      "imagesHint": "Wyszarzone zdjęcia nie mają publicznego adresu https, więc OLX ich nie pobierze.",
+      "paidNotice": "W niektórych kategoriach ogłoszenia na OLX są płatne. Jeśli na koncie nie ma darmowej puli ani pakietu, OLX oznaczy ogłoszenie jako „Ponad limit” i pakiet kupisz na OLX. Ten plugin niczego nie kupuje."
+    },
+    "actions": {
+      "menu": "Działania na ogłoszeniu",
+      "open": "Otwórz na OLX",
+      "edit": "Edytuj",
+      "sold": "Sprzedane na OLX",
+      "deactivate": "Zdejmij",
+      "activate": "Przywróć"
+    },
+    "confirm": {
+      "sold": {
+        "title": "Sprzedane na OLX?",
+        "body": "„{{title}}” zniknie z OLX, a wolny stan w sklepie spadnie do zera, żeby nikt nie kupił tego drugi raz.",
+        "action": "Oznacz jako sprzedane"
+      },
+      "deactivate": {
+        "title": "Zdjąć ogłoszenie?",
+        "body": "„{{title}}” zniknie z OLX. Stan w sklepie się nie zmieni.",
+        "action": "Zdejmij"
+      },
+      "activate": {
+        "title": "Przywrócić ogłoszenie?",
+        "body": "„{{title}}” wróci na OLX. W zależności od konta OLX może za to pobrać opłatę.",
+        "action": "Przywróć"
+      }
+    },
+    "adverts": {
+      "search": "Szukaj po tytule",
+      "allStatuses": "Wszystkie statusy",
+      "syncNow": "Synchronizuj teraz",
+      "synced": "Zsynchronizowano z OLX.",
+      "empty": "Nie ma jeszcze ogłoszeń. Otwórz produkt i wystaw go albo użyj „Wystaw kilka”.",
+      "col": { "advert": "Ogłoszenie", "status": "Status", "price": "Cena", "validTo": "Ważne do" }
+    },
+    "bulk": {
+      "open": "Wystaw kilka",
+      "title": "Wystaw kilka produktów",
+      "hint": "Do {{max}} wariantów w jednej kategorii. Tytuł, opis, cena i zdjęcia pochodzą z każdego produktu, reszta z Ustawień.",
+      "search": "Szukaj produktów",
+      "publish": "Wystaw ({{count}})",
+      "result": {
+        "ok": "Wystawiono",
+        "unconfirmed": "Niepotwierdzone",
+        "invalid": "Do poprawy",
+        "conflict": "Pominięto",
+        "refused": "Odrzucone przez OLX"
+      }
+    },
+    "connection": {
+      "title": "Konto OLX",
+      "on": "Połączone",
+      "off": "Niepołączone",
+      "expired": "Połącz ponownie",
+      "unnamed": "Połączone konto",
+      "hint": "Połącz konto OLX, z którego będą wystawiane ogłoszenia.",
+      "connect": "Połącz z OLX",
+      "disconnect": "Rozłącz",
+      "disconnectTitle": "Rozłączyć konto OLX?",
+      "disconnectBody": "Plugin zapomni tokeny konta. Ogłoszenia zostaną na OLX, ale do ponownego połączenia nie będą zdejmowane automatycznie.",
+      "ok": "Połączono konto OLX.",
+      "failed": "Nie udało się połączyć. Sprawdź clientId, clientSecret i redirectUri, a potem spróbuj ponownie.",
+      "denied": "OLX nie przyznał dostępu.",
+      "invalid_state": "Ten link wygasł. Kliknij ponownie „Połącz z OLX”."
+    },
+    "settings": {
+      "title": "Domyślne dane nowych ogłoszeń",
+      "hint": "Wpisywane do każdego nowego ogłoszenia. Ogłoszenia już wystawione się nie zmieniają.",
+      "saved": "Zapisano.",
+      "save": "Zapisz",
+      "phone": "Telefon kontaktowy",
+      "advertiser": "Typ sprzedawcy",
+      "business": "Firma",
+      "private": "Osoba prywatna",
+      "safetyTitle": "Bezpieczeństwo produktu (GPSR)",
+      "safetyHint": "OLX wymaga tych danych w niektórych kategoriach. Zostaw puste, dopóki OLX o nie nie poprosi. Co dotyczy twoich towarów, powie księgowa lub prawnik.",
+      "placedBefore": "Towar wprowadzony do obrotu przed 2024",
+      "makerName": "Producent",
+      "makerCountry": "Kraj producenta",
+      "makerAddress": "Adres producenta",
+      "makerEmail": "E-mail producenta",
+      "warning": "Ostrzeżenia i informacje o bezpieczeństwie"
+    },
+    "product": {
+      "variant": "Wariant",
+      "publish": "Wystaw",
+      "retry": "Spróbuj ponownie",
+      "notListed": "Nie ma na OLX",
+      "noStock": "Brak na stanie",
+      "priceDiffers": "Cena w sklepie: {{price}}",
+      "noVariants": "Ten produkt nie ma wariantów.",
+      "connectFirst": "Połącz konto OLX, żeby wystawiać"
+    },
+    "signals": { "live": "na OLX", "problems": "OLX: wymaga uwagi" },
+    "setup": {
+      "app": {
+        "title": "Zarejestruj aplikację na developer.olx.pl",
+        "body": "Zaloguj się kontem OLX sklepu, uzupełnij dane firmy i dodaj aplikację. Redirect URI: https://<twoj-backend>/hooks/olx/oauth/callback. OLX ją sprawdzi i odpowie mailem."
+      },
+      "options": {
+        "title": "Dodaj opcje do medusa-config.ts",
+        "body": "clientId, clientSecret, redirectUri i encryptionKey (co najmniej 32 losowe znaki), ze zmiennych środowiskowych. Potem zrestartuj Medusę."
+      },
+      "connect": {
+        "title": "Połącz konto OLX",
+        "body": "Ustawienia → Połącz z OLX."
+      },
+      "defaults": {
+        "title": "Ustaw dane domyślne",
+        "body": "Osoba kontaktowa i miasto w Ustawieniach, żeby formularze były wstępnie wypełnione."
+      },
+      "images": {
+        "title": "Sprawdź, czy zdjęcia są publiczne",
+        "body": "OLX pobiera zdjęcia po adresie, więc muszą być pod publicznym adresem https. Lokalne pliki na localhost nie zadziałają."
+      },
+      "first": {
+        "title": "Wystaw pierwsze ogłoszenie",
+        "body": "Otwórz produkt, zakładkę OLX, i kliknij Wystaw."
+      }
+    },
+    "guide": {
+      "title": "Jak to działa",
+      "subtitle": "OLX w twoim sklepie, prostymi słowami.",
+      "what": {
+        "title": "Co robi plugin",
+        "text": "Każdy wariant może mieć jedno ogłoszenie OLX. Wystawiasz je i edytujesz ze strony produktu, a sklep pilnuje jego statusu."
+      },
+      "publish": {
+        "title": "Wystawianie",
+        "text": "Nic nie trafia na OLX samo. Formularz startuje z danych produktu i ustawień domyślnych, ty je sprawdzasz i klikasz Wystaw. OLX moderuje ogłoszenie, zwykle w kilka sekund."
+      },
+      "sold": {
+        "title": "Gdy się sprzeda",
+        "text": "Sprzedaż w sklepie: ogłoszenie zdejmuje się samo, od razu, a dodatkowo plugin sprawdza to co 5 minut.\nSprzedaż na OLX: kliknij „Sprzedane na OLX”. Wolny stan spada do zera, a ogłoszenie znika.\nPowrót towaru na stan nigdy nie wystawia ogłoszenia ponownie: decydujesz przyciskiem „Przywróć”."
+      },
+      "paid": {
+        "title": "Koszty",
+        "text": "W niektórych kategoriach ogłoszenia na OLX są płatne. Plugin nigdy nie kupuje pakietów ani promowania. Ogłoszenie ponad limit ma status „Ponad limit”, dopóki nie załatwisz tego na OLX."
+      },
+      "limits": {
+        "title": "Czego nie robi",
+        "text": "Bez zamówień i Przesyłki OLX, wiadomości i promowania. OLX nie powie pluginowi o sprzedaży dogadanej na czacie, więc wtedy potrzebny jest przycisk „Sprzedane na OLX”."
+      },
+      "demo": {
+        "title": "Tryb demo",
+        "text": "Z demo: true wszystko działa na przykładowych danych, bez konta OLX. Nic nie jest wysyłane, a stany się nie zmieniają."
+      }
+    }
+  }
+}

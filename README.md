@@ -16,6 +16,7 @@ with its own version, changelog and release.
 | [Stripe insights](./plugins/medusa-plugin-stripe/README.md)       | [`@bitshaft/medusa-plugin-stripe`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-stripe)               | Payment       |
 | [Negotiations](./plugins/medusa-plugin-negotiations/README.md)    | [`@bitshaft/medusa-plugin-negotiations`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-negotiations)   | Store feature |
 | [Currencies](./plugins/medusa-plugin-currency/README.md)          | [`@bitshaft/medusa-plugin-currency`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-currency)           | Store feature |
+| [OLX](./plugins/medusa-plugin-olx/README.md)                      | [`@bitshaft/medusa-plugin-olx`](https://www.npmjs.com/package/@bitshaft/medusa-plugin-olx)                     | Marketplace   |
 
 ## Using a plugin
 
