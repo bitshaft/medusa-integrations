@@ -10,6 +10,9 @@ export type OlxAdvert = {
   url?: string | null
   valid_to?: string | null
   external_id?: string | null
+  title?: string | null
+  description?: string | null
+  price?: { value?: number | string | null } | null
 }
 export type OlxUser = { id: number | string; name?: string | null; is_business?: boolean }
 export type OlxCategorySuggestion = { id: number; name: string; path: string[] }
@@ -55,9 +58,9 @@ export class OlxRefusedError extends Error {
   }
 }
 
-/** Reads OLX's error body. HTTP 4xx means the request was refused; 5xx may still have been applied. */
+/** Reads OLX's error body. HTTP 4xx means the request was refused; 408 and 5xx may still have been applied. */
 export function toOlxError(error: unknown): unknown {
-  if (!(error instanceof HttpStatusError) || error.status < 400 || error.status >= 500) {
+  if (!(error instanceof HttpStatusError) || error.status < 400 || error.status >= 500 || error.status === 408) {
     return error
   }
   let detail = `OLX refused the request (HTTP ${error.status})`

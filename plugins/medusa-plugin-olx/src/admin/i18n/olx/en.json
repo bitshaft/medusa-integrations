@@ -7,7 +7,11 @@
     "demoHint": "Sample categories and an OLX kept in memory: nothing is sent to OLX and store stock does not change.",
     "demoReset": "Removes every demo advert. Products and stock are not touched.",
     "demoRemoved": "Removed adverts: {{count}}",
-    "tabs": { "adverts": "Adverts", "settings": "Settings", "guide": "Guide" },
+    "tabs": {
+      "adverts": "Adverts",
+      "settings": "Settings",
+      "guide": "Guide"
+    },
     "status": {
       "publishing": "Publishing",
       "failed": "Not published",
@@ -42,7 +46,6 @@
       "too_many_capitals": "more than half of the letters are capitals",
       "contains_email": "OLX does not allow an e-mail address here",
       "contains_website": "OLX does not allow a website address here",
-      "contains_phone": "OLX does not allow a phone number here",
       "invalid": "enter an amount above zero, e.g. 199.00",
       "missing": "required",
       "not_public": "OLX can only download photos from a public https address"
@@ -51,12 +54,15 @@
       "exists": "This variant already has an advert. Edit it instead.",
       "in_progress": "This advert is being saved right now. Try again in a moment.",
       "not_on_olx": "This advert is not on OLX yet.",
-      "out_of_stock": "This item cannot be bought in the store, so it was not offered on OLX."
+      "out_of_stock": "This item cannot be bought in the store, so it was not offered on OLX.",
+      "taking_down": "This advert is sold or being taken down, so it cannot be changed now.",
+      "variant_missing": "This variant no longer exists."
     },
     "result": {
       "published": "Sent to OLX. It goes live after moderation.",
       "saved": "Saved on OLX.",
-      "unconfirmed": "OLX did not confirm in time. The plugin will check within 5 minutes and will not send it twice."
+      "unconfirmed": "OLX did not confirm in time. The plugin will check within 5 minutes and will not send it twice.",
+      "unconfirmedEdit": "OLX did not confirm the change. Check the advert on OLX and save again if it did not apply."
     },
     "form": {
       "publishTitle": "Publish on OLX",
@@ -74,7 +80,8 @@
       "loadingAttributes": "Loading this category's fields…",
       "missingAttributes": "Fill in: {{names}}",
       "imagesHint": "Greyed-out photos are not on a public https address, so OLX cannot download them.",
-      "paidNotice": "Adverts in some categories are paid on OLX. If your account has no free pool or packet left, OLX marks the advert \"Over the limit\" and you buy a packet on OLX. This plugin never buys anything."
+      "paidNotice": "Adverts in some categories are paid on OLX. If your account has no free pool or packet left, OLX marks the advert \"Over the limit\" and you buy a packet on OLX. This plugin never buys anything.",
+      "phoneWarning": "This looks like a phone number, which OLX does not allow. If it is a size or a code, leave it: OLX decides."
     },
     "actions": {
       "menu": "Advert actions",
@@ -107,7 +114,12 @@
       "syncNow": "Sync now",
       "synced": "Synced with OLX.",
       "empty": "No adverts yet. Open a product and publish it, or use \"Publish several\".",
-      "col": { "advert": "Advert", "status": "Status", "price": "Price", "validTo": "Valid until" }
+      "col": {
+        "advert": "Advert",
+        "status": "Status",
+        "price": "Price",
+        "validTo": "Valid until"
+      }
     },
     "bulk": {
       "open": "Publish several",
@@ -167,7 +179,10 @@
       "noVariants": "This product has no variants.",
       "connectFirst": "Connect an OLX account to publish"
     },
-    "signals": { "live": "on OLX", "problems": "OLX: needs attention" },
+    "signals": {
+      "live": "on OLX",
+      "problems": "OLX: needs attention"
+    },
     "setup": {
       "app": {
         "title": "Register an app on developer.olx.pl",

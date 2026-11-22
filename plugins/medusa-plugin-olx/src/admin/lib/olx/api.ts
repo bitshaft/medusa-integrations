@@ -44,9 +44,9 @@ export type Issue = { field: string; code: string }
 
 export type WriteResult =
   | { result: "published" | "saved"; advert: Advert }
-  | { result: "unconfirmed"; advert: Advert; message: string }
+  | { result: "unconfirmed"; advert: Advert; message: string; edit?: boolean }
   | { result: "invalid"; issues: Issue[] }
-  | { result: "conflict"; code: "exists" | "in_progress" | "not_on_olx" | "out_of_stock" }
+  | { result: "conflict"; code: "exists" | "in_progress" | "not_on_olx" | "out_of_stock" | "taking_down" }
   | { result: "refused"; message: string; fields?: Array<{ field: string; detail: string }> }
 
 export type BulkRow = { variant_id: string; title: string } & (
@@ -220,7 +220,7 @@ function useRefreshAfterWrite() {
 export function usePublish() {
   const refresh = useRefreshAfterWrite()
   return useMutation({
-    mutationFn: (body: { variant_id: string; product_id: string; advert: AdvertInput }) =>
+    mutationFn: (body: { variant_id: string; advert: AdvertInput }) =>
       sdk.client.fetch<WriteResult>(`${BASE}/publish`, { method: "POST", body }),
     onSuccess: refresh,
   })

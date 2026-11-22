@@ -93,4 +93,10 @@ export const DEFAULT_SETTINGS: StoreDefaults = {
   safety: {},
 }
 
-export type SyncCursor = { since: string; cursor: string | null; last_success_at: string | null }
+export type SyncCursor = {
+  since: string
+  cursor: string | null
+  last_success_at: string | null
+  /** OLX adverts the feed named while they were being written: read again on the next sync. */
+  retry_ids?: string[]
+}

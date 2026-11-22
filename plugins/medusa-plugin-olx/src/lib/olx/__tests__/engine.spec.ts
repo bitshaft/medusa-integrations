@@ -5,6 +5,7 @@ import {
   activateAdvert,
   checkStock,
   deactivateAdvert,
+  flushDeactivation,
   type AdvertStore,
   type Engine,
   publishAdvert,
@@ -85,6 +86,15 @@ function fakeStore() {
       const row = rows.get(id)
       if (!row || (row.claimed_at && row.claimed_at >= staleBefore)) return null
       row.claimed_at = now
+      return { ...row }
+    },
+    markForDeactivation: async (id, mark) => {
+      const row = rows.get(id)
+      if (!row || row.pending_deactivate || (mark.statuses && !mark.statuses.includes(row.status))) return null
+      row.pending_deactivate = true
+      row.pending_success = mark.success
+      row.sold_channel = mark.channel ?? row.sold_channel
+      row.sold_at = mark.at ?? row.sold_at
       return { ...row }
     },
     readCursor: async () => cursor,
@@ -343,7 +353,107 @@ describe("stock", () => {
   })
 })
 
+describe("a sale on OLX and a stock event together", () => {
+  it("the stock check never replaces the 'sold on OLX' mark", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    await t.store.patchRecord(id, { claimed_at: new Date(t.clock.now) })
+    await t.store.markForDeactivation(id, { success: true, channel: "olx", at: t.clock.now })
+    await t.store.patchRecord(id, { claimed_at: null })
+    t.stock.var_1 = false
+    expect(await checkStock(t.engine, "all")).toBe(0)
+    expect(t.rows.get(id)).toMatchObject({ sold_channel: "olx", pending_success: true })
+  })
+
+  it("a mark made after the check read the row wins", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    t.stock.var_1 = false
+    const availability = t.engine.availability
+    t.engine.availability = async (ids) => {
+      await t.store.markForDeactivation(id, { success: true, channel: "olx", at: t.clock.now })
+      return availability(ids)
+    }
+    expect(await checkStock(t.engine, "all")).toBe(0)
+    expect(t.calls.commands).toEqual([])
+    expect(t.rows.get(id)).toMatchObject({ sold_channel: "olx", pending_success: true })
+  })
+
+  it("the take-down sends what the row says when it is claimed", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    const stale = await t.store.markForDeactivation(id, { success: false, channel: "store", at: t.clock.now })
+    await t.store.patchRecord(id, { pending_success: true, sold_channel: "olx" })
+    await flushDeactivation(t.engine, stale!)
+    expect(t.calls.commands).toEqual([{ command: "deactivate", is_success: true }])
+  })
+
+  it("taking down by hand does not replace a pending sold mark", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    t.behaviour.command = () => {
+      throw new HttpTimeoutError("/adverts/500/commands", 1000)
+    }
+    await t.store.markForDeactivation(id, { success: true, channel: "olx", at: t.clock.now })
+    await deactivateAdvert(t.engine, id)
+    expect(t.rows.get(id)).toMatchObject({ pending_success: true, sold_channel: "olx" })
+  })
+})
+
 describe("edit, take down, bring back", () => {
+  it("a lost answer to an edit that OLX applied counts as saved", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    const edited = { ...input, price: "349.00" }
+    t.behaviour.update = () => {
+      Object.assign(t.adverts.get("500")!, {
+        title: edited.title,
+        description: edited.description,
+        price: { value: 349 },
+      })
+      throw new HttpTimeoutError("/adverts/500", 1000)
+    }
+    expect((await updateAdvert(t.engine, id, edited)).result).toBe("saved")
+    expect(t.rows.get(id)).toMatchObject({ price: "349.00", last_error: null, claimed_at: null })
+  })
+
+  it("a lost answer OLX does not show is unconfirmed, not refused", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    t.behaviour.update = () => {
+      throw new HttpTimeoutError("/adverts/500", 1000)
+    }
+    expect(await updateAdvert(t.engine, id, { ...input, price: "349.00" })).toMatchObject({
+      result: "unconfirmed",
+      edit: true,
+    })
+    expect(t.rows.get(id)).toMatchObject({ price: "399.00", claimed_at: null })
+  })
+
+  it("does not edit an advert that sold in the meantime", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    await t.store.markForDeactivation(id, { success: true, channel: "olx", at: t.clock.now })
+    expect(await updateAdvert(t.engine, id, input)).toEqual({ result: "conflict", code: "taking_down" })
+    expect(t.calls.update).toBe(0)
+    expect(t.rows.get(id)?.claimed_at).toBeNull()
+  })
+
+  it("does not bring back an advert on its way down", async () => {
+    const t = setup()
+    await publish(t.engine)
+    const id = [...t.rows.keys()][0]
+    await t.store.markForDeactivation(id, { success: false, channel: null, at: null })
+    expect(await activateAdvert(t.engine, id)).toEqual({ result: "conflict", code: "taking_down" })
+  })
+
   it("saves an edit on OLX, then here", async () => {
     const t = setup()
     await publish(t.engine)
@@ -415,6 +525,24 @@ describe("change feed", () => {
     expect(await syncFeed(t.engine)).toBe(1)
     expect([...t.rows.values()][0].status).toBe("blocked")
     expect(t.cursor()?.cursor).toBe("c2")
+  })
+
+  it("reads again an advert that was being written when the feed named it", async () => {
+    const t = setup()
+    await publish(t.engine)
+    await syncFeed(t.engine)
+    const id = [...t.rows.keys()][0]
+    await t.store.patchRecord(id, { claimed_at: t.clock.now })
+    t.adverts.get("500")!.status = "outdated"
+    t.behaviour.pages = [{ ids: ["500"], hasMore: false, nextCursor: "c1" }]
+    expect(await syncFeed(t.engine)).toBe(0)
+    expect(t.rows.get(id)?.status).toBe("new")
+    expect(t.cursor()).toMatchObject({ cursor: "c1", retry_ids: ["500"] })
+
+    await t.store.patchRecord(id, { claimed_at: null })
+    expect(await syncFeed(t.engine)).toBe(1)
+    expect(t.rows.get(id)).toMatchObject({ status: "outdated", claimed_at: null })
+    expect(t.cursor()?.retry_ids).toEqual([])
   })
 
   it("an advert deleted on OLX is marked as gone", async () => {

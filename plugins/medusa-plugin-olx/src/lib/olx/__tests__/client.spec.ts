@@ -116,6 +116,13 @@ describe("OlxClient", () => {
     expect(error.message).toBe("Data validation error occurred: title: Musisz podać tytuł")
   })
 
+  it("does not treat a 408 as a refusal: the write may have been applied", async () => {
+    const t = client(() => json(408, {}))
+    const error = await t.api.createAdvert(input, "x", {}).catch((e) => e)
+    expect(error).not.toBeInstanceOf(OlxRefusedError)
+    expect(t.calls).toHaveLength(1)
+  })
+
   it("does not take a similar external id for this advert", async () => {
     const t = client(() => json(200, { data: [{ id: 1, status: "active", external_id: "olxad_12" }] }))
     expect(await t.api.findByExternalId("olxad_1")).toBeNull()
@@ -275,6 +282,24 @@ describe("tokens", () => {
   it("asks to connect again when OLX refuses the refresh token", async () => {
     const s = store({ access_expires_at: new Date(Date.now() + 1000) })
     const fetchMock = jest.fn(async () => json(400, { error: "invalid_grant" }))
+    await expect(new OlxTokens(options, s.api, logger, fetchMock as never).accessToken()).rejects.toBeInstanceOf(
+      OlxReconnectError
+    )
+    expect(s.reasons).toHaveLength(1)
+  })
+
+  it.each([408, 429, 404, 503])("HTTP %i on the token endpoint does not end the connection", async (status) => {
+    const s = store({ access_expires_at: new Date(Date.now() + 1000) })
+    const fetchMock = jest.fn(async () => json(status, {}))
+    await expect(new OlxTokens(options, s.api, logger, fetchMock as never).accessToken()).rejects.not.toBeInstanceOf(
+      OlxReconnectError
+    )
+    expect(s.reasons).toHaveLength(0)
+  })
+
+  it.each([400, 401, 403])("HTTP %i on the token endpoint asks to connect again", async (status) => {
+    const s = store({ access_expires_at: new Date(Date.now() + 1000) })
+    const fetchMock = jest.fn(async () => json(status, { error: "invalid_grant" }))
     await expect(new OlxTokens(options, s.api, logger, fetchMock as never).accessToken()).rejects.toBeInstanceOf(
       OlxReconnectError
     )

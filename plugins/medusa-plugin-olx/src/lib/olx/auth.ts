@@ -6,6 +6,8 @@ import type { Connection } from "./types"
 const SCOPE = "v2 read write"
 /** A token this close to its end is refreshed first. */
 const REFRESH_MARGIN_MS = 60_000
+/** How OLX says a refresh token is no longer valid. */
+const TOKEN_REFUSED = [400, 401, 403]
 
 export type TokenSet = { access_token: string; refresh_token: string; access_expires_at: Date }
 
@@ -125,7 +127,8 @@ export class OlxTokens {
       await this.store.saveTokens(tokens)
       return tokens.access_token
     } catch (error) {
-      if (!(error instanceof HttpStatusError) || error.status < 400 || error.status >= 500) {
+      // Only an answer about the token itself ends the connection. 408, 429 and 5xx are temporary.
+      if (!(error instanceof HttpStatusError) || !TOKEN_REFUSED.includes(error.status)) {
         throw error
       }
       const current = await this.store.readConnection()

@@ -11,8 +11,8 @@ export type ValidationIssue = {
 const REPEATED = /([!?.,\-=+#%&@*_><:()|])\1\1/
 const EMAIL = /[^\s@]+@[^\s@]+\.[^\s@]{2,}/
 const WEBSITE = /\b(?:https?:\/\/|www\.)\S+/i
-/** Nine or more digits, with spaces, dashes or dots between them: a Polish phone number. */
-const PHONE = /(?:\+?\d[\s.-]?){9,}/
+/** Three groups of three digits, optionally after +48, and no longer run of digits around them. */
+const PHONE = /(?<![\d.-])(?:\+?48[\s.-]?)?\d{3}[\s.-]?\d{3}[\s.-]?\d{3}(?![\d])/
 
 function capsShare(text: string): number {
   const letters = [...text].filter((char) => char.toLowerCase() !== char.toUpperCase())
@@ -28,9 +28,15 @@ function textIssues(field: "title" | "description", text: string): ValidationIss
   if (capsShare(text) > 0.5) issues.push({ field, code: "too_many_capitals" })
   if (EMAIL.test(text)) issues.push({ field, code: "contains_email" })
   if (WEBSITE.test(text)) issues.push({ field, code: "contains_website" })
-  if (PHONE.test(text)) issues.push({ field, code: "contains_phone" })
   return issues
 }
+
+/**
+ * Something that may be a phone number, which OLX does not allow. Only a
+ * warning in the form: `100 200 300` can as well be a size or a SKU, so OLX
+ * has the last word.
+ */
+export const looksLikePhone = (text: string): boolean => PHONE.test(text)
 
 /** Whether OLX can fetch an image address: public https, not this computer or a private network. */
 export function isPublicImageUrl(value: string): boolean {

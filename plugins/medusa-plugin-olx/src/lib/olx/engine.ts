@@ -1,7 +1,14 @@
 import { OlxReconnectError } from "./auth"
 import { type OlxAdvert, type OlxApi, OlxRefusedError } from "./client"
 import type { KitLogger } from "./kit/secrets"
-import { type AdvertInput, type AdvertRecord, LIVE_STATUSES, type ProductSafety, type SyncCursor } from "./types"
+import {
+  type AdvertInput,
+  type AdvertRecord,
+  LIVE_STATUSES,
+  type ProductSafety,
+  type SoldChannel,
+  type SyncCursor,
+} from "./types"
 import { validateAdvert, type ValidationIssue } from "./validation"
 
 /** A worker that stopped mid-write loses its claim after this long. */
@@ -20,6 +27,15 @@ export type AdvertStore = {
   createRecord(data: { variant_id: string; product_id: string; payload: AdvertInput }): Promise<AdvertRecord>
   patchRecord(id: string, patch: Partial<AdvertRecord>): Promise<AdvertRecord>
   claimRecord(id: string, now: Date, staleBefore: Date): Promise<AdvertRecord | null>
+  /**
+   * Records that the advert must come down, in one conditional UPDATE: `null`
+   * when it is already on its way down (a "Sold on OLX" mark is never replaced)
+   * or, with `statuses`, no longer in one of them.
+   */
+  markForDeactivation(
+    id: string,
+    mark: { success: boolean; channel: SoldChannel | null; at: Date | null; statuses?: readonly string[] }
+  ): Promise<AdvertRecord | null>
   readCursor(): Promise<SyncCursor | null>
   saveCursor(cursor: SyncCursor): Promise<void>
 }
@@ -38,9 +54,9 @@ export type Engine = {
 export type WriteResult =
   | { result: "published" | "saved"; advert: AdvertRecord }
   /** OLX did not answer in time; the sync job finds out whether the advert exists. */
-  | { result: "unconfirmed"; advert: AdvertRecord; message: string }
+  | { result: "unconfirmed"; advert: AdvertRecord; message: string; edit?: boolean }
   | { result: "invalid"; issues: ValidationIssue[] }
-  | { result: "conflict"; code: "exists" | "in_progress" | "not_on_olx" | "out_of_stock" }
+  | { result: "conflict"; code: "exists" | "in_progress" | "not_on_olx" | "out_of_stock" | "taking_down" }
   | { result: "refused"; message: string; fields?: Array<{ field: string; detail: string }> }
 
 const clock = (engine: Engine) => engine.now?.() ?? new Date()
@@ -54,6 +70,12 @@ const refused = (error: unknown): WriteResult => ({
   message: messageOf(error),
   ...(error instanceof OlxRefusedError && error.fields.length ? { fields: error.fields } : {}),
 })
+
+/** Whether OLX already shows this form: how a lost answer to an edit is told apart. */
+const sameContent = (advert: OlxAdvert, input: AdvertInput) =>
+  advert.title?.trim() === input.title.trim() &&
+  advert.description?.trim() === input.description.trim() &&
+  Number(advert.price?.value) === Number(input.price)
 
 const fromOlx = (advert: OlxAdvert, now: Date) => ({
   olx_advert_id: String(advert.id),
@@ -192,20 +214,35 @@ export async function updateAdvert(engine: Engine, id: string, input: AdvertInpu
   if (!claimed) {
     return { result: "conflict", code: "in_progress" }
   }
-  try {
-    const updated = await engine.api.updateAdvert(row.olx_advert_id, input, row.id, await engine.safety())
-    const advert = await engine.store.patchRecord(id, {
-      ...fromOlx({ ...updated, id: updated.id ?? row.olx_advert_id }, clock(engine)),
+  // Read under the claim: the item may have sold since the form was opened.
+  if (claimed.pending_deactivate || claimed.sold_channel) {
+    await engine.store.patchRecord(id, { claimed_at: null })
+    return { result: "conflict", code: "taking_down" }
+  }
+  const saveEdit = (advert: OlxAdvert) =>
+    engine.store.patchRecord(id, {
+      ...fromOlx({ ...advert, id: advert.id ?? row.olx_advert_id! }, clock(engine)),
       title: input.title.trim(),
       price: input.price,
       payload: input,
       last_error: null,
       claimed_at: null,
     })
-    return { result: "saved", advert }
+  try {
+    const updated = await engine.api.updateAdvert(row.olx_advert_id, input, row.id, await engine.safety())
+    return { result: "saved", advert: await saveEdit(updated) }
   } catch (error) {
-    await engine.store.patchRecord(id, { last_error: messageOf(error), claimed_at: null })
-    return refused(error)
+    if (isDefinite(error)) {
+      await engine.store.patchRecord(id, { last_error: messageOf(error), claimed_at: null })
+      return refused(error)
+    }
+    // The answer was lost, so OLX may have applied the edit: ask it.
+    const current = await engine.api.getAdvert(row.olx_advert_id).catch(() => null)
+    if (current && sameContent(current, input)) {
+      return { result: "saved", advert: await saveEdit(current) }
+    }
+    const advert = await engine.store.patchRecord(id, { last_error: messageOf(error), claimed_at: null })
+    return { result: "unconfirmed", advert, message: messageOf(error), edit: true }
   }
 }
 
@@ -222,8 +259,12 @@ export async function flushDeactivation(engine: Engine, row: AdvertRecord): Prom
   if (!claimed) {
     return row
   }
+  if (!claimed.pending_deactivate) {
+    return engine.store.patchRecord(row.id, { claimed_at: null })
+  }
   try {
-    await engine.api.command(row.olx_advert_id, { command: "deactivate", is_success: row.pending_success })
+    // From the claimed row: "Sold on OLX" may have been recorded after `row` was read.
+    await engine.api.command(row.olx_advert_id, { command: "deactivate", is_success: claimed.pending_success })
     return await engine.store.patchRecord(row.id, {
       status: "removed_by_user",
       pending_deactivate: false,
@@ -256,7 +297,8 @@ export async function deactivateAdvert(engine: Engine, id: string): Promise<Writ
   if (!row?.olx_advert_id) {
     return { result: "conflict", code: "not_on_olx" }
   }
-  const pending = await engine.store.patchRecord(id, { pending_deactivate: true, pending_success: false })
+  const marked = await engine.store.markForDeactivation(id, { success: false, channel: null, at: null })
+  const pending = marked ?? (await engine.store.getRecord(id)) ?? row
   const advert = await flushDeactivation(engine, pending)
   return advert.pending_deactivate
     ? { result: "unconfirmed", advert, message: advert.last_error ?? "OLX did not confirm yet." }
@@ -277,6 +319,10 @@ export async function activateAdvert(engine: Engine, id: string): Promise<WriteR
   const claimed = await engine.store.claimRecord(id, now, staleBefore(now))
   if (!claimed) {
     return { result: "conflict", code: "in_progress" }
+  }
+  if (claimed.pending_deactivate) {
+    await engine.store.patchRecord(id, { claimed_at: null })
+    return { result: "conflict", code: "taking_down" }
   }
   try {
     await engine.api.command(row.olx_advert_id, { command: "activate" })
@@ -313,12 +359,15 @@ export async function checkStock(engine: Engine, variantIds: string[] | "all"): 
     if (stock.get(row.variant_id) !== false) {
       continue
     }
-    const pending = await engine.store.patchRecord(row.id, {
-      pending_deactivate: true,
-      pending_success: false,
-      sold_channel: "store",
-      sold_at: clock(engine),
+    const pending = await engine.store.markForDeactivation(row.id, {
+      success: false,
+      channel: "store",
+      at: clock(engine),
+      statuses: LIVE_STATUSES,
     })
+    if (!pending) {
+      continue
+    }
     await flushDeactivation(engine, pending)
     count++
   }
@@ -365,15 +414,52 @@ export async function resolvePublishing(engine: Engine): Promise<number> {
   return resolved
 }
 
-/** Reads OLX's change feed and updates the adverts it names. The position is saved after every page. */
+/** Copies one advert's state from OLX, under the claim. `busy`: it is being written, read it again later. */
+async function refreshFromOlx(engine: Engine, olxId: string): Promise<"changed" | "unknown" | "busy"> {
+  const row = await engine.store.findByOlxId(olxId)
+  if (!row) {
+    return "unknown"
+  }
+  const now = clock(engine)
+  if (!(await engine.store.claimRecord(row.id, now, staleBefore(now)))) {
+    return "busy"
+  }
+  try {
+    const advert = await engine.api.getAdvert(olxId)
+    await engine.store.patchRecord(row.id, {
+      ...(advert ? fromOlx(advert, now) : { status: "removed_by_user", pending_deactivate: false, synced_at: now }),
+      claimed_at: null,
+    })
+    return "changed"
+  } catch (error) {
+    await engine.store.patchRecord(row.id, { claimed_at: null })
+    throw error
+  }
+}
+
+/**
+ * Reads OLX's change feed and updates the adverts it names. The position is
+ * saved after every page, with the adverts that were being written at that
+ * moment, which are read again on the next sync.
+ */
 export async function syncFeed(engine: Engine): Promise<number> {
   const started = clock(engine).toISOString()
   let position = await engine.store.readCursor()
   if (!position) {
-    await engine.store.saveCursor({ since: started, cursor: null, last_success_at: started })
+    await engine.store.saveCursor({ since: started, cursor: null, last_success_at: started, retry_ids: [] })
     return 0
   }
   let changed = 0
+  const busy = new Set<string>()
+  for (const id of position.retry_ids ?? []) {
+    const outcome = await refreshFromOlx(engine, id)
+    if (outcome === "busy") busy.add(id)
+    if (outcome === "changed") changed++
+  }
+  if (position.retry_ids?.length) {
+    position = { ...position, retry_ids: [...busy] }
+    await engine.store.saveCursor(position)
+  }
   for (let page = 0; page < MAX_FEED_PAGES; page++) {
     let result
     try {
@@ -388,19 +474,15 @@ export async function syncFeed(engine: Engine): Promise<number> {
       throw error
     }
     for (const id of result.ids) {
-      const row = await engine.store.findByOlxId(id)
-      if (!row || row.claimed_at) {
-        continue
+      const outcome = await refreshFromOlx(engine, id)
+      if (outcome === "busy") {
+        busy.add(id)
+      } else {
+        busy.delete(id)
+        if (outcome === "changed") changed++
       }
-      const advert = await engine.api.getAdvert(id)
-      const now = clock(engine)
-      await engine.store.patchRecord(
-        row.id,
-        advert ? fromOlx(advert, now) : { status: "removed_by_user", pending_deactivate: false, synced_at: now }
-      )
-      changed++
     }
-    position = { ...position, cursor: result.nextCursor ?? position.cursor }
+    position = { ...position, cursor: result.nextCursor ?? position.cursor, retry_ids: [...busy] }
     if (!result.hasMore) {
       position = { ...position, last_success_at: started }
     }

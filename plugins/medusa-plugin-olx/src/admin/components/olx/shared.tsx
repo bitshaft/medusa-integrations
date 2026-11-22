@@ -59,7 +59,7 @@ export function resultText(t: TFunction, result: WriteResult): string {
     case "saved":
       return t("olx.result.saved")
     case "unconfirmed":
-      return t("olx.result.unconfirmed")
+      return t(result.edit ? "olx.result.unconfirmedEdit" : "olx.result.unconfirmed")
     case "invalid":
       return result.issues.map((issue) => issueText(t, issue)).join(" · ")
     case "conflict":

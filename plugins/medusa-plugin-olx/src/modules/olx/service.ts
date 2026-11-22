@@ -15,6 +15,7 @@ import {
   type Connection,
   DEFAULT_SETTINGS,
   LIVE_STATUSES,
+  type SoldChannel,
   type StoreDefaults,
   type SyncCursor,
 } from "../../lib/olx/types"
@@ -157,7 +158,7 @@ export default class OlxModuleService
   async describeConnection() {
     const options = await this.getOptions()
     if (options.demo) {
-      return { connected: true, needs_reconnect: false, user_name: "Konto demo", is_business: true, last_error: null }
+      return { connected: true, needs_reconnect: false, user_name: "Demo account", is_business: true, last_error: null }
     }
     const connection = await this.readConnection()
     return {
@@ -400,6 +401,34 @@ export default class OlxModuleService
       `update "olx_advert" set "claimed_at" = ?, "updated_at" = now() ` +
         `where "id" = ? and "deleted_at" is null and ("claimed_at" is null or "claimed_at" < ?) returning *`,
       [now, id, staleBefore]
+    )
+    return rows[0] ? toRecord(rows[0]) : null
+  }
+
+  @InjectManager()
+  async markForDeactivation(
+    id: string,
+    mark: { success: boolean; channel: SoldChannel | null; at: Date | null; statuses?: readonly string[] },
+    @MedusaContext() context: Context = {}
+  ): Promise<AdvertRecord | null> {
+    return this.markForDeactivation_(id, mark, context)
+  }
+
+  @InjectTransactionManager()
+  protected async markForDeactivation_(
+    id: string,
+    mark: { success: boolean; channel: SoldChannel | null; at: Date | null; statuses?: readonly string[] },
+    @MedusaContext() context: Context = {}
+  ): Promise<AdvertRecord | null> {
+    const manager = context.transactionManager as unknown as SqlManager
+    const statuses = mark.statuses ?? []
+    const rows = await manager.execute(
+      `update "olx_advert" set "pending_deactivate" = true, "pending_success" = ?, ` +
+        `"sold_channel" = coalesce(?::text, "sold_channel"), "sold_at" = coalesce(?::timestamptz, "sold_at"), ` +
+        `"updated_at" = now() where "id" = ? and "deleted_at" is null and "pending_deactivate" = false` +
+        (statuses.length ? ` and "status" in (${statuses.map(() => "?").join(", ")})` : "") +
+        ` returning *`,
+      [mark.success, mark.channel, mark.at, id, ...statuses]
     )
     return rows[0] ? toRecord(rows[0]) : null
   }

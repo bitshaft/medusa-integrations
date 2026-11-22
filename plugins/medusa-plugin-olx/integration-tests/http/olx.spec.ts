@@ -52,8 +52,7 @@ medusaIntegrationTestRunner({
       advertiser_type: "business",
     }
 
-    const publish = () =>
-      api.post("/admin/olx/publish", { variant_id: variantId, product_id: productId, advert: advertBody }, headers)
+    const publish = () => api.post("/admin/olx/publish", { variant_id: variantId, advert: advertBody }, headers)
 
     beforeEach(async () => {
       container = getContainer()
@@ -164,10 +163,42 @@ medusaIntegrationTestRunner({
     it("answers with what is wrong instead of sending a bad form", async () => {
       const { data } = await api.post(
         "/admin/olx/publish",
-        { variant_id: variantId, product_id: productId, advert: { ...advertBody, title: "Krótki" } },
+        { variant_id: variantId, advert: { ...advertBody, title: "Krótki" } },
         headers
       )
       expect(data).toEqual({ result: "invalid", issues: [{ field: "title", code: "too_short" }] })
+    })
+
+    it("takes the product from the variant and refuses a client-sent one", async () => {
+      const { data } = await publish()
+      expect(data.advert.product_id).toBe(productId)
+      const response = await api
+        .post("/admin/olx/publish", { variant_id: variantId, product_id: "prod_other", advert: advertBody }, headers)
+        .catch((error: any) => error.response)
+      expect(response.status).toBe(400)
+      const missing = await api
+        .post("/admin/olx/publish", { variant_id: "variant_gone", advert: advertBody }, headers)
+        .catch((error: any) => error.response)
+      expect(missing.status).toBe(404)
+    })
+
+    it("reports every requested variant in a bulk publish, also one that is gone", async () => {
+      const { data } = await api.post(
+        "/admin/olx/publish-bulk",
+        { variant_ids: ["variant_gone", variantId], category_id: 9001, attributes: [] },
+        headers
+      )
+      expect(data.results.map((row: any) => row.variant_id)).toEqual(["variant_gone", variantId])
+      expect(data.results[0]).toMatchObject({ result: "conflict", code: "variant_missing" })
+    })
+
+    it("marks the sale on OLX before the store's stock event can call it a store sale", async () => {
+      const { data } = await publish()
+      const { markOlxAdvertSoldWorkflow } = require("../../src/workflows/olx")
+      const { result } = await markOlxAdvertSoldWorkflow(container).run({
+        input: { advert_id: data.advert.id, variant_id: variantId },
+      })
+      expect(result).toMatchObject({ pending_deactivate: true, pending_success: true, sold_channel: "olx" })
     })
 
     it("publishes a selection with shared settings", async () => {

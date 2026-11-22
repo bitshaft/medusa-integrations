@@ -12,29 +12,29 @@ import type {
 import type { AdvertInput } from "./types"
 
 const CATEGORIES: OlxCategorySuggestion[] = [
-  { id: 9001, name: "Marynarki i garnitury", path: ["Moda", "Ubrania męskie"] },
-  { id: 9002, name: "Koszule", path: ["Moda", "Ubrania męskie"] },
-  { id: 9003, name: "Spodnie", path: ["Moda", "Ubrania męskie"] },
-  { id: 9004, name: "Swetry", path: ["Moda", "Ubrania męskie"] },
-  { id: 9005, name: "Pozostałe ubrania", path: ["Moda"] },
+  { id: 9001, name: "Jackets and suits", path: ["Fashion", "Men's clothing"] },
+  { id: 9002, name: "Shirts", path: ["Fashion", "Men's clothing"] },
+  { id: 9003, name: "Trousers", path: ["Fashion", "Men's clothing"] },
+  { id: 9004, name: "Knitwear", path: ["Fashion", "Men's clothing"] },
+  { id: 9005, name: "Other clothing", path: ["Fashion"] },
 ]
 
 const ATTRIBUTES: OlxAttribute[] = [
   {
     code: "state",
-    label: "Stan",
+    label: "Condition",
     unit: null,
     required: true,
     numeric: false,
     multiple: false,
     values: [
-      { code: "new", label: "Nowe" },
-      { code: "used", label: "Używane" },
+      { code: "new", label: "New" },
+      { code: "used", label: "Used" },
     ],
   },
   {
     code: "size",
-    label: "Rozmiar",
+    label: "Size",
     unit: null,
     required: true,
     numeric: false,
@@ -61,7 +61,7 @@ export class DemoOlxApi implements OlxApi {
   private next = 100_000
 
   async me(): Promise<OlxUser> {
-    return { id: "demo", name: "Konto demo", is_business: true }
+    return { id: "demo", name: "Demo account", is_business: true }
   }
 
   async createAdvert(_input: AdvertInput, externalId: string): Promise<OlxAdvert> {

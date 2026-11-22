@@ -7,7 +7,11 @@
     "demoHint": "Przykładowe kategorie i OLX trzymany w pamięci: nic nie trafia na OLX, a stany w sklepie się nie zmieniają.",
     "demoReset": "Usuwa wszystkie ogłoszenia demo. Produkty i stany pozostają bez zmian.",
     "demoRemoved": "Usunięte ogłoszenia: {{count}}",
-    "tabs": { "adverts": "Ogłoszenia", "settings": "Ustawienia", "guide": "Przewodnik" },
+    "tabs": {
+      "adverts": "Ogłoszenia",
+      "settings": "Ustawienia",
+      "guide": "Przewodnik"
+    },
     "status": {
       "publishing": "Wystawianie",
       "failed": "Nie wystawiono",
@@ -42,7 +46,6 @@
       "too_many_capitals": "ponad połowa liter to wielkie litery",
       "contains_email": "OLX nie pozwala tu na adres e-mail",
       "contains_website": "OLX nie pozwala tu na adres strony",
-      "contains_phone": "OLX nie pozwala tu na numer telefonu",
       "invalid": "podaj kwotę większą od zera, np. 199.00",
       "missing": "pole wymagane",
       "not_public": "OLX pobiera zdjęcia tylko z publicznego adresu https"
@@ -51,12 +54,15 @@
       "exists": "Ten wariant ma już ogłoszenie. Edytuj je.",
       "in_progress": "To ogłoszenie właśnie się zapisuje. Spróbuj za chwilę.",
       "not_on_olx": "Tego ogłoszenia nie ma jeszcze na OLX.",
-      "out_of_stock": "Tego produktu nie da się kupić w sklepie, więc nie został wystawiony na OLX."
+      "out_of_stock": "Tego produktu nie da się kupić w sklepie, więc nie został wystawiony na OLX.",
+      "taking_down": "To ogłoszenie jest sprzedane albo właśnie się zdejmuje, więc nie można go teraz zmienić.",
+      "variant_missing": "Ten wariant już nie istnieje."
     },
     "result": {
       "published": "Wysłano na OLX. Ogłoszenie pojawi się po moderacji.",
       "saved": "Zapisano na OLX.",
-      "unconfirmed": "OLX nie potwierdził na czas. Plugin sprawdzi to w ciągu 5 minut i nie wyśle ogłoszenia drugi raz."
+      "unconfirmed": "OLX nie potwierdził na czas. Plugin sprawdzi to w ciągu 5 minut i nie wyśle ogłoszenia drugi raz.",
+      "unconfirmedEdit": "OLX nie potwierdził zmiany. Sprawdź ogłoszenie na OLX i zapisz ponownie, jeśli się nie zapisała."
     },
     "form": {
       "publishTitle": "Wystaw na OLX",
@@ -74,7 +80,8 @@
       "loadingAttributes": "Wczytywanie pól tej kategorii…",
       "missingAttributes": "Uzupełnij: {{names}}",
       "imagesHint": "Wyszarzone zdjęcia nie mają publicznego adresu https, więc OLX ich nie pobierze.",
-      "paidNotice": "W niektórych kategoriach ogłoszenia na OLX są płatne. Jeśli na koncie nie ma darmowej puli ani pakietu, OLX oznaczy ogłoszenie jako „Ponad limit” i pakiet kupisz na OLX. Ten plugin niczego nie kupuje."
+      "paidNotice": "W niektórych kategoriach ogłoszenia na OLX są płatne. Jeśli na koncie nie ma darmowej puli ani pakietu, OLX oznaczy ogłoszenie jako „Ponad limit” i pakiet kupisz na OLX. Ten plugin niczego nie kupuje.",
+      "phoneWarning": "To wygląda na numer telefonu, na który OLX nie pozwala. Jeśli to rozmiar albo kod, zostaw: decyzja należy do OLX."
     },
     "actions": {
       "menu": "Działania na ogłoszeniu",
@@ -107,7 +114,12 @@
       "syncNow": "Synchronizuj teraz",
       "synced": "Zsynchronizowano z OLX.",
       "empty": "Nie ma jeszcze ogłoszeń. Otwórz produkt i wystaw go albo użyj „Wystaw kilka”.",
-      "col": { "advert": "Ogłoszenie", "status": "Status", "price": "Cena", "validTo": "Ważne do" }
+      "col": {
+        "advert": "Ogłoszenie",
+        "status": "Status",
+        "price": "Cena",
+        "validTo": "Ważne do"
+      }
     },
     "bulk": {
       "open": "Wystaw kilka",
@@ -167,7 +179,10 @@
       "noVariants": "Ten produkt nie ma wariantów.",
       "connectFirst": "Połącz konto OLX, żeby wystawiać"
     },
-    "signals": { "live": "na OLX", "problems": "OLX: wymaga uwagi" },
+    "signals": {
+      "live": "na OLX",
+      "problems": "OLX: wymaga uwagi"
+    },
     "setup": {
       "app": {
         "title": "Zarejestruj aplikację na developer.olx.pl",

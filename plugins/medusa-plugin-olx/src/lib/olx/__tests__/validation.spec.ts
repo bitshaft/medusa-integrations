@@ -1,7 +1,7 @@
 import { draftTitle, productImages, regularPln } from "../catalog"
 import { createState, decryptSecret, encryptSecret, hashState } from "../crypto"
 import type { AdvertInput } from "../types"
-import { isPublicImageUrl, plainText, validateAdvert } from "../validation"
+import { isPublicImageUrl, looksLikePhone, plainText, validateAdvert } from "../validation"
 
 const valid: AdvertInput = {
   title: "Marynarka wełniana vintage rozmiar 50",
@@ -35,7 +35,6 @@ describe("validateAdvert", () => {
     [{ title: "MARYNARKA WEŁNIANA vintage" }, "title:too_many_capitals"],
     [{ description: `${valid.description} pisz na sklep@example.com` }, "description:contains_email"],
     [{ description: `${valid.description} zobacz www.example.com` }, "description:contains_website"],
-    [{ description: `${valid.description} dzwoń 500 100 200` }, "description:contains_phone"],
     [{ price: "0" }, "price:invalid"],
     [{ price: "abc" }, "price:invalid"],
     [{ price: "10.999" }, "price:invalid"],
@@ -48,8 +47,24 @@ describe("validateAdvert", () => {
     expect(codes(patch as Partial<AdvertInput>)).toContain(code)
   })
 
-  it("does not take sizes or years for a phone number", () => {
-    expect(codes({ title: "Marynarka 50 lata 1990 wełna" })).toEqual([])
+  it("does not block a code or a phone-like number: OLX decides", () => {
+    expect(codes({ description: `${valid.description} EAN 5901234567890, SKU 123456789, tel. 500 100 200` })).toEqual(
+      []
+    )
+  })
+})
+
+describe("looksLikePhone", () => {
+  it.each([
+    ["tel. 500 100 200", true],
+    ["500-100-200", true],
+    ["500100200", true],
+    ["+48 500 100 200", true],
+    ["EAN 5901234567890", false],
+    ["zamówienie 12345678", false],
+    ["Marynarka 50 lata 1990", false],
+  ])("%s → %s", (text, expected) => {
+    expect(looksLikePhone(text)).toBe(expected)
   })
 })
 

@@ -141,8 +141,8 @@ Each variant can have **one** advert. Nothing goes to OLX by itself:
 - **OLX → Adverts → Publish several**: up to 50 variants with one category and shared fields.
 
 The form checks OLX's rules before sending: title 16–150 characters, description 80–9000,
-no phone numbers, e-mail or website addresses, at most half capitals, no triple
-punctuation. An item that cannot be bought in the store is not offered.
+no e-mail or website addresses, at most half capitals, no triple punctuation. Something
+that looks like a phone number only shows a warning, because it may be a size or a code. An item that cannot be bought in the store is not offered.
 
 ### When it sells
 

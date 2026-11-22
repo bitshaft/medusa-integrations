@@ -23,7 +23,6 @@ export const AdvertBody = z.object({
 
 export const AdminPublish = z.object({
   variant_id: z.string().min(1),
-  product_id: z.string().min(1),
   advert: AdvertBody,
 })
 

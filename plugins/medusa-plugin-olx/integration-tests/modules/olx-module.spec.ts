@@ -71,6 +71,29 @@ moduleIntegrationTestRunner<OlxModuleService>({
       expect(await service.claimRecord(row.id, now, new Date(now.getTime() - 120_000))).not.toBeNull()
     })
 
+    it("does not replace a sold mark, and leaves other statuses alone", async () => {
+      const row = await service.createRecord({ variant_id: "var_1", product_id: "prod_1", payload })
+      await service.patchRecord(row.id, { status: "active", olx_advert_id: "500" })
+      const at = new Date("2026-11-22T10:00:00Z")
+      const sold = await service.markForDeactivation(row.id, { success: true, channel: "olx", at })
+      expect(sold).toMatchObject({ pending_deactivate: true, pending_success: true, sold_channel: "olx" })
+      expect(sold?.sold_at?.toISOString()).toBe(at.toISOString())
+      expect(await service.markForDeactivation(row.id, { success: false, channel: "store", at: new Date() })).toBeNull()
+      expect(await service.getRecord(row.id)).toMatchObject({ pending_success: true, sold_channel: "olx" })
+
+      await service.patchRecord(row.id, { pending_deactivate: false, status: "outdated" })
+      expect(
+        await service.markForDeactivation(row.id, { success: false, channel: "store", at, statuses: ["new", "active"] })
+      ).toBeNull()
+    })
+
+    it("taking down by hand keeps an earlier sale's channel", async () => {
+      const row = await service.createRecord({ variant_id: "var_1", product_id: "prod_1", payload })
+      await service.patchRecord(row.id, { status: "active", sold_channel: "olx" })
+      const marked = await service.markForDeactivation(row.id, { success: false, channel: null, at: null })
+      expect(marked).toMatchObject({ pending_deactivate: true, pending_success: false, sold_channel: "olx" })
+    })
+
     it("stores the payload and reads it back", async () => {
       const row = await service.createRecord({ variant_id: "var_1", product_id: "prod_1", payload })
       const saved = await service.patchRecord(row.id, {

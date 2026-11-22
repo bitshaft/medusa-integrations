@@ -11,6 +11,7 @@ import {
   useSettings,
   useUpdateAdvert,
 } from "../../lib/olx/api"
+import { looksLikePhone } from "../../../lib/olx/validation"
 import { AttributeFields, CategoryPicker, CityPicker, useMissingAttributes } from "./pickers"
 import { issueText, showResult } from "./shared"
 
@@ -26,7 +27,6 @@ const Counter = ({ value, min, max }: { value: number; min: number; max: number 
 export const AdvertForm = ({
   open,
   onClose,
-  productId,
   productTitle,
   images,
   variant,
@@ -34,7 +34,6 @@ export const AdvertForm = ({
 }: {
   open: boolean
   onClose: () => void
-  productId: string
   productTitle: string
   images: Array<{ url: string; usable: boolean }>
   variant: ProductVariant
@@ -84,7 +83,7 @@ export const AdvertForm = ({
     try {
       const result = advert?.olx_advert_id
         ? await update.mutateAsync({ id: advert.id, advert: form })
-        : await publish.mutateAsync({ variant_id: variant.variant_id, product_id: productId, advert: form })
+        : await publish.mutateAsync({ variant_id: variant.variant_id, advert: form })
       if (result.result === "invalid") {
         setIssues(result.issues)
       } else if (result.result === "refused") {
@@ -162,6 +161,11 @@ export const AdvertForm = ({
               <Text size="xsmall" className="text-ui-fg-subtle">
                 {t("olx.form.textRules")}
               </Text>
+              {looksLikePhone(`${form.title}\n${form.description}`) && (
+                <Text size="xsmall" className="text-ui-tag-orange-text">
+                  {t("olx.form.phoneWarning")}
+                </Text>
+              )}
               {fieldErrors("description")}
             </div>
 

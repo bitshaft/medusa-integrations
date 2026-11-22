@@ -90,13 +90,17 @@ const VariantRow = ({
               {advert ? t("olx.product.retry") : t("olx.product.publish")}
             </Button>
           )}
-          {advert?.olx_advert_id && canWrite && <AdvertActions advert={advert} onEdit={() => setOpen(true)} />}
+          {advert?.olx_advert_id && canWrite && (
+            <AdvertActions
+              advert={advert}
+              onEdit={advert.pending_deactivate || advert.sold_channel ? undefined : () => setOpen(true)}
+            />
+          )}
         </div>
         {open && (
           <AdvertForm
             open={open}
             onClose={() => setOpen(false)}
-            productId={product.product_id}
             productTitle={product.title}
             images={product.images}
             variant={variant}

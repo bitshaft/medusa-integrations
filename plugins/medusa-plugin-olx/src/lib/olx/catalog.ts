@@ -160,6 +160,17 @@ export async function loadProductDraft(
   }
 }
 
+/** The product a variant belongs to, or `null` when the variant does not exist. */
+export async function variantProductId(container: MedusaContainer, variantId: string): Promise<string | null> {
+  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const { data } = await query.graph({
+    entity: "product_variant",
+    fields: ["id", "product_id"],
+    filters: { id: variantId },
+  })
+  return (data[0] as unknown as { product_id?: string | null } | undefined)?.product_id ?? null
+}
+
 /** Forms for many variants at once, for publishing a selection with shared settings. */
 export async function loadVariantDrafts(
   container: MedusaContainer,
