@@ -4,9 +4,8 @@
     "description": "Publish products on OLX and take them down when they sell.",
     "loadError": "Could not load the OLX plugin's data. Refresh the page.",
     "disabledHint": "Set clientId, clientSecret, redirectUri and encryptionKey in medusa-config.ts and restart Medusa, or set demo: true to try it without an account.",
-    "demoHint": "Sample categories and an OLX kept in memory: nothing is sent to OLX and store stock does not change.",
-    "demoReset": "Removes every demo advert. Products and stock are not touched.",
-    "demoRemoved": "Removed adverts: {{count}}",
+    "demoHint": "Sample adverts on a simulated OLX: nothing is sent to OLX and store stock does not change.",
+    "demoReset": "Replaces every demo advert with the sample set, in every status. Products and stock are not touched.",
     "tabs": {
       "adverts": "Adverts",
       "settings": "Settings",
@@ -119,7 +118,8 @@
         "status": "Status",
         "price": "Price",
         "validTo": "Valid until"
-      }
+      },
+      "sample": "Sample"
     },
     "bulk": {
       "open": "Publish several",
@@ -234,8 +234,9 @@
       },
       "demo": {
         "title": "Demo mode",
-        "text": "With demo: true everything works on sample data, without an OLX account. Nothing is sent and stock does not change."
+        "text": "With demo: true the Adverts tab shows sample adverts in every status, on your products where it can. Everything works without an OLX account: nothing is sent and stock does not change. \"Restore test data\" brings the set back."
       }
-    }
+    },
+    "demoRestored": "Sample adverts: {{count}}"
   }
 }

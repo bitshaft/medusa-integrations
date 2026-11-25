@@ -1,5 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
+import { ensureDemoAdverts } from "../../../../lib/olx/demo-seed"
 import { maskIdentifier } from "../../../../lib/olx/kit/secrets"
 import { readPackageVersion } from "../../../../lib/olx/kit/package-info"
 import { PACKAGE_NAME } from "../../../../lib/olx/options"
@@ -13,6 +14,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     return res.json({ enabled: false, disabled_reason: await service.getDisabledReason(), version })
   }
   const options = await service.getOptions()
+  await ensureDemoAdverts(req.scope)
   res.json({
     enabled: true,
     version,

@@ -9,7 +9,7 @@ import type {
   OlxPage,
   OlxUser,
 } from "./client"
-import type { AdvertInput } from "./types"
+import type { AdvertInput, AdvertRecord } from "./types"
 
 const CATEGORIES: OlxCategorySuggestion[] = [
   { id: 9001, name: "Jackets and suits", path: ["Fashion", "Men's clothing"] },
@@ -51,30 +51,54 @@ const CITIES: OlxCity[] = [
   { id: 8005, name: "Gdańsk", county: "Gdańsk" },
 ]
 
-type DemoAdvert = OlxAdvert & { id: string; status: string; external_id: string }
+const in30Days = () => new Date(Date.now() + 30 * 86_400_000)
 
-const in30Days = () => new Date(Date.now() + 30 * 86_400_000).toISOString()
+/** Sample adverts on no real product use these ids; stock is not checked for them. */
+export const previewVariantId = (key: string) => `demo_variant_${key}`
+export const previewProductId = (key: string) => `demo_product_${key}`
+export const isPreviewVariant = (id: string) => id.startsWith("demo_variant_")
 
-/** An OLX that lives in memory: moderation passes on the next read. Nothing leaves the store. */
+/** The "OLX id" of a demo advert: derived from its row, so it never repeats. */
+export const demoOlxId = (rowId: string) => `demo-${rowId}`
+
+export type DemoStore = {
+  getRecord(id: string): Promise<AdvertRecord | null>
+  findByOlxId(olxId: string): Promise<AdvertRecord | null>
+  patchRecord(id: string, patch: Partial<AdvertRecord>): Promise<AdvertRecord>
+}
+
+const toOlx = (row: AdvertRecord): OlxAdvert => ({
+  id: row.olx_advert_id ?? demoOlxId(row.id),
+  status: row.status,
+  // No link: there is no such page on OLX.
+  url: null,
+  valid_to: row.valid_to?.toISOString() ?? null,
+  external_id: row.id,
+  title: row.payload.title,
+  description: row.payload.description,
+  price: { value: row.payload.price },
+})
+
+/**
+ * A simulated OLX whose state is the demo adverts in the database, so it
+ * survives a restart. Moderation passes on the next read. Nothing leaves the
+ * store.
+ */
 export class DemoOlxApi implements OlxApi {
-  private readonly adverts = new Map<string, DemoAdvert>()
-  private next = 100_000
+  constructor(private readonly store: DemoStore) {}
 
   async me(): Promise<OlxUser> {
     return { id: "demo", name: "Demo account", is_business: true }
   }
 
   async createAdvert(_input: AdvertInput, externalId: string): Promise<OlxAdvert> {
-    const id = String(this.next++)
-    const advert: DemoAdvert = {
-      id,
+    return {
+      id: demoOlxId(externalId),
       status: "new",
-      url: `https://www.olx.pl/d/oferta/demo-${id}.html`,
-      valid_to: in30Days(),
+      url: null,
+      valid_to: in30Days().toISOString(),
       external_id: externalId,
     }
-    this.adverts.set(id, advert)
-    return { ...advert }
   }
 
   async updateAdvert(id: string): Promise<OlxAdvert> {
@@ -82,25 +106,28 @@ export class DemoOlxApi implements OlxApi {
   }
 
   async getAdvert(id: string): Promise<OlxAdvert | null> {
-    const advert = this.adverts.get(id)
-    if (!advert) {
+    const row = await this.store.findByOlxId(id)
+    if (!row) {
       return null
     }
-    if (advert.status === "new") {
-      advert.status = "active"
-    }
-    return { ...advert }
+    const advert = toOlx(row)
+    return advert.status === "new" ? { ...advert, status: "active" } : advert
   }
 
   async findByExternalId(externalId: string): Promise<OlxAdvert | null> {
-    return [...this.adverts.values()].find((advert) => advert.external_id === externalId) ?? null
+    const row = await this.store.getRecord(externalId)
+    return row?.olx_advert_id ? toOlx(row) : null
   }
 
   async command(id: string, command: OlxCommand): Promise<void> {
-    const advert = this.adverts.get(id)
-    if (advert) {
-      advert.status = command.command === "activate" ? "active" : "removed_by_user"
-      if (command.command === "activate") advert.valid_to = in30Days()
+    const row = await this.store.findByOlxId(id)
+    if (row) {
+      await this.store.patchRecord(
+        row.id,
+        command.command === "activate"
+          ? { status: "active", valid_to: in30Days(), last_error: null }
+          : { status: "removed_by_user" }
+      )
     }
   }
 
@@ -124,9 +151,5 @@ export class DemoOlxApi implements OlxApi {
 
   async advertChanges(): Promise<OlxPage> {
     return { ids: [], hasMore: false, nextCursor: null }
-  }
-
-  reset(): void {
-    this.adverts.clear()
   }
 }

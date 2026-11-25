@@ -11,6 +11,8 @@ import {
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
 
 import { clearVariantStock, restoreStock } from "../../src/lib/olx/catalog"
+import { DemoOlxApi } from "../../src/lib/olx/demo"
+import { DEMO_SAMPLES } from "../../src/lib/olx/demo-seed"
 import { OLX_MODULE } from "../../src/modules/olx"
 import type OlxModuleService from "../../src/modules/olx/service"
 
@@ -281,10 +283,76 @@ medusaIntegrationTestRunner({
       expect(back.data).toMatchObject({ result: "saved", advert: { status: "active" } })
     })
 
-    it("removes demo adverts", async () => {
-      await publish()
-      expect((await api.post("/admin/olx/demo/reset", {}, headers)).data.removed).toBe(1)
-      expect((await api.get("/admin/olx/adverts", headers)).data.count).toBe(0)
+    it("opens with sample adverts in every status, leaving the store's only variant to publish", async () => {
+      const { data } = await api.get("/admin/olx/adverts?limit=50", headers)
+      expect(data.count).toBe(DEMO_SAMPLES.length)
+      expect(new Set(data.adverts.map((row: any) => row.status))).toEqual(
+        new Set(["active", "new", "limited", "outdated", "moderated", "failed", "removed_by_user"])
+      )
+      expect(
+        data.adverts
+          .filter((row: any) => row.sold_channel)
+          .map((row: any) => row.sold_channel)
+          .sort()
+      ).toEqual(["olx", "store"])
+      expect((await api.get(`/admin/olx/products/${productId}`, headers)).data.product.variants[0].advert).toBeNull()
+      expect((await publish()).data.result).toBe("published")
+    })
+
+    it("uses real products for samples when the store has enough, and leaves the others free", async () => {
+      const product = (
+        await container.resolve(ContainerRegistrationKeys.QUERY).graph({
+          entity: "product",
+          fields: ["shipping_profile.id", "sales_channels.id"],
+          filters: { id: productId },
+        })
+      ).data[0] as any
+      const { result } = await createProductsWorkflow(container).run({
+        input: {
+          products: [
+            {
+              title: "Koszula oxford vintage rozmiar M",
+              status: "published",
+              shipping_profile_id: product.shipping_profile.id,
+              options: [{ title: "Rozmiar", values: ["M"] }],
+              variants: [{ title: "M", options: { Rozmiar: "M" }, prices: [{ amount: 149, currency_code: "pln" }] }],
+            },
+          ],
+        },
+      })
+      const { data } = await api.get("/admin/olx/adverts?limit=50", headers)
+      const real = data.adverts.filter((row: any) => !row.product_id.startsWith("demo_product_"))
+      expect(real).toHaveLength(1)
+      expect([productId, result[0].id]).toContain(real[0].product_id)
+    })
+
+    it("does not touch sample adverts on no real product in a sync", async () => {
+      await api.get("/admin/olx/adverts", headers)
+      await api.post("/admin/olx/sync", {}, headers)
+      const { data } = await api.get("/admin/olx/adverts?status=active", headers)
+      expect(data.count).toBe(1)
+    })
+
+    it("works on a sample after a restart of the simulated OLX", async () => {
+      const { data } = await api.get("/admin/olx/adverts?status=active", headers)
+      const id = data.adverts[0].id
+      const service = container.resolve<OlxModuleService>(OLX_MODULE)
+      const fresh = new DemoOlxApi(service)
+      expect((await fresh.getAdvert(data.adverts[0].olx_advert_id))?.status).toBe("active")
+      const down = await api.post(`/admin/olx/adverts/${id}/commands`, { command: "deactivate" }, headers)
+      expect(down.data).toMatchObject({ result: "saved", advert: { status: "removed_by_user" } })
+      const back = await api.post(`/admin/olx/adverts/${id}/commands`, { command: "activate" }, headers)
+      expect(back.data).toMatchObject({ result: "saved", advert: { status: "active" } })
+    })
+
+    it("'restore test data' puts the set back and leaves products alone", async () => {
+      const first = await api.get("/admin/olx/adverts?status=active", headers)
+      await api.post(`/admin/olx/adverts/${first.data.adverts[0].id}/commands`, { command: "sold" }, headers)
+      expect((await api.get("/admin/olx/adverts?status=active", headers)).data.count).toBe(0)
+      expect((await api.post("/admin/olx/demo/reset", {}, headers)).data.restored).toBe(DEMO_SAMPLES.length)
+      expect((await api.get("/admin/olx/adverts?status=active", headers)).data.count).toBe(1)
+      expect((await api.get(`/admin/products/${productId}`, headers)).status).toBe(200)
+      expect(await stocked()).toBe(1)
     })
 
     it("sends an unknown OAuth state back to the admin without doing anything", async () => {

@@ -1,4 +1,4 @@
-import { Button, Container, Input, Select, Table, Text, toast } from "@medusajs/ui"
+import { Badge, Button, Container, Input, Select, Table, Text, toast } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
@@ -114,12 +114,23 @@ export const AdvertsTab = ({ canWrite }: { canWrite: boolean }) => {
                 {data.adverts.map((advert) => (
                   <Table.Row key={advert.id}>
                     <Table.Cell className="max-w-[360px]">
-                      <Link
-                        to={`/products/${advert.product_id}`}
-                        className="text-ui-fg-interactive txt-compact-small block truncate hover:underline"
-                      >
-                        {advert.title}
-                      </Link>
+                      {advert.product_id.startsWith("demo_product_") ? (
+                        <div className="flex items-center gap-x-2">
+                          <Text size="small" className="truncate">
+                            {advert.title}
+                          </Text>
+                          <Badge size="2xsmall" color="grey">
+                            {t("olx.adverts.sample")}
+                          </Badge>
+                        </div>
+                      ) : (
+                        <Link
+                          to={`/products/${advert.product_id}`}
+                          className="text-ui-fg-interactive txt-compact-small block truncate hover:underline"
+                        >
+                          {advert.title}
+                        </Link>
+                      )}
                       {advert.last_error && (
                         <Text size="xsmall" className="text-ui-fg-error truncate" title={advert.last_error}>
                           {advert.last_error}

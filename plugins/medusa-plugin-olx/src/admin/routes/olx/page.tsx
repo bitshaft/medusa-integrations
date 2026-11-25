@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { BookOpen, CogSixTooth, ListBullet, Tag } from "@medusajs/icons"
+import { BookOpen, CogSixTooth, ListBullet } from "@medusajs/icons"
 import { Container, Text } from "@medusajs/ui"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
@@ -7,12 +7,12 @@ import { useTranslation } from "react-i18next"
 import { AdvertsTab } from "../../components/olx/adverts-tab"
 import { Guide } from "../../components/olx/guide"
 import { SettingsTab } from "../../components/olx/settings-tab"
-import { BRAND_COLOR } from "../../components/olx/shared"
 import { keys, useDemoReset, useOlxStatus } from "../../lib/olx/api"
 import { DemoBar, DemoResetButton } from "../../lib/olx/kit/demo"
-import { navIcon } from "../../lib/olx/kit/nav-icon"
+import { NAV_TILE_STYLE } from "../../lib/olx/kit/nav-icon"
 import { DisabledNotice, LoadingBlock, OptionsCard, PageHeader, PageTabs, useTabParam } from "../../lib/olx/kit/page"
-import { PageIcon, TabTrigger } from "../../lib/olx/kit/ui"
+import { PageLogo, TabTrigger } from "../../lib/olx/kit/ui"
+import olxLogo from "../../lib/olx/olx-logo.png"
 
 const TAB_ICONS = {
   adverts: { icon: ListBullet, color: "#16a34a" },
@@ -38,7 +38,7 @@ const OlxPage = () => {
       {demo && <DemoBar>{t("olx.demoHint")}</DemoBar>}
       <Container className="overflow-hidden divide-y p-0">
         <PageHeader
-          icon={<PageIcon icon={Tag} color={BRAND_COLOR} />}
+          icon={<PageLogo src={olxLogo} fill />}
           title={t("olx.title")}
           description={t("olx.description")}
           state={!s ? null : !s.enabled ? "off" : demo ? "demo" : "on"}
@@ -53,7 +53,7 @@ const OlxPage = () => {
               demo ? (
                 <DemoResetButton
                   description={t("olx.demoReset")}
-                  onReset={async () => t("olx.demoRemoved", { count: (await reset.mutateAsync()).removed })}
+                  onReset={async () => t("olx.demoRestored", { count: (await reset.mutateAsync()).restored })}
                 />
               ) : undefined
             }
@@ -96,10 +96,17 @@ const OlxPage = () => {
   )
 }
 
+/** Sidebar icon: the OLX logo (a coloured square) covering the whole sidebar tile. */
+const OlxNavIcon = () => (
+  <span style={{ ...NAV_TILE_STYLE, overflow: "hidden" }}>
+    <img src={olxLogo} alt="" style={{ width: 20, height: 20, display: "block" }} />
+  </span>
+)
+
 export const config = defineRouteConfig({
   label: "olx.title",
   translationNs: "translation",
-  icon: navIcon(Tag, BRAND_COLOR),
+  icon: OlxNavIcon,
 })
 
 export default OlxPage

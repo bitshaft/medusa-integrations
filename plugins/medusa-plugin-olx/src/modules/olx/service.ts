@@ -103,12 +103,12 @@ export default class OlxModuleService
     return this.state_.options
   }
 
-  /** OLX, or the in-memory demo. */
+  /** OLX, or the simulated one of demo mode. */
   async getApi(): Promise<OlxApi> {
     const options = await this.getOptions()
     if (!this.api_) {
       if (options.demo) {
-        this.api_ = new DemoOlxApi()
+        this.api_ = new DemoOlxApi(this)
       } else {
         const tokens = new OlxTokens(options, this, this.logger_)
         this.api_ = new OlxClient({
@@ -438,10 +438,10 @@ export default class OlxModuleService
     if (rows.length) {
       await this.deleteOlxAdverts(rows.map((row) => row.id))
     }
-    const api = await this.getApi()
-    if (api instanceof DemoOlxApi) {
-      api.reset()
-    }
     return rows.length
+  }
+
+  async hasDemoAdverts(): Promise<boolean> {
+    return (await this.listOlxAdverts({ demo: true }, { take: 1, select: ["id"] })).length > 0
   }
 }

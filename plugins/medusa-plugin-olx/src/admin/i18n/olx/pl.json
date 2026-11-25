@@ -4,9 +4,8 @@
     "description": "Wystawiaj produkty na OLX i zdejmuj je, gdy się sprzedadzą.",
     "loadError": "Nie udało się wczytać danych pluginu OLX. Odśwież stronę.",
     "disabledHint": "Ustaw clientId, clientSecret, redirectUri i encryptionKey w medusa-config.ts i zrestartuj Medusę albo ustaw demo: true, żeby wypróbować plugin bez konta.",
-    "demoHint": "Przykładowe kategorie i OLX trzymany w pamięci: nic nie trafia na OLX, a stany w sklepie się nie zmieniają.",
-    "demoReset": "Usuwa wszystkie ogłoszenia demo. Produkty i stany pozostają bez zmian.",
-    "demoRemoved": "Usunięte ogłoszenia: {{count}}",
+    "demoHint": "Przykładowe ogłoszenia na symulowanym OLX: nic nie trafia na OLX, a stany w sklepie się nie zmieniają.",
+    "demoReset": "Zastępuje wszystkie ogłoszenia demo przykładowym zestawem we wszystkich statusach. Produkty i stany pozostają bez zmian.",
     "tabs": {
       "adverts": "Ogłoszenia",
       "settings": "Ustawienia",
@@ -119,7 +118,8 @@
         "status": "Status",
         "price": "Cena",
         "validTo": "Ważne do"
-      }
+      },
+      "sample": "Przykład"
     },
     "bulk": {
       "open": "Wystaw kilka",
@@ -234,8 +234,9 @@
       },
       "demo": {
         "title": "Tryb demo",
-        "text": "Z demo: true wszystko działa na przykładowych danych, bez konta OLX. Nic nie jest wysyłane, a stany się nie zmieniają."
+        "text": "Z demo: true zakładka Ogłoszenia pokazuje przykłady we wszystkich statusach, w miarę możliwości na twoich produktach. Wszystko działa bez konta OLX: nic nie jest wysyłane, a stany się nie zmieniają. „Przywróć dane testowe” odtwarza ten zestaw."
       }
-    }
+    },
+    "demoRestored": "Przykładowe ogłoszenia: {{count}}"
   }
 }

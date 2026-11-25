@@ -21,4 +21,4 @@ simulated API; not yet run against a live OLX account.
   before anything is sent again.
 - Statuses follow OLX's change feed.
 - Polish and English admin, a guide with installation steps, and a demo mode that
-  needs no OLX account.
+  needs no OLX account, with sample adverts in every status.

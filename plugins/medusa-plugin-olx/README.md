@@ -122,7 +122,7 @@ OLX → Settings in the admin to connect the account.
 | `redirectUri`   | required             | Must equal the app's Redirect URI, on https.                                                 |
 | `encryptionKey` | required             | Encrypts OLX tokens in the database. Min. 32 characters. Changing it means connecting again. |
 | `adminUrl`      | `<backend>/app/olx`  | Where the browser returns after connecting, if your admin is elsewhere.                      |
-| `demo`          | `false`              | Sample data and an in-memory OLX. Needs no credentials and sends nothing.                    |
+| `demo`          | `false`              | Sample adverts on a simulated OLX. Needs no credentials and sends nothing.                   |
 | `baseUrl`       | `https://www.olx.pl` | Only for a proxy or a test server.                                                           |
 | `timeoutMs`     | `15000`              | Per request to OLX.                                                                          |
 
@@ -175,7 +175,9 @@ admin in the last 10 minutes and always redirects to the configured admin addres
 
 **OLX has no sandbox.** To try the plugin safely:
 
-1. Start with `demo: true`: everything works on sample data and nothing leaves the store.
+1. Start with `demo: true`: the Adverts tab shows sample adverts in every status (on your
+   products where it can, leaving at least half of them to publish by hand), and nothing
+   leaves the store. **Restore test data** brings the set back.
 2. Then create a **separate OLX account**, connect it to your app and publish a test advert.
    Remember it is a real advert on OLX: take it down afterwards.
 
@@ -220,7 +222,8 @@ ręcznie z admina. Gdy rzecz sprzeda się w sklepie, ogłoszenie zdejmuje się s
    `OLX_ENCRYPTION_KEY` (co najmniej 32 losowe znaki).
 3. `npx medusa db:migrate`, a potem w adminie **OLX → Ustawienia → Połącz z OLX**.
 
-Bez klucza możesz od razu użyć `demo: true`: wszystko działa na przykładowych danych, nic
+Bez klucza możesz od razu użyć `demo: true`: dostajesz przykładowe ogłoszenia we wszystkich
+statusach, wszystko działa na przykładowych danych, nic
 nie trafia na OLX, a stany w sklepie się nie zmieniają.
 
 ### Jak to działa

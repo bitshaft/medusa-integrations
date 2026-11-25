@@ -16,6 +16,7 @@ with. For example:
 - **Stripe** is a trademark of Stripe, Inc. Payment method names shown by
   the Stripe plugin (BLIK, Przelewy24, Apple Pay, Google Pay, card brands)
   belong to their owners.
+- **OLX** is a trademark of OLX Global B.V. or its affiliates.
 
 The MIT license in [LICENSE](./LICENSE) covers the code only. It grants no
 rights to these names or logos. Do not use them in a way that suggests a

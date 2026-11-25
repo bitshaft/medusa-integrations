@@ -201,6 +201,42 @@ export async function loadVariantDrafts(
   return out
 }
 
+/**
+ * Real variants for demo adverts: published, with a price, in stock first.
+ * At most half of the store's variants, so the rest can be published by hand.
+ */
+export async function loadSampleVariants(
+  container: MedusaContainer,
+  defaults: StoreDefaults,
+  limit: number
+): Promise<Array<{ variant_id: string; product_id: string; draft: AdvertInput }>> {
+  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const { data } = await query.graph({
+    entity: "product",
+    fields: PRODUCT_FIELDS,
+    filters: { status: "published" },
+    pagination: { take: 50, skip: 0 },
+  })
+  const products = data as unknown as RawProduct[]
+  const rows = products.flatMap((product) =>
+    (product.variants ?? [])
+      .filter((variant) => regularPln(variant.prices))
+      .map((variant) => ({
+        variant_id: variant.id,
+        product_id: product.id,
+        draft: buildDraft(product, variant, defaults),
+      }))
+  )
+  const stock = await loadAvailability(
+    container,
+    rows.map((row) => row.variant_id)
+  )
+  const inStockFirst = [...rows].sort(
+    (a, b) => Number(stock.get(b.variant_id) === true) - Number(stock.get(a.variant_id) === true)
+  )
+  return inStockFirst.slice(0, Math.min(limit, Math.floor(rows.length / 2)))
+}
+
 type AvailabilityVariant = {
   id: string
   manage_inventory?: boolean | null

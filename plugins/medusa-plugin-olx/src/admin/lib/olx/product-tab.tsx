@@ -1,4 +1,3 @@
-import { Tag } from "@medusajs/icons"
 import { Badge, Button, Skeleton, Table, Text } from "@medusajs/ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -6,12 +5,13 @@ import { Link } from "react-router-dom"
 
 import { AdvertActions } from "../../components/olx/advert-actions"
 import { AdvertForm } from "../../components/olx/advert-form"
-import { BRAND_COLOR, formatPln, StatusBadge } from "../../components/olx/shared"
+import { formatPln, StatusBadge } from "../../components/olx/shared"
 import { type ProductState, type ProductVariant, useOlxStatus, useProductState } from "./api"
-import { registerTab } from "./kit/integrations"
+import { type Brand, registerTab } from "./kit/integrations"
+import olxLogo from "./olx-logo.png"
 import { Empty } from "./kit/page"
 
-export const brand = { label: "olx.title", icon: Tag, color: BRAND_COLOR }
+export const brand: Brand = { label: "olx.title", logo: olxLogo, logoFill: true }
 
 /** The OLX tab of the product page's Integrations card: one row per variant. */
 registerTab("product", {

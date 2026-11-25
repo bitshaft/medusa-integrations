@@ -267,7 +267,7 @@ export function useSyncNow() {
 export function useDemoReset() {
   const refresh = useRefreshAfterWrite()
   return useMutation({
-    mutationFn: () => sdk.client.fetch<{ removed: number }>(`${BASE}/demo/reset`, { method: "POST" }),
+    mutationFn: () => sdk.client.fetch<{ restored: number }>(`${BASE}/demo/reset`, { method: "POST" }),
     onSuccess: refresh,
   })
 }
