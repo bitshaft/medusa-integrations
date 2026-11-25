@@ -10,7 +10,7 @@ import { SettingsPanel } from "../../components/apaczka/settings-panel"
 import { ShipmentsList } from "../../components/apaczka/shipments-list"
 import { useApaczkaStatus } from "../../lib/apaczka/api"
 import apaczkaLogo from "../../lib/apaczka/apaczka-logo.png"
-import { NAV_TILE_STYLE } from "../../lib/apaczka/kit/nav-icon"
+import { NavTile } from "../../lib/apaczka/kit/nav-icon"
 import { DisabledNotice, LoadingBlock, PageHeader, PageTabs, useTabParam } from "../../lib/apaczka/kit/page"
 import { PageLogo, TabTrigger } from "../../lib/apaczka/kit/ui"
 
@@ -71,9 +71,9 @@ const ApaczkaPage = () => {
 
 /** Sidebar icon: the Apaczka logo on a white tile covering the whole sidebar square. */
 const ApaczkaNavIcon = () => (
-  <span style={{ ...NAV_TILE_STYLE, backgroundColor: "#ffffff" }}>
+  <NavTile background="#ffffff">
     <img src={apaczkaLogo} alt="" style={{ width: 14, height: 14, objectFit: "contain" }} />
-  </span>
+  </NavTile>
 )
 
 export const config = defineRouteConfig({

@@ -9,7 +9,7 @@ import { Guide } from "../../components/olx/guide"
 import { SettingsTab } from "../../components/olx/settings-tab"
 import { keys, useDemoReset, useOlxStatus } from "../../lib/olx/api"
 import { DemoBar, DemoResetButton } from "../../lib/olx/kit/demo"
-import { NAV_TILE_STYLE } from "../../lib/olx/kit/nav-icon"
+import { NavTile } from "../../lib/olx/kit/nav-icon"
 import { DisabledNotice, LoadingBlock, OptionsCard, PageHeader, PageTabs, useTabParam } from "../../lib/olx/kit/page"
 import { PageLogo, TabTrigger } from "../../lib/olx/kit/ui"
 import olxLogo from "../../lib/olx/olx-logo.png"
@@ -98,9 +98,9 @@ const OlxPage = () => {
 
 /** Sidebar icon: the OLX logo (a coloured square) covering the whole sidebar tile. */
 const OlxNavIcon = () => (
-  <span style={{ ...NAV_TILE_STYLE, overflow: "hidden" }}>
+  <NavTile>
     <img src={olxLogo} alt="" style={{ width: 20, height: 20, display: "block" }} />
-  </span>
+  </NavTile>
 )
 
 export const config = defineRouteConfig({

@@ -12,7 +12,7 @@ import { Payouts } from "../../components/stripe/payouts"
 import { DemoBar, TabTrigger } from "../../components/stripe/shared"
 import { useRefresh, useStatus } from "../../lib/stripe/api"
 import { errorMessage } from "../../lib/stripe/format"
-import { NAV_TILE_STYLE } from "../../lib/stripe/kit/nav-icon"
+import { NavTile } from "../../lib/stripe/kit/nav-icon"
 import stripeLogo from "../../lib/stripe/stripe-logo.png"
 import { DisabledNotice, LoadingBlock, OptionsCard, PageHeader, PageTabs, useTabParam } from "../../lib/stripe/kit/page"
 import { PageLogo } from "../../lib/stripe/kit/ui"
@@ -110,9 +110,9 @@ const StripePage = () => {
 
 /** Sidebar icon: the Stripe logo (a coloured square) covering the whole sidebar tile. */
 const StripeNavIcon = () => (
-  <span style={{ ...NAV_TILE_STYLE, overflow: "hidden" }}>
+  <NavTile>
     <img src={stripeLogo} alt="" style={{ width: 20, height: 20, display: "block" }} />
-  </span>
+  </NavTile>
 )
 
 export const config = defineRouteConfig({
