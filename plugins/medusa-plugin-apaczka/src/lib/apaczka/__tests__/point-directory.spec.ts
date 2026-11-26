@@ -202,6 +202,18 @@ describe("ApaczkaPointDirectory", () => {
     expect(getPoints).toHaveBeenCalledTimes(2)
   })
 
+  it("clusters() stores the list first, like a search", async () => {
+    const { directory, getPoints } = setup()
+    const clusters = await directory.clusters({
+      type: "INPOST",
+      countryCode: "PL",
+      bbox: { west: 14, south: 49, east: 24, north: 55 },
+      zoom: 6,
+    })
+    expect(getPoints).toHaveBeenCalledTimes(1)
+    expect(clusters).toEqual([expect.objectContaining({ count: 1, id: "WAW01M" })])
+  })
+
   it("refresh() tells the admin why a sync failed", async () => {
     const { directory, getPoints } = setup()
     getPoints.mockRejectedValueOnce(new Error("Invalid signature"))

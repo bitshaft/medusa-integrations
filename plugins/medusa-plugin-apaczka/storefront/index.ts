@@ -7,7 +7,23 @@
  * import { PointPicker, requiresPoint, shippingMethodData } from "@modules/checkout/components/apaczka"
  * ```
  */
-export { getApaczkaOptionData, getPoint, requiresPoint, searchPoints, shippingMethodData } from "./client"
+export {
+  getApaczkaOptionData,
+  getPoint,
+  requiresPoint,
+  searchClusters,
+  searchPoints,
+  shippingMethodData,
+} from "./client"
 export { PointPicker, type PointPickerLabels, type PointPickerProps } from "./point-picker"
-export type { ApaczkaOptionData, ApaczkaPoint, ApaczkaStoreConfig, PointBounds, PointSearchParams } from "./types"
+export type {
+  ApaczkaOptionData,
+  ApaczkaPoint,
+  ApaczkaStoreConfig,
+  PointBounds,
+  PointCluster,
+  PointClusterParams,
+  PointSearchParams,
+} from "./types"
+export { usePointClusters, type UsePointClustersOptions, type UsePointClustersResult } from "./use-point-clusters"
 export { usePointSearch, type UsePointSearchOptions, type UsePointSearchResult } from "./use-point-search"

@@ -299,25 +299,26 @@ adjusts the shipment.
 
 ## API
 
-| Route                                                      |                                                            |
-| ---------------------------------------------------------- | ---------------------------------------------------------- |
-| `GET /store/apaczka/points?type=INPOST&q=&lat=&lng=&cod=`  | Search parcel points (stored in the database)              |
-| `GET /store/apaczka/points?type=INPOST&bbox=w,s,e,n`       | Parcel points inside a map area (up to `limit=500`)        |
-| `GET /store/apaczka/points/:type/:id`                      | One point                                                  |
-| `POST /hooks/apaczka/tracking`                             | Apaczka push tracking (signed)                             |
-| `GET /admin/apaczka/status`                                | Connection check and configuration summary                 |
-| `GET /admin/apaczka/points`                                | Stored parcel point lists: count, last sync, state         |
-| `POST /admin/apaczka/points/sync`                          | Sync one carrier's points now (`{ type, country_code }`)   |
-| `GET /admin/apaczka/services`                              | Services, additional options and package types             |
-| `GET /admin/apaczka/shipments?order_id=&q=&status=`        | Shipments with tracking history and order numbers          |
-| `POST /admin/apaczka/fulfillments/:id/valuation`           | Price a shipment before creating it                        |
-| `POST /admin/apaczka/fulfillments/:id/shipment`            | Create the shipment (with overrides)                       |
-| `POST /admin/apaczka/shipments/:id/sync`                   | Refresh tracking now                                       |
-| `GET /admin/apaczka/orders/:id/documents/waybill`          | Label (PDF/ZPL), also used as the Medusa label URL         |
-| `GET /admin/apaczka/orders/:id/documents/dispatch_code`    | Drop-off code                                              |
-| `POST /admin/apaczka/turn-in`                              | Hand-over (turn-in) confirmation PDF for several shipments |
-| `GET /admin/apaczka/pickup-hours?postal_code=&service_id=` | Available courier pickup days                              |
-| `POST /admin/apaczka/pickups`                              | Book a courier pickup                                      |
+| Route                                                                |                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `GET /store/apaczka/points?type=INPOST&q=&lat=&lng=&cod=`            | Search parcel points (stored in the database)                |
+| `GET /store/apaczka/points?type=INPOST&bbox=w,s,e,n`                 | Parcel points inside a map area (up to `limit=500`)          |
+| `GET /store/apaczka/points/clusters?type=INPOST&bbox=w,s,e,n&zoom=6` | A zoomed-out map's points, grouped into clusters with counts |
+| `GET /store/apaczka/points/:type/:id`                                | One point                                                    |
+| `POST /hooks/apaczka/tracking`                                       | Apaczka push tracking (signed)                               |
+| `GET /admin/apaczka/status`                                          | Connection check and configuration summary                   |
+| `GET /admin/apaczka/points`                                          | Stored parcel point lists: count, last sync, state           |
+| `POST /admin/apaczka/points/sync`                                    | Sync one carrier's points now (`{ type, country_code }`)     |
+| `GET /admin/apaczka/services`                                        | Services, additional options and package types               |
+| `GET /admin/apaczka/shipments?order_id=&q=&status=`                  | Shipments with tracking history and order numbers            |
+| `POST /admin/apaczka/fulfillments/:id/valuation`                     | Price a shipment before creating it                          |
+| `POST /admin/apaczka/fulfillments/:id/shipment`                      | Create the shipment (with overrides)                         |
+| `POST /admin/apaczka/shipments/:id/sync`                             | Refresh tracking now                                         |
+| `GET /admin/apaczka/orders/:id/documents/waybill`                    | Label (PDF/ZPL), also used as the Medusa label URL           |
+| `GET /admin/apaczka/orders/:id/documents/dispatch_code`              | Drop-off code                                                |
+| `POST /admin/apaczka/turn-in`                                        | Hand-over (turn-in) confirmation PDF for several shipments   |
+| `GET /admin/apaczka/pickup-hours?postal_code=&service_id=`           | Available courier pickup days                                |
+| `POST /admin/apaczka/pickups`                                        | Book a courier pickup                                        |
 
 ## Demo mode
 

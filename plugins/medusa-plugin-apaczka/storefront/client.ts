@@ -1,4 +1,11 @@
-import type { ApaczkaOptionData, ApaczkaPoint, ApaczkaStoreConfig, PointSearchParams } from "./types"
+import type {
+  ApaczkaOptionData,
+  ApaczkaPoint,
+  ApaczkaStoreConfig,
+  PointCluster,
+  PointClusterParams,
+  PointSearchParams,
+} from "./types"
 
 /** Calls `GET /store/apaczka/points`. */
 export async function searchPoints(config: ApaczkaStoreConfig, params: PointSearchParams): Promise<ApaczkaPoint[]> {
@@ -16,6 +23,25 @@ export async function searchPoints(config: ApaczkaStoreConfig, params: PointSear
 
   const response = (await request(config, "/store/apaczka/points", query)) as { points: ApaczkaPoint[] }
   return response.points ?? []
+}
+
+/**
+ * Calls `GET /store/apaczka/points/clusters`: a zoomed-out map's points,
+ * grouped, so a map of the whole country shows where the points are without
+ * loading each of them.
+ */
+export async function searchClusters(config: ApaczkaStoreConfig, params: PointClusterParams): Promise<PointCluster[]> {
+  const { west, south, east, north } = params.bbox
+  const query: Record<string, string> = {
+    type: params.type,
+    bbox: [west, south, east, north].join(","),
+    zoom: String(Math.round(params.zoom)),
+  }
+  if (params.countryCode) query.country_code = params.countryCode.toLowerCase()
+  if (params.cod) query.cod = "true"
+
+  const response = (await request(config, "/store/apaczka/points/clusters", query)) as { clusters: PointCluster[] }
+  return response.clusters ?? []
 }
 
 /** Calls `GET /store/apaczka/points/:type/:id`. */

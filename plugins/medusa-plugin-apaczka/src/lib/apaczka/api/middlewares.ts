@@ -8,6 +8,7 @@ import {
   AdminShipmentsQuery,
   AdminSyncPoints,
   AdminTurnIn,
+  StorePointClustersQuery,
   StorePointQuery,
   StorePointsQuery,
 } from "./validators"
@@ -28,6 +29,11 @@ export const apaczkaMiddlewares: MiddlewareRoute[] = [
     matcher: "/store/apaczka/points",
     method: ["GET"],
     middlewares: [validateQuery(StorePointsQuery)],
+  },
+  {
+    matcher: "/store/apaczka/points/clusters",
+    method: ["GET"],
+    middlewares: [validateQuery(StorePointClustersQuery)],
   },
   {
     matcher: "/store/apaczka/points/:type/:id",

@@ -1,6 +1,7 @@
 import type { ApaczkaPoint } from "../client"
+import { clusterGrid, groupIntoClusters, type PointCluster, type StoredClusterQuery } from "../point-clusters"
 import type { PointStorage, PointSyncStatus, StoredPointQuery } from "../point-directory"
-import { fromPointRow, type PointRow, toPointRow } from "../point-rows"
+import { fromPointRow, normalizeSearch, type PointRow, toPointRow } from "../point-rows"
 import { ApaczkaPointStore } from "../point-store"
 
 /**
@@ -10,7 +11,7 @@ import { ApaczkaPointStore } from "../point-store"
  */
 export function useMemoryPointStore(): MemoryPointStore {
   const memory = new MemoryPointStore()
-  const methods = ["getStatus", "listStatuses", "tryLock", "replace", "finish", "search", "find"] as const
+  const methods = ["getStatus", "listStatuses", "tryLock", "replace", "finish", "search", "clusters", "find"] as const
   for (const method of methods) {
     jest
       .spyOn(ApaczkaPointStore.prototype, method)
@@ -105,11 +106,46 @@ export class MemoryPointStore implements PointStorage {
           : (row.latitude - latitude) ** 2 + (row.longitude - longitude) ** 2 * scale
       rows = [...rows].sort((a, b) => distance(a) - distance(b))
     } else {
-      rows = [...rows].sort((a, b) =>
-        `${a.city} ${a.line1} ${a.external_id}`.localeCompare(`${b.city} ${b.line1} ${b.external_id}`)
+      // Best matches first, as in `ApaczkaPointStore.search`: code, city, city prefix, postal code prefix.
+      const phrase = query.terms.join(" ")
+      const rank = (row: PointRow) => {
+        if (!phrase) return 0
+        const city = normalizeSearch(row.city)
+        if (row.external_id.toUpperCase() === phrase.toUpperCase()) return 0
+        if (city === phrase) return 1
+        if (city.startsWith(phrase)) return 2
+        if (row.postal_code.startsWith(phrase)) return 3
+        return 4
+      }
+      rows = [...rows].sort(
+        (a, b) =>
+          rank(a) - rank(b) ||
+          `${a.city} ${a.line1} ${a.external_id}`.localeCompare(`${b.city} ${b.line1} ${b.external_id}`)
       )
     }
     return rows.slice(0, query.limit).map((row) => fromPointRow({ ...row, open_hours: parse(row.open_hours) }))
+  }
+
+  async clusters(query: StoredClusterQuery): Promise<PointCluster[]> {
+    const grid = clusterGrid(query.bbox, query.zoom)
+    const { area } = grid
+    const located = this.rows.filter(
+      (row) =>
+        row.type === query.type &&
+        row.country_code === query.countryCode &&
+        (!query.cod || row.accepts_cod) &&
+        (!query.sending || row.accepts_sending) &&
+        row.latitude !== null &&
+        row.longitude !== null &&
+        row.latitude >= area.south &&
+        row.latitude <= area.north &&
+        row.longitude >= area.west &&
+        row.longitude <= area.east
+    )
+    return groupIntoClusters(
+      located.map((row) => ({ id: row.external_id, latitude: row.latitude!, longitude: row.longitude! })),
+      grid
+    )
   }
 
   async find(type: string, countryCode: string, pointId: string): Promise<ApaczkaPoint | undefined> {

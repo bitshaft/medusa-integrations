@@ -1,6 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 
 import type { ApaczkaClient, ApaczkaLogger, ApaczkaPoint } from "./client"
+import type { PointCluster, StoredClusterQuery } from "./point-clusters"
 
 /** The stored state of one carrier's point list (one row of `apaczka_point_sync`). */
 export type PointSyncStatus = {
@@ -45,6 +46,8 @@ export interface PointStorage {
     result: { now: Date; source: string; count: number } | { now: Date; error: string }
   ): Promise<void>
   search(query: StoredPointQuery): Promise<ApaczkaPoint[]>
+  /** The points of a map area grouped into grid cells (see `clusterGrid`). */
+  clusters(query: StoredClusterQuery): Promise<PointCluster[]>
   find(type: string, countryCode: string, pointId: string): Promise<ApaczkaPoint | undefined>
 }
 
@@ -94,6 +97,12 @@ export class ApaczkaPointDirectory {
   async search(query: StoredPointQuery): Promise<ApaczkaPoint[]> {
     await this.ensure(query.type, query.countryCode)
     return this.storage.search(query)
+  }
+
+  /** A zoomed-out map's points, grouped: the whole country is a few hundred clusters, not every point. */
+  async clusters(query: StoredClusterQuery): Promise<PointCluster[]> {
+    await this.ensure(query.type, query.countryCode)
+    return this.storage.clusters(query)
   }
 
   async find(type: string, countryCode: string, pointId: string): Promise<ApaczkaPoint | undefined> {

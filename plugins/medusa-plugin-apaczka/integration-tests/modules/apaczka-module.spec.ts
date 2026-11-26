@@ -3,6 +3,7 @@ import path from "node:path"
 import { moduleIntegrationTestRunner } from "@medusajs/test-utils"
 
 import type { ApaczkaPoint } from "../../src/lib/apaczka/client"
+import { clusterGrid, groupIntoClusters } from "../../src/lib/apaczka/point-clusters"
 import { ApaczkaPointStore } from "../../src/lib/apaczka/point-store"
 import { APACZKA_MODULE } from "../../src/modules/apaczka"
 import type ApaczkaModuleService from "../../src/modules/apaczka/service"
@@ -252,6 +253,78 @@ moduleIntegrationTestRunner<ApaczkaModuleService>({
           address: { latitude: "52.24" },
         })
         expect(await points.find("INPOST", "PL", "OLD01M")).toBeUndefined()
+      })
+
+      it("lists the city itself first, comparing Polish letters in SQL", async () => {
+        const points = store()
+        await points.replace(
+          "INPOST",
+          "PL",
+          [
+            point("ALE01M", "Aleksandrów Łódzki", 51.82, 19.3),
+            point("GLO01M", "Głowno", 51.96, 19.71, {
+              address: {
+                line1: "ul. Łódzka 5",
+                postal_code: "95-015",
+                city: "Głowno",
+                country_code: "PL",
+                latitude: "51.96",
+                longitude: "19.71",
+              },
+            }),
+            point("LOD02M", "Łódź", 51.75, 19.45),
+            point("LOD01M", "ŁÓDŹ", 51.76, 19.46), // capitals too
+          ],
+          // Before the next test's list, so its replace() clears these rows.
+          new Date("2026-11-26T09:00:00Z")
+        )
+        // Terms come normalized ("Łódź" → "lodz"), as the catalog passes them.
+        const found = await points.search({ ...base, terms: ["lodz"] })
+        expect(ids(found).slice(0, 2).sort()).toEqual(["LOD01M", "LOD02M"])
+        expect(ids(found).slice(2).sort()).toEqual(["ALE01M", "GLO01M"])
+        expect(ids(await points.search({ ...base, terms: ["aleksandrow"] }))).toEqual(["ALE01M"])
+        expect(ids(await points.search({ ...base, terms: ["95-0"] }))[0]).toBe("GLO01M")
+        expect(ids(await points.search({ ...base, terms: ["glo01m"] }))).toEqual(["GLO01M"])
+      })
+
+      it("clusters a map area in SQL the same way as in memory", async () => {
+        const points = store()
+        const list = [
+          point("WAW01M", "Warszawa", 52.2, 20.9),
+          point("WAW02M", "Warszawa", 52.3, 21.0),
+          point("WAW03M", "Warszawa", 52.25, 20.95, { option_cod: false }),
+          point("KRA01M", "Kraków", 50.06, 19.94),
+          point("GDA01M", "Gdańsk", 54.35, 18.65),
+          point("NOWHERE", "Nigdzie", 0, 0), // no location: never clustered
+        ]
+        await points.replace("INPOST", "PL", list, new Date("2026-11-26T10:00:00Z"))
+        const poland = { west: 14.1, south: 49.0, east: 24.2, north: 54.9 }
+        const query = { type: "INPOST", countryCode: "PL", bbox: poland, zoom: 6 }
+
+        const expected = groupIntoClusters(
+          list
+            .filter((p) => p.foreign_address_id !== "NOWHERE")
+            .map((p) => ({
+              id: p.foreign_address_id,
+              latitude: Number(p.address.latitude),
+              longitude: Number(p.address.longitude),
+            })),
+          clusterGrid(poland, 6)
+        )
+        const clusters = await points.clusters(query)
+        expect(clusters.map((c) => [c.count, c.id ?? null])).toEqual(expected.map((c) => [c.count, c.id ?? null]))
+        const [warsaw] = clusters
+        expect(warsaw.count).toBe(3)
+        // Stored as `real`, so compare loosely.
+        expect(warsaw.latitude).toBeCloseTo(52.25, 4)
+        expect(warsaw.bounds.west).toBeCloseTo(20.9, 4)
+        expect(warsaw.bounds.north).toBeCloseTo(52.3, 4)
+
+        expect((await points.clusters({ ...query, cod: true }))[0].count).toBe(2)
+        // Only the area asked for.
+        const south = await points.clusters({ ...query, bbox: { west: 19, south: 49.5, east: 21, north: 50.5 } })
+        expect(south.map((c) => c.id)).toEqual(["KRA01M"])
+        expect(await points.clusters({ ...query, type: "DPD" })).toEqual([])
       })
     })
   },

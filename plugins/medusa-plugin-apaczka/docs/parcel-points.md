@@ -110,12 +110,24 @@ the admin responses for the key.
 `GET /store/apaczka/points` takes one of:
 
 - `q`: every word must appear in the search text (`"bytom"`, `"41-902"`,
-  `"BYT01M"`);
+  `"BYT01M"`). The best matches come first: the point's own code, then the
+  city itself, a city starting with the text, a postal code starting with
+  it, so `"łódź"` lists Łódź before Aleksandrów Łódzki;
 - `lat` and `lng`: nearest first, with `distance_km`;
 - `bbox=west,south,east,north`: points inside a map area (with `limit` up to
   500), for loading what a map shows as it moves;
 
-plus `cod` and `sending` filters. The checkout's point check
+plus `cod` and `sending` filters.
+
+A zoomed-out map uses `GET /store/apaczka/points/clusters?type=…&bbox=…&zoom=…`
+instead: Postgres groups the area's points into grid cells (`clusterGrid`:
+about 85 pixels at that zoom, on a grid fixed at 0°, 0° so cells don't move
+while the map pans) and returns one row per cell with its count, average
+position and extent. The whole of Poland at country zoom is a few dozen
+clusters, and no point leaves the database. Zoomed in to about a district,
+load the points themselves with `bbox`.
+
+The checkout's point check
 (`validateFulfillmentData`) looks the chosen point up by `external_id` in the
 same table, so a point can be chosen only if it is in the stored list.
 

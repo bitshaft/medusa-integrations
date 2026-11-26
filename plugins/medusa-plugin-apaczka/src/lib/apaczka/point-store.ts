@@ -2,11 +2,20 @@ import type { Knex } from "@medusajs/framework/mikro-orm/knex"
 import { generateEntityId, MedusaError } from "@medusajs/framework/utils"
 
 import type { ApaczkaPoint } from "./client"
+import { clusterGrid, MAX_CLUSTERS, type PointCluster, type StoredClusterQuery } from "./point-clusters"
 import type { PointStorage, PointSyncStatus, StoredPointQuery } from "./point-directory"
 import { fromPointRow, POINT_SYNC_TABLE, POINT_TABLE, type PointRow, toPointRow } from "./point-rows"
 
 /** Rows per INSERT: well under Postgres' 65,535 bind parameters. */
 const BATCH_SIZE = 500
+
+/**
+ * Letters `normalizeSearch` strips accents from (Polish, plus common Czech
+ * and German ones), and what they become, for comparing a city in SQL
+ * without the `unaccent` extension. Both cases, so `lower()` only meets ASCII.
+ */
+const ACCENTED = "ĄĆĘŁŃÓŚŹŻÁÄČĎÉĚÍŇÖŘŠŤÚŮÜÝŽąćęłńóśźżáäčďéěíňöřšťúůüýž"
+const PLAIN = "ACELNOSZZAACDEEINORSTUUUYZacelnoszzaacdeeinorstuuuyz"
 
 /** Columns a re-synced point updates (everything except its ID and creation time). */
 const UPDATED_COLUMNS = [
@@ -153,10 +162,60 @@ export class ApaczkaPointStore implements PointStorage {
         [latitude, latitude, longitude, longitude, scale]
       )
     } else {
+      if (query.terms.length) {
+        // Best matches first: the point's own code, then the city itself, a
+        // city starting with the text, a postal code starting with it. So
+        // "Łódź" lists Łódź before Aleksandrów Łódzki or ul. Łódzka elsewhere.
+        const phrase = query.terms.join(" ")
+        const prefix = `${escapeLike(phrase)}%`
+        const city = `lower(translate("city", ?, ?))`
+        select.orderByRaw(
+          `(upper("external_id") = ?) desc, (${city} = ?) desc, (${city} like ?) desc, ("postal_code" like ?) desc`,
+          [phrase.toUpperCase(), ACCENTED, PLAIN, phrase, ACCENTED, PLAIN, prefix, prefix]
+        )
+      }
       select.orderBy(["city", "line1", "external_id"])
     }
     const rows = await select.limit(query.limit)
     return rows.map(fromPointRow)
+  }
+
+  async clusters(query: StoredClusterQuery): Promise<PointCluster[]> {
+    const db = this.db()
+    const { cellLng, cellLat, area } = clusterGrid(query.bbox, query.zoom)
+    const select = db(POINT_TABLE)
+      .where({ type: query.type, country_code: query.countryCode })
+      .whereBetween("latitude", [area.south, area.north])
+      .whereBetween("longitude", [area.west, area.east])
+    if (query.cod) select.where("accepts_cod", true)
+    if (query.sending) select.where("accepts_sending", true)
+    // One row per grid cell, computed in Postgres: the points themselves never leave the database.
+    const rows = (await select
+      .select(
+        db.raw(`count(*)::int as "count"`),
+        db.raw(`avg("latitude")::float8 as "latitude"`),
+        db.raw(`avg("longitude")::float8 as "longitude"`),
+        db.raw(`min("latitude")::float8 as "south"`),
+        db.raw(`max("latitude")::float8 as "north"`),
+        db.raw(`min("longitude")::float8 as "west"`),
+        db.raw(`max("longitude")::float8 as "east"`),
+        db.raw(`min("external_id") as "id"`)
+      )
+      .groupByRaw(`floor("longitude" / ?), floor("latitude" / ?)`, [cellLng, cellLat])
+      // Biggest first; ties by their lowest point ID, so the same view always answers the same.
+      .orderByRaw(`count(*) desc, min("external_id")`)
+      .limit(MAX_CLUSTERS)) as Array<Record<string, number | string>>
+
+    return rows.map((row) => {
+      const cluster: PointCluster = {
+        latitude: Number(row.latitude),
+        longitude: Number(row.longitude),
+        count: Number(row.count),
+        bounds: { west: Number(row.west), south: Number(row.south), east: Number(row.east), north: Number(row.north) },
+      }
+      if (cluster.count === 1) cluster.id = String(row.id)
+      return cluster
+    })
   }
 
   async find(type: string, countryCode: string, pointId: string): Promise<ApaczkaPoint | undefined> {

@@ -4,6 +4,24 @@ All notable changes to `@bitshaft/medusa-plugin-apaczka`. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org).
 
+## [0.2.1] - 2026-11-26
+
+### Added
+
+- `GET /store/apaczka/points/clusters?type=&bbox=&zoom=`: a zoomed-out map's
+  points grouped into clusters in Postgres (one per grid cell of about 85
+  pixels at that zoom), with each cluster's count, average position and
+  extent. A map of the whole country can show where the points are without
+  loading tens of thousands of them.
+- Storefront kit: `searchClusters` and `usePointClusters`.
+
+### Changed
+
+- Text searches list the best matches first: the point's own code, then
+  the city itself, a city starting with the text, a postal code starting
+  with it. "Łódź" now lists Łódź before Aleksandrów Łódzki or a street called
+  Łódzka elsewhere, so a map fitted to the results shows the city.
+
 ## [0.2.0] - 2026-11-26
 
 ### Added

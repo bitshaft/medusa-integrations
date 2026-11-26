@@ -107,6 +107,13 @@ Without the JS SDK, pass the backend URL and publishable key instead:
   only; keep the map zoomed in far enough (city level) for that to be a
   useful set.
 
+- **Zoomed-out maps.** Further out, use `usePointClusters({ type, bbox, zoom })`
+  (or `searchClusters`): the backend groups the area's points into cells of
+  about 85 pixels at that zoom and returns one cluster per cell, with its
+  count, average position and `bounds` (zoom to them on click). A whole
+  country is a few dozen clusters, so the map always shows where the points
+  are without loading each of them. A cluster of one point carries its `id`.
+
 ## Styling
 
 Every element has an `apaczka-picker__*` class. Colors use CSS variables, so

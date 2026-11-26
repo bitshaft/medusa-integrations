@@ -109,6 +109,32 @@ describe("ApaczkaCatalog", () => {
     expect(near[0].distance_km).toBeLessThan(2)
   })
 
+  it("lists the best matches first: the point code, the city, then the rest", async () => {
+    const { catalog, getPoints } = setup()
+    const street = (id: string, city: string, line1: string) =>
+      point(id, city, 51.9, 19.6, {
+        address: { line1, postal_code: "95-100", city, country_code: "PL", latitude: "51.9", longitude: "19.6" },
+      })
+    getPoints.mockResolvedValue([
+      point("ALE01M", "Aleksandrów Łódzki", 51.82, 19.3),
+      street("GLO01M", "Głowno", "ul. Łódzka 5"),
+      point("LOD02M", "Łódź", 51.75, 19.45),
+      point("LOD01M", "Łódź", 51.76, 19.46),
+      point("BYT01M", "Bytom", 50.35, 18.92),
+    ])
+    const ids = async (query: string) =>
+      (await catalog.searchPoints({ type: "INPOST", query })).map((p) => p.foreign_address_id)
+
+    // "Łódź" first lists Łódź, not Aleksandrów Łódzki (which sorts earlier) or a street called Łódzka.
+    expect(await ids("Łódź")).toEqual(["LOD01M", "LOD02M", "ALE01M", "GLO01M"])
+    // A city starting with the text comes next.
+    expect((await ids("aleksandrow"))[0]).toBe("ALE01M")
+    // A postal code prefix.
+    expect((await ids("95-1"))[0]).toBe("GLO01M")
+    // A point's code wins over everything.
+    expect(await ids("byt01m")).toEqual(["BYT01M"])
+  })
+
   it("filters points that do not accept COD", async () => {
     const { catalog } = setup()
     const result = await catalog.searchPoints({ type: "INPOST", cod: true })
@@ -137,6 +163,23 @@ describe("ApaczkaCatalog", () => {
       bbox: { west: 19, south: 50, east: 20, north: 52 },
     })
     expect(result.map((p) => p.foreign_address_id).sort()).toEqual(["KRA01M", "LOD01M"])
+  })
+
+  it("clusters a zoomed-out map's points, storing the list first", async () => {
+    const { catalog, getPoints } = setup()
+    const poland = { west: 14.1, south: 49.0, east: 24.2, north: 54.9 }
+    // Zoom 4: cells of 7.5° x 4.6°, so Warszawa and Łódź share one.
+    const far = await catalog.pointClusters({ type: "inpost", bbox: poland, zoom: 4 })
+    expect(getPoints).toHaveBeenCalledTimes(1)
+    expect(far.map((c) => c.count)).toEqual([2, 1])
+    // Zoom 8: every city is a cluster of one, with its point's ID.
+    const near = await catalog.pointClusters({ type: "INPOST", bbox: poland, zoom: 8 })
+    expect(near.map((c) => c.id).sort()).toEqual(["KRA01M", "LOD01M", "WAW01M"])
+    // Filters and checks work as for searches.
+    const cod = await catalog.pointClusters({ type: "INPOST", bbox: poland, zoom: 8, cod: true })
+    expect(cod.map((c) => c.id).sort()).toEqual(["KRA01M", "WAW01M"])
+    await expect(catalog.pointClusters({ type: "NOPE", bbox: poland, zoom: 6 })).rejects.toThrow()
+    expect(getPoints).toHaveBeenCalledTimes(1)
   })
 
   it("stores each type and country once, then searches the stored list", async () => {

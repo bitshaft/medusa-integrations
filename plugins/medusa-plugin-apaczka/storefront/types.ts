@@ -45,6 +45,28 @@ export type ApaczkaOptionData = {
 /** A map area in degrees, e.g. a Leaflet map's bounds. */
 export type PointBounds = { west: number; south: number; east: number; north: number }
 
+/** A group of points for a zoomed-out map (`GET /store/apaczka/points/clusters`). */
+export type PointCluster = {
+  /** The points' average position: where to draw the cluster. */
+  latitude: number
+  longitude: number
+  count: number
+  /** The points' extent: zoom the map to it when the cluster is clicked. */
+  bounds: PointBounds
+  /** The point's ID when the cluster holds a single point. */
+  id?: string
+}
+
+export type PointClusterParams = {
+  type: string
+  /** The map's visible area. */
+  bbox: PointBounds
+  /** The map's zoom level (whole steps). */
+  zoom: number
+  countryCode?: string
+  cod?: boolean
+}
+
 export type PointSearchParams = {
   type: string
   q?: string

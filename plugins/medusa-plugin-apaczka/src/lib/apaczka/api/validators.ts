@@ -43,6 +43,18 @@ export const StorePointsQuery = z.object({
 })
 export type StorePointsQuery = z.infer<typeof StorePointsQuery>
 
+export const StorePointClustersQuery = z.object({
+  type: z.string().min(1).max(40),
+  country_code: z.string().length(2).default("pl"),
+  /** The map area to cluster: required, a whole country is a fine area. */
+  bbox,
+  /** The map's zoom level, in whole steps as web maps use. */
+  zoom: z.coerce.number().int().min(0).max(20),
+  cod: booleanish.optional(),
+  sending: booleanish.optional(),
+})
+export type StorePointClustersQuery = z.infer<typeof StorePointClustersQuery>
+
 export const StorePointQuery = z.object({
   country_code: z.string().length(2).default("pl"),
 })

@@ -9,6 +9,7 @@ import {
   listServices,
   toArray,
 } from "./client"
+import type { MapArea, PointCluster } from "./point-clusters"
 import type { ApaczkaPointDirectory, PointSyncStatus } from "./point-directory"
 import { normalizeSearch } from "./point-rows"
 
@@ -31,6 +32,17 @@ export type PointSearchQuery = {
 }
 
 export type PointWithDistance = ApaczkaPoint & { distance_km?: number }
+
+export type PointClusterQuery = {
+  type: string
+  countryCode?: string
+  /** The map area to cluster. */
+  bbox: MapArea
+  /** The map's zoom level (0–20). */
+  zoom: number
+  cod?: boolean
+  sending?: boolean
+}
 
 /**
  * Apaczka dictionaries.
@@ -176,6 +188,23 @@ export class ApaczkaCatalog {
             ? haversineKm(origin.latitude, origin.longitude, lat, lng)
             : undefined,
       }
+    })
+  }
+
+  /**
+   * A map area's points grouped into clusters for a zoomed-out map (see
+   * `clusterGrid`), so a map of the whole country shows where the points are
+   * without loading tens of thousands of them.
+   */
+  async pointClusters(query: PointClusterQuery): Promise<PointCluster[]> {
+    const { type, countryCode } = await this.assertPointQuery(query.type, query.countryCode ?? "PL")
+    return this.directory().clusters({
+      type,
+      countryCode,
+      bbox: query.bbox,
+      zoom: query.zoom,
+      cod: query.cod,
+      sending: query.sending,
     })
   }
 
