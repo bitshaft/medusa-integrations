@@ -105,6 +105,13 @@ export const pluginOptionsSchema = z.object({
    * tracking that moves on by itself (see `DemoApaczkaClient`).
    */
   demo: z.boolean().default(false),
+  /**
+   * Demo mode only: parcel points come from your Apaczka account (needs
+   * `appId` and `appSecret`), so customers pick real lockers. The points
+   * request is the only call that reaches Apaczka: services, prices,
+   * shipments, labels, pickups and tracking stay in the demo client.
+   */
+  livePoints: z.boolean().default(false),
 
   /* Credentials ----------------------------------------------------------- */
   appId: z.string().min(1, "appId is required (Apaczka panel → Settings → API)"),
@@ -199,6 +206,11 @@ export const pluginOptionsSchema = z.object({
     .number()
     .positive()
     .default(24 * 60),
+  /**
+   * Parcel points are stored in the database. A list older than this is
+   * refreshed in the background while customers keep getting the stored one;
+   * only a carrier with no stored list yet makes the first search wait.
+   */
   pointsTtlMinutes: z
     .number()
     .positive()
@@ -250,6 +262,10 @@ export const PLUGIN_NAME = "apaczka"
  */
 export function parseOptions(raw: unknown): PluginOptionsResult<ApaczkaPluginOptions> {
   const input = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>
+  if (input.demo === true && input.livePoints === true) {
+    // The points request is signed, so live points need real credentials.
+    return parsePluginOptions(pluginOptionsSchema, input, { required: ["appId", "appSecret"] })
+  }
   if (input.demo === true) {
     // The demo client never signs anything, so the credentials are placeholders.
     return parsePluginOptions(pluginOptionsSchema, { appId: "demo", appSecret: "demo", ...input })

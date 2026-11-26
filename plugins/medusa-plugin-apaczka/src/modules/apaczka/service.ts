@@ -1,20 +1,25 @@
 import { createHash } from "node:crypto"
 
+import type { Knex } from "@medusajs/framework/mikro-orm/knex"
 import type { Logger } from "@medusajs/framework/types"
 import { MedusaService } from "@medusajs/framework/utils"
 
 import type { ApaczkaClient } from "../../lib/apaczka/client"
-import { createApaczkaClient } from "../../lib/apaczka/client-factory"
+import { createApaczkaClient, withoutDemoCredentials } from "../../lib/apaczka/client-factory"
 import type { ShipmentStatus } from "../../lib/apaczka/client/statuses"
 import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
+import { createPointDirectory } from "../../lib/apaczka/points-setup"
 import { logPluginDisabled, pluginDisabledError } from "../../lib/apaczka/kit/options"
 import { type ApaczkaPluginOptions, parseOptions, PLUGIN_NAME } from "../../lib/apaczka/options"
 import { type ApaczkaSettings, readSettings, settingsSchema } from "../../lib/apaczka/settings"
+import { ApaczkaParcelPoint } from "./models/parcel-point"
+import { ApaczkaPointSync } from "./models/point-sync"
 import { ApaczkaShipment } from "./models/shipment"
 import { ApaczkaSetting } from "./models/setting"
 import { ApaczkaTrackingEvent } from "./models/tracking-event"
 
-type InjectedDependencies = { logger: Logger }
+/** `__pg_connection__`: the shared database connection, for the stored point lists. */
+type InjectedDependencies = { logger: Logger; __pg_connection__?: Knex }
 
 type EnabledState = { options: ApaczkaPluginOptions; client: ApaczkaClient; catalog: ApaczkaCatalog }
 
@@ -28,13 +33,15 @@ export type TrackingEventInput = {
 }
 
 /**
- * The plugin's own module: shipment records, tracking history, and the
- * Apaczka client used by workflows, API routes and jobs.
+ * The plugin's own module: shipment records, tracking history, stored parcel
+ * point lists, and the Apaczka client used by workflows, API routes and jobs.
  */
 export default class ApaczkaModuleService extends MedusaService({
   ApaczkaShipment,
   ApaczkaTrackingEvent,
   ApaczkaSetting,
+  ApaczkaParcelPoint,
+  ApaczkaPointSync,
 }) {
   protected readonly logger_: Logger
   private readonly state_: EnabledState | { disabled: string }
@@ -52,13 +59,18 @@ export default class ApaczkaModuleService extends MedusaService({
     }
 
     const client = createApaczkaClient(parsed.options, container.logger)
-    const catalog = new ApaczkaCatalog(client, {
-      serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
-      pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,
-      pointCountries: parsed.options.pointCountries,
-      logger: container.logger,
-    })
-    this.state_ = { options: parsed.options, client, catalog }
+    // From here on, demo mode only knows placeholder keys (see withoutDemoCredentials).
+    const kept = withoutDemoCredentials(parsed.options)
+    const catalog = new ApaczkaCatalog(
+      client,
+      {
+        serviceStructureTtlMs: kept.serviceStructureTtlMinutes * 60_000,
+        pointCountries: kept.pointCountries,
+        logger: container.logger,
+      },
+      createPointDirectory(client, kept, container.logger, () => container.__pg_connection__)
+    )
+    this.state_ = { options: kept, client, catalog }
   }
 
   /** False when options are missing or invalid; see `getDisabledReason`. */

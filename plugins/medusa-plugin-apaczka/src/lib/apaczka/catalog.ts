@@ -9,6 +9,8 @@ import {
   listServices,
   toArray,
 } from "./client"
+import type { ApaczkaPointDirectory, PointSyncStatus } from "./point-directory"
+import { normalizeSearch } from "./point-rows"
 
 type CacheEntry<T> = { value: T; expiresAt: number }
 
@@ -19,6 +21,8 @@ export type PointSearchQuery = {
   query?: string
   latitude?: number
   longitude?: number
+  /** Only points inside this map area. */
+  bbox?: { west: number; south: number; east: number; north: number }
   /** Only points that accept cash on delivery. */
   cod?: boolean
   /** Only points where parcels can be dropped off (`option_send`). */
@@ -29,36 +33,33 @@ export type PointSearchQuery = {
 export type PointWithDistance = ApaczkaPoint & { distance_km?: number }
 
 /**
- * In-memory cache for Apaczka dictionaries.
+ * Apaczka dictionaries.
  *
- * - The service structure changes rarely, so it is refreshed on a TTL
- *   (daily by default). If a refresh fails, the stale copy keeps being used.
- * - Point lists can be large (tens of thousands of lockers), so each
- *   type/country pair is fetched once per TTL and searched locally.
- *
- * Concurrent callers share one in-flight request.
+ * - The service structure changes rarely, so it is kept in memory and
+ *   refreshed on a TTL (daily by default). If a refresh fails, the stale copy
+ *   keeps being used. Concurrent callers share one in-flight request.
+ * - Parcel point lists are large (tens of thousands of lockers per carrier),
+ *   so they live in the database and are refreshed by the point directory
+ *   (see `ApaczkaPointDirectory`); searches run there.
  */
 export class ApaczkaCatalog {
   private structure?: CacheEntry<ApaczkaServiceStructure>
   private structureInFlight?: Promise<ApaczkaServiceStructure>
-  private readonly points = new Map<string, CacheEntry<ApaczkaPoint[]>>()
-  private readonly pointsInFlight = new Map<string, Promise<ApaczkaPoint[]>>()
 
   constructor(
     private readonly client: ApaczkaClient,
     private readonly config: {
       serviceStructureTtlMs: number
-      pointsTtlMs: number
       /**
        * Countries points may be fetched for (ISO alpha-2). The store API is
        * public, so anything else is rejected before it reaches Apaczka.
        */
       pointCountries?: string[]
-      /** How many type/country point lists to keep in memory. Default 12. */
-      maxPointLists?: number
       logger?: ApaczkaLogger
       now?: () => number
-    }
+    },
+    /** Stored point lists; without it, point methods throw. */
+    private readonly points?: ApaczkaPointDirectory
   ) {}
 
   private now(): number {
@@ -137,113 +138,69 @@ export class ApaczkaCatalog {
     return { type: normalizedType, countryCode: normalizedCountry }
   }
 
-  async getPoints(type: string, countryCode = "PL"): Promise<ApaczkaPoint[]> {
-    const query = await this.assertPointQuery(type, countryCode)
-    const key = `${query.type}:${query.countryCode}`
-    const cached = this.points.get(key)
-    if (cached && cached.expiresAt > this.now()) {
-      // Refresh recency for the size-capped cache.
-      this.points.delete(key)
-      this.points.set(key, cached)
-      return cached.value
-    }
-
-    const inFlight = this.pointsInFlight.get(key)
-    if (inFlight) {
-      return inFlight
-    }
-
-    const request = this.client
-      .getPoints(query.type, { country_code: query.countryCode })
-      .then((value) => {
-        this.points.delete(key)
-        this.points.set(key, { value, expiresAt: this.now() + this.config.pointsTtlMs })
-        const max = this.config.maxPointLists ?? 12
-        while (this.points.size > max) {
-          this.points.delete(this.points.keys().next().value as string)
-        }
-        return value
-      })
-      .catch((error) => {
-        if (cached) {
-          this.config.logger?.warn(
-            `[apaczka] Could not refresh ${key} points, using the cached copy: ${(error as Error).message}`
-          )
-          return cached.value
-        }
-        throw error
-      })
-      .finally(() => this.pointsInFlight.delete(key))
-
-    this.pointsInFlight.set(key, request)
-    return request
-  }
-
   async findPoint(type: string, pointId: string, countryCode = "PL"): Promise<ApaczkaPoint | undefined> {
-    const id = pointId.trim().toUpperCase()
-    const points = await this.getPoints(type, countryCode)
-    return points.find((point) => point.foreign_address_id?.toUpperCase() === id || point.name?.toUpperCase() === id)
+    const query = await this.assertPointQuery(type, countryCode)
+    return this.directory().find(query.type, query.countryCode, pointId)
   }
 
   async searchPoints(query: PointSearchQuery): Promise<PointWithDistance[]> {
-    const points = await this.getPoints(query.type, query.countryCode)
-    const limit = Math.min(Math.max(query.limit ?? 50, 1), 500)
-    const terms = normalize(query.query ?? "")
-      .split(/\s+/)
-      .filter(Boolean)
+    const { type, countryCode } = await this.assertPointQuery(query.type, query.countryCode ?? "PL")
+    const origin =
+      Number.isFinite(query.latitude) && Number.isFinite(query.longitude)
+        ? { latitude: query.latitude!, longitude: query.longitude! }
+        : undefined
 
-    const hasOrigin = Number.isFinite(query.latitude) && Number.isFinite(query.longitude)
+    const points = await this.directory().search({
+      type,
+      countryCode,
+      terms: normalizeSearch(query.query ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+      bbox: query.bbox,
+      origin,
+      cod: query.cod,
+      sending: query.sending,
+      limit: Math.min(Math.max(query.limit ?? 50, 1), 500),
+    })
 
-    const filtered: PointWithDistance[] = []
-    for (const point of points) {
-      if (query.cod && point.option_cod === false) {
-        continue
-      }
-      if (query.sending && point.option_send === false) {
-        continue
-      }
-      if (terms.length) {
-        const haystack = normalize(
-          [point.foreign_address_id, point.name, point.address?.line1, point.address?.city, point.address?.postal_code]
-            .filter(Boolean)
-            .join(" ")
-        )
-        if (!terms.every((term) => haystack.includes(term))) {
-          continue
-        }
-      }
-      if (hasOrigin) {
-        const lat = Number(point.address?.latitude)
-        const lng = Number(point.address?.longitude)
-        filtered.push({
-          ...point,
-          distance_km:
-            Number.isFinite(lat) && Number.isFinite(lng)
-              ? haversineKm(query.latitude!, query.longitude!, lat, lng)
-              : undefined,
-        })
-      } else {
-        filtered.push(point)
-      }
+    if (!origin) {
+      return points
     }
-
-    if (hasOrigin) {
-      filtered.sort((a, b) => (a.distance_km ?? Infinity) - (b.distance_km ?? Infinity))
-    }
-
-    return filtered.slice(0, limit)
+    return points.map((point) => {
+      const lat = Number(point.address?.latitude)
+      const lng = Number(point.address?.longitude)
+      return {
+        ...point,
+        distance_km:
+          point.address?.latitude && Number.isFinite(lat) && Number.isFinite(lng)
+            ? haversineKm(origin.latitude, origin.longitude, lat, lng)
+            : undefined,
+      }
+    })
   }
 
-  /** Drops all cached data. */
+  /** Syncs one point list now and returns its state. For the admin's "Sync now". */
+  async refreshPoints(type: string, countryCode = "PL"): Promise<PointSyncStatus | null> {
+    const query = await this.assertPointQuery(type, countryCode)
+    return this.directory().refresh(query.type, query.countryCode)
+  }
+
+  /** The state of every stored point list. */
+  async pointStatuses(): Promise<PointSyncStatus[]> {
+    return this.directory().statuses()
+  }
+
+  /** Drops the cached service structure. Stored point lists are not affected. */
   clear(): void {
     this.structure = undefined
-    this.points.clear()
   }
-}
 
-/** Lowercase and strip Polish diacritics so "Łódź" matches "lodz". */
-function normalize(value: string): string {
-  return value.toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "")
+  private directory(): ApaczkaPointDirectory {
+    if (!this.points) {
+      throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, "Parcel point storage is not set up for this catalog")
+    }
+    return this.points
+  }
 }
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {

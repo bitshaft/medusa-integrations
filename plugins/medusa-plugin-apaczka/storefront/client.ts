@@ -6,6 +6,10 @@ export async function searchPoints(config: ApaczkaStoreConfig, params: PointSear
   if (params.q) query.q = params.q
   if (params.lat !== undefined) query.lat = String(params.lat)
   if (params.lng !== undefined) query.lng = String(params.lng)
+  if (params.bbox) {
+    const { west, south, east, north } = params.bbox
+    query.bbox = [west, south, east, north].join(",")
+  }
   if (params.countryCode) query.country_code = params.countryCode.toLowerCase()
   if (params.cod) query.cod = "true"
   if (params.limit) query.limit = String(params.limit)

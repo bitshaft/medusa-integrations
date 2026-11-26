@@ -1,6 +1,6 @@
 {
   "name": "@bitshaft/medusa-plugin-apaczka",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Apaczka.pl shipping for Medusa v2: 20+ Polish and international carriers, parcel lockers and pickup points, live rates, labels, COD, courier pickups, returns and webhook tracking.",
   "author": "Bitshaft (https://bitshaft.pl)",
   "license": "MIT",

@@ -12,15 +12,16 @@ converts.
 
 ## Credentials and connection
 
-| Option        | Type                        | Default        |                                                                                                   |
-| ------------- | --------------------------- | -------------- | ------------------------------------------------------------------------------------------------- |
-| `demo`        | `boolean`                   | `false`        | No credentials, no requests: sample data (see the README's "Demo mode")                          |
-| `appId`       | `string`                    | **required**   | Apaczka panel → Settings → API (not needed with `demo`)                                           |
-| `appSecret`   | `string`                    | **required**   | Keep it in an environment variable (not needed with `demo`)                                       |
-| `environment` | `"production" \| "sandbox"` | `"production"` | Sandbox and production credentials are different                                                  |
-| `baseUrl`     | `string`                    | —              | Override the API URL (rarely needed)                                                              |
-| `timeoutMs`   | `number`                    | `15000`        | Per request                                                                                       |
-| `maxRetries`  | `0–5`                       | `2`            | Read calls only. Order creation, cancellation and pickups are never retried, to avoid duplicates. |
+| Option        | Type                        | Default        |                                                                                                      |
+| ------------- | --------------------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
+| `demo`        | `boolean`                   | `false`        | No credentials, no requests: sample data (see the README's "Demo mode")                              |
+| `livePoints`  | `boolean`                   | `false`        | With `demo`: parcel points come from your account (needs `appId` and `appSecret`); nothing else does |
+| `appId`       | `string`                    | **required**   | Apaczka panel → Settings → API (not needed with `demo`)                                              |
+| `appSecret`   | `string`                    | **required**   | Keep it in an environment variable (not needed with `demo`)                                          |
+| `environment` | `"production" \| "sandbox"` | `"production"` | Sandbox and production credentials are different                                                     |
+| `baseUrl`     | `string`                    | —              | Override the API URL (rarely needed)                                                                 |
+| `timeoutMs`   | `number`                    | `15000`        | Per request                                                                                          |
+| `maxRetries`  | `0–5`                       | `2`            | Read calls only. Order creation, cancellation and pickups are never retried, to avoid duplicates.    |
 
 ## Sender
 
@@ -141,7 +142,7 @@ global options.
 | Option                       | Default  |                                                                                                                                                                            |
 | ---------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `serviceStructureTtlMinutes` | `1440`   | Service list cache (also refreshed by a daily job)                                                                                                                         |
-| `pointsTtlMinutes`           | `720`    | Parcel point list cache, per type and country                                                                                                                              |
+| `pointsTtlMinutes`           | `720`    | Parcel point lists are stored in the database. A list older than this is refreshed in the background while searches keep using it (see `docs/parcel-points.md`)            |
 | `pointTypes`                 | `{}`     | Supplier → `points/{type}/` code, for suppliers whose code differs                                                                                                         |
 | `pointCountries`             | `["PL"]` | Countries the store API returns points for. Add e.g. `"CZ"` for Packeta. Other countries, and point types your account doesn't have, are rejected before reaching Apaczka. |
 

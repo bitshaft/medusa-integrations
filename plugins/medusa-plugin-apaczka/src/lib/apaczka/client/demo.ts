@@ -5,6 +5,7 @@ import type {
   ApaczkaOrderInput,
   ApaczkaOrderSummary,
   ApaczkaPoint,
+  ApaczkaPointsPayload,
   ApaczkaPollingStatus,
   ApaczkaService,
   ApaczkaServiceStructure,
@@ -135,14 +136,37 @@ export function resetDemoOrders(): void {
   orders.clear()
 }
 
+/** The account's real parcel points request (the `livePoints` option). */
+export type LivePointsRequest = (
+  type: string,
+  payload: ApaczkaPointsPayload,
+  signal?: AbortSignal
+) => Promise<ApaczkaPoint[]>
+
 export class DemoApaczkaClient extends ApaczkaClient {
   override readonly demo = true
+  override readonly livePoints: boolean
 
   private readonly clock: () => number
+  /**
+   * A function, not a client: the real client and its keys exist only inside
+   * it (see `createApaczkaClient`). Nothing that reaches this object can send
+   * any other request with them, and printing or serializing it shows no key.
+   */
+  private readonly livePointsRequest?: LivePointsRequest
 
-  constructor(options: { now?: () => number } = {}) {
+  constructor(options: { now?: () => number; livePoints?: LivePointsRequest } = {}) {
     super({ appId: "demo", appSecret: "demo", environment: "sandbox", baseUrl: "https://demo.invalid/api/v2/" })
     this.clock = options.now ?? Date.now
+    this.livePointsRequest = options.livePoints
+    this.livePoints = Boolean(options.livePoints)
+  }
+
+  /** Sample points, or the account's real points with `livePoints`. */
+  override getPoints(type: string, payload: ApaczkaPointsPayload = {}, signal?: AbortSignal): Promise<ApaczkaPoint[]> {
+    return this.livePointsRequest
+      ? this.livePointsRequest(type, payload, signal)
+      : super.getPoints(type, payload, signal)
   }
 
   /** Every API method goes through here; nothing is sent anywhere. */

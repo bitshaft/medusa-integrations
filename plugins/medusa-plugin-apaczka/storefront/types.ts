@@ -42,11 +42,16 @@ export type ApaczkaOptionData = {
   points_type?: string
 }
 
+/** A map area in degrees, e.g. a Leaflet map's bounds. */
+export type PointBounds = { west: number; south: number; east: number; north: number }
+
 export type PointSearchParams = {
   type: string
   q?: string
   lat?: number
   lng?: number
+  /** Only points inside this map area. */
+  bbox?: PointBounds
   countryCode?: string
   cod?: boolean
   limit?: number

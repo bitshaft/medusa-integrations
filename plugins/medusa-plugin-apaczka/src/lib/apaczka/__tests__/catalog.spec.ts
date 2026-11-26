@@ -1,7 +1,9 @@
 import { ApaczkaClient, type ApaczkaPoint } from "../client"
 import { ApaczkaCatalog } from "../catalog"
+import { ApaczkaPointDirectory } from "../point-directory"
 import { summarizeOpenHours, toPublicPoint } from "../points"
 import { APP_ID, APP_SECRET, serviceStructure } from "./fixtures"
+import { MemoryPointStore } from "./memory-point-store"
 
 const point = (
   id: string,
@@ -36,15 +38,20 @@ function setup() {
   const structure = jest.spyOn(client, "getServiceStructure").mockResolvedValue(serviceStructure)
   const getPoints = jest.spyOn(client, "getPoints").mockResolvedValue(points)
   let now = 1_000_000
-  const catalog = new ApaczkaCatalog(client, {
-    serviceStructureTtlMs: 1000,
-    pointsTtlMs: 1000,
-    pointCountries: ["PL", "CZ"],
-    maxPointLists: 2,
-    logger: { warn: jest.fn() },
+  const logger = { warn: jest.fn(), info: jest.fn() }
+  const store = new MemoryPointStore()
+  const directory = new ApaczkaPointDirectory(client, store, {
+    source: "production",
+    refreshAfterMs: 60_000,
+    logger,
     now: () => now,
   })
-  return { catalog, structure, getPoints, advance: (ms: number) => (now += ms) }
+  const catalog = new ApaczkaCatalog(
+    client,
+    { serviceStructureTtlMs: 1000, pointCountries: ["PL", "CZ"], logger, now: () => now },
+    directory
+  )
+  return { catalog, structure, getPoints, store, advance: (ms: number) => (now += ms) }
 }
 
 describe("ApaczkaCatalog", () => {
@@ -116,27 +123,40 @@ describe("ApaczkaCatalog", () => {
 
   it("rejects countries that are not allowed", async () => {
     const { catalog, getPoints } = setup()
-    await expect(catalog.getPoints("INPOST", "DE")).rejects.toThrow("not available for country")
-    await expect(catalog.getPoints("INPOST", "P1")).rejects.toThrow("not available for country")
+    await expect(catalog.findPoint("INPOST", "WAW01M", "DE")).rejects.toThrow("not available for country")
+    await expect(catalog.searchPoints({ type: "INPOST", countryCode: "P1" })).rejects.toThrow(
+      "not available for country"
+    )
     expect(getPoints).not.toHaveBeenCalled()
   })
 
-  it("keeps at most maxPointLists lists in memory", async () => {
-    const { catalog, getPoints } = setup()
-    await catalog.getPoints("INPOST", "PL")
-    await catalog.getPoints("DPD", "PL")
-    await catalog.getPoints("POCZTA", "PL") // evicts INPOST:PL
-    await catalog.getPoints("DPD", "PL") // still cached
-    await catalog.getPoints("INPOST", "PL") // fetched again
-    expect(getPoints).toHaveBeenCalledTimes(4)
+  it("returns only the points inside a map area", async () => {
+    const { catalog } = setup()
+    const result = await catalog.searchPoints({
+      type: "INPOST",
+      bbox: { west: 19, south: 50, east: 20, north: 52 },
+    })
+    expect(result.map((p) => p.foreign_address_id).sort()).toEqual(["KRA01M", "LOD01M"])
   })
 
-  it("caches points per type and country", async () => {
-    const { catalog, getPoints } = setup()
-    await catalog.getPoints("INPOST", "PL")
-    await catalog.getPoints("inpost", "pl")
-    await catalog.getPoints("INPOST", "CZ")
+  it("stores each type and country once, then searches the stored list", async () => {
+    const { catalog, getPoints, store } = setup()
+    await catalog.searchPoints({ type: "INPOST" })
+    await catalog.searchPoints({ type: "inpost", countryCode: "pl", query: "krakow" })
+    await catalog.findPoint("INPOST", "WAW01M")
+    await catalog.searchPoints({ type: "INPOST", countryCode: "CZ" })
     expect(getPoints).toHaveBeenCalledTimes(2)
+    expect(getPoints).toHaveBeenCalledWith("INPOST", { country_code: "PL" })
+    expect(getPoints).toHaveBeenCalledWith("INPOST", { country_code: "CZ" })
+    expect(store.rows).toHaveLength(6)
+  })
+
+  it("reports the stored lists", async () => {
+    const { catalog } = setup()
+    await catalog.searchPoints({ type: "INPOST" })
+    expect(await catalog.pointStatuses()).toEqual([
+      expect.objectContaining({ type: "INPOST", country_code: "PL", point_count: 3, source: "production" }),
+    ])
   })
 })
 

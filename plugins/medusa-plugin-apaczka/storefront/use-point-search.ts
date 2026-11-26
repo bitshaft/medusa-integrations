@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 
 import { searchPoints } from "./client"
-import type { ApaczkaPoint, ApaczkaStoreConfig } from "./types"
+import type { ApaczkaPoint, ApaczkaStoreConfig, PointBounds } from "./types"
 
 export type UsePointSearchOptions = {
   config: ApaczkaStoreConfig
@@ -11,6 +11,8 @@ export type UsePointSearchOptions = {
   type: string | undefined
   query?: string
   origin?: { lat: number; lng: number } | null
+  /** Only points inside this map area (e.g. the visible part of a map). */
+  bbox?: PointBounds | null
   countryCode?: string
   cod?: boolean
   limit?: number
@@ -29,7 +31,7 @@ export type UsePointSearchResult = {
  * build your own picker UI.
  */
 export function usePointSearch(options: UsePointSearchOptions): UsePointSearchResult {
-  const { config, type, query = "", origin, countryCode = "pl", cod, limit = 50, debounceMs = 300 } = options
+  const { config, type, query = "", origin, bbox, countryCode = "pl", cod, limit = 50, debounceMs = 300 } = options
   const [state, setState] = useState<UsePointSearchResult>({ points: [], isLoading: false, error: null })
   const requestId = useRef(0)
   const configRef = useRef(config)
@@ -49,6 +51,7 @@ export function usePointSearch(options: UsePointSearchOptions): UsePointSearchRe
         q: query.trim() || undefined,
         lat: origin?.lat,
         lng: origin?.lng,
+        bbox: bbox ?? undefined,
         countryCode,
         cod,
         limit,
@@ -66,7 +69,20 @@ export function usePointSearch(options: UsePointSearchOptions): UsePointSearchRe
     }, debounceMs)
 
     return () => clearTimeout(timer)
-  }, [type, query, origin?.lat, origin?.lng, countryCode, cod, limit, debounceMs])
+  }, [
+    type,
+    query,
+    origin?.lat,
+    origin?.lng,
+    bbox?.west,
+    bbox?.south,
+    bbox?.east,
+    bbox?.north,
+    countryCode,
+    cod,
+    limit,
+    debounceMs,
+  ])
 
   return state
 }

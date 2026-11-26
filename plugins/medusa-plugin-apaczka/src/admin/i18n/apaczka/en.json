@@ -214,7 +214,8 @@
       "variantsNoWeight": "Variants without a weight: {{count}}; parcels count them with the default weight."
     },
     "demo": {
-      "body": "Nothing here comes from Apaczka: services, prices, parcel points, labels and tracking are sample data, and no request is sent. Tracking of a new shipment moves on by itself within about 20 minutes (\"Refresh tracking\" shows the progress at once). Remove demo: true and set appId and appSecret to connect your account."
+      "body": "Nothing here comes from Apaczka: services, prices, parcel points, labels and tracking are sample data, and no request is sent. Tracking of a new shipment moves on by itself within about 20 minutes (\"Refresh tracking\" shows the progress at once). Remove demo: true and set appId and appSecret to connect your account.",
+      "bodyLivePoints": "Demo mode with live parcel points: lockers and pickup points come from your Apaczka account. Everything else is sample data: services, prices, labels and tracking, and no shipment, pickup or label request is ever sent to Apaczka."
     },
     "guide": {
       "title": "How shipping with Apaczka works",
@@ -289,6 +290,20 @@
         "title": "Go live",
         "body": "Demo mode off and environment \"production\", so labels and couriers are real."
       }
+    },
+    "points": {
+      "title": "Parcel points",
+      "hint": "Lockers and pickup points are stored in the database. A search refreshes a list in the background when it is older than pointsTtlMinutes, and waits only when a carrier has no list yet. \"Sync now\" fills a list in advance.",
+      "carrier": "Carrier",
+      "count": "Points",
+      "lastSync": "Last sync",
+      "state": "State",
+      "stored": "Stored",
+      "running": "Syncing",
+      "failed": "Last sync failed",
+      "notStored": "Not stored yet",
+      "syncNow": "Sync now",
+      "synced": "{{type}}: {{count}} points stored"
     }
   }
 }

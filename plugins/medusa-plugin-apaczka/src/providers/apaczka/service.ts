@@ -10,10 +10,11 @@ import type {
   Logger,
   ValidateFulfillmentDataContext,
 } from "@medusajs/framework/types"
+import type { Knex } from "@medusajs/framework/mikro-orm/knex"
 import { AbstractFulfillmentProviderService, MedusaError } from "@medusajs/framework/utils"
 
 import { ApaczkaApiError, type ApaczkaClient, ApaczkaError, type ApaczkaAddress } from "../../lib/apaczka/client"
-import { createApaczkaClient } from "../../lib/apaczka/client-factory"
+import { createApaczkaClient, withoutDemoCredentials } from "../../lib/apaczka/client-factory"
 import {
   assertCompleteAddress,
   customerAddress,
@@ -21,6 +22,7 @@ import {
   warehouseAddress,
 } from "../../lib/apaczka/addresses"
 import { ApaczkaCatalog } from "../../lib/apaczka/catalog"
+import { createPointDirectory } from "../../lib/apaczka/points-setup"
 import {
   type ApaczkaFulfillmentData,
   type ApaczkaFulfillmentState,
@@ -41,7 +43,8 @@ import { type ApaczkaPluginOptions, optionsForService, parseOptions, PLUGIN_NAME
 import { missingWeights, type ParcelItem } from "../../lib/apaczka/parcels"
 import { createShipment, labelsFor } from "../../lib/apaczka/shipments"
 
-type InjectedDependencies = { logger: Logger }
+/** `__pg_connection__`: the shared database connection, for the stored point lists. */
+type InjectedDependencies = { logger: Logger; __pg_connection__?: Knex }
 
 type EnabledState = { options: ApaczkaPluginOptions; client: ApaczkaClient; catalog: ApaczkaCatalog }
 
@@ -89,8 +92,9 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
    */
   static validateOptions(_options: Record<string, unknown>): void {}
 
-  constructor({ logger }: InjectedDependencies, options: Record<string, unknown>) {
+  constructor(container: InjectedDependencies, options: Record<string, unknown>) {
     super()
+    const { logger } = container
     this.logger_ = logger
 
     const parsed = parseOptions(options)
@@ -101,13 +105,19 @@ export class ApaczkaFulfillmentProviderService extends AbstractFulfillmentProvid
     }
 
     const client = createApaczkaClient(parsed.options, logger)
-    const catalog = new ApaczkaCatalog(client, {
-      serviceStructureTtlMs: parsed.options.serviceStructureTtlMinutes * 60_000,
-      pointsTtlMs: parsed.options.pointsTtlMinutes * 60_000,
-      pointCountries: parsed.options.pointCountries,
-      logger,
-    })
-    this.state_ = { options: parsed.options, client, catalog }
+    // From here on, demo mode only knows placeholder keys (see withoutDemoCredentials).
+    const kept = withoutDemoCredentials(parsed.options)
+    // Point lists live in the database, shared with the module (no second copy in memory).
+    const catalog = new ApaczkaCatalog(
+      client,
+      {
+        serviceStructureTtlMs: kept.serviceStructureTtlMinutes * 60_000,
+        pointCountries: kept.pointCountries,
+        logger,
+      },
+      createPointDirectory(client, kept, logger, () => container.__pg_connection__)
+    )
+    this.state_ = { options: kept, client, catalog }
   }
 
   /* Throw a clear "plugin is disabled" error from any operation that needs Apaczka. */

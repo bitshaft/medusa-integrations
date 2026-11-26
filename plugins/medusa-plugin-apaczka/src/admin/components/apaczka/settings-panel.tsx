@@ -25,6 +25,7 @@ import {
 } from "../../lib/apaczka/api"
 import { errorMessage } from "../../lib/apaczka/format"
 import { OptionsCard, Pager } from "../../lib/apaczka/kit/page"
+import { ParcelPoints } from "./parcel-points"
 
 /** The Settings tab: connection, configuration from plugin options, tracking and services. */
 export const SettingsPanel = () => {
@@ -111,6 +112,8 @@ export const SettingsPanel = () => {
       </Container>
 
       {s?.enabled && <ParcelWeight />}
+
+      {s?.enabled && <ParcelPoints />}
 
       <Container className="overflow-hidden p-0">
         <div className="px-6 py-4">

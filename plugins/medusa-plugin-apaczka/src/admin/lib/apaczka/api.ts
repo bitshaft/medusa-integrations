@@ -156,6 +156,8 @@ export type ApaczkaEnabledStatus = {
   version: string
   environment: "production" | "sandbox" | "custom" | "demo"
   demo: boolean
+  /** Demo mode whose parcel points come from the account (`livePoints`). */
+  live_points: boolean
   base_url: string
   app_id: string
   connection: { ok: boolean; services?: number; error?: string; authentication_error?: boolean }
@@ -186,6 +188,37 @@ export const apaczkaKeys = {
   pickupHours: (postalCode: string, serviceId: number) => ["apaczka", "pickup-hours", postalCode, serviceId] as const,
   settings: ["apaczka", "settings"] as const,
   withoutWeight: (offset: number) => ["apaczka", "without-weight", offset] as const,
+  points: ["apaczka", "points"] as const,
+}
+
+/** One stored parcel point list (`GET /admin/apaczka/points`). */
+export type PointList = {
+  type: string
+  country_code: string
+  source: string | null
+  status: "idle" | "running" | "failed"
+  started_at: string | null
+  finished_at: string | null
+  succeeded_at: string | null
+  point_count: number | null
+  error: string | null
+}
+
+export function useApaczkaPoints(enabled = true) {
+  return useQuery({
+    queryKey: apaczkaKeys.points,
+    queryFn: () => sdk.client.fetch<{ lists: PointList[]; types: string[] }>("/admin/apaczka/points"),
+    enabled,
+  })
+}
+
+export function useSyncPoints() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { type: string; country_code?: string }) =>
+      sdk.client.fetch<{ list: PointList | null }>("/admin/apaczka/points/sync", { method: "POST", body: input }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: apaczkaKeys.points }),
+  })
 }
 
 export function useApaczkaSettings(enabled = true) {

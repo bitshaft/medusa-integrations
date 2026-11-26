@@ -101,6 +101,12 @@ Without the JS SDK, pass the backend URL and publishable key instead:
   provider you have an agreement with (`tileUrl`, `tileAttribution`); see the
   [OSM tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
 
+- **Map areas.** For a map that loads points as it moves, pass the visible
+  area to `usePointSearch({ bbox: { west, south, east, north }, limit: 500 })`
+  (or `searchPoints`). The backend answers with the points in that area
+  only; keep the map zoomed in far enough (city level) for that to be a
+  useful set.
+
 ## Styling
 
 Every element has an `apaczka-picker__*` class. Colors use CSS variables, so

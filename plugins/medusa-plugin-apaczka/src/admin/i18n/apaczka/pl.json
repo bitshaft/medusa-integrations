@@ -216,7 +216,8 @@
       "variantsNoWeight": "Warianty bez wagi: {{count}}; paczki liczą je wagą domyślną."
     },
     "demo": {
-      "body": "Nic tu nie pochodzi z Apaczki: usługi, ceny, punkty odbioru, etykiety i śledzenie to dane przykładowe i żadne zapytanie nie jest wysyłane. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut („Odśwież śledzenie” pokazuje postęp od razu). Usuń demo: true i ustaw appId oraz appSecret, żeby podłączyć swoje konto."
+      "body": "Nic tu nie pochodzi z Apaczki: usługi, ceny, punkty odbioru, etykiety i śledzenie to dane przykładowe i żadne zapytanie nie jest wysyłane. Śledzenie nowej przesyłki samo przechodzi kolejne etapy w ok. 20 minut („Odśwież śledzenie” pokazuje postęp od razu). Usuń demo: true i ustaw appId oraz appSecret, żeby podłączyć swoje konto.",
+      "bodyLivePoints": "Tryb demo z prawdziwymi punktami: paczkomaty i punkty odbioru pochodzą z Twojego konta Apaczki. Reszta to dane przykładowe: usługi, ceny, etykiety i śledzenie, a do Apaczki nigdy nie trafia żadne zlecenie przesyłki, kuriera ani etykiety."
     },
     "guide": {
       "title": "Jak działa wysyłka z Apaczką",
@@ -291,6 +292,20 @@
         "title": "Start produkcyjny",
         "body": "Tryb demo wyłączony i environment „production”, żeby etykiety i kurierzy były prawdziwe."
       }
+    },
+    "points": {
+      "title": "Punkty odbioru",
+      "hint": "Paczkomaty i punkty odbioru są zapisane w bazie. Wyszukiwanie odświeża listę w tle, gdy jest starsza niż pointsTtlMinutes, i czeka tylko wtedy, gdy przewoźnik nie ma jeszcze żadnej listy. „Synchronizuj teraz” wczytuje listę z wyprzedzeniem.",
+      "carrier": "Przewoźnik",
+      "count": "Punkty",
+      "lastSync": "Ostatnia synchronizacja",
+      "state": "Stan",
+      "stored": "Zapisane",
+      "running": "Synchronizacja",
+      "failed": "Ostatnia synchronizacja nieudana",
+      "notStored": "Jeszcze nie zapisane",
+      "syncNow": "Synchronizuj teraz",
+      "synced": "{{type}}: zapisano punktów: {{count}}"
     }
   }
 }

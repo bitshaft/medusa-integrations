@@ -39,6 +39,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     version: packageVersion(),
     environment: client.demo ? "demo" : client.environment,
     demo: client.demo,
+    /** Demo mode whose parcel points come from the account (`livePoints`). */
+    live_points: client.livePoints,
     base_url: client.baseUrl,
     app_id: maskIdentifier(options.appId),
     connection,

@@ -80,6 +80,8 @@ export class ApaczkaClient {
   readonly environment: ApaczkaEnvironment | "custom"
   /** True for `DemoApaczkaClient`, which answers itself instead of calling Apaczka. */
   readonly demo: boolean = false
+  /** True for a demo client whose parcel points come from Apaczka (`livePoints`). */
+  readonly livePoints: boolean = false
 
   private readonly appId: string
   private readonly appSecret: string

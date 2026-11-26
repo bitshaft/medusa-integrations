@@ -8,6 +8,26 @@ const booleanish = z
 
 /* Store ------------------------------------------------------------------- */
 
+/** `west,south,east,north` in degrees: the map area to return points for. */
+const bbox = z.string().transform((value, ctx) => {
+  const parts = value.split(",").map((part) => Number(part.trim()))
+  const [west, south, east, north] = parts
+  const valid =
+    parts.length === 4 &&
+    parts.every(Number.isFinite) &&
+    west >= -180 &&
+    east <= 180 &&
+    south >= -90 &&
+    north <= 90 &&
+    west < east &&
+    south < north
+  if (!valid) {
+    ctx.addIssue({ code: "custom", message: "Use bbox=west,south,east,north in degrees, e.g. 20.9,52.2,21.1,52.3" })
+    return z.NEVER
+  }
+  return { west, south, east, north }
+})
+
 export const StorePointsQuery = z.object({
   /** Point type from the shipping option's `data.points_type`, e.g. `INPOST`. */
   type: z.string().min(1).max(40),
@@ -15,9 +35,11 @@ export const StorePointsQuery = z.object({
   q: z.string().max(100).optional(),
   lat: z.coerce.number().min(-90).max(90).optional(),
   lng: z.coerce.number().min(-180).max(180).optional(),
+  bbox: bbox.optional(),
   cod: booleanish.optional(),
   sending: booleanish.optional(),
-  limit: z.coerce.number().int().min(1).max(200).default(50),
+  /** Up to 500, enough for a city-level map view. */
+  limit: z.coerce.number().int().min(1).max(500).default(50),
 })
 export type StorePointsQuery = z.infer<typeof StorePointsQuery>
 
@@ -27,6 +49,13 @@ export const StorePointQuery = z.object({
 export type StorePointQuery = z.infer<typeof StorePointQuery>
 
 /* Admin ------------------------------------------------------------------- */
+
+export const AdminSyncPoints = z.object({
+  /** Point type, e.g. `INPOST`. */
+  type: z.string().min(1).max(40),
+  country_code: z.string().length(2).default("pl"),
+})
+export type AdminSyncPoints = z.infer<typeof AdminSyncPoints>
 
 export const AdminShipmentsQuery = z.object({
   order_id: z.string().optional(),

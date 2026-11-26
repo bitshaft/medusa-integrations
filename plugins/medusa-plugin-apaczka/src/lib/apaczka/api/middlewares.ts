@@ -6,6 +6,7 @@ import {
   AdminCreateShipment,
   AdminPickupHoursQuery,
   AdminShipmentsQuery,
+  AdminSyncPoints,
   AdminTurnIn,
   StorePointQuery,
   StorePointsQuery,
@@ -32,6 +33,11 @@ export const apaczkaMiddlewares: MiddlewareRoute[] = [
     matcher: "/store/apaczka/points/:type/:id",
     method: ["GET"],
     middlewares: [validateQuery(StorePointQuery)],
+  },
+  {
+    matcher: "/admin/apaczka/points/sync",
+    method: ["POST"],
+    middlewares: [validateAndTransformBody(AdminSyncPoints)],
   },
   {
     matcher: "/admin/apaczka/shipments",

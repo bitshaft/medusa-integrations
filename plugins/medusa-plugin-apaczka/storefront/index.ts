@@ -9,5 +9,5 @@
  */
 export { getApaczkaOptionData, getPoint, requiresPoint, searchPoints, shippingMethodData } from "./client"
 export { PointPicker, type PointPickerLabels, type PointPickerProps } from "./point-picker"
-export type { ApaczkaOptionData, ApaczkaPoint, ApaczkaStoreConfig, PointSearchParams } from "./types"
+export type { ApaczkaOptionData, ApaczkaPoint, ApaczkaStoreConfig, PointBounds, PointSearchParams } from "./types"
 export { usePointSearch, type UsePointSearchOptions, type UsePointSearchResult } from "./use-point-search"

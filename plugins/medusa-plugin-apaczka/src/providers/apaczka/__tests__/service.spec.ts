@@ -2,6 +2,7 @@ import { MedusaError } from "@medusajs/framework/utils"
 
 import { ApaczkaApiError, ApaczkaClient } from "../../../lib/apaczka/client"
 import { APP_ID, APP_SECRET, serviceStructure } from "../../../lib/apaczka/__tests__/fixtures"
+import { useMemoryPointStore } from "../../../lib/apaczka/__tests__/memory-point-store"
 import { ApaczkaFulfillmentProviderService } from "../service"
 
 const logger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() }
@@ -49,6 +50,7 @@ describe("ApaczkaFulfillmentProviderService", () => {
   beforeEach(() => {
     jest.restoreAllMocks()
     jest.spyOn(ApaczkaClient.prototype, "getServiceStructure").mockResolvedValue(serviceStructure)
+    useMemoryPointStore()
   })
 
   it("stays disabled instead of failing startup when options are missing or invalid", async () => {

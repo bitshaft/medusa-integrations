@@ -219,6 +219,14 @@ point validated          (auto or from admin)          status changes           
 - **Cancellation.** Cancelling a fulfillment in Medusa cancels the Apaczka
   order. Apaczka refuses once the carrier has the parcel, and the plugin shows
   that message.
+- **Parcel points.** Each carrier's list (tens of thousands of lockers) is
+  stored in the database, in `apaczka_point`, never held in memory. A list
+  older than `pointsTtlMinutes` is refreshed in the background while
+  searches keep using it; only a carrier with no list yet makes the first
+  search wait. One sync per list runs at a time, even across processes, and
+  a failed sync is retried after 15 minutes. **Settings → Parcel points**
+  shows every list and can sync one now. Details in
+  [docs/parcel-points.md](docs/parcel-points.md).
 
 ### Webhooks
 
@@ -293,10 +301,13 @@ adjusts the shipment.
 
 | Route                                                      |                                                            |
 | ---------------------------------------------------------- | ---------------------------------------------------------- |
-| `GET /store/apaczka/points?type=INPOST&q=&lat=&lng=&cod=`  | Search parcel points (cached on the server)                |
+| `GET /store/apaczka/points?type=INPOST&q=&lat=&lng=&cod=`  | Search parcel points (stored in the database)              |
+| `GET /store/apaczka/points?type=INPOST&bbox=w,s,e,n`       | Parcel points inside a map area (up to `limit=500`)        |
 | `GET /store/apaczka/points/:type/:id`                      | One point                                                  |
 | `POST /hooks/apaczka/tracking`                             | Apaczka push tracking (signed)                             |
 | `GET /admin/apaczka/status`                                | Connection check and configuration summary                 |
+| `GET /admin/apaczka/points`                                | Stored parcel point lists: count, last sync, state         |
+| `POST /admin/apaczka/points/sync`                          | Sync one carrier's points now (`{ type, country_code }`)   |
 | `GET /admin/apaczka/services`                              | Services, additional options and package types             |
 | `GET /admin/apaczka/shipments?order_id=&q=&status=`        | Shipments with tracking history and order numbers          |
 | `POST /admin/apaczka/fulfillments/:id/valuation`           | Price a shipment before creating it                        |
@@ -337,6 +348,27 @@ Apaczka:
   fulfillment is marked shipped and delivered like with real tracking.
 - **Cancellation** works only in the first 2 minutes, before the carrier
   takes the parcel.
+
+### Real parcel points in demo mode
+
+With `livePoints: true`, the demo uses your account's real parcel points,
+so customers pick real lockers on the map, while everything else stays
+sample data:
+
+```ts
+options: { demo: true, livePoints: true, appId: process.env.APACZKA_APP_ID, appSecret: process.env.APACZKA_APP_SECRET }
+```
+
+The points request is the only call that reaches Apaczka. Services,
+prices, shipments, labels, pickups and tracking stay in the demo client,
+which has no way to send anything else, so no real shipment can ever be
+created. Stored sample points are replaced by the real lists on first use.
+
+Apaczka keys can't be limited to reading points, so the plugin keeps them
+inside that one request: the client, the module and the provider only hold
+placeholders, so a logged object or an admin response can't contain them.
+The demo store therefore also rejects real Apaczka webhooks. Keep the keys
+in server-side environment variables only.
 
 The admin page shows a "Demo mode" bar and the Settings tab shows the
 `demo` environment. Demo orders are kept in memory; after a restart their
